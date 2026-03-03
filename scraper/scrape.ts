@@ -89,14 +89,21 @@ function collectMissingImages(): string[] {
   return [...new Set(missing)]
 }
 
-async function scrapeAndSave<T extends object>(
+async function scrapeAndSave<T extends { id: number }>(
   endpoint: string,
   normalise: (raw: Record<string, unknown>) => T,
   outFile: string,
 ) {
   console.log(`Fetching ${BASE_API}${endpoint}...`)
   const raw = await fetchJSON(`${BASE_API}${endpoint}`)
-  const normalised = raw.map((item) => normalise(item as Record<string, unknown>))
+  const all = raw.map((item) => normalise(item as Record<string, unknown>))
+  // Deduplicate by id — keep first occurrence
+  const seen = new Set<number>()
+  const normalised = all.filter(item => {
+    if (seen.has(item.id)) { console.warn(`  [dedup] id=${item.id} skipped`); return false }
+    seen.add(item.id)
+    return true
+  })
   writeFileSync(outFile, JSON.stringify(normalised, null, 2))
   console.log(`  → ${normalised.length} items written to ${outFile}`)
   return normalised

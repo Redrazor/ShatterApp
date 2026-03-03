@@ -50,6 +50,7 @@ function handleDismiss() {
             v-for="route in [
               { to: '/browse', label: 'Browse' },
               { to: '/build', label: 'Build' },
+              { to: '/play', label: 'Play' },
               { to: '/collection', label: 'Collection' },
               { to: '/reference', label: 'Reference', short: 'Ref' },
             ]"
