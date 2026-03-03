@@ -21,7 +21,11 @@ export const useCollectionStore = defineStore(
       }
     }
 
-    return { owned, ownedSwpSet, isOwned, toggleOwned }
+    function importOwned(newOwned: string[]): void {
+      owned.value = [...newOwned]
+    }
+
+    return { owned, ownedSwpSet, isOwned, toggleOwned, importOwned }
   },
   { persist: true },
 )

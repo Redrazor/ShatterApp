@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useProductsStore } from '../stores/products.ts'
 import { useCollectionStore } from '../stores/collection.ts'
 import { useCharactersStore } from '../stores/characters.ts'
+import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import ProductCard from '../components/collection/ProductCard.vue'
+import { encodeProfile } from '../utils/profileShare.ts'
 
 const productsStore = useProductsStore()
 const collectionStore = useCollectionStore()
 const charactersStore = useCharactersStore()
+const sfStore = useStrikeForceStore()
 
 onMounted(() => {
   productsStore.load()
@@ -20,7 +23,7 @@ const ownedCount = computed(() => productsStore.products.filter(
 
 const totalUnitsOwned = computed(() => {
   const ownedSwps = collectionStore.ownedSwpSet
-  return charactersStore.characters.filter(c => ownedSwps.has(c.swp)).length
+  return charactersStore.characters.filter(c => ownedSwps.has(c.swpCode ?? '')).length
 })
 
 const eraStats = computed(() => {
@@ -36,6 +39,16 @@ const eraStats = computed(() => {
   }
   return [...map.entries()].map(([era, { total, owned }]) => ({ era, total, owned })).sort((a, b) => a.era.localeCompare(b.era))
 })
+
+const linkCopied = ref(false)
+
+async function copyProfileLink() {
+  const encoded = encodeProfile(collectionStore.owned, [], sfStore.savedLists)
+  const url = `${window.location.origin}/?p=${encoded}`
+  await navigator.clipboard.writeText(url)
+  linkCopied.value = true
+  setTimeout(() => { linkCopied.value = false }, 2000)
+}
 </script>
 
 <template>
@@ -44,14 +57,27 @@ const eraStats = computed(() => {
 
     <!-- Stats dashboard -->
     <div v-if="!productsStore.loading" class="rounded-xl border border-sw-gold/20 bg-sw-card/40 p-4 space-y-3">
-      <div class="flex flex-wrap gap-4">
-        <div class="stat-block">
-          <span class="stat-num">{{ ownedCount }}/{{ productsStore.products.length }}</span>
-          <span class="stat-lbl">Packs owned</span>
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex flex-wrap gap-4">
+          <div class="stat-block">
+            <span class="stat-num">{{ ownedCount }}/{{ productsStore.products.length }}</span>
+            <span class="stat-lbl">Packs owned</span>
+          </div>
+          <div class="stat-block">
+            <span class="stat-num">{{ totalUnitsOwned }}</span>
+            <span class="stat-lbl">Units owned</span>
+          </div>
         </div>
-        <div class="stat-block">
-          <span class="stat-num">{{ totalUnitsOwned }}</span>
-          <span class="stat-lbl">Units owned</span>
+        <div class="flex items-center gap-2">
+          <button
+            class="rounded-lg border border-sw-gold/30 px-3 py-1.5 text-xs text-sw-gold/70 transition-colors hover:border-sw-gold hover:text-sw-gold"
+            @click="copyProfileLink"
+          >
+            Copy Profile Link
+          </button>
+          <Transition name="fade">
+            <span v-if="linkCopied" class="text-xs text-green-400">Link copied!</span>
+          </Transition>
         </div>
       </div>
 
@@ -111,5 +137,13 @@ const eraStats = computed(() => {
   letter-spacing: 0.05em;
   color: rgb(255 255 255 / 0.4);
   margin-top: 0.2rem;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

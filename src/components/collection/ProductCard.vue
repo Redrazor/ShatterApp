@@ -18,13 +18,13 @@ defineEmits<{ (e: 'toggle'): void }>()
         : 'border-sw-gold/20 bg-sw-card',
     ]"
   >
-    <!-- Thumbnail -->
-    <div class="aspect-square w-full overflow-hidden bg-sw-dark">
+    <!-- Product image -->
+    <div class="aspect-[4/3] w-full overflow-hidden bg-sw-dark">
       <img
-        v-if="product.thumbnail"
-        :src="product.thumbnail"
+        v-if="product.mainImage || product.thumbnail"
+        :src="product.mainImage || product.thumbnail"
         :alt="product.name"
-        class="h-full w-full object-cover"
+        class="h-full w-full object-contain"
         loading="lazy"
       />
       <div v-else class="flex h-full items-center justify-center text-4xl text-sw-text/20">📦</div>

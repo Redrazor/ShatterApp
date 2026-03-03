@@ -16,7 +16,8 @@ function makeChar(overrides: Partial<Character> = {}): Character {
     fp: 2,
     era: 'GCW',
     tags: [],
-    swp: 'SWP01',
+    swp: 'SWP01: Starter Set',
+    swpCode: 'SWP01',
     thumbnail: '/images/luke.png',
     cardFront: '',
     cardBack: '',
@@ -47,7 +48,7 @@ describe('BrowseGrid', () => {
   })
 
   it('passes owned state correctly', () => {
-    const chars = [makeChar({ id: 1, name: 'Luke', swp: 'SWP01' })]
+    const chars = [makeChar({ id: 1, name: 'Luke', swp: 'SWP01: Starter Set', swpCode: 'SWP01' })]
     const wrapper = mount(BrowseGrid, {
       props: { characters: chars, ownedSwpSet: new Set(['SWP01']) },
     })

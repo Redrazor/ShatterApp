@@ -37,7 +37,7 @@ export function useSearch(characters: Ref<Character[]>, filters: Ref<SearchFilte
 
       if (swpFilter && char.swpCode !== swpFilter) return false
 
-      if (ownedOnly && !ownedSwpSet.has(char.swp)) return false
+      if (ownedOnly && !ownedSwpSet.has(char.swpCode ?? '')) return false
 
       if (favoritesOnly && !favoritedSet.has(char.id)) return false
 

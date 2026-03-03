@@ -4,7 +4,10 @@ import BrowseView from '../views/BrowseView.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/browse' },
+    {
+      path: '/',
+      redirect: (to) => ({ path: '/browse', query: to.query }),
+    },
     {
       path: '/browse',
       component: BrowseView,

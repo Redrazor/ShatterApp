@@ -16,7 +16,8 @@ function makeChar(overrides: Partial<Character> = {}): Character {
     fp: 2,
     era: 'Galactic Civil War',
     tags: ['Rebel', 'Jedi'],
-    swp: 'SWP01',
+    swp: 'SWP01: Starter Set',
+    swpCode: 'SWP01',
     thumbnail: '/images/luke.png',
     cardFront: '',
     cardBack: '',
@@ -168,24 +169,61 @@ describe('useSearch', () => {
 
   // ---------- ownedOnly ----------
   it('ownedOnly filters to owned swps', () => {
+    // Characters have full swp string; collection store uses short swpCode
     const chars = ref([
-      makeChar({ swp: 'SWP01' }),
-      makeChar({ id: 2, name: 'Vader', swp: 'SWP02' }),
+      makeChar({ swp: 'SWP01: Starter Set', swpCode: 'SWP01' }),
+      makeChar({ id: 2, name: 'Vader', swp: 'SWP02: Another Pack', swpCode: 'SWP02' }),
     ])
     const filters = ref(defaultFilters({ ownedOnly: true, ownedSwpSet: new Set(['SWP01']) }))
     const { results } = useSearch(chars, filters)
     expect(results.value).toHaveLength(1)
-    expect(results.value[0].swp).toBe('SWP01')
+    expect(results.value[0].swpCode).toBe('SWP01')
   })
 
   it('ownedOnly false returns all regardless of ownership', () => {
     const chars = ref([
-      makeChar({ swp: 'SWP01' }),
-      makeChar({ id: 2, name: 'Vader', swp: 'SWP02' }),
+      makeChar({ swp: 'SWP01: Starter Set', swpCode: 'SWP01' }),
+      makeChar({ id: 2, name: 'Vader', swp: 'SWP02: Another Pack', swpCode: 'SWP02' }),
     ])
     const filters = ref(defaultFilters({ ownedOnly: false, ownedSwpSet: new Set(['SWP01']) }))
     const { results } = useSearch(chars, filters)
     expect(results.value).toHaveLength(2)
+  })
+
+  // ---------- swpFilter ----------
+  it('swpFilter filters by swpCode', () => {
+    const chars = ref([
+      makeChar({ swpCode: 'SWP01' }),
+      makeChar({ id: 2, name: 'Vader', swpCode: 'SWP02' }),
+    ])
+    const filters = ref(defaultFilters({ swpFilter: 'SWP01' }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].swpCode).toBe('SWP01')
+  })
+
+  // ---------- favoritesOnly ----------
+  it('favoritesOnly filters to favorited character ids', () => {
+    const chars = ref([
+      makeChar({ id: 1 }),
+      makeChar({ id: 2, name: 'Vader' }),
+    ])
+    const filters = ref(defaultFilters({ favoritesOnly: true, favoritedSet: new Set([1]) }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].id).toBe(1)
+  })
+
+  // ---------- multi-era ----------
+  it('era filter matches character with semicolon-delimited multi-era', () => {
+    const chars = ref([
+      makeChar({ id: 1, era: 'GCW;Clone Wars' }),
+      makeChar({ id: 2, name: 'Vader', era: 'GCW' }),
+    ])
+    const filters = ref(defaultFilters({ era: 'Clone Wars' }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].id).toBe(1)
   })
 
   // ---------- combinations ----------

@@ -133,6 +133,18 @@ describe('GET /api/products/:id', () => {
   })
 })
 
+describe('GET /api/products — DB error', () => {
+  it('returns 500 when the database throws', async () => {
+    const brokenDb = createTestDb()
+    brokenDb.close()
+    const errorApp = express()
+    errorApp.use(express.json())
+    errorApp.use('/api/products', createProductsRouter(brokenDb))
+    const res = await supertest(errorApp).get('/api/products')
+    expect(res.status).toBe(500)
+  })
+})
+
 describe('rowToProduct (unit)', () => {
   it('maps row to product object', async () => {
     const { rowToProduct } = await import('../../../../server/routes/products.ts')

@@ -97,4 +97,24 @@ describe('StrikeForcePanel', () => {
     await resetBtn.trigger('click')
     expect(wrapper.emitted('reset')).toBeTruthy()
   })
+
+  it('emits save when Save button clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, {
+      props: { name: '', mission: null, premiere: false, isComplete: false },
+    })
+    const saveBtn = wrapper.findAll('button').find((b) => b.text() === 'Save')!
+    expect(saveBtn).toBeTruthy()
+    await saveBtn.trigger('click')
+    expect(wrapper.emitted('save')).toBeTruthy()
+  })
+
+  it('emits share when Share button clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, {
+      props: { name: '', mission: null, premiere: false, isComplete: false },
+    })
+    const shareBtn = wrapper.findAll('button').find((b) => b.text() === 'Share')!
+    expect(shareBtn).toBeTruthy()
+    await shareBtn.trigger('click')
+    expect(wrapper.emitted('share')).toBeTruthy()
+  })
 })

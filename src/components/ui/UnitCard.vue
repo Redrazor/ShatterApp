@@ -108,7 +108,7 @@ function goToSwp(e: MouseEvent) {
       </div>
 
       <!-- Era icons + FP -->
-      <div class="flex items-center justify-between gap-1">
+      <div class="flex items-center justify-between gap-1 pr-14">
         <div class="flex items-center gap-1.5 sm:gap-1">
           <img
             v-for="era in eras"

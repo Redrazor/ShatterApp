@@ -65,6 +65,35 @@ export interface StrikeForce {
   squads: [Squad, Squad]
 }
 
+export interface CompactBuild {
+  name: string
+  mid: number | null
+  pre: boolean
+  s: [[number, number, number], [number, number, number]]
+}
+
+export interface CompactProfile {
+  v: 1
+  owned: string[]
+  fav: number[]
+  lists: CompactBuild[]
+}
+
+export function hasStrikeForceConflict(squads: [Squad, Squad]): boolean {
+  const units: Character[] = []
+  for (const squad of squads) {
+    for (const role of ['primary', 'secondary', 'support'] as const) {
+      const u = squad[role]
+      if (u) units.push(u)
+    }
+  }
+  const names = units.map(u => u.name)
+  if (new Set(names).size < names.length) return true
+  const charTypes = units.map(u => u.characterType).filter(Boolean)
+  if (new Set(charTypes).size < charTypes.length) return true
+  return false
+}
+
 export function isSquadValid(squad: Squad): { valid: boolean; reason: string } {
   const { primary, secondary, support } = squad
   if (!primary || !secondary || !support) {

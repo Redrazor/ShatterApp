@@ -11,6 +11,7 @@ interface IconDef {
 const icons = ref<IconDef[]>([])
 const search = ref('')
 const error = ref(false)
+const collapsed = ref<Set<string>>(new Set())
 
 onMounted(async () => {
   try {
@@ -25,7 +26,7 @@ onMounted(async () => {
 const filtered = computed(() => {
   const q = search.value.toLowerCase().trim()
   return icons.value.filter(i =>
-    !q || i.name.toLowerCase().includes(q) || i.category.toLowerCase().includes(q)
+    !q || i.name.toLowerCase().includes(q) || i.category.toLowerCase().includes(q) || i.description?.toLowerCase().includes(q)
   )
 })
 
@@ -44,6 +45,15 @@ const categories = computed(() => {
 function iconsInCategory(cat: string) {
   return filtered.value.filter(i => i.category === cat)
 }
+
+function toggle(name: string) {
+  if (collapsed.value.has(name)) {
+    collapsed.value.delete(name)
+  } else {
+    collapsed.value.add(name)
+  }
+  collapsed.value = new Set(collapsed.value)
+}
 </script>
 
 <template>
@@ -56,14 +66,10 @@ function iconsInCategory(cat: string) {
       class="w-full rounded-lg border border-sw-gold/30 bg-sw-dark px-3 py-2 text-sm text-sw-text placeholder-sw-text/30 focus:border-sw-gold focus:outline-none"
     />
 
-    <!-- Empty / placeholder state -->
+    <!-- Empty / error state -->
     <div v-if="error || icons.length === 0" class="rounded-lg border border-sw-gold/10 bg-sw-card/40 p-8 text-center text-sw-text/40">
       <p class="text-4xl mb-3">🔮</p>
       <p class="font-medium">No icons loaded</p>
-      <p class="text-sm mt-1">
-        Add icon definitions to <code class="text-sw-gold/70">/public/data/icons.json</code>
-        and place icon files in <code class="text-sw-gold/70">/public/images/icons/</code>
-      </p>
     </div>
 
     <!-- No results after filtering -->
@@ -74,21 +80,39 @@ function iconsInCategory(cat: string) {
     <!-- Category sections -->
     <template v-else>
       <section v-for="cat in categories" :key="cat" class="space-y-2">
-        <h2 class="text-xs font-semibold uppercase tracking-widest text-sw-text/40">{{ cat }}</h2>
-        <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-sw-gold/60">{{ cat }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
           <div
             v-for="icon in iconsInCategory(cat)"
             :key="icon.name"
-            class="flex flex-col items-center gap-1 rounded-lg border border-sw-gold/10 bg-sw-card/40 p-3 text-center"
-            :title="icon.description"
+            class="rounded-lg border border-sw-gold/10 bg-sw-card/40 overflow-hidden"
           >
-            <img
-              :src="`/images/icons/${icon.file}`"
-              :alt="icon.name"
-              class="h-8 w-8 object-contain"
-              style="filter: brightness(0) invert(1); opacity: 0.8"
-            />
-            <span class="text-xs text-sw-text/70 leading-tight">{{ icon.name }}</span>
+            <!-- Row (always visible) -->
+            <button
+              class="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-sw-gold/5 transition-colors"
+              @click="toggle(icon.name)"
+            >
+              <img
+                :src="`/images/icons/${icon.file}`"
+                :alt="icon.name"
+                class="h-8 w-8 object-contain flex-shrink-0"
+              />
+              <span class="text-sm font-semibold text-sw-gold">{{ icon.name }}</span>
+              <svg
+                class="ml-auto flex-shrink-0 w-4 h-4 text-sw-gold/60 transition-transform"
+                :class="collapsed.has(icon.name) ? '' : 'rotate-180'"
+                viewBox="0 0 16 16" fill="currentColor"
+              >
+                <path d="M8 10.5 L3 5.5 L4.4 4.1 L8 7.7 L11.6 4.1 L13 5.5 Z"/>
+              </svg>
+            </button>
+
+            <!-- Expanded description -->
+            <div v-if="!collapsed.has(icon.name) && icon.description" class="px-3 pb-3 pt-0">
+              <p class="text-xs text-sw-text/70 leading-relaxed border-t border-sw-gold/10 pt-2">
+                {{ icon.description }}
+              </p>
+            </div>
           </div>
         </div>
       </section>

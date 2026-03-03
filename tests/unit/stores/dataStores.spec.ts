@@ -72,7 +72,7 @@ describe('useCharactersStore', () => {
     const store = useCharactersStore()
     await store.load()
 
-    expect(store.error).toBeTruthy()
+    expect(store.error).toBe('HTTP 404')
     expect(store.characters).toHaveLength(0)
   })
 
@@ -137,7 +137,7 @@ describe('useMissionsStore', () => {
     const store = useMissionsStore()
     await store.load()
 
-    expect(store.error).toBeTruthy()
+    expect(store.error).toBe('HTTP 500')
     expect(store.missions).toHaveLength(0)
   })
 

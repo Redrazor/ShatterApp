@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Mission } from '../../types/index.ts'
 
 const props = defineProps<{
@@ -14,6 +13,8 @@ const emit = defineEmits<{
   (e: 'update:premiere', val: boolean): void
   (e: 'pick-mission'): void
   (e: 'reset'): void
+  (e: 'save'): void
+  (e: 'share'): void
 }>()
 </script>
 
@@ -28,6 +29,18 @@ const emit = defineEmits<{
         >
           ✓ Complete
         </span>
+        <button
+          class="rounded px-2 py-1 text-xs text-sw-gold/70 hover:text-sw-gold"
+          @click="$emit('save')"
+        >
+          Save
+        </button>
+        <button
+          class="rounded px-2 py-1 text-xs text-sw-blue/70 hover:text-sw-blue"
+          @click="$emit('share')"
+        >
+          Share
+        </button>
         <button
           class="rounded px-2 py-1 text-xs text-sw-text/50 hover:text-red-400"
           @click="$emit('reset')"

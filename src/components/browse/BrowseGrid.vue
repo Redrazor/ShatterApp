@@ -28,7 +28,7 @@ defineEmits<{
       v-for="char in characters"
       :key="char.id"
       :character="char"
-      :owned="ownedSwpSet.has(char.swp)"
+      :owned="ownedSwpSet.has(char.swpCode ?? '')"
       :favorited="favoritedSet?.has(char.id)"
       :comparing="compareIds?.has(char.id)"
       @click="$emit('select', char)"

@@ -8,6 +8,8 @@ const props = defineProps<{
   show: boolean
   characters: Character[]
   role: keyof Squad | null
+  excludedNames?: Set<string>
+  excludedCharacterTypes?: Set<string>
 }>()
 
 const emit = defineEmits<{
@@ -34,6 +36,12 @@ const filtered = computed(() => {
     return true
   })
 })
+
+function isConflicting(char: Character): boolean {
+  if (props.excludedNames?.has(char.name)) return true
+  if (char.characterType && props.excludedCharacterTypes?.has(char.characterType)) return true
+  return false
+}
 
 function select(char: Character) {
   emit('select', char)
@@ -73,7 +81,9 @@ function select(char: Character) {
             <button
               v-for="char in filtered"
               :key="char.id"
-              class="flex w-full items-center gap-3 border-b border-sw-gold/10 px-4 py-3 text-left transition-colors hover:bg-sw-gold/10"
+              :disabled="isConflicting(char)"
+              class="flex w-full items-center gap-3 border-b border-sw-gold/10 px-4 py-3 text-left transition-colors"
+              :class="isConflicting(char) ? 'opacity-40 cursor-not-allowed' : 'hover:bg-sw-gold/10'"
               @click="select(char)"
             >
               <img
@@ -86,7 +96,8 @@ function select(char: Character) {
                 <p class="truncate text-sm font-medium text-sw-text">{{ char.name }}</p>
                 <p class="text-xs text-sw-text/50">{{ char.unitType }} · {{ char.era }}</p>
               </div>
-              <span class="shrink-0 text-sm font-bold text-sw-gold">
+              <span v-if="isConflicting(char)" class="shrink-0 text-xs text-sw-text/40">In team</span>
+              <span v-else class="shrink-0 text-sm font-bold text-sw-gold">
                 {{ char.unitType === 'Primary' ? `SP ${char.sp}` : `PC ${char.pc}` }}
               </span>
             </button>

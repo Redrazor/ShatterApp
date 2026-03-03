@@ -59,4 +59,19 @@ describe('useCollectionStore', () => {
     expect(store.owned).toHaveLength(3)
     expect(store.owned).toContain('SWP02')
   })
+
+  it('importOwned replaces current owned array', () => {
+    const store = useCollectionStore()
+    store.toggleOwned('SWP01')
+    store.toggleOwned('SWP02')
+    store.importOwned(['SWP10', 'SWP11', 'SWP12'])
+    expect(store.owned).toEqual(['SWP10', 'SWP11', 'SWP12'])
+  })
+
+  it('importOwned clears owned when passed empty array', () => {
+    const store = useCollectionStore()
+    store.toggleOwned('SWP01')
+    store.importOwned([])
+    expect(store.owned).toEqual([])
+  })
 })

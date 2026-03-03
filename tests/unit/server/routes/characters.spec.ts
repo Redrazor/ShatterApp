@@ -168,6 +168,18 @@ describe('GET /api/characters/:id', () => {
   })
 })
 
+describe('GET /api/characters — DB error', () => {
+  it('returns 500 when the database throws', async () => {
+    const brokenDb = createTestDb()
+    brokenDb.close()
+    const errorApp = express()
+    errorApp.use(express.json())
+    errorApp.use('/api/characters', createCharactersRouter(brokenDb))
+    const res = await supertest(errorApp).get('/api/characters')
+    expect(res.status).toBe(500)
+  })
+})
+
 describe('rowToCharacter (unit)', () => {
   it('maps database row to response object', async () => {
     const { rowToCharacter } = await import('../../../../server/routes/characters.ts')

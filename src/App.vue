@@ -1,11 +1,42 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
+import { decodeProfile } from './utils/profileShare.ts'
+import type { CompactProfile } from './types/index.ts'
+import AppImportBanner from './components/AppImportBanner.vue'
+import { useCollectionStore } from './stores/collection.ts'
+import { useStrikeForceStore } from './stores/strikeForce.ts'
+
+const route = useRoute()
+const router = useRouter()
+const collectionStore = useCollectionStore()
+const sfStore = useStrikeForceStore()
+
+const pendingProfile = ref<CompactProfile | null>(null)
 
 onMounted(() => {
   // Attempt programmatic portrait lock (works in PWA / fullscreen contexts)
   screen.orientation?.lock?.('portrait-primary').catch(() => {})
+
+  // Check for profile import link
+  const p = route.query.p as string | undefined
+  if (p) {
+    const profile = decodeProfile(p)
+    if (profile) pendingProfile.value = profile
+    router.replace({ query: { ...route.query, p: undefined } })
+  }
 })
+
+function handleImport() {
+  if (!pendingProfile.value) return
+  collectionStore.importOwned(pendingProfile.value.owned)
+  sfStore.importLists(pendingProfile.value.lists)
+  pendingProfile.value = null
+}
+
+function handleDismiss() {
+  pendingProfile.value = null
+}
 </script>
 
 <template>
@@ -33,6 +64,14 @@ onMounted(() => {
         </div>
       </div>
     </nav>
+
+    <!-- Profile import banner -->
+    <AppImportBanner
+      v-if="pendingProfile"
+      :profile="pendingProfile"
+      @import="handleImport"
+      @dismiss="handleDismiss"
+    />
 
     <!-- Main content -->
     <main class="mx-auto max-w-7xl px-4 py-6">

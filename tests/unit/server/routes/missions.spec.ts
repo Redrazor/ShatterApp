@@ -108,6 +108,18 @@ describe('GET /api/missions/:id', () => {
   })
 })
 
+describe('GET /api/missions — DB error', () => {
+  it('returns 500 when the database throws', async () => {
+    const brokenDb = createTestDb()
+    brokenDb.close()
+    const errorApp = express()
+    errorApp.use(express.json())
+    errorApp.use('/api/missions', createMissionsRouter(brokenDb))
+    const res = await supertest(errorApp).get('/api/missions')
+    expect(res.status).toBe(500)
+  })
+})
+
 describe('rowToMission (unit)', () => {
   it('maps row to mission with full struggle arrays', async () => {
     const { rowToMission } = await import('../../../../server/routes/missions.ts')

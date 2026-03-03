@@ -96,4 +96,22 @@ describe('ProductCard', () => {
     // The outer div should have border-sw-gold class
     expect(wrapper.find('div').classes().some((c) => c.includes('border-sw-gold') && !c.includes('/'))).toBe(true)
   })
+
+  it('renders mainImage src when mainImage is set and thumbnail is empty', () => {
+    const wrapper = mount(ProductCard, {
+      props: { product: makeProduct({ thumbnail: '', mainImage: '/images/main.png' }), owned: false },
+    })
+    const img = wrapper.find('img')
+    expect(img.exists()).toBe(true)
+    expect(img.attributes('src')).toBe('/images/main.png')
+  })
+
+  it('mainImage takes precedence over thumbnail when both are set', () => {
+    const wrapper = mount(ProductCard, {
+      props: { product: makeProduct({ thumbnail: '/images/thumb.jpg', mainImage: '/images/main.png' }), owned: false },
+    })
+    const img = wrapper.find('img')
+    expect(img.exists()).toBe(true)
+    expect(img.attributes('src')).toBe('/images/main.png')
+  })
 })
