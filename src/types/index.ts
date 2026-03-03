@@ -1,0 +1,91 @@
+export interface Character {
+  id: number
+  name: string
+  characterType: string
+  unitType: 'Primary' | 'Secondary' | 'Support'
+  unitTypeName?: string
+  pc: number | null
+  sp: number | null
+  durability: number
+  stamina: number
+  fp: number
+  era: string
+  tags: string[]
+  swp: string
+  swpCode?: string
+  spt?: string
+  thumbnail: string
+  cardFront: string
+  cardBack: string
+  orderCard?: string
+  stance1?: string
+  stance2?: string
+  model?: string
+  modelCount?: number
+  characterExclusion?: string
+  extraCards?: string
+  stances: string[]
+  releaseDate: string
+}
+
+export interface Mission {
+  id: number
+  name: string
+  card: string
+  swp: string
+  spt?: string
+  struggles: Record<string, string[]>
+}
+
+export interface Product {
+  id: number
+  name: string
+  swp: string
+  number?: string
+  era: string
+  thumbnail: string
+  mainImage?: string
+  images: string[]
+  models: string[]
+  description: string
+  assemblyUrl: string
+  storeLink: string
+}
+
+export interface Squad {
+  primary: Character | null
+  secondary: Character | null
+  support: Character | null
+}
+
+export interface StrikeForce {
+  name: string
+  mission: Mission | null
+  premiere: boolean
+  squads: [Squad, Squad]
+}
+
+export function isSquadValid(squad: Squad): { valid: boolean; reason: string } {
+  const { primary, secondary, support } = squad
+  if (!primary || !secondary || !support) {
+    return { valid: false, reason: 'Squad incomplete' }
+  }
+
+  const pcSum = secondary.pc! + support.pc!
+  if (pcSum > primary.sp!) {
+    return {
+      valid: false,
+      reason: `PC total (${pcSum}) exceeds Primary SP (${primary.sp})`,
+    }
+  }
+
+  const unitEras = [primary, secondary, support].map(u =>
+    new Set(u.era.split(';').map(e => e.trim()).filter(Boolean))
+  )
+  const commonEras = [...unitEras[0]].filter(e => unitEras[1].has(e) && unitEras[2].has(e))
+  if (commonEras.length === 0) {
+    return { valid: false, reason: 'Units come from incompatible eras' }
+  }
+
+  return { valid: true, reason: '' }
+}

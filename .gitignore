@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.local
+public/data/
+public/images/
+server/db/shatter.db
+server/db/migrations/
+coverage/
+server/db/shatter.db-shm
+server/db/shatter.db-wal
+.playwright-mcp/
