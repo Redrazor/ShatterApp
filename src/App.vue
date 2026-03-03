@@ -82,6 +82,30 @@ function handleDismiss() {
     <main class="mx-auto max-w-7xl px-4 py-6">
       <RouterView />
     </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-sw-gold/20 bg-sw-card/80 py-4 text-center text-sm text-sw-text/60 space-y-1">
+      <div>
+        <span>ShatterApp — fan-made companion for Star Wars: Shatterpoint</span>
+        <span class="mx-2">·</span>
+        <a
+          href="https://ko-fi.com/redrazor"
+          target="_blank"
+          rel="noopener"
+          class="text-sw-gold hover:underline"
+        >Support on Ko-fi ☕</a>
+        <span class="mx-2">·</span>
+        <a
+          href="https://github.com/Redrazor/ShatterApp"
+          target="_blank"
+          rel="noopener"
+          class="hover:underline"
+        >GitHub</a>
+      </div>
+      <div class="text-xs text-sw-text/40">
+        All card images and associated artwork are copyright © Atomic Mass Games, Lucasfilm Ltd. and Disney. Used for fan reference purposes only.
+      </div>
+    </footer>
   </div>
 
   <!-- Landscape blocker (CSS-only, always reliable) -->

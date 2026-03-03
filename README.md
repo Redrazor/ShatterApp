@@ -1,8 +1,10 @@
 # ShatterApp
 
+**[Live App](https://shatterapp.vercel.app)** · **[GitHub](https://github.com/Redrazor/ShatterApp)** · **[Ko-fi](https://ko-fi.com/redrazor)** · MIT License
+
 A companion web app for **Star Wars: Shatterpoint**, the skirmish miniatures game by Atomic Mass Games.
 
-ShatterApp lets you browse units, plan your Strike Force, and track your collection — all from a clean, mobile-first interface optimised for use at the game table.
+ShatterApp lets you browse units, plan your Strike Force, and track your collection — all from a clean, mobile-first interface optimised for use at the game table. Free, no login required, works on mobile as a PWA.
 
 > **Data source:** Unit and product data is sourced from [pointbreaksw.com](https://www.pointbreaksw.com).
 > Huge thanks to the author of Point Break for maintaining such a comprehensive and well-structured Shatterpoint database — this app would not exist without their work.
@@ -82,3 +84,37 @@ npm test              # run all tests once
 npm run test:watch    # watch mode
 npm run test:coverage # coverage report (60 %+ threshold)
 ```
+
+---
+
+## Deployment
+
+The app uses a split-deploy architecture:
+
+| Layer | Host | Cost |
+|-------|------|------|
+| Frontend (Vite SPA) | Vercel free tier | $0/mo |
+| Backend API (Express + SQLite) | Render.com free web service | $0/mo |
+
+### Deploy Backend (Render.com)
+1. New → Web Service → connect GitHub repo
+2. **Build command**: `npm install && npx tsx server/db/migrate.ts && npx tsx server/db/seed.ts`
+3. **Start command**: `npx tsx server/index.ts`
+4. **Environment variable**: `NODE_ENV=production`
+
+### Deploy Frontend (Vercel)
+1. Connect GitHub repo on vercel.com
+2. Set environment variable: `VITE_API_BASE=https://your-api.onrender.com`
+3. `vercel.json` at the repo root handles SPA routing automatically
+
+---
+
+## Support
+
+If you find ShatterApp useful, you can [buy me a coffee on Ko-fi](https://ko-fi.com/redrazor). Entirely optional — the app will always be free.
+
+---
+
+## Disclaimer
+
+ShatterApp is an unofficial fan-made tool and is not affiliated with Atomic Mass Games or Lucasfilm Ltd. Star Wars: Shatterpoint and all related marks are property of their respective owners.
