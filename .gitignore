@@ -5,7 +5,7 @@ dist/
 public/data/
 public/images/
 server/db/shatter.db
-server/db/migrations/
+# server/db/migrations/ — must be committed for Render.com deploy
 coverage/
 server/db/shatter.db-shm
 server/db/shatter.db-wal
