@@ -1,0 +1,1197 @@
+[
+  {
+    "id": 31,
+    "name": "Padawan Ahsoka Tano",
+    "swp": "PREREL",
+    "number": "0",
+    "era": "Clone Wars",
+    "thumbnail": "/images/PAT_Thumbnail.png",
+    "mainImage": "/images/Star-Wars-Shatterpoint-Padawan-Ahsoka-Tano-Early-Release.png",
+    "images": [],
+    "models": [
+      "Padawan Ahsoka Tano"
+    ],
+    "description": "Early release at physical stores only.",
+    "assemblyUrl": "",
+    "storeLink": ""
+  },
+  {
+    "id": 1,
+    "name": "Core Set",
+    "swp": "SWP01",
+    "number": "1",
+    "era": "Clone Wars",
+    "thumbnail": "/images/swp01-thumbnail.png",
+    "mainImage": "/images/swp01-0.jpeg",
+    "images": [
+      "/images/swp01-1.jpg",
+      "/images/swp01-501sr.jpg",
+      "/images/swp01-ahsoka.jpg",
+      "/images/swp01-anakin.jpg",
+      "/images/swp01-asajj.jpg",
+      "/images/swp01-B1.jpg",
+      "/images/swp01-bo-katan.jpg",
+      "/images/swp01-clan_wren.jpg",
+      "/images/swp01-gar.jpg",
+      "/images/swp01-kalani.jpg",
+      "/images/swp01-maul.jpg",
+      "/images/swp01-MSC.jpg",
+      "/images/swp01-rex.jpg",
+      "/images/swp01-4.jpg"
+    ],
+    "models": [
+      "General Anakin Skywalker",
+      "Ahsoka Tano, Jedi No More",
+      "Asajj Ventress",
+      "Lord Maul",
+      "CT-7567 Captain Rex",
+      "Bo-Katan Kryze",
+      "Kalani",
+      "Gar Saxon, Merciless Commander",
+      "501st Clone Troopers",
+      "Clan Kryze Mandalorians",
+      "B1 Battle Droids",
+      "Mandolorian Super Commandos"
+    ],
+    "description": "Iconic characters from across the Star Wars galaxy clash in this new miniatures skirmish game! Star Wars: Shatterpoint invites players to collect, assemble, and paint their own squads of heroes, villains, and their allies and pit them against one another in tense duels to control key battlefield objectives. Focusing on dynamic fights between key characters and a unique combat system that brings the feel of epic Star Wars duels to the tabletop, Star Wars: Shatterpoint gives players 16 characters to begin building their squads along with a selection of terrain to begin constructing their battlefields. Rounding out the set are all the cards, dice, movement tools and accessory players need to leap into the tactical combat of Star Wars: Shatterpoint!",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-core-set-swp01en"
+  },
+  {
+    "id": 2,
+    "name": "High Ground Terrain Pack",
+    "swp": "SWP02",
+    "number": "2",
+    "era": "None",
+    "thumbnail": "/images/swp02-thumbnail.png",
+    "mainImage": "/images/swp02-0.jpeg",
+    "images": [
+      "/images/swp02-1.jpg",
+      "/images/swp02-2.jpg"
+    ],
+    "models": [
+      "Terrain"
+    ],
+    "description": "Players can add even more thematic terrain to their games of Star Wars: Shatterpoint with the High Ground Terrain Pack! Whether they’re dueling on Mustafar or fighting for control of Naboo, the two gantries and two tower frames that players can build, assemble, and paint in this pack give players even more power to customize their battlefields with terrain straight out of the Star Wars galaxy.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-high-ground-terrain-pack-swp02"
+  },
+  {
+    "id": 3,
+    "name": "Twice the Pride Squad Pack",
+    "swp": "SWP03",
+    "number": "3",
+    "era": "Clone Wars",
+    "thumbnail": "/images/swp03-thumbnail.png",
+    "mainImage": "/images/swp03-0.jpeg",
+    "images": [
+      "/images/swp03-1.jpg",
+      "/images/swp03-dooku.jpg",
+      "/images/swp03-jango.jpg",
+      "/images/swp03-magna.jpg"
+    ],
+    "models": [
+      "Count Dooku",
+      "Jango Fett",
+      "Magna-Guards"
+    ],
+    "description": "A sinister Sith Lord and his minions enter the duels of Star Wars: Shatterpoint! Once a respected Jedi Knight, and the padawan of Grand Master Yoda himself, Count Dooku has chosen the dark side, now serving as the apprentice to Darth Sidious himself. This pack adds a new squad of Count Dooku, Jango Fett, and two IG-100 MagnaGuards to Star Wars: Shatterpoint that players can play right away or use alongside other characters to create their own custom squad. In addition to the beautifully sculpted miniatures of all four characters, players will also find all the stat, order, and stance cards they need to bring these characters to life on the tabletop.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-twice-the-pride-5-count-swp03"
+  },
+  {
+    "id": 7,
+    "name": "Plans and Preparation Squad Pack",
+    "swp": "SWP04",
+    "number": "4",
+    "era": "Clone Wars",
+    "thumbnail": "/images/swp04-thumbnail.png",
+    "mainImage": "/images/swp04-0.jpeg",
+    "images": [
+      "/images/swp04-1.jpg",
+      "/images/swp04-barris.jpg",
+      "/images/swp04-commandos.jpg",
+      "/images/swp04-unduli.jpg"
+    ],
+    "models": [
+      "Jedi Master Luminara Unduli",
+      "Mirialan Barriss Offee",
+      "Clone Commandos"
+    ],
+    "description": "A wise protector and her apprentice step forward! Known for her great patience, Jedi Master Luminara Unduli’s discipline and ability to stay calm under pressure make her a formidable duelist with a lightsaber. A master of the Soresu form of combat, she has passed her skills on to her padawan, the Mirialan Barriss Offee, who accompanies her on missions throughout the galaxy.This pack adds a new squad of Jedi Master Luminara Unduli, Padawan Barriss Offee, and two Republic Clone Commandos to Star Wars: Shatterpoint that players can play right away or use alongside other characters to create their own custom squad. In addition to the beautifully sculpted miniatures of all four characters, players will also find all the stat, order, and stance cards they need to bring these characters to life on the tabletop.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-plans-and-preparation-swp04"
+  },
+  {
+    "id": 6,
+    "name": "Appetite for Destruction Squad Pack",
+    "swp": "SWP05",
+    "number": "5",
+    "era": "Clone Wars",
+    "thumbnail": "/images/swp05-thumbnail.png",
+    "mainImage": "/images/swp05-0.jpeg",
+    "images": [
+      "/images/swp05-1.jpg",
+      "/images/swp05-B2.jpg",
+      "/images/swp05-grievous.jpg",
+      "/images/swp05-kraken.jpg"
+    ],
+    "models": [
+      "General Greivous",
+      "Kraken",
+      "B2 Battle Droids"
+    ],
+    "description": "The nefarious General Grievous terrorizes the Republic! Unleashing the Separatist Droid Army throughout the galaxy, Grievous has proven to be more than a match for his Jedi adversaries. A shrewd military strategist, he makes use of brutal tactics to claim numerous victories and instill fear in his opponents. This pack adds a new squad of General Grievous, Kraken, and two B2 Battle Droids to Star Wars: Shatterpoint that players can play right away or use alongside other characters to create their own custom squad. In addition to the beautifully sculpted miniatures of all four characters, players will also find all the stat, order, and stance cards they need to bring these characters to life on the tabletop.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-appetite-for-destruction-swp05"
+  },
+  {
+    "id": 4,
+    "name": "Hello There Squad Pack",
+    "swp": "SWP06",
+    "number": "6",
+    "era": "Clone Wars",
+    "thumbnail": "/images/swp06-thumbnail.png",
+    "mainImage": "/images/swp06-0.jpeg",
+    "images": [
+      "/images/swp06-1.jpg",
+      "/images/swp06-212th.jpg",
+      "/images/swp06-Cody.jpg",
+      "/images/swp06-Obi-Wan.jpg"
+    ],
+    "models": [
+      "General Obi-Wan Kenobi",
+      "Commander Cody",
+      "212th Clone Troopers"
+    ],
+    "description": "A iconic Jedi General and his allies enter the Star Wars: Shatterpoint in this pack! One of the Republic's most iconic heroes, Obi-Wan Kenobi fights to contain the Separatist threat no matter the cost and this pack adds him, Clone Commander Cody, and two Phase II Clone Troopers from the renowed 212th Attack Battalion to Star Wars: Shatterpoint. Whether using them together as full squad or combining them with other characters, the beautifully sculpted miniatures in this pack are accompanied by the Unit, Order, and Stance cards players need to unleash their unique abilities on the battlefield. ",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-hello-there-5-general-obi-swp06"
+  },
+  {
+    "id": 12,
+    "name": "Witches of Dathomir Squad Pack",
+    "swp": "SWP07",
+    "number": "7",
+    "era": "Clone Wars",
+    "thumbnail": "/images/swp07-thumbnail.png",
+    "mainImage": "/images/swp07-0.jpeg",
+    "images": [
+      "/images/swp07-1.jpg",
+      "/images/swp07-talzin.jpg",
+      "/images/swp07-savage.jpg",
+      "/images/swp07-nightsisters.jpg"
+    ],
+    "models": [
+      "Mother Talzin",
+      "Savage Opress",
+      "Nightsisters"
+    ],
+    "description": "A group of enigmatic Dathomirians enter Star Wars: Shatterpoint in this pack! Mother Talzin leads one of the largest Nightsister clans on Dathomir, offering her Force-sensitive witches and assassins to those seeking hired killers. This pack gives players a full squad of Mother Talzin, two Nightsisters, and Talzin's eldest son Savage Opress to test their skills against Jedi, Sith, or whatever other enemies may cross their path. No matter if these characters are fighting together as a squad or joining other characters, this pack also contains all the Stat, Order, and Stance cards players need field them in their games of Star Wars: Shatterpoint!",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-witches-of-dathomir-5-swp07"
+  },
+  {
+    "id": 13,
+    "name": "The Party's Over Squad Pack",
+    "swp": "SWP08",
+    "number": "8",
+    "era": "Clone Wars",
+    "thumbnail": "/images/swp08-thumbnail.png",
+    "mainImage": "/images/swp08-0.jpeg",
+    "images": [
+      "/images/swp08-1.jpg",
+      "/images/swp08-mace.jpg",
+      "/images/swp08-ponds.jpg",
+      "/images/swp08-arf.jpg"
+    ],
+    "models": [
+      "Mace Windu",
+      "Commander Ponds",
+      "ARF Troopers"
+    ],
+    "description": "A legendary Jedi Master crashes the party in this pack for Star Wars: Shatterpoint! Few can challenge the prowess of Mace Windu and this pack brings this legendary swordsman to Star Wars: Shatterpoint along with Clone Commander CT-411 \"Ponds\" and two ARF Troopers. Players can use these characters together as a powerful squad or have them join other characters in their own custom teams. No matter what they choose, players will also find all the Stat, Order, and Stance cards they need to add these characters to any Star Wars: Shatterpoint squad.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-this-party-s-over-5-mace-swp08"
+  },
+  {
+    "id": 14,
+    "name": "Fistful of Credits Squad Pack",
+    "swp": "SWP09",
+    "number": "9",
+    "era": "Clone Wars;Empire;Civil War",
+    "thumbnail": "/images/swp09-thumbnail.png",
+    "mainImage": "/images/swp09-0.jpeg",
+    "images": [
+      "/images/swp09-1.jpg",
+      "/images/swp09-cad.jpg",
+      "/images/swp09-aurra.jpg",
+      "/images/swp09-3.jpg"
+    ],
+    "models": [
+      "Cad Bane",
+      "Aurra Sing",
+      "Bounty Hunters"
+    ],
+    "description": "The galaxy's most ruthless bounty hunters enter Star Wars: Shatterpoint in this pack! The clever and fearsome Cad Bane has built his reputation working for the Hutts and even Darth Sidious himself and this pack adds him to the game as a Primary Unit. Joining him are the deadly Aurra Sing as a Secondary Unit and a Bounty Hunter unit consisting of a Chadran-Fan, Todo 360, and a Devaronian as new Supporting Unit. In addition to beautifully sculpted miniatures of these characters, this pack also includes all the Unit, Stance, and Order cards for players to make full use of them in Star Wars: Shatterpoint!",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-fistful-of-credits-5-cad-swp09"
+  },
+  {
+    "id": 22,
+    "name": "That's Good Business Squad Pack",
+    "swp": "SWP10",
+    "number": "10",
+    "era": "Clone Wars",
+    "thumbnail": "/images/SWP10-thumbnail.png",
+    "mainImage": "/images/SWP10-image0.png",
+    "images": [
+      "/images/SWP10-image1.png",
+      "/images/SWP10-hondo.png",
+      "/images/SWP10-gwarm.png",
+      "/images/SWP10-pirates.png"
+    ],
+    "models": [
+      "Hondo Ohnaka",
+      "Gwarm",
+      "Weequay Pirates"
+    ],
+    "description": "A legendary pirate and his band of outlaws join Star Wars™: Shatterpoint in this new Squad Pack! Hondo Ohnaka is the charming and quixotic leader of the Ohnaka Gang, and this pack adds him to the game as a new Primary Unit in the Clone Wars era. He is joined by his second-in-command Gwarm as a Secondary Unit and a pair of Weequay Pirates as a Supporting Unit to help him carrying out his schemes. In addition to beautifully sculpted miniatures of these characters, this pack also contains all the Stat, Order, and Stance cards players need to add them to their Star Wars: Shatterpoint squads.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-thats-good-business-squad-pack"
+  },
+  {
+    "id": 19,
+    "name": "Lead by Example Squad Pack",
+    "swp": "SWP11",
+    "number": "11",
+    "era": "Clone Wars",
+    "thumbnail": "/images/SWP11-thumbnail.png",
+    "mainImage": "/images/SWP11-image0.png",
+    "images": [
+      "/images/SWP11-image1.png",
+      "/images/SWP11-plo.png",
+      "/images/SWP11-wolffe.png",
+      "/images/SWP11-ahsoka.png",
+      "/images/SWP11-wolfpack.png"
+    ],
+    "models": [
+      "Plo Koon",
+      "Commander Wolffe",
+      "Padawan Ahsoka",
+      "104th Troopers"
+    ],
+    "description": "A wizened Jedi Master and his famed squad of clone troops joins the battles of Star Wars™: Shatterpoint in this new Squad Pack! Plo Koon is respected throughout the Jedi Order for his level-headed demeanor and calm approach to battle. As the Jedi General of the famed \"Wolfpack,\" he enters Star Wars: Shatterpoint as a Primary Unit alongside his trusted lieutenant Clone Commander Wolffe as a Secondary Unit. They're joined by two 104th Battalion Clone Troopers from the famed \"Wolfpack\" as a Supporting Unit to form a complete squad that can be fielded on its own, or players can choose to add these characters to their own custom squads. Rounding out this pack is the Padawan Ahsoka Tano originally released as a Hobby Next promo who represents an alternate Secondary Unit option.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-lead-by-example-squad-pack"
+  },
+  {
+    "id": 10,
+    "name": "Jedi Hunters Squad Pack",
+    "swp": "SWP12",
+    "number": "12",
+    "era": "Clone Wars;Empire;Civil War",
+    "thumbnail": "/images/swp12-thumbnail.png",
+    "mainImage": "/images/swp12-0.jpeg",
+    "images": [
+      "/images/swp12-1.jpg",
+      "/images/swp12-4th.jpg",
+      "/images/swp12-5th.jpg",
+      "/images/swp12-gi.jpg",
+      "/images/swp12-reva.jpg"
+    ],
+    "models": [
+      "Grand Inquisitor",
+      "Reva",
+      "Fifth Brother",
+      "Fourth Sister"
+    ],
+    "description": "The last remnants of the Jedi Order tremble in fear as Inquisitors stalk them to the farthest corners of the galaxy! The Grand Inquisitor, a long-lived Pau’an, leads the Inquisitorius at Darth Vader’s behest, an elite order of Force-sensitive agents strong in the dark side who hunt those who escaped the Order 66 purge. A former Jedi, himself, he has turned this fervor to the destruction of his former allies. He is joined in this task by Inquisitors referred to as brothers and sisters, each given a number demarking the order of their initiations. Reva, the Third Sister, bold and ambitious, nursing a secret grudge against Lord Vader after surviving the slaughter of younglings at the Temple. Fifth Brother, aggressive and self-sure, ready to strike down any who stand in his way. Fourth Sister, swift and deadly, a hunter through and through. They are the Inquisitors, and the hunt has been called.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-jedi-hunters-swp12"
+  },
+  {
+    "id": 15,
+    "name": "We Are Brave Squad Pack",
+    "swp": "SWP15",
+    "number": "15",
+    "era": "Clone Wars",
+    "thumbnail": "/images/swp15-thumbnail.png",
+    "mainImage": "/images/swp15-0.jpeg",
+    "images": [
+      "/images/swp15-1.jpg",
+      "/images/swp15-padme.jpg",
+      "/images/swp15-sabe.jpg",
+      "/images/swp15-3.jpg"
+    ],
+    "models": [
+      "Queen Padme Amadala",
+      "Sabe",
+      "Naboo Royal Handmaidens"
+    ],
+    "description": "An iconic Queen of Naboo and her entourage enter Star Wars: Shatterpoint in this pack! Committed to public service from a young age, Padme Amidala fights for her people on the floor of the Galactic Senate to the streets of Theed and beyond. She is joined by her courageous handmaidens, including her decoy Sabe who often protects Amidala by impersonating her. In addition to a full squad of four miniatures–Queen Padme Amidala as a Primary Unit, Sabe as a Secondary Unit, and two Naboo Royal Handmaidens as a Supporting Unit–that can be fielded together or alongside other Star Wars: Shatterpoint miniatures, this pack also includes the unit, stance, and order cards to get these characters into the fight.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-we-are-brave-5-squad-pack-swp15"
+  },
+  {
+    "id": 36,
+    "name": "This Is The Way Squad Pack",
+    "swp": "SWP16",
+    "number": "16",
+    "era": "Republic",
+    "thumbnail": "/images/SWP16-thumbnail.png",
+    "mainImage": "/images/SWP16-image0.png",
+    "images": [
+      "/images/SWP16-image1.png",
+      "/images/SWP16-armorer.png",
+      "/images/SWP16-paz.png",
+      "/images/SWP16-mandos.png"
+    ],
+    "models": [
+      "The Armorer",
+      "Paz Vizsla",
+      "Covert Mandalorians"
+    ],
+    "description": "The This Is The Way (Mandalorian Covert) Squad Pack brings fan-favorite characters, The Armorer, Paz Vizsla, and the covert Mandalorians to the tabletop! \r\n\r\nWith thematic poses and engaging gameplay, this character pack adds more Mandalorians to Star Wars™: Shatterpoint. Giving gamers and hobbyists more iconic miniatures to expand their collection. ",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-this-is-the-way-squad-pack"
+  },
+  {
+    "id": 5,
+    "name": "Take Cover Terrain Pack",
+    "swp": "SWP17",
+    "number": "17",
+    "era": "None",
+    "thumbnail": "/images/swp17-thumbnail.png",
+    "mainImage": "/images/swp17-0.jpeg",
+    "images": [
+      "/images/swp17-1.jpg"
+    ],
+    "models": [
+      "Terrain"
+    ],
+    "description": "The battlefields of Star Wars: Shatterpoint become even more thematic with this terrain pack! Containing a host of different terrain, including a Swoop Bike, a GNK Power Droid, and a generator, the terrain pieces players find here will help set the stage for their battles while also giving their troops plenty of places to take cover.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-ground-cover-terrain-pack-swp17"
+  },
+  {
+    "id": 34,
+    "name": "Maintenance Bay Terrain Pack",
+    "swp": "SWP18",
+    "number": "18",
+    "era": "",
+    "thumbnail": "/images/SWP18-thumbnail.png",
+    "mainImage": "/images/SWP18-image0.png",
+    "images": [
+      "/images/SWP18-image1.png",
+      "/images/SWP18-image2.png"
+    ],
+    "models": [],
+    "description": "This Outer Rim maintenance bay joins our collection of terrain packs for Star Wars™: Shatterpoint. Together with its mischievous womprat, this terrain adds a thematic centerpiece to create cover and enhance gameplay as well as providing an exciting hobby opportunity for assembly and painting. It is the perfect compliment to the terrain found in the Star Wars: Shatterpoint Core Set.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-maintenance-bay-terrain-pack"
+  },
+  {
+    "id": 8,
+    "name": "Dice Pack",
+    "swp": "SWP19",
+    "number": "19",
+    "era": "None",
+    "thumbnail": "/images/swp19-thumbnail.png",
+    "mainImage": "/images/swp19-0.jpeg",
+    "images": [
+      "/images/swp19-1.jpg"
+    ],
+    "models": [
+      "Dice"
+    ],
+    "description": "Players can supplement their collection of Star Wars: Shatterpoint with this pack. Containing 8 attack dice and 6 defense dice identical to those found in the Core Set, players can stay focused on their battlers no matter who’s in their squad.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-dice-pack-swp19"
+  },
+  {
+    "id": 9,
+    "name": "Measuring Tools",
+    "swp": "SWP20",
+    "number": "20",
+    "era": "None",
+    "thumbnail": "/images/swp20-thumbnail.png",
+    "mainImage": "/images/swp20-0.jpeg",
+    "images": [
+      "/images/swp20-1.jpg",
+      "/images/swp20-2.jpg"
+    ],
+    "models": [
+      "Measuring Tools"
+    ],
+    "description": "This pack contains four range tools and three movement tools for player to supplement their games of Star Wars: Shatterpoint with more of the range and movement tools found the Core set.",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-measuring-tools-swp20"
+  },
+  {
+    "id": 17,
+    "name": "Fear and Dead Men Squad Pack",
+    "swp": "SWP21",
+    "number": "21",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP21-t.png",
+    "mainImage": "/images/SWP21-image0.png",
+    "images": [
+      "/images/SWP21-image1.png",
+      "/images/SWP21-darthvader.png",
+      "/images/SWP21-sergeant.png",
+      "/images/SWP21-stormtroopers.png"
+    ],
+    "models": [
+      "Darth Vader",
+      "Stormtrooper Sergeant",
+      "Stormtroopers"
+    ],
+    "description": "The iconic Darth Vader helps usher in a whole new era in Star Wars™: Shatterpoint! Wielding the full power of the dark side of the Force, Vader enters the game as one of the first Primary Units from the Galactic Civil War era, opening even more squad-building possibilities. He is flanked by a trio of fearsome Imperial Stormtroopers, including Lt. TK-289 as a Secondary Unit and two standard Stormtroopers as a Supporting Unit ready to bring the weight of the Empire to bear against their opponents. Rounding out this pack are all the Stat, Order, and Stance cards players need to add these characters to their squads.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-fear-and-dead-men-squad-pack"
+  },
+  {
+    "id": 18,
+    "name": "Fearless and Inventive Squad Pack ",
+    "swp": "SWP22",
+    "number": "22",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP22-t.png",
+    "mainImage": "/images/SWP22-image0.png",
+    "images": [
+      "/images/SWP22-image1.png",
+      "/images/SWP22-luke.png",
+      "/images/SWP22-boussh.png",
+      "/images/SWP22-landoR2.png"
+    ],
+    "models": [
+      "Luke Skywalker",
+      "Boussh (Leia Organa)",
+      "Lando and R2-D2"
+    ],
+    "description": "Four iconic heroes join Star Wars: Shatterpoint in this new pack! With the Force as his ally, Jedi Knight Luke Skywalker leads this squad of Rebels as a Primary Unit. He is joined by Leia Organa in her Boussh disguise as a Secondary Unit while Lando Calrissian and R2-D2 join forces as a Supporting Unit. Based upon these characters' daring mission to rescue Han Solo in Return of the Jedi, they form a full Galactic Civil War-era squad that works particularly well with characters with Rebel Alliance tags.  ",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-fearless-and-inventive-squad-pack"
+  },
+  {
+    "id": 23,
+    "name": "Certified Guild Squad Pack",
+    "swp": "SWP24",
+    "number": "24",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP24-thumbnail.png",
+    "mainImage": "/images/SWP24-image0.png",
+    "images": [
+      "/images/SWP24-image1.png",
+      "/images/SWP24-mando.png",
+      "/images/SWP24-karga.png",
+      "/images/SWP24-ig11.png"
+    ],
+    "models": [
+      "The Mandalorian",
+      "Greef Karga",
+      "IG-11"
+    ],
+    "description": "The infamous Bounty Hunters' Guild comes to Star Wars™: Shatterpoint in this new Squad Pack! The Certified Guild Squad Pack brings The Mandalorian to the game as a Primary Unit alongside Greef Karga as a Secondary Unit and the Assassin droid IG-11 as a Supporting Unit. These characters can either form a complete squad on their own, or can be mixed and matched with other characters in a completely custom squad. No matter who they're partnered with, this pack includes all the Stat, Stance, and Order cards players need to add them to their games of Shatterpoint. ",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-certified-guild-squad-pack#&gid=1&pid=1"
+  },
+  {
+    "id": 37,
+    "name": "We Don't Need Their Scum Character Pack",
+    "swp": "SWP25",
+    "number": "25",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP25-thumbnail.png",
+    "mainImage": "/images/SWP25-image0.png",
+    "images": [
+      "/images/SWP25-image1.png",
+      "/images/SWP25-boba.png",
+      "/images/SWP25-dengar.png",
+      "/images/SWP25-bossk.png",
+      "/images/SWP25-ig88.png"
+    ],
+    "models": [
+      "Boba Fett",
+      "Dengar",
+      "Bossk",
+      "IG-88"
+    ],
+    "description": "The We Don’t Need Their Scum Unit Pack brings the infamous Bounty Hunters to Star Wars™: Shatterpoint! Embrace the thrill of the hunt with these fan-favorite characters Boba Fett, Bossk, Dengar, and IG-88 in this brand new unit pack. \r\n\r\nThis Unit Pack is the first of its kind for Star Wars: Shatterpoint, as each Bounty Hunter is a Secondary Unit and can be added to any Squad. Their striking poses give hobbyists a dynamic miniature to build and paint with each character. ",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-we-don-t-need-their-scum-squad-pack"
+  },
+  {
+    "id": 24,
+    "name": "You Have Something I Want Squad Pack",
+    "swp": "SWP26",
+    "number": "26",
+    "era": "Civil War;New Republic",
+    "thumbnail": "/images/SWP26-thumbnail.png",
+    "mainImage": "/images/SWP26-image0.png",
+    "images": [
+      "/images/SWP26-image1.png",
+      "/images/SWP26-gideon.png",
+      "/images/SWP26-deathrooper.png",
+      "/images/SWP26-darktroopers.png"
+    ],
+    "models": [
+      "Moff Gideon",
+      "Death Trooper Escort",
+      "Dark Troopers"
+    ],
+    "description": "The Empire lives on this new Squad Pack for Star Wars™: Shatterpoint! This pack brings the cunning Moff Gideon to the game as a Primary Unit. He is joined by a Death Trooper Escort as a Secondary Unit and two terrifying Dark Troopers as a Supporting Unit. Together, they form an intimidating Galactic Civil War-era squad ready to be deployed. Alternatively, they can be combined with other units from this era to form a custom squad. Rounding out this pack are all the Stat, Stance, and Order cards players need to field them in battle.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-you-have-something-i-want-squad-pack"
+  },
+  {
+    "id": 20,
+    "name": "Ee Chee Wa Maa! Squad Pack",
+    "swp": "SWP27",
+    "number": "27",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP27-thumbnail.png",
+    "mainImage": "/images/SWP27-image0.png",
+    "images": [
+      "/images/SWP27-image1.png",
+      "/images/SWP27-leia.png",
+      "/images/SWP27-chirpa.png",
+      "/images/SWP27-paploo.png",
+      "/images/SWP27-ewoks.png"
+    ],
+    "models": [
+      "Leia Organa",
+      "Chief Chirpa",
+      "Paploo",
+      "Ewok Hunters"
+    ],
+    "description": "An iconic Rebel and her Ewok companions join Star Wars™: Shatterpoint in this new Squad Pack! Featuring both Leia Organa and Chief Chirpa as Primary Units, the Ewok Paploo as a Secondary Unit, and two Ewok Hunters wielding bows as Supporting Units, this pack gives players a variety of new options for creating Galactic Civil War-era squads. In addition to beautifully sculpted miniatures of these characters, this pack also includes all the Stat, Order, and Stance Cards players need to field them in battle.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-ee-chee-wa-maa-squad-pack"
+  },
+  {
+    "id": 32,
+    "name": "Not Accepting Surrenders Squad Pack",
+    "swp": "SWP28",
+    "number": "28",
+    "era": "",
+    "thumbnail": "/images/SWP28-thumbnail.png",
+    "mainImage": "/images/SWP28-image0.png",
+    "images": [
+      "/images/SWP28-image1.png",
+      "/images/SWP28-thrawn.png",
+      "/images/SWP28-kallus.png",
+      "/images/SWP28-isb.png"
+    ],
+    "models": [
+      "Grand Admiral Thrawn",
+      "Agent Kallus",
+      "ISB Agents"
+    ],
+    "description": "Fan favorite villain Grand Admiral Thrawn is not accepting surrenders, but he is bringing his squad to Star Wars™: Shatterpoint. Agent Kallus is the featured Secondary Unit and two ISB agents serve as Supporting Units for this Squad pack. ",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-not-accepting-surrenders-squad-pack"
+  },
+  {
+    "id": 30,
+    "name": "Stronger Than Fear Squad Pack",
+    "swp": "SWP29",
+    "number": "29",
+    "era": "",
+    "thumbnail": "/images/SWP29-thumbnail.png",
+    "mainImage": "/images/SWP29-image0.png",
+    "images": [
+      "/images/SWP29-image1.png",
+      "/images/SWP29-kanan.png",
+      "/images/SWP29-ezra.png",
+      "/images/SWP29-zeb.png"
+    ],
+    "models": [
+      "Kanan Jarrus",
+      "Ezra Bridger",
+      "Garazeb \"Zeb\" Orrelios"
+    ],
+    "description": "Star Wars™: Shatterpoint players can add the first half of the Rebel Specters to their collection—a trio of power hitters and risk-takers! Kanan Jarrus was one of the few Jedi to survive Order 66. In hiding, he trained Ezra Bridger as an apprentice, offering a path back to his own destiny. Watching their backs is the \"muscle\" of the crew, Garazeb “Zeb” Orrelios, a Lasat with a particular fondness for beating up stormtroopers.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-stronger-than-fear-squad-pack"
+  },
+  {
+    "id": 11,
+    "name": "You Cannot Run Duel Pack",
+    "swp": "SWP30",
+    "number": "30",
+    "era": "Clone Wars;Empire;Civil War",
+    "thumbnail": "/images/swp30_thumbnail.png",
+    "mainImage": "/images/swp30-0.jpeg",
+    "images": [
+      "/images/swp30-1.jpg",
+      "/images/swp30-vader.jpg",
+      "/images/swp30-obi-wan.jpg",
+      "/images/swp30-3.jpg"
+    ],
+    "models": [
+      "Darth Vader, Obi-Wan"
+    ],
+    "description": "There is no more embittered rivalry than the one between Jedi Master Obi-Wan Kenobi and Darth Vader, the emperor's most terrifying enforcer and apprentice. Their duels have shaped the very course of history. Clashing with unmatched intensity, each knows every strength and weakness of the other. Now you can recreate the pair's first meeting from the Obi-Wan series with the You Cannot Run Duel Pack. This set includes two brand new characters for Shatterpoint, Darth Vader & Obi-Wan, Out of Hiding along with an immersive terrain display that players can use to showcase the moment from the show when not using them in game. ",
+    "assemblyUrl": "",
+    "storeLink": "https://shop.asmodee.com/star-wars-5-shatterpoint-you-cannot-run-duel-pack-swp30"
+  },
+  {
+    "id": 42,
+    "name": "All the Way Squad Pack",
+    "swp": "SWP31",
+    "number": "31",
+    "era": "",
+    "thumbnail": "/images/SWP31-thumbnail.png",
+    "mainImage": "/images/SWP31-image0.png",
+    "images": [
+      "/images/SWP31-image1.png",
+      "/images/SWP31-cassian.png",
+      "/images/SWP31-k2so.png",
+      "/images/SWP31-pathfinders.png"
+    ],
+    "models": [
+      "Cassian Andor",
+      "K-2S0",
+      "Rebel Pathfinders"
+    ],
+    "description": "The All The Way Squad Pack brings the Rebel characters from Rogue One: A Star Wars Story™ to Star Wars™: Shatterpoint. The incredibly quotable Cassioan Andor is Joined by K2S0 and the Rebel Pathfinders in this exciting and thematic squad pack.\r\n\r\nUsing a variety of abilities, these characters bring more gameplay options to players who enjoy the Rebel Alliance. Paired on release with SWP51 and Director Krenneric, this will build for an exciting gameplay addition to Star Wars: Shatterpoint.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-all-the-way-squad-pack-squad-pack"
+  },
+  {
+    "id": 26,
+    "name": "Today the Rebellion Dies Squad Pack",
+    "swp": "SWP34",
+    "number": "34",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP34-thumbnail.png",
+    "mainImage": "/images/SWP34-image0.png",
+    "images": [
+      "/images/SWP34-image1.png",
+      "/images/SWP34-versio.png",
+      "/images/SWP34-hask.png",
+      "/images/SWP34-meeko.png",
+      "/images/SWP34-sf.png"
+    ],
+    "models": [
+      "Iden Versio",
+      "Gideon Hask",
+      "Del Meeko",
+      "Imperial Special Forces"
+    ],
+    "description": "Amid the aftermath of one of its greatest defeats, the Empire unleashes one of its most elite units to defend its interests! Leading Inferno Squad, the skilled pilot, unconventional tactician, and survivor of the Death Star's destruction, Iden Versio, is supported by Gideon Hask, a man of ruthless determination and unshakeable loyalty to the Empire. Together with the rest of Inferno Squad, they've proven their mettle in numerous covert actions, carrying out assassinations and rapid strikes to safeguard the Empire’s most vital secrets.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-today-the-rebellion-dies-squad-pack"
+  },
+  {
+    "id": 27,
+    "name": "Real Quiet Like Squad Pack",
+    "swp": "SWP35",
+    "number": "35",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP35-thumbnail.png",
+    "mainImage": "/images/SWP35-image0.png",
+    "images": [
+      "/images/SWP35-image1.png",
+      "/images/SWP35-han.pngSWP35-chewie.png",
+      "/images/SWP35-commandos.png"
+    ],
+    "models": [
+      "General Solo",
+      "Chewie",
+      "Rebel Commandos"
+    ],
+    "description": "The scoundrel with a heart of gold becomes a hero of the Rebel Alliance! Han Solo and steadfast and ferocious Chewbacca lead an elite team of Rebel Commandos. These troops are highly trained in reconnaissance and unorthodox tactics, making them valuable assets in the fight for freedom from the Empire's tyranny.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-real-quiet-like-squad-pack"
+  },
+  {
+    "id": 35,
+    "name": "Good Soldiers Follow Orders Squad Pack",
+    "swp": "SWP36",
+    "number": "36",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP36-thumbnail.png",
+    "mainImage": "/images/SWP36-image0.png",
+    "images": [
+      "/images/SWP36-image1.png",
+      "/images/SWP36-ct9904.png",
+      "/images/SWP36-es04.png",
+      "/images/SWP36-elites.png"
+    ],
+    "models": [
+      "CT-9904",
+      "ES-04",
+      "Elite Squad Troopers"
+    ],
+    "description": "Fans of The Bad Batch on Disney+ will enjoy bringing Crosshair and his villainous squad to the table in the latest expansion Squad Pack for Star Wars™: Shatterpoint. This squad is lead by Crosshair, with secondary unit ES-04, and Elite Squad Troopers as support units. ",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-good-soldiers-follow-orders-squad-pack"
+  },
+  {
+    "id": 43,
+    "name": "Requesting Your Surrender Squad Pack ",
+    "swp": "SWP37",
+    "number": "37",
+    "era": "Clone Wars",
+    "thumbnail": "/images/SWP37-thumbnail.png",
+    "mainImage": "/images/SWP37-image0.png",
+    "images": [
+      "/images/SWP37-image1.png",
+      "/images/SWP37-fisto.png",
+      "/images/SWP37-vebb.png",
+      "/images/SWP37-fil.png",
+      "/images/SWP37-clones.png"
+    ],
+    "models": [
+      "Kit Fisto",
+      "Nahdar Vebb",
+      "Commander Fil",
+      "Fil's Clones"
+    ],
+    "description": "The Requesting Your Surrender Squad Pack brings characters from the heart of the Clone Wars to Star Wars™: Shatterpoint! Taking it right to the Separatists, Jedi Master Kit Fisto, his Padawan turned Jedi Knight, Nahdar Vebb and Clone Commander Fil along with Fil’s Clones are in this pack. \r\n\r\nProviding a strategic addition to the Jedi and Clone units in this pack, players will get another big boost of Jedi and Jedi support units. These are dynamic poses that show off how well Star Wars: Shatterpoint can capture the Clone Wars era.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-requesting-your-surrender-squad-pack"
+  },
+  {
+    "id": 25,
+    "name": "Clone Force 99 Squad Pack",
+    "swp": "SWP38",
+    "number": "38",
+    "era": "Clone Wars;Empire;Civil War",
+    "thumbnail": "/images/SWP38-thumbnail.png",
+    "mainImage": "/images/SWP38-image0.png",
+    "images": [
+      "/images/SWP38-image1.png",
+      "/images/SWP38-hunter.png",
+      "/images/SWP38-echo.png",
+      "/images/SWP38-tech.png",
+      "/images/SWP38-wrecker.png",
+      "/images/SWP38-crosshair.png"
+    ],
+    "models": [
+      "Hunter",
+      "Echo & Tech",
+      "Wrecker & Omega",
+      "Crosshair"
+    ],
+    "description": "Clone Force 99 joins Star Wars™: Shatterpoint in this new Squad Pack! Commonly known as the Bad Batch, the characters in this pack give players a variety of new squad building options, beginning with Clone Sergeant Hunter as a Primary Unit in both the Clone Wars and Galactic Civil War eras. Joining him as dual era units are Wrecker and Omega as a new Secondary Unit option and Echo and Tech as a Supporting Unit. Rounding out the pack is the sniper Crosshair who enters the game as a Clone Wars-era Secondary Unit. ",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-clone-force-99-squad-pack"
+  },
+  {
+    "id": 21,
+    "name": "Yub Nub Squad Pack",
+    "swp": "SWP39",
+    "number": "39",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP39-thumbnail.png",
+    "mainImage": "/images/SWP39-image0.png",
+    "images": [
+      "/images/SWP39-image1.png",
+      "/images/SWP39-logray.png",
+      "/images/SWP39-wicket.png",
+      "/images/SWP39-droids.png",
+      "/images/SWP39-ewoks.png"
+    ],
+    "models": [
+      "Logray",
+      "Wicket",
+      "C-3PO and R2-D2",
+      "Ewok Trappers"
+    ],
+    "description": "Unexpected heroes rise to join the battles of Star Wars™: Shatterpoint in this new pack! The Ewoks of Bright Tree Village played a vital role in the Rebellion's victory in the battle of Endor and this pack brings the Ewok shaman Logray into the game as a Primary Unit. He is joined by Wicket as a Secondary Unit and two Ewok Trappers wielding spears as a Supporting Unit. Rounding out the pack are R2-D2 and C-3PO, who join together to form another Secondary Unit option. In addition to miniatures of these characters, this pack also includes all the Stat, Order, and Stance cards players need to add these characters to their squads.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-yub-nub-squad-pack"
+  },
+  {
+    "id": 33,
+    "name": "This is Some Rescue! Squad Pack",
+    "swp": "SWP41",
+    "number": "41",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP41-thumbnail.png",
+    "mainImage": "/images/SWP41-image0.png",
+    "images": [
+      "/images/WP41-image1.png",
+      "/images/SWP41-Leia.png",
+      "/images/SWP41-Han.png",
+      "/images/SWP41-Luke.png",
+      "/images/SWP41-Chewie.png"
+    ],
+    "models": [
+      "Princess Leia",
+      "Stormtrooper Han",
+      "Stormtrooper Luke",
+      "Chewbacca"
+    ],
+    "description": "Princess Leia takes charge of things as a new Primary Character while Han and Luke use their stolen Stormtrooper armor  and heroic daring alongside Chewbacca's impressive strength to add powerful support to squads that need both offense punch and subterfuge.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-this-is-some-rescue-squad-pack"
+  },
+  {
+    "id": 49,
+    "name": "I Am No Jedi Duel Pack",
+    "swp": "SWP42",
+    "number": "42",
+    "era": "Empire;Civil War",
+    "thumbnail": "/images/SWP42-thumbnail.png",
+    "mainImage": "/images/SWP42-image0.png",
+    "images": [
+      "/images/SWP42-image1.png",
+      "/images/SWP42-ashoka.png",
+      "/images/SWP42-vader.png"
+    ],
+    "models": [
+      "Ahsoka Tano",
+      "Darth Vader"
+    ],
+    "description": "This Duel Pack includes new iterations of fan-favorite characters Ahsoka Tano and Darth Vader as seen during their confrontation in the Star WarsTM: Rebels animated series for players to assemble, paint, and incorporate into their strike teams for Star Wars: Shatterpoint.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-i-am-no-jedi-duel-pack"
+  },
+  {
+    "id": 29,
+    "name": "Make the Impossible Possible Squad Pack",
+    "swp": "SWP44",
+    "number": "44",
+    "era": "",
+    "thumbnail": "/images/SWP44-thumbnail.png",
+    "mainImage": "/images/SWP44-image0.png",
+    "images": [
+      "/images/SWP44-image1.png",
+      "/images/SWP44-hera.png",
+      "/images/SWP44-sabine.png",
+      "/images/SWP44-chopper.png"
+    ],
+    "models": [
+      "Hera Syndulla",
+      "Sabine Wren",
+      "\"Chopper\""
+    ],
+    "description": "The rest of the Rebels join Star Wars™: Shatterpoint! Hera Syndulla leads the squad as captain of the Ghost. The Mandalorian Sabine Wren’s explosive firepower is only matched by her revolutionary artistry. The cranky and willful astromech C1-10P, more commonly known as \"Chopper\", performs hasty repairs, and plays a key role facilitating their risky heists.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-make-the-impossible-possible-squad-pack"
+  },
+  {
+    "id": 16,
+    "name": "Sabotage Showdown Mission Pack",
+    "swp": "SWP45",
+    "number": "45",
+    "era": "",
+    "thumbnail": "/images/swp45_t.png",
+    "mainImage": "/images/SWP45-image0_2000_1500x.webp",
+    "images": [
+      "/images/SWP45-image1_2000_1500x.webp"
+    ],
+    "models": [],
+    "description": "Players can embark on a new Star Wars: Shatterpoint mission with this pack! Featuring the first new set of Mission cards outside of the Core Set, Sabotage Showdown adds more variety to games of Shatterpoint with new objective layouts and new mission special rules that pose new tactical challenges for strike teams to overcome.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-sabotage-showdown"
+  },
+  {
+    "id": 38,
+    "name": "Maximum Firepower Squad Pack",
+    "swp": "SWP46",
+    "number": "46",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP46-thumbnail.png",
+    "mainImage": "/images/SWP46-image0.png",
+    "images": [
+      "/images/SWP46-image1.png",
+      "/images/SWP46-veers.png",
+      "/images/SWP46-lieutenant.png",
+      "/images/SWP46-snowtroopers.png"
+    ],
+    "models": [
+      "General Veers",
+      "Snowtrooper Lieutenant",
+      "Snowtroopers"
+    ],
+    "description": "The Maximum Firepower Squad Pack introduces The Empire’s iconic and tactical commander, General Veers. From his first movie appearance in Star Wars: The Empire Strikes Back™, Veer's is a tactical force, using the strength of Snowtroopers to brutal efficiency.\r\n\r\nGeneral Veer's abilities provide support for troopers, with tactical movement, strengthening their abilities and defenses. The Snowtroopers are powerful troopers, with Commanding Presence and Sharpshooters, gaining bonuses from Veers abilities. Together this Squad Pack is an exciting addition to Star Wars: Shatterpoint.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-maximum-firepower-squad-pack"
+  },
+  {
+    "id": 39,
+    "name": "What Have We Here Squad Pack",
+    "swp": "SWP47",
+    "number": "47",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP47-thumbnail.png",
+    "mainImage": "/images/SWP47-image0.png",
+    "images": [
+      "/images/SWP47-image1.png",
+      "/images/SWP47-lando.png",
+      "/images/SWP47-lobot.png",
+      "/images/SWP47-wingguards.png"
+    ],
+    "models": [
+      "Lando Calrissian",
+      "Lobot",
+      "Wing Guards"
+    ],
+    "description": "The What Have We Here Squad Pack introduces the galaxy’s favorite scoundrel turned hero, with Baron-Administrator Lando Calrissian. Assisted by his trusted officer, Lobot, and two Cloud City Wing Guards, this pack brings iconic characters from to the tabletop. \r\n\r\nWith a suave pose and dashing miniature, Baron-Administrator Lando Calrissian will be a fun miniature for Star Wars hobbyists to paint and add to their Shatterpoint collection.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-what-have-we-here-squad-pack"
+  },
+  {
+    "id": 28,
+    "name": "Never Tell Me the Odds Mission Pack",
+    "swp": "SWP48",
+    "number": "48",
+    "era": "",
+    "thumbnail": "/images/SWP48-thumbnail.png",
+    "mainImage": "/images/SWP48-image0.png",
+    "images": [
+      "/images/SWP48-image1.png"
+    ],
+    "models": [],
+    "description": "Players can embark on a new Star Wars™: Shatterpoint mission with this mission pack! Featuring a new Mission card and 9 Struggle cards, Never Tell Me the Odds Mission Pack adds more variety to games of Shatterpoint with new objective layouts and new mission special rules.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-never-tell-me-the-odds-mission-pack"
+  },
+  {
+    "id": 44,
+    "name": "First Contact Mission Pack",
+    "swp": "SWP49",
+    "number": "49",
+    "era": "",
+    "thumbnail": "/images/SWP49-thumbnail.png",
+    "mainImage": "/images/SWP49-image0.png",
+    "images": [
+      "/images/SWP49-image1.png"
+    ],
+    "models": [],
+    "description": "The latest mission pack is here for Star Wars™: Shatterpoint. This new pack includes a mission card and 9 Struggle cards, First Contact Mission Pack (Mission Pack #4) adds more to the games of Shatterpoint with new layouts and struggle cards for players.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-first-contact-mission-pack"
+  },
+  {
+    "id": 40,
+    "name": "Wisdom of the Council Squad Pack",
+    "swp": "SWP50",
+    "number": "50",
+    "era": "Clone Wars",
+    "thumbnail": "/images/SWP50-thumbnail.png",
+    "mainImage": "/images/SWP50-image0.png",
+    "images": [
+      "/images/SWP50-image1.png",
+      "/images/SWP50-mundi.png",
+      "/images/SWP50-shaak-ti.png",
+      "/images/SWP50-padawans.png"
+    ],
+    "models": [
+      "Ki-Adi-Mundi",
+      "Shaak Ti",
+      "Padawan Learners"
+    ],
+    "description": "The Wisdom of the Council Squad Pack brings Jedi reinforcements to the battlefield! Jedi Master Ki-Adi-Mundi provides targeted support for his Jedi allies, using his Force abilities to push and support characters. Jedi Master Shaak Ti is a power hitter as a Secondary Unit and will be a good character for Jedi players looking to have a hard hitter on the table. The Padawan Learners are focused on healing.\r\n\r\nFor Shatterpoint players looking for more Clone Wars-era characters, this will be a welcome addition to their collection. Together this Squad Pack is an exciting addition to Star Wars™: Shatterpoint.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-wisdom-of-the-council-squad-pack"
+  },
+  {
+    "id": 45,
+    "name": "Deploy the Garrison Squad Pack",
+    "swp": "SWP51",
+    "number": "51",
+    "era": "",
+    "thumbnail": "/images/SWP51-thumbnail.png",
+    "mainImage": "/images/SWP51-image0.png",
+    "images": [
+      "/images/SWP51-image1.png",
+      "/images/SWP51-krennic.png",
+      "/images/SWP51-specialist.png",
+      "/images/SWP51-shores.png",
+      "/images/SWP51-deathtroopers.png"
+    ],
+    "models": [
+      "Director Krennic",
+      "Death Trooper Specialist",
+      "Shoretroopers",
+      "Death Troopers"
+    ],
+    "description": "The Deploy the Garrison Squad Pack brings the elite forces of the Empire to the front lines. Director Krennic, made popular by Rogue One: A Star Wars Story™, is joined by the imposing Death Troopers and instantly iconic Shore Troopers. \r\n\r\nTheir gameplay brings exciting abilities to Star Wars™: Shatterpoint and provides Imperial players with long range and multiple support options. For players looking to grow their collection with the forces of the Empire, this is a fantastic addition.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-deploy-the-garrison-squad-pack"
+  },
+  {
+    "id": 50,
+    "name": "This is Rogue One Squad Pack",
+    "swp": "SWP52",
+    "number": "52",
+    "era": "Civil War",
+    "thumbnail": "/images/SWP52-thumbnail.png",
+    "mainImage": "/images/SWP52-image0.png",
+    "images": [
+      "/images/SWP52-image1.png",
+      "/images/SWP52-jyn.png",
+      "/images/SWP52-bodhi.png",
+      "/images/SWP52-BazeCherrut.png"
+    ],
+    "models": [
+      "Jyn Erso",
+      "Chirrut Îmwe",
+      "Baze Malbus",
+      "Bohdi Rook"
+    ],
+    "description": "\r\n\r\nSWP52 brings the beloved characters of Star Wars™: Rogue One to Star Wars: Shatterpoint! Pulling from moments across the Star Wars story, this Squad Pack for Shatterpoint includes the hero of the Rebellion, Jynn Erso, Chirrut Îmwe, Baze Malbus, and Bodhi. Each of these characters bring elements of Rogue One, utilizing rules and abilities that support both ranged and melee combat. Bodhi is a strong character for securing objectives while Baze Malbus provides power range attacks.\r\n\r\nThese characters pair well with the All the Way Squad Pack, creating a dynamic and thematic entry for Star Wars: Shatterpoint.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-this-is-rogue-one-squad-pack"
+  },
+  {
+    "id": 51,
+    "name": "Outer Rim Outpost Terrain Pack",
+    "swp": "SWP60",
+    "number": "60",
+    "era": "",
+    "thumbnail": "/images/SWP60-thumbnail.png",
+    "mainImage": "/images/SWP60-image0.png",
+    "images": [
+      "/images/SWP60-image1.png",
+      "/images/SWP60-image2.png",
+      "/images/SWP60-image3.png"
+    ],
+    "models": [],
+    "description": "The Outer Rim Outpost Terrain Pack includes a thematic and imposing outpost bunker to expand terrain and table options for Star Wars™: Shatterpoint. The outpost bunker is a striking and impressive piece that adds more depth to the terrain options for Star Wars: Shatterpoint players. \r\n\r\nFor players looking to add more dramatic options to their games and scenarios, the Outer Rim Outpost Terrain Pack provides a new key feature to the table.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-outer-rim-outpost-terrain-pack"
+  },
+  {
+    "id": 52,
+    "name": "Delta Squad, Form Up Squad Pack",
+    "swp": "SWP62",
+    "number": "62",
+    "era": "Clone Wars",
+    "thumbnail": "/images/SWP62-thumbnail.png",
+    "mainImage": "/images/SWP62-image0.png",
+    "images": [
+      "/images/SWP62-image1.png",
+      "/images/SWP62-boss.png",
+      "/images/SWP62-fixer.png",
+      "/images/SWP62-sevscorch.png"
+    ],
+    "models": [
+      "Boss",
+      "Fixer",
+      "Sev",
+      "Scorch"
+    ],
+    "description": "\r\n\r\nDeployed on the front lines of the Clone Wars, Delta Squad puts the elite training of the clone commandos to the test. Boss, Fixer, Sev, and Scorch, unwavering in their loyalty to the Republic, execute each mission with deadly precision and firepower.\r\n\r\nThe Delta Squad, Form Up Squad Pack gives players 4 fan-favorite Republic commandos to deploy in their games of Star WarsTM: Shatterpoint. Scorch and Sev provide unique area control abilities that allow them to target multiple units and control the battlefield, while Boss and Fixer provide tactics to the team and can manipulate objectives.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-delta-squad-form-up-squad-pack"
+  },
+  {
+    "id": 53,
+    "name": "Terror From Below Squad Pack",
+    "swp": "SWP63",
+    "number": "63",
+    "era": "Clone Wars",
+    "thumbnail": "/images/SWP63-thumbnail.png",
+    "mainImage": "/images/SWP63-image0.png",
+    "images": [
+      "/images/SWP63-image1.png",
+      "/images/SWP63-riff.png",
+      "/images/SWP63-tossor.png",
+      "/images/SWP63-aqua.png"
+    ],
+    "models": [
+      "Riff Tamson",
+      "Nossor Ri",
+      "Aqua Droids"
+    ],
+    "description": "\r\n\r\nRiff Tamson brings the planet of Mon Cala into the Clone Wars. Conspiring with Quarren chieftain, Nossor Ri, these devious diplomats in service to the Separatist Alliance manipulate events and thrust their unwitting foes into the fray.\r\n\r\nRiff Tamson uses speed to surprise and cripple his foes while Nossor Ri grants additional bonuses when allies use elevation and terrain to their advantage. Rounding out the squad are Aqua Droids, which are highly durable fighters that excel at frontal assault.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/products/star-wars-shatterpoint-terror-from-below-squad-pack"
+  },
+  {
+    "id": 54,
+    "name": "Strategic Positions Mission Pack",
+    "swp": "SWP72",
+    "number": "72",
+    "era": "",
+    "thumbnail": "/images/SWP72-thumbnail.png",
+    "mainImage": "/images/SWP72-image0.png",
+    "images": [
+      "/images/SWP72-image1.png",
+      "/images/SWP72-image2.png"
+    ],
+    "models": [],
+    "description": "Strategic Positions adds a new mission set of 9 cards (3 Struggle I, II, and III) to games of Star Wars: Shatterpoint. This card pack offers new objective layouts that challenge strike teams to consider their positioning, including rules for Tactical Advantages that allow players to unlock potent bonus abilities for certain units based on the active mission card.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-strategic-positions"
+  },
+  {
+    "id": 41,
+    "name": "I Am No Jedi Deluxe Duel Pack",
+    "swp": "SWP81",
+    "number": "81",
+    "era": "",
+    "thumbnail": "/images/SWP81-Thumbnail.png",
+    "mainImage": "/images/SWP81-Image_1.png",
+    "images": [],
+    "models": [
+      "Ahsoka Tano, Fulcrum",
+      "Darth Vader, Fallen Master"
+    ],
+    "description": "This Deluxe Duel Pack features a pair of the most formidable and legendary duelists, Ahsoka Tano, Fulcrum and Darth Vader, Fallen Master, as they confront each other in the ruins of a Sith temple on the world of Malachor. This duel pack includes new versions of both characters for gameplay. Additionally, the Darth Vader miniature has a damaged mask option so players can choose which version to have on the table or display.",
+    "assemblyUrl": "",
+    "storeLink": ""
+  },
+  {
+    "id": 46,
+    "name": "Dice Pack",
+    "swp": "SWP99",
+    "number": "99",
+    "era": "",
+    "thumbnail": "/images/SWP99-thumbnail.png",
+    "mainImage": "/images/SWP99-image0.png",
+    "images": [
+      "/images/SWP99-image1.png",
+      "/images/SWP99-image2.png",
+      "/images/SWP99-image3.png"
+    ],
+    "models": [
+      "Dice"
+    ],
+    "description": "\r\n\r\nPlayers can supplement their collection of Star Wars™: Shatterpoint with this pack. Containing 8 Attack Dice and 6 Defense Dice identical to those found in the Core Set, players can stay focused on their battles no matter who’s in their squad. \r\n\r\nThis is a great pack for players looking to add more dice to their dice pool. This dice pack as well as a set of measuring tools would be necessary for players looking to build a squad from scratch outside of purchasing a core set.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-dice-pack-1"
+  },
+  {
+    "id": 47,
+    "name": "Movement & Range Tools",
+    "swp": "SWP100",
+    "number": "100",
+    "era": "",
+    "thumbnail": "/images/SWP100-thumbnail.png",
+    "mainImage": "/images/SWP100-image0.png",
+    "images": [
+      "/images/SWP100-image1.png",
+      "/images/SWP100-image2.png",
+      "/images/SWP100-image3.png"
+    ],
+    "models": [
+      "Measuring Tools"
+    ],
+    "description": "\r\n\r\nThis pack contains five range tools and two movement tools for players to supplement their games of Star Wars™: Shatterpoint with more of the range and movement tools found in the Core set. \r\n\r\nThis is a great pack for players looking to add more measuring tools to their game. This measuring tool pack as well as a set of dice would be necessary for players looking to build a strike team from scratch outside of purchasing a core set.",
+    "assemblyUrl": "",
+    "storeLink": "https://store.asmodee.com/collections/star-wars-shatterpoint/products/star-wars-shatterpoint-movement-range-tools"
+  },
+  {
+    "id": 48,
+    "name": "Store League Tournament Kit 1",
+    "swp": "SWK69",
+    "number": "1069",
+    "era": "",
+    "thumbnail": "/images/SWK69-thumbnail.png",
+    "mainImage": "/images/SWK69-image0.png",
+    "images": [],
+    "models": [],
+    "description": "The SWK69 Shatterpoint Store/League Tournament Kit 1 includes an\r\nexciting variety of promotional support items to promote in-store\r\nplay and community building. This kit is built for a single day event,\r\ntournament or multi-week league for Star WarsTM:Shatterpoint. With\r\nunique foil Order cards from a variety of characters from across\r\ndifferent galactic eras, this kit will provide desirable promo items. For\r\nretailers looking to have structured in-store events and community\r\nbuilding for Star Wars: Shatterpoint, this SWK69 Kit is a great option to\r\nhave readily available.\r\n\r\n17 Foil Mandalorian Order Cards, 17 Foil Lando Calrissian\r\nBespin Administrator Order Cards, 17 Foil General Veers\r\nOrder Cards,13 Foil Kit Fisto Order Cards, 4 Foil Stamped\r\nKit Fisto Order Cards, 1 Champion Acrylic 4x6 Kit Fisto Stat\r\nCard, 1 Insert",
+    "assemblyUrl": "",
+    "storeLink": ""
+  }
+]

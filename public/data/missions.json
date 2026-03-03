@@ -1,0 +1,122 @@
+[
+  {
+    "id": 4,
+    "name": "First Contact",
+    "card": "/images/SWP49_MissionCard.png",
+    "swp": "SWP49",
+    "spt": "00490201",
+    "struggles": {
+      "struggle1": [
+        "/images/SWP49-Struggle-1a.png",
+        "/images/SWP49-Struggle-1b.png",
+        "/images/SWP49-Struggle-1c.png"
+      ],
+      "struggle2": [
+        "/images/SWP49-Struggle-2a.png",
+        "/images/SWP49-Struggle-2b.png",
+        "/images/SWP49-Struggle-2c.png"
+      ],
+      "struggle3": [
+        "/images/SWP49-Struggle-3a.png",
+        "/images/SWP49-Struggle-3b.png",
+        "/images/SWP49-Struggle-3c.png"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "name": "Never Tell Me The Odds",
+    "card": "/images/SWP48_NTMTO_Setup.png",
+    "swp": "SWP48",
+    "spt": "00480201",
+    "struggles": {
+      "struggle1": [
+        "/images/SWP48_NTMTO_1a.png",
+        "/images/SWP48_NTMTO_1b.png",
+        "/images/SWP48_NTMTO_1c.png"
+      ],
+      "struggle2": [
+        "/images/SWP48_NTMTO_2a.png",
+        "/images/SWP48_NTMTO_2b.png",
+        "/images/SWP48_NTMTO_2c.png"
+      ],
+      "struggle3": [
+        "/images/SWP48_NTMTO_3a.png",
+        "/images/SWP48_NTMTO_3b.png",
+        "/images/SWP48_NTMTO_3c.png"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "name": "Sabotage Showdown",
+    "card": "/images/SWP45_SabotageShowdown_Scenario.png",
+    "swp": "SWP45",
+    "spt": "00450201",
+    "struggles": {
+      "struggle1": [
+        "/images/SWP45_SabotageShowdow_1a.png",
+        "/images/SWP45_SabotageShowdow_1b.png",
+        "/images/SWP45_SabotageShowdow_1c.png"
+      ],
+      "struggle2": [
+        "/images/SWP45_SabotageShowdow_2a.png",
+        "/images/SWP45_SabotageShowdow_2b.png",
+        "/images/SWP45_SabotageShowdow_2c.png"
+      ],
+      "struggle3": [
+        "/images/SWP45_SabotageShowdow_3a.png",
+        "/images/SWP45_SabotageShowdow_3b.png",
+        "/images/SWP45_SabotageShowdow_3c.png"
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "name": "Shifting Priorities",
+    "card": "/images/SWP01_struggle_sp.png",
+    "swp": "SWP01",
+    "spt": "00010201",
+    "struggles": {
+      "struggle1": [
+        "/images/SWP01_sp_1_stsp.png",
+        "/images/SWP01_sp_1_rep.png",
+        "/images/SWP01_sp_1_lta.png"
+      ],
+      "struggle2": [
+        "/images/SWP01_sp_2_wbdc.png",
+        "/images/SWP01_sp_2_smfteos.png",
+        "/images/SWP01_sp_2_wgtnae.png"
+      ],
+      "struggle3": [
+        "/images/SWP01_sp_3_bowo.png",
+        "/images/SWP01_sp_3_htsn.png",
+        "/images/SWP01_sp_3_canr.png"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "name": "Strategic Positions",
+    "card": "/images/SWP72_MissionCard.png",
+    "swp": "SWP072",
+    "spt": "00720201",
+    "struggles": {
+      "struggle1": [
+        "/images/SWP49_Struggle_1a.png",
+        "/images/SWP49_Struggle_1b.png",
+        "/images/SWP49_Struggle_1c.png"
+      ],
+      "struggle2": [
+        "/images/SWP49_Struggle_2a.png",
+        "/images/SWP49_Struggle_2b.png",
+        "/images/SWP49_Struggle_2c.png"
+      ],
+      "struggle3": [
+        "/images/SWP49_Struggle_3a.png",
+        "/images/SWP49_Struggle_3b.png",
+        "/images/SWP49_Struggle_3c.png"
+      ]
+    }
+  }
+]

@@ -1,0 +1,110 @@
+[
+  {
+    "name": "Active",
+    "category": "Ability Icons",
+    "file": "active.png",
+    "description": "Active abilities can be used at any time during a Unit's activation. If their text begins with \"Action:\", the Unit must spend an action to use the ability. Active abilities always have a Force cost. When this icon appears in a chosen Combat Tree Option, if it is the attacking Unit's activation, it may use one of its Active abilities without paying its Force cost."
+  },
+  {
+    "name": "Reactive",
+    "category": "Ability Icons",
+    "file": "reactive.png",
+    "description": "Reactive abilities can only be used in response to a specific triggering event. Reactive abilities state when they can be used in their rules text and always have a Force cost. Each player may only use one Reactive ability in response to a single triggering event."
+  },
+  {
+    "name": "Innate",
+    "category": "Ability Icons",
+    "file": "innate.png",
+    "description": "Innate abilities are always in effect and never have a Force cost. In addition to normal Innate abilities, some Units have special Innate abilities known as Tactic and Identity Innate abilities."
+  },
+  {
+    "name": "Tactic",
+    "category": "Ability Icons",
+    "file": "tactic.png",
+    "description": "Tactic abilities are special Innate abilities that allow Units to work together. The effects of Tactic abilities are resolved at the start of a Unit's activation."
+  },
+  {
+    "name": "Identity",
+    "category": "Ability Icons",
+    "file": "identity.png",
+    "description": "Identity abilities are special Innate abilities unique to Primary Units. Each Identity ability explains how it is triggered and used. Note that while Identities are often resolved in response to a triggering event, they are Innate abilities and do not preclude a player from using a single Reactive ability in response to the same event."
+  },
+  {
+    "name": "Damage",
+    "category": "Effect Icons",
+    "file": "damage.png",
+    "description": "The affected Unit suffers 1 damage. When this icon appears in a Combat Tree Option or Attack Expertise Chart, 1 Damage token is added to the attack's Damage Pool before the attacking player chooses their next Option."
+  },
+  {
+    "name": "Shove",
+    "category": "Effect Icons",
+    "file": "shove.png",
+    "description": "The affected character may be Pushed away from the shoving character Range 1, then the shoving character may immediately Pull itself toward the affected character Range 1."
+  },
+  {
+    "name": "Heal",
+    "category": "Effect Icons",
+    "file": "heal.png",
+    "description": "The affected character may remove one condition or one damage from its Unit or another allied Unit within Range 2."
+  },
+  {
+    "name": "Hunker",
+    "category": "Effect Icons",
+    "file": "hunker.png",
+    "description": "Each Hunker token a Unit has grants characters in that Unit Cover [1]. A Unit loses all its Hunker tokens at the start of its activation or when a character in that Unit becomes Engaged. A Unit that is Engaged cannot gain or have Hunker tokens."
+  },
+  {
+    "name": "Strained",
+    "category": "Condition Icons",
+    "file": "strained.png",
+    "description": "When a character in this Unit advances, climbs, dashes, jumps, or when this Unit makes an action, makes an attack, or uses an Active or Reactive ability, after the effect is resolved, this Unit suffers 3 damage. Then, this Unit loses the Strained condition."
+  },
+  {
+    "name": "Disarmed",
+    "category": "Condition Icons",
+    "file": "disarmed.png",
+    "description": "While attacking, characters in this Unit cannot use attack expertise results. The next time a character in this Unit makes an attack roll, remove any Attack Dice with attack expertise results from the roll before modifying the dice rolls. After determining results, the Unit loses the Disarmed condition."
+  },
+  {
+    "name": "Exposed",
+    "category": "Condition Icons",
+    "file": "exposed.png",
+    "description": "While defending, characters in this Unit cannot use defense expertise results. The next time a character in this Unit makes a defense roll, remove any Defense Dice with defense expertise results from the roll before modifying the dice rolls. After determining results, the Unit loses the Exposed condition."
+  },
+  {
+    "name": "Pinned",
+    "category": "Condition Icons",
+    "file": "pinned.png",
+    "description": "The next time a character in this Unit would advance, dash, climb, or jump, it does not move. Then, this Unit loses the Pinned condition."
+  },
+  {
+    "name": "Advance",
+    "category": "Movement Icons",
+    "file": "advance.png",
+    "description": "When a character advances, it moves using the Advance tool. The character must end this movement at the same Elevation or lower than it began this move. If a character is Engaged by a character in a Unit that is not Wounded and would advance, it dashes instead."
+  },
+  {
+    "name": "Climb",
+    "category": "Movement Icons",
+    "file": "climb.png",
+    "description": "When a character climbs, it moves using the Dash tool. During this movement, the Dash tool may overlap Impassable terrain parts at any Elevation, and the character may end its movement at any Elevation. If a character is Engaged by a character in a Unit that is not Wounded, it may not climb."
+  },
+  {
+    "name": "Dash",
+    "category": "Movement Icons",
+    "file": "dash.png",
+    "description": "When a character dashes, it moves using the Dash tool. The character must end this movement on the same Elevation or lower than it began this move."
+  },
+  {
+    "name": "Jump",
+    "category": "Movement Icons",
+    "file": "jump.png",
+    "description": "When a character jumps, it moves using the Dash tool. During this movement, the Dash tool may overlap Impassable terrain parts at any Elevation, and the character may end its movement at any Elevation."
+  },
+  {
+    "name": "Reposition",
+    "category": "Movement Icons",
+    "file": "reposition.png",
+    "description": "The affected character may advance, even if it is Engaged with a character from a Unit that is not Wounded."
+  }
+]
