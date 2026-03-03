@@ -82,14 +82,15 @@ describe('PlayView', () => {
       expect(wrapper.text()).not.toContain('tap cells')
     })
 
-    it('shows mission name and prev/next when missions are loaded', async () => {
+    it('shows mission name and prev/next buttons when missions are loaded', async () => {
       const missionsStore = useMissionsStore()
       missionsStore.missions = [mockMission]
       const wrapper = mountView()
       await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('Test Mission')
-      expect(wrapper.text()).toContain('←')
-      expect(wrapper.text()).toContain('→')
+      // Nav buttons use SVG icons — verify two nav buttons exist
+      const navBtns = wrapper.findAll('button').filter(b => b.find('svg').exists())
+      expect(navBtns).toHaveLength(2)
     })
 
     it('advances pickerIndex when next button clicked', async () => {
@@ -98,10 +99,10 @@ describe('PlayView', () => {
       missionsStore.missions = [mockMission, mission2]
       const wrapper = mountView()
       await wrapper.vm.$nextTick()
-      // Click → to advance
-      const nextBtn = wrapper.findAll('button').find(b => b.text() === '→')
+      // Next button is the second SVG nav button (first is prev/disabled)
+      const nextBtn = wrapper.findAll('button').filter(b => b.find('svg').exists())[1]
       expect(nextBtn).toBeDefined()
-      await nextBtn!.trigger('click')
+      await nextBtn.trigger('click')
       expect(wrapper.text()).toContain('Second Mission')
     })
 
