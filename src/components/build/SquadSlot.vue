@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Squad, Character } from '../../types/index.ts'
+import type { Squad } from '../../types/index.ts'
 import { isSquadValid } from '../../types/index.ts'
 
 const props = defineProps<{

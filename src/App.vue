@@ -16,7 +16,7 @@ const pendingProfile = ref<CompactProfile | null>(null)
 
 onMounted(async () => {
   // Attempt programmatic portrait lock (works in PWA / fullscreen contexts)
-  screen.orientation?.lock?.('portrait-primary').catch(() => {})
+  ;(screen.orientation as unknown as { lock?: (o: string) => Promise<void> })?.lock?.('portrait-primary')?.catch(() => {})
 
   // Wait for the initial navigation (including / → /browse redirect) to settle
   // before reading query params, otherwise route.query may still be empty.

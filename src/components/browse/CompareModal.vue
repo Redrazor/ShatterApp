@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Character } from '../../types/index.ts'
 
 const props = defineProps<{

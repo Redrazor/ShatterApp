@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { Mission } from '../../types/index.ts'
 
-const props = defineProps<{
+defineProps<{
   name: string
   mission: Mission | null
   premiere: boolean
   isComplete: boolean
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'update:name', val: string): void
   (e: 'update:premiere', val: boolean): void
   (e: 'pick-mission'): void

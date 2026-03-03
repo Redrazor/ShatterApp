@@ -5,7 +5,7 @@ defineProps<{
   profile: CompactProfile
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'import'): void
   (e: 'dismiss'): void
 }>()
