@@ -2,6 +2,7 @@
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useStruggleStore } from '../stores/struggle.ts'
 import { useMissionsStore } from '../stores/missions.ts'
+import { imageUrl } from '../utils/imageUrl.ts'
 
 const store = useStruggleStore()
 const missionsStore = useMissionsStore()
@@ -217,7 +218,7 @@ const ROMAN = ['I', 'II', 'III']
             <Transition :name="`card-slide-${slideDir}`" mode="out-in">
               <img
                 :key="pickerIndex"
-                :src="missionsStore.missions[pickerIndex].card"
+                :src="imageUrl(missionsStore.missions[pickerIndex].card)"
                 class="w-full rounded-xl object-contain max-h-[322px]"
                 alt="mission card"
                 @load="onCardImgLoad"
@@ -307,7 +308,7 @@ const ROMAN = ['I', 'II', 'III']
         <template v-else>
           <img
             data-testid="mission-card"
-            :src="store.selectedMission.card"
+            :src="imageUrl(store.selectedMission.card)"
             class="w-full max-h-[322px] rounded-lg object-contain"
             alt="mission card"
           />
@@ -514,7 +515,7 @@ const ROMAN = ['I', 'II', 'III']
               <!-- Face-up front -->
               <div class="card-face card-front">
                 <img
-                  :src="cardImg"
+                  :src="imageUrl(cardImg)"
                   class="w-full h-full object-contain rounded"
                   :alt="`Struggle ${i + 1}`"
                 />
