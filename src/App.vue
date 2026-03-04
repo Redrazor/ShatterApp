@@ -6,6 +6,7 @@ import type { CompactProfile } from './types/index.ts'
 import AppImportBanner from './components/AppImportBanner.vue'
 import { useCollectionStore } from './stores/collection.ts'
 import { useStrikeForceStore } from './stores/strikeForce.ts'
+import { Analytics } from '@vercel/analytics/vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -44,6 +45,7 @@ function handleDismiss() {
 </script>
 
 <template>
+  <Analytics />
   <div class="min-h-screen bg-sw-bg text-sw-text">
     <!-- Nav -->
     <nav class="border-b border-sw-gold/20 bg-sw-card/80 backdrop-blur-sm sticky top-0 z-40">

@@ -20,6 +20,7 @@
     "images:deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.6.1",
     "better-sqlite3": "^12.6.2",
     "cors": "^2.8.6",
     "drizzle-orm": "^0.45.1",
