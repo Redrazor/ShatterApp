@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
+import AppInstallBanner from './components/AppInstallBanner.vue'
 
 onMounted(() => {
   // Attempt programmatic portrait lock (works in PWA / fullscreen contexts)
@@ -67,6 +68,8 @@ onMounted(() => {
       </div>
     </footer>
   </div>
+
+  <AppInstallBanner />
 
   <!-- Landscape blocker (CSS-only, always reliable) -->
   <div class="landscape-block">

@@ -337,7 +337,7 @@ The roller UI must support this interactively: after a roll, the player spends u
 
 **User feedback:** Users want an installable mobile app with offline support, especially for use at the game table where internet may be spotty.
 
-**Status:** `[ ]` *(Phase 2 — tracked here for planning)*
+**Status:** `[~]` Phase A done — v1.3.6. Custom `beforeinstallprompt` banner (`AppInstallBanner.vue`) with Android install flow + iOS "Share → Add to Home Screen" hint. Dismiss is persisted to localStorage. Phase B (Capacitor) deferred to Version 2.
 
 ### Context
 The app is already a PWA (Vite PWA plugin with service worker). The main gap is that installing from the browser home screen is low-discoverability. Capacitor wraps the existing Vue/Vite build into a native iOS/Android shell with no rewrite needed.
@@ -352,7 +352,7 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 | **Tauri mobile (beta)** | Free | 3–5 days | Rust-based alternative; smaller binary, but mobile support still maturing |
 
 ### Recommended Approach
-**Short term:** Improve the PWA install experience. Add a custom `beforeinstallprompt` banner component (`src/components/AppInstallBanner.vue`) modelled after `AppImportBanner.vue`. This gives most users an app-like experience immediately.
+**Short term (done):** Custom `beforeinstallprompt` banner (`AppInstallBanner.vue`) — Android/Chrome gets a native install prompt; iOS Safari gets a static "Share → Add to Home Screen" hint. Dismiss persisted to localStorage.
 
 **Phase 2:** Capacitor for Play Store publishing. Android first (no paid account required), iOS later if demand justifies the Apple dev account cost.
 
