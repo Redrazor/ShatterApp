@@ -8,13 +8,12 @@ const emptySquad = (): Squad => ({ primary: null, secondary: null, support: null
 function buildToCompact(
   name: string,
   mission: Mission | null,
-  premiere: boolean,
   squads: [Squad, Squad],
 ): CompactBuild {
   return {
     name: name || 'Unnamed',
     mid: mission?.id ?? null,
-    pre: premiere,
+    pre: false,
     s: [
       [
         squads[0].primary?.id ?? 0,
@@ -64,7 +63,6 @@ export const useStrikeForceStore = defineStore(
     // Draft (working copy)
     const name = ref<string>('')
     const mission = ref<Mission | null>(null)
-    const premiere = ref<boolean>(false)
     const squads = ref<[Squad, Squad]>([emptySquad(), emptySquad()])
 
     // Multi-list
@@ -94,10 +92,6 @@ export const useStrikeForceStore = defineStore(
       mission.value = m
     }
 
-    function setPremiere(p: boolean) {
-      premiere.value = p
-    }
-
     function setUnit(squadIdx: 0 | 1, role: keyof Squad, unit: Character | null) {
       squads.value[squadIdx][role] = unit
     }
@@ -109,12 +103,11 @@ export const useStrikeForceStore = defineStore(
     function resetStrikeForce() {
       name.value = ''
       mission.value = null
-      premiere.value = false
       squads.value = [emptySquad(), emptySquad()]
     }
 
     function saveCurrentList() {
-      const compact = buildToCompact(name.value, mission.value, premiere.value, squads.value)
+      const compact = buildToCompact(name.value, mission.value, squads.value)
       if (activeIndex.value === -1) {
         savedLists.value.push(compact)
         activeIndex.value = savedLists.value.length - 1
@@ -127,7 +120,6 @@ export const useStrikeForceStore = defineStore(
       const build = savedLists.value[i]
       if (!build) return
       name.value = build.name
-      premiere.value = build.pre
       mission.value = build.mid !== null
         ? (missions.find(m => m.id === build.mid) ?? null)
         : null
@@ -170,14 +162,12 @@ export const useStrikeForceStore = defineStore(
     const strikeForce = computed<StrikeForce>(() => ({
       name: name.value,
       mission: mission.value,
-      premiere: premiere.value,
       squads: squads.value,
     }))
 
     return {
       name,
       mission,
-      premiere,
       squads,
       savedLists,
       activeIndex,
@@ -190,7 +180,6 @@ export const useStrikeForceStore = defineStore(
       isStrikeForceComplete,
       setName,
       setMission,
-      setPremiere,
       setUnit,
       clearUnit,
       resetStrikeForce,

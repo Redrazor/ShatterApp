@@ -181,7 +181,7 @@ v1.0 — 2023-06-01
 
 **User feedback:** Players want to bring a clean summary of their squad to a game table — either printed or shown on phone — without needing to navigate the full app UI.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — v1.3.2. CSS `@media print` stylesheet (`src/assets/print.css`) overrides theme to light, hides nav/footer/UI chrome via `.no-print`. Print button added to StrikeForcePanel. "Build" heading hidden in print. Premiere event removed from app entirely.
 
 ### Context
 The builder already stores the full squad (primary + secondary + support, all with stat references). The missing piece is a single-page "game night view" that collapses all the info a player needs mid-game.

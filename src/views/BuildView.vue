@@ -114,13 +114,17 @@ function handleSave() {
   setTimeout(() => { saveFeedback.value = '' }, 1500)
 }
 
+function handlePrint() {
+  window.print()
+}
+
 function handleShare() {
   const s0 = sfStore.squads[0]
   const s1 = sfStore.squads[1]
   const encoded = encodeBuild(
     sfStore.name,
     sfStore.mission?.id ?? null,
-    sfStore.premiere,
+    false,
     [
       [s0.primary?.id ?? 0, s0.secondary?.id ?? 0, s0.support?.id ?? 0],
       [s1.primary?.id ?? 0, s1.secondary?.id ?? 0, s1.support?.id ?? 0],
@@ -147,12 +151,12 @@ function importSharedBuild() {
 
 <template>
   <div class="space-y-6">
-    <h1 class="text-2xl font-bold text-sw-gold">Build</h1>
+    <h1 class="no-print text-2xl font-bold text-sw-gold">Build</h1>
 
     <!-- Shared build import banner -->
     <div
       v-if="pendingSharedBuild"
-      class="rounded-xl border border-sw-blue/40 bg-sw-card/70 p-4 flex items-center justify-between gap-4"
+      class="no-print rounded-xl border border-sw-blue/40 bg-sw-card/70 p-4 flex items-center justify-between gap-4"
     >
       <p class="text-sm text-sw-text">
         Shared build received: <span class="font-semibold text-sw-gold">{{ pendingSharedBuild.name }}</span>. Import as new list?
@@ -176,7 +180,7 @@ function importSharedBuild() {
     <!-- Saved Lists -->
     <div
       v-if="sfStore.savedLists.length > 0"
-      class="rounded-xl border border-sw-gold/20 bg-sw-card/40 p-4 space-y-2"
+      class="no-print rounded-xl border border-sw-gold/20 bg-sw-card/40 p-4 space-y-2"
     >
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-semibold text-sw-text/70">Saved Lists</h3>
@@ -227,7 +231,7 @@ function importSharedBuild() {
     <Transition name="fade">
       <div
         v-if="saveFeedback"
-        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full bg-sw-card border border-sw-gold/30 px-4 py-2 text-sm text-sw-gold shadow-xl"
+        class="no-print fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full bg-sw-card border border-sw-gold/30 px-4 py-2 text-sm text-sw-gold shadow-xl"
       >
         {{ saveFeedback }}
       </div>
@@ -237,14 +241,13 @@ function importSharedBuild() {
     <StrikeForcePanel
       :name="sfStore.name"
       :mission="sfStore.mission"
-      :premiere="sfStore.premiere"
       :is-complete="sfStore.isStrikeForceComplete"
       @update:name="sfStore.setName"
-      @update:premiere="sfStore.setPremiere"
       @pick-mission="missionPickerOpen = true"
       @reset="sfStore.resetStrikeForce"
       @save="handleSave"
       @share="handleShare"
+      @print="handlePrint"
     />
 
     <!-- Squads -->
@@ -261,7 +264,7 @@ function importSharedBuild() {
   </div>
 
   <!-- Unit Picker Drawer -->
-  <UnitPickerDrawer
+  <UnitPickerDrawer class="no-print"
     :show="pickerOpen"
     :characters="charStore.characters"
     :role="activeRole"
@@ -276,7 +279,7 @@ function importSharedBuild() {
     <Transition name="modal">
       <div
         v-if="missionPickerOpen"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        class="no-print fixed inset-0 z-50 flex items-center justify-center p-4"
         @click.self="missionPickerOpen = false"
       >
         <div class="absolute inset-0 bg-black/70" @click="missionPickerOpen = false" />

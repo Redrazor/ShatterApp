@@ -60,11 +60,9 @@ describe('useStrikeForceStore', () => {
     const mission = makeMission()
     store.setName('Test SF')
     store.setMission(mission)
-    store.setPremiere(true)
     const sf = store.strikeForce
     expect(sf.name).toBe('Test SF')
     expect(sf.mission?.name).toBe('Test Mission')
-    expect(sf.premiere).toBe(true)
     expect(sf.squads).toHaveLength(2)
   })
 
@@ -102,12 +100,6 @@ describe('useStrikeForceStore', () => {
     const store = useStrikeForceStore()
     store.setName('My List')
     expect(store.name).toBe('My List')
-  })
-
-  it('setPremiere stores the premiere flag', () => {
-    const store = useStrikeForceStore()
-    store.setPremiere(true)
-    expect(store.premiere).toBe(true)
   })
 
   // ---------- isSquad0Valid / isSquadValid ----------
@@ -287,7 +279,7 @@ describe('useStrikeForceStore', () => {
     expect(hasStrikeForceConflict(squads)).toBe(true)
   })
 
-  it('resetStrikeForce clears everything', () => {
+  it('resetStrikeForce clears name, mission, squads', () => {
     const store = useStrikeForceStore()
     store.setName('My List')
     store.setMission(makeMission())
@@ -320,14 +312,13 @@ describe('useStrikeForceStore', () => {
     expect(store.activeIndex).toBe(0)
   })
 
-  it('saveCurrentList saves mission and premiere', () => {
+  it('saveCurrentList saves mission id', () => {
     const store = useStrikeForceStore()
     store.setName('Mission Build')
     store.setMission(makeMission())
-    store.setPremiere(true)
     store.saveCurrentList()
     expect(store.savedLists[0].mid).toBe(1)
-    expect(store.savedLists[0].pre).toBe(true)
+    expect(store.savedLists[0].pre).toBe(false)
   })
 
   it('saveCurrentList stores unit IDs in compact format', () => {
@@ -362,15 +353,13 @@ describe('useStrikeForceStore', () => {
 
   // ---------- loadList ----------
 
-  it('loadList restores name and premiere from saved build', () => {
+  it('loadList restores name from saved build', () => {
     const store = useStrikeForceStore()
     store.setName('Alpha')
-    store.setPremiere(true)
     store.saveCurrentList()
     store.newList()
     store.loadList(0, [], [])
     expect(store.name).toBe('Alpha')
-    expect(store.premiere).toBe(true)
     expect(store.activeIndex).toBe(0)
   })
 
@@ -564,7 +553,7 @@ describe('migrateStrikeForceState', () => {
     expect(state.savedLists).toHaveLength(1)
     expect(state.savedLists[0].name).toBe('Old Build')
     expect(state.savedLists[0].mid).toBe(1)
-    expect(state.savedLists[0].pre).toBe(true)
+    expect(state.savedLists[0].pre).toBe(true) // preserved from old state during migration
     expect(state.savedLists[0].s[0]).toEqual([10, 11, 12])
     expect(state.savedLists[0].s[1]).toEqual([20, 21, 22])
     expect(state.activeIndex).toBe(0)

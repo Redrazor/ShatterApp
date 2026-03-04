@@ -4,17 +4,16 @@ import type { Mission } from '../../types/index.ts'
 defineProps<{
   name: string
   mission: Mission | null
-  premiere: boolean
   isComplete: boolean
 }>()
 
 defineEmits<{
   (e: 'update:name', val: string): void
-  (e: 'update:premiere', val: boolean): void
   (e: 'pick-mission'): void
   (e: 'reset'): void
   (e: 'save'): void
   (e: 'share'): void
+  (e: 'print'): void
 }>()
 </script>
 
@@ -25,24 +24,30 @@ defineEmits<{
       <div class="flex items-center gap-2">
         <span
           v-if="isComplete"
-          class="rounded-full bg-green-500/20 px-3 py-0.5 text-xs font-medium text-green-400"
+          class="rounded-full bg-green-500/20 px-3 py-0.5 text-xs font-medium text-green-400 no-print"
         >
           ✓ Complete
         </span>
         <button
-          class="rounded px-2 py-1 text-xs text-sw-gold/70 hover:text-sw-gold"
+          class="no-print rounded px-2 py-1 text-xs text-sw-gold/70 hover:text-sw-gold"
           @click="$emit('save')"
         >
           Save
         </button>
         <button
-          class="rounded px-2 py-1 text-xs text-sw-blue/70 hover:text-sw-blue"
+          class="no-print rounded px-2 py-1 text-xs text-sw-blue/70 hover:text-sw-blue"
           @click="$emit('share')"
         >
           Share
         </button>
         <button
-          class="rounded px-2 py-1 text-xs text-sw-text/50 hover:text-red-400"
+          class="no-print rounded px-2 py-1 text-xs text-sw-text/40 hover:text-sw-gold"
+          @click="$emit('print')"
+        >
+          Print
+        </button>
+        <button
+          class="no-print rounded px-2 py-1 text-xs text-sw-text/50 hover:text-red-400"
           @click="$emit('reset')"
         >
           Reset
@@ -74,15 +79,5 @@ defineEmits<{
       </button>
     </div>
 
-    <!-- Premiere -->
-    <label class="flex cursor-pointer items-center gap-2 text-sm text-sw-text">
-      <input
-        type="checkbox"
-        class="accent-sw-gold"
-        :checked="premiere"
-        @change="$emit('update:premiere', ($event.target as HTMLInputElement).checked)"
-      />
-      Premiere event
-    </label>
   </div>
 </template>

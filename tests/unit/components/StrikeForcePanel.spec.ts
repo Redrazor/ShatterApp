@@ -10,14 +10,14 @@ function makeMission(): Mission {
 describe('StrikeForcePanel', () => {
   it('renders Strike Force heading', () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
+      props: { name: '', mission: null, isComplete: false },
     })
     expect(wrapper.text()).toContain('Strike Force')
   })
 
   it('renders name input with current value', () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: 'My List', mission: null, premiere: false, isComplete: false },
+      props: { name: 'My List', mission: null, isComplete: false },
     })
     const input = wrapper.find('input[type="text"]')
     expect((input.element as HTMLInputElement).value).toBe('My List')
@@ -25,7 +25,7 @@ describe('StrikeForcePanel', () => {
 
   it('emits update:name when name input changes', async () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
+      props: { name: '', mission: null, isComplete: false },
     })
     const input = wrapper.find('input[type="text"]')
     await input.setValue('New Name')
@@ -36,62 +36,43 @@ describe('StrikeForcePanel', () => {
 
   it('shows mission name when mission is set', () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: makeMission(), premiere: false, isComplete: false },
+      props: { name: '', mission: makeMission(), isComplete: false },
     })
     expect(wrapper.text()).toContain('Outer Rim Siege')
   })
 
   it('shows placeholder when no mission', () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
+      props: { name: '', mission: null, isComplete: false },
     })
     expect(wrapper.text()).toContain('Select mission')
   })
 
   it('emits pick-mission when mission button clicked', async () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
+      props: { name: '', mission: null, isComplete: false },
     })
     await wrapper.find('button.w-full').trigger('click')
     expect(wrapper.emitted('pick-mission')).toBeTruthy()
   })
 
-  it('renders premiere checkbox', () => {
-    const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
-    })
-    expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true)
-    expect(wrapper.text()).toContain('Premiere event')
-  })
-
-  it('emits update:premiere when checkbox changes', async () => {
-    const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
-    })
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    await checkbox.setValue(true)
-    const emitted = wrapper.emitted('update:premiere')
-    expect(emitted).toBeTruthy()
-    expect(emitted![0][0]).toBe(true)
-  })
-
   it('shows complete badge when isComplete is true', () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: true },
+      props: { name: '', mission: null, isComplete: true },
     })
     expect(wrapper.text()).toContain('Complete')
   })
 
   it('does not show complete badge when not complete', () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
+      props: { name: '', mission: null, isComplete: false },
     })
     expect(wrapper.text()).not.toContain('Complete')
   })
 
   it('emits reset when reset button clicked', async () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
+      props: { name: '', mission: null, isComplete: false },
     })
     const resetBtn = wrapper.findAll('button').find((b) => b.text().includes('Reset'))!
     await resetBtn.trigger('click')
@@ -100,7 +81,7 @@ describe('StrikeForcePanel', () => {
 
   it('emits save when Save button clicked', async () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
+      props: { name: '', mission: null, isComplete: false },
     })
     const saveBtn = wrapper.findAll('button').find((b) => b.text() === 'Save')!
     expect(saveBtn).toBeTruthy()
@@ -110,7 +91,7 @@ describe('StrikeForcePanel', () => {
 
   it('emits share when Share button clicked', async () => {
     const wrapper = mount(StrikeForcePanel, {
-      props: { name: '', mission: null, premiere: false, isComplete: false },
+      props: { name: '', mission: null, isComplete: false },
     })
     const shareBtn = wrapper.findAll('button').find((b) => b.text() === 'Share')!
     expect(shareBtn).toBeTruthy()

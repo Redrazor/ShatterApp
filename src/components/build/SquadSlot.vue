@@ -34,7 +34,7 @@ const roles = [
 <template>
   <div
     :class="[
-      'rounded-xl border p-4 space-y-3 transition-colors',
+      'squad-slot rounded-xl border p-4 space-y-3 transition-colors',
       valid ? 'border-green-500/50 bg-green-900/10' : 'border-red-500/50 bg-red-900/10',
     ]"
   >
@@ -89,7 +89,7 @@ const roles = [
             </p>
           </div>
           <button
-            class="ml-auto shrink-0 rounded p-1 text-sw-text/40 hover:text-red-400"
+            class="no-print ml-auto shrink-0 rounded p-1 text-sw-text/40 hover:text-red-400"
             @click.stop="emit('clear', role.key)"
             aria-label="Remove unit"
           >
@@ -99,7 +99,7 @@ const roles = [
 
         <button
           v-else
-          class="flex flex-1 items-center gap-2 rounded-lg border border-dashed border-sw-gold/20 px-3 py-2 text-sw-text/40 transition-colors hover:border-sw-gold/50 hover:text-sw-text/60"
+          class="no-print flex flex-1 items-center gap-2 rounded-lg border border-dashed border-sw-gold/20 px-3 py-2 text-sw-text/40 transition-colors hover:border-sw-gold/50 hover:text-sw-text/60"
           @click="emit('pick', role.key)"
         >
           <span class="text-lg">+</span>

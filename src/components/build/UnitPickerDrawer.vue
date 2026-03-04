@@ -4,6 +4,7 @@ import type { Character } from '../../types/index.ts'
 import type { Squad } from '../../types/index.ts'
 import { imageUrl } from '../../utils/imageUrl.ts'
 import SearchBar from '../ui/SearchBar.vue'
+import { useCollectionStore } from '../../stores/collection.ts'
 
 const props = defineProps<{
   show: boolean
@@ -19,6 +20,9 @@ const emit = defineEmits<{
 }>()
 
 const query = ref('')
+const ownedOnly = ref(false)
+
+const collectionStore = useCollectionStore()
 
 const roleFilter = computed<'Primary' | 'Secondary' | 'Support' | ''>(() => {
   if (props.role === 'primary') return 'Primary'
@@ -31,6 +35,7 @@ const filtered = computed(() => {
   const q = query.value.toLowerCase().trim()
   return props.characters.filter((c) => {
     if (roleFilter.value && c.unitType !== roleFilter.value) return false
+    if (ownedOnly.value && !collectionStore.ownedSwpSet.has(c.swpCode ?? '')) return false
     if (q) {
       return c.name.toLowerCase().includes(q) || c.tags.some((t) => t.toLowerCase().includes(q))
     }
@@ -70,8 +75,12 @@ function select(char: Character) {
           </div>
 
           <!-- Search -->
-          <div class="p-3 border-b border-sw-gold/10">
+          <div class="p-3 border-b border-sw-gold/10 space-y-2">
             <SearchBar v-model="query" />
+            <label class="flex cursor-pointer items-center gap-2 text-xs text-sw-text/60">
+              <input type="checkbox" v-model="ownedOnly" class="accent-sw-gold" />
+              Owned only
+            </label>
           </div>
 
           <!-- Unit list -->

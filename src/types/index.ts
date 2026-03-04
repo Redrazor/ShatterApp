@@ -61,7 +61,6 @@ export interface Squad {
 export interface StrikeForce {
   name: string
   mission: Mission | null
-  premiere: boolean
   squads: [Squad, Squad]
 }
 
