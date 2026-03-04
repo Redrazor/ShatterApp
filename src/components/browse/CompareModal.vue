@@ -2,13 +2,8 @@
 import type { Character } from '../../types/index.ts'
 import { imageUrl, eraIconMap } from '../../utils/imageUrl.ts'
 
-const props = defineProps<{
-  a: Character
-  b: Character
-}>()
-
+const props = defineProps<{ chars: Character[] }>()
 defineEmits<{ (e: 'close'): void }>()
-
 
 function eras(char: Character) {
   return char.era.split(';').map(e => e.trim()).filter(Boolean)
@@ -23,12 +18,14 @@ const rows: { label: string; key: (c: Character) => string | number }[] = [
   { label: 'FP',         key: c => c.fp },
 ]
 
-function better(field: { key: (c: Character) => string | number }, side: 'a' | 'b') {
-  const va = Number(field.key(props.a))
-  const vb = Number(field.key(props.b))
-  if (isNaN(va) || isNaN(vb)) return false
-  return side === 'a' ? va > vb : vb > va
+function isBest(field: { key: (c: Character) => string | number }, char: Character) {
+  const values = props.chars.map(c => Number(field.key(c)))
+  if (values.some(isNaN)) return false
+  const val = Number(field.key(char))
+  return val === Math.max(...values) && values.filter(v => v === val).length < values.length
 }
+
+const colClass = (n: number) => n === 2 ? 'grid-cols-2' : 'grid-cols-3'
 </script>
 
 <template>
@@ -40,7 +37,7 @@ function better(field: { key: (c: Character) => string | number }, side: 'a' | '
       >
         <div class="absolute inset-0 bg-black/70" @click="$emit('close')" />
 
-        <div class="relative z-10 w-full max-w-lg rounded-xl border border-sw-gold/30 bg-sw-card shadow-2xl overflow-hidden">
+        <div class="relative z-10 w-full max-w-2xl rounded-xl border border-sw-gold/30 bg-sw-card shadow-2xl overflow-hidden">
           <!-- Header -->
           <div class="flex items-center justify-between border-b border-sw-gold/20 px-4 py-3">
             <h2 class="font-semibold text-sw-gold">Compare</h2>
@@ -48,41 +45,35 @@ function better(field: { key: (c: Character) => string | number }, side: 'a' | '
           </div>
 
           <!-- Unit headers -->
-          <div class="grid grid-cols-2 gap-px bg-sw-gold/10">
-            <div v-for="char in [a, b]" :key="char.id" class="flex flex-col items-center gap-2 bg-sw-card p-4">
+          <div :class="['grid gap-px bg-sw-gold/10', colClass(chars.length)]">
+            <div v-for="char in chars" :key="char.id" class="flex flex-col items-center gap-2 bg-sw-card p-4">
               <img
                 v-if="char.thumbnail"
                 :src="imageUrl(char.thumbnail)"
                 :alt="char.name"
-                class="h-20 w-20 rounded-lg object-contain bg-sw-dark"
+                class="h-16 w-16 rounded-lg object-contain bg-sw-dark"
               />
-              <div v-else class="flex h-20 w-20 items-center justify-center rounded-lg bg-sw-dark text-4xl text-sw-text/20">⚔</div>
-              <p class="text-center text-sm font-semibold text-sw-text leading-snug">{{ char.name }}</p>
+              <div v-else class="flex h-16 w-16 items-center justify-center rounded-lg bg-sw-dark text-3xl text-sw-text/20">⚔</div>
+              <p class="text-center text-xs font-semibold text-sw-text leading-snug">{{ char.name }}</p>
               <div class="flex gap-1">
                 <img v-for="era in eras(char)" :key="era" :src="eraIconMap[era] ?? ''" :alt="era"
-                  class="h-4 w-4" style="filter:brightness(0) invert(1); opacity:0.7" />
-              </div>
-              <div class="flex flex-wrap gap-1 justify-center">
-                <span v-for="tag in char.tags.slice(0, 4)" :key="tag"
-                  class="rounded-full border border-sw-gold/20 px-1.5 py-0.5 text-[9px] text-sw-text/60">
-                  {{ tag }}
-                </span>
+                  class="h-3 w-3" style="filter:brightness(0) invert(1); opacity:0.7" />
               </div>
             </div>
           </div>
 
           <!-- Stat rows -->
           <div class="divide-y divide-sw-gold/10">
-            <div v-for="row in rows" :key="row.label" class="grid grid-cols-[1fr_auto_1fr] items-center">
-              <div
-                :class="['px-4 py-2 text-right text-sm font-medium transition-colors',
-                  better(row, 'a') ? 'text-green-400' : 'text-sw-text/70']"
-              >{{ row.key(a) }}</div>
-              <div class="px-3 py-2 text-center text-[10px] uppercase tracking-widest text-sw-text/40 whitespace-nowrap">{{ row.label }}</div>
-              <div
-                :class="['px-4 py-2 text-left text-sm font-medium transition-colors',
-                  better(row, 'b') ? 'text-green-400' : 'text-sw-text/70']"
-              >{{ row.key(b) }}</div>
+            <div v-for="row in rows" :key="row.label">
+              <div class="px-4 pt-2 text-[9px] uppercase tracking-widest text-sw-text/40">{{ row.label }}</div>
+              <div :class="['grid pb-2', colClass(chars.length)]">
+                <div
+                  v-for="char in chars"
+                  :key="char.id"
+                  :class="['px-4 py-1 text-center text-sm font-medium transition-colors',
+                    isBest(row, char) ? 'text-green-400' : 'text-sw-text/70']"
+                >{{ row.key(char) }}</div>
+              </div>
             </div>
           </div>
         </div>

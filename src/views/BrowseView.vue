@@ -63,17 +63,37 @@ function closePanel() {
 }
 
 // Compare
+const compareMode = ref(false)
 const compareIds = ref(new Set<number>())
+const showCompareModal = ref(false)
+
+function toggleCompareMode() {
+  compareMode.value = !compareMode.value
+  if (!compareMode.value) {
+    compareIds.value = new Set()
+    showCompareModal.value = false
+  }
+}
+
 function toggleCompare(char: { id: number }) {
   const next = new Set(compareIds.value)
   if (next.has(char.id)) {
     next.delete(char.id)
   } else {
-    if (next.size >= 2) next.clear()
+    if (next.size >= 3) next.clear()
     next.add(char.id)
   }
   compareIds.value = next
 }
+
+function handleSelect(char: { id: number }) {
+  if (compareMode.value) {
+    toggleCompare(char)
+  } else {
+    openProfile(char)
+  }
+}
+
 const compareChars = computed(() =>
   [...compareIds.value].map(id => characterStore.characters.find(c => c.id === id)).filter(Boolean)
 )
@@ -108,6 +128,23 @@ function updateFilters(newFilters: SearchFilters) {
     <div class="flex items-center gap-3">
       <h1 class="text-2xl font-bold text-sw-gold">Units</h1>
       <span class="text-sm text-sw-text/50">({{ results.length }})</span>
+      <div class="flex-1" />
+      <button
+        :class="['rounded-lg px-3 py-1 text-xs font-semibold transition-colors',
+          compareMode
+            ? 'bg-sw-gold text-sw-dark'
+            : 'border border-sw-gold/30 text-sw-text/60 hover:border-sw-gold hover:text-sw-text']"
+        @click="toggleCompareMode"
+      >⚖ Compare</button>
+    </div>
+    <!-- Compare mode hint -->
+    <div v-if="compareMode" class="flex items-center gap-3 rounded-lg border border-sw-gold/20 bg-sw-gold/5 px-3 py-2 text-xs text-sw-text/60">
+      <span>{{ compareIds.size === 0 ? 'Select 2 or 3 units to compare.' : compareIds.size === 1 ? 'Select 1 or 2 more units.' : `${compareIds.size} units selected.` }}</span>
+      <button
+        v-if="compareIds.size >= 2"
+        class="ml-auto rounded-lg bg-sw-gold px-3 py-1 text-xs font-semibold text-sw-dark"
+        @click="showCompareModal = true"
+      >Compare</button>
     </div>
 
     <!-- Loading / Error -->
@@ -124,7 +161,7 @@ function updateFilters(newFilters: SearchFilters) {
         :owned-swp-set="collectionStore.ownedSwpSet"
         :favorited-set="favoritesStore.favoritedSet"
         :compare-ids="compareIds"
-        @select="openProfile"
+        @select="handleSelect"
         @toggle-favorite="(char: Character) => favoritesStore.toggleFavorite(char.id)"
         @toggle-compare="toggleCompare"
       />
@@ -150,10 +187,9 @@ function updateFilters(newFilters: SearchFilters) {
 
     <!-- Compare modal -->
     <CompareModal
-      v-if="compareChars.length === 2"
-      :a="compareChars[0]!"
-      :b="compareChars[1]!"
-      @close="compareIds = new Set()"
+      v-if="showCompareModal && compareChars.length >= 2"
+      :chars="compareChars as Character[]"
+      @close="showCompareModal = false"
     />
   </Teleport>
 </template>
