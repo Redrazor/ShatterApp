@@ -25,6 +25,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,svg,webp,woff2}'],
+        globIgnores: ['images-compressed/**', 'images/**'],
         runtimeCaching: [
           {
             urlPattern: /^\/api\//,
