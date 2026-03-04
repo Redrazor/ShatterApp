@@ -136,7 +136,7 @@
     "pc": 4,
     "sp": null,
     "durability": 2,
-    "stamina": 7,
+    "stamina": 8,
     "fp": 0,
     "era": "Clone Wars",
     "tags": [
@@ -169,7 +169,7 @@
     "pc": 3,
     "sp": null,
     "durability": 2,
-    "stamina": 7,
+    "stamina": 8,
     "fp": 0,
     "era": "Clone Wars",
     "tags": [
@@ -333,7 +333,7 @@
     "pc": 3,
     "sp": null,
     "durability": 2,
-    "stamina": 7,
+    "stamina": 8,
     "fp": 0,
     "era": "Clone Wars",
     "tags": [
@@ -526,8 +526,8 @@
   },
   {
     "id": 128,
-    "name": "Baze Malbus and Chirrut Îmwe",
-    "characterType": "Baze Malbus;Chirrut Îmwe",
+    "name": "Baze Malbus and Chirrut \u00cemwe",
+    "characterType": "Baze Malbus;Chirrut \u00cemwe",
     "unitType": "Support",
     "unitTypeName": "Support",
     "pc": 5,
@@ -1313,7 +1313,7 @@
     "pc": 4,
     "sp": null,
     "durability": 2,
-    "stamina": 8,
+    "stamina": 7,
     "fp": 0,
     "era": "Civil War;New Republic",
     "tags": [
@@ -3169,7 +3169,7 @@
     "pc": 3,
     "sp": null,
     "durability": 2,
-    "stamina": 10,
+    "stamina": 9,
     "fp": 0,
     "era": "Clone Wars",
     "tags": [
@@ -3781,7 +3781,7 @@
     "pc": 4,
     "sp": null,
     "durability": 2,
-    "stamina": 6,
+    "stamina": 7,
     "fp": 0,
     "era": "Clone Wars",
     "tags": [
@@ -4167,7 +4167,7 @@
     "pc": 4,
     "sp": null,
     "durability": 2,
-    "stamina": 8,
+    "stamina": 9,
     "fp": 0,
     "era": "Clone Wars;Empire;Civil War",
     "tags": [
@@ -4199,7 +4199,7 @@
     "pc": 4,
     "sp": null,
     "durability": 2,
-    "stamina": 8,
+    "stamina": 9,
     "fp": 0,
     "era": "Clone Wars;Empire;Civil War",
     "tags": [

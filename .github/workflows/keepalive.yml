@@ -1,0 +1,9 @@
+name: Keep API Awake
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -sf ${{ secrets.RENDER_API_URL }}/api/characters > /dev/null

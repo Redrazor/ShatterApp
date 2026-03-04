@@ -11,6 +11,17 @@ const IMAGES_DIR = join(ROOT, 'public', 'images')
 const BASE_API = 'https://api.pointbreaksw.com'
 const BASE_IMAGES = 'https://pointbreaksw.com/Images'
 
+// AMG CDN image map: local filename → canonical AMG CDN URL
+// Built from scraper/amg-image-map.json; any filename not in the map falls back to BASE_IMAGES
+const AMG_MAP_PATH = join(__dirname, 'amg-image-map.json')
+const amgImageMap: Record<string, string> = existsSync(AMG_MAP_PATH)
+  ? JSON.parse(readFileSync(AMG_MAP_PATH, 'utf-8')) as Record<string, string>
+  : {}
+
+function imageDownloadUrl(filename: string): string {
+  return amgImageMap[filename] ?? `${BASE_IMAGES}/${filename}`
+}
+
 const BROWSER_HEADERS: Record<string, string> = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
@@ -34,10 +45,11 @@ function sleep(ms: number) { return new Promise(res => setTimeout(res, ms)) }
 
 async function downloadImageWithRetry(url: string, dest: string): Promise<void> {
   if (existsSync(dest)) return
+  const headers = url.includes('asmodee.net') ? {} : BROWSER_HEADERS
   for (let attempt = 0; attempt < 3; attempt++) {
     if (attempt > 0) await sleep(1000 * Math.pow(2, attempt - 1))  // 1s, 2s
     try {
-      const res = await fetch(url, { headers: BROWSER_HEADERS })
+      const res = await fetch(url, { headers })
       if (res.status === 404) { console.warn(`  [404] ${url}`); return }
       if (!res.ok) { console.warn(`  [${res.status}] ${url} attempt ${attempt + 1}/3`); continue }
       writeFileSync(dest, Buffer.from(await res.arrayBuffer()))
@@ -116,7 +128,7 @@ async function retryMissing() {
   if (!missing.length) { console.log('Nothing to do.'); return }
   const tasks = missing.map((localPath) => async () => {
     const filename = localPath.replace('/images/', '')
-    await downloadImageWithRetry(`${BASE_IMAGES}/${filename}`, join(IMAGES_DIR, filename))
+    await downloadImageWithRetry(imageDownloadUrl(filename), join(IMAGES_DIR, filename))
   })
   await throttledDownload(tasks)
   console.log('\nRetry complete.')
@@ -137,7 +149,7 @@ async function main() {
   console.log(`\nDownloading ${imageLocalPaths.length} images...`)
   const tasks = imageLocalPaths.map((localPath) => async () => {
     const filename = localPath.replace('/images/', '')
-    await downloadImageWithRetry(`${BASE_IMAGES}/${filename}`, join(IMAGES_DIR, filename))
+    await downloadImageWithRetry(imageDownloadUrl(filename), join(IMAGES_DIR, filename))
   })
 
   await throttledDownload(tasks)

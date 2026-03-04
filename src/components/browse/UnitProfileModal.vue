@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import type { Character } from '../../types/index.ts'
 import { imageUrl, eraIconMap } from '../../utils/imageUrl.ts'
+import { useErrataStore } from '../../stores/errata.ts'
 
 const props = defineProps<{ character: Character | null; show: boolean }>()
 defineEmits<{ (e: 'close'): void }>()
@@ -49,6 +50,16 @@ const needsRotation = computed(() =>
 const eras = computed(() =>
   props.character?.era.split(';').map(e => e.trim()).filter(Boolean) ?? []
 )
+
+const errataStore = useErrataStore()
+errataStore.load()
+
+const artStatus = computed(() =>
+  props.character ? errataStore.isCardArtCurrent(props.character.id) : null
+)
+const errata = computed(() =>
+  props.character ? errataStore.getErrata(props.character.id) : []
+)
 </script>
 
 <template>
@@ -86,6 +97,12 @@ const eras = computed(() =>
                   activeView === 'stance' ? 'bg-sw-gold text-sw-dark' : 'bg-white/5 text-sw-text/50 hover:text-sw-text']"
                 @click="activeView = 'stance'"
               >Stance</button>
+            </div>
+
+            <!-- Card freshness badge -->
+            <div v-if="artStatus !== null" class="px-3 pb-1">
+              <span v-if="artStatus" class="text-[10px] font-semibold text-green-400">✓ Card Updated</span>
+              <span v-else class="text-[10px] font-semibold text-amber-400">⚠ Card Not Updated</span>
             </div>
 
             <!-- Flip card (fills remaining height) -->
@@ -204,6 +221,24 @@ const eras = computed(() =>
                 <li v-for="stance in character.stances" :key="stance" class="text-sm text-sw-text/70">• {{ stance }}</li>
               </ul>
             </div>
+
+            <!-- Balance History -->
+            <details class="rounded-xl border border-white/8 bg-black/20 px-4 py-3">
+              <summary class="cursor-pointer select-none text-[10px] font-bold uppercase tracking-[0.15em] text-sw-text/40">
+                Balance History
+              </summary>
+              <div v-if="errata.length === 0" class="mt-2 text-xs text-sw-text/30">
+                No balance changes recorded.
+              </div>
+              <div v-else class="mt-3 space-y-3">
+                <div v-for="entry in errata" :key="entry.version" class="text-xs">
+                  <div class="font-semibold text-sw-text/50">v{{ entry.version }} — {{ entry.date }}</div>
+                  <ul class="mt-1 list-disc list-inside text-sw-text/40 space-y-0.5">
+                    <li v-for="change in entry.changes" :key="change">{{ change }}</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
           </div>
         </div>
 
