@@ -225,7 +225,7 @@ A minimal, no-nav view of a single saved list, accessible via a short link. Coul
 
 **User feedback:** When building a squad, users want to compare two or three candidate units side-by-side to decide which one to slot in — e.g. "should I run Darth Vader or Darth Maul as primary?"
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — v1.3.2. Compare button on UnitCard, compareIds in BrowseView, CompareModal with 2-column stat comparison and green highlights for better values.
 
 ### Context
 `UnitProfileModal.vue` shows a single unit's full stat block in a modal. There is no mechanism to view two profiles at once. The Browse view has `useSearch` composable for filtering but no multi-select concept.

@@ -144,10 +144,10 @@ const errata = computed(() =>
             </div>
           </div>
 
-          <!-- Fullscreen zoom -->
+          <!-- Fullscreen zoom (mobile only) -->
           <button
             class="absolute bottom-2 right-2 z-20 rounded-lg bg-black/60 p-2 text-sw-text/60
-              backdrop-blur-sm transition-colors hover:text-sw-text"
+              backdrop-blur-sm transition-colors hover:text-sw-text md:hidden"
             @click="isFullscreen = true"
           >⛶</button>
         </div>
@@ -285,7 +285,7 @@ const errata = computed(() =>
   <Teleport to="body">
     <Transition name="fs">
       <div v-if="isFullscreen"
-        class="fixed inset-0 z-[60] flex items-center justify-center overflow-hidden bg-black"
+        class="fixed inset-0 z-[60] flex items-center justify-center overflow-hidden bg-black md:hidden"
         @click="isFullscreen = false">
         <img v-if="visibleImage" :src="visibleImage" :alt="character?.name"
           :class="needsRotation ? 'fs-img-rotated md:fs-img' : 'fs-img'" />
