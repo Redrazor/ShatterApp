@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Squad } from '../../types/index.ts'
+import { imageUrl } from '../../utils/imageUrl.ts'
 import { isSquadValid } from '../../types/index.ts'
 
 const props = defineProps<{
@@ -77,7 +78,7 @@ const roles = [
         >
           <img
             v-if="squad[role.key]!.thumbnail"
-            :src="squad[role.key]!.thumbnail"
+            :src="imageUrl(squad[role.key]!.thumbnail)"
             :alt="squad[role.key]!.name"
             class="h-8 w-8 rounded object-cover"
           />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Character } from '../../types/index.ts'
+import { imageUrl, eraIconMap } from '../../utils/imageUrl.ts'
 
 const props = defineProps<{
   a: Character
@@ -8,12 +9,6 @@ const props = defineProps<{
 
 defineEmits<{ (e: 'close'): void }>()
 
-const eraIconMap: Record<string, string> = {
-  'Clone Wars':   '/images/era/clone-wars.png',
-  'Empire':       '/images/era/empire.png',
-  'Civil War':    '/images/era/civil-war.png',
-  'New Republic': '/images/era/new-republic.png',
-}
 
 function eras(char: Character) {
   return char.era.split(';').map(e => e.trim()).filter(Boolean)
@@ -57,7 +52,7 @@ function better(field: { key: (c: Character) => string | number }, side: 'a' | '
             <div v-for="char in [a, b]" :key="char.id" class="flex flex-col items-center gap-2 bg-sw-card p-4">
               <img
                 v-if="char.thumbnail"
-                :src="char.thumbnail"
+                :src="imageUrl(char.thumbnail)"
                 :alt="char.name"
                 class="h-20 w-20 rounded-lg object-contain bg-sw-dark"
               />

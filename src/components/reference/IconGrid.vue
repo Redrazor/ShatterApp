@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { imageUrl } from '../../utils/imageUrl.ts'
 
 interface IconDef {
   name: string
@@ -93,7 +94,7 @@ function toggle(name: string) {
               @click="toggle(icon.name)"
             >
               <img
-                :src="`/images/icons/${icon.file}`"
+                :src="imageUrl(`/images/icons/${icon.file}`)"
                 :alt="icon.name"
                 class="h-8 w-8 object-contain flex-shrink-0"
               />

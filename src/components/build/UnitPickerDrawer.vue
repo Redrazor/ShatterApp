@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import type { Character } from '../../types/index.ts'
 import type { Squad } from '../../types/index.ts'
+import { imageUrl } from '../../utils/imageUrl.ts'
 import SearchBar from '../ui/SearchBar.vue'
 
 const props = defineProps<{
@@ -88,7 +89,7 @@ function select(char: Character) {
             >
               <img
                 v-if="char.thumbnail"
-                :src="char.thumbnail"
+                :src="imageUrl(char.thumbnail)"
                 :alt="char.name"
                 class="h-10 w-10 rounded object-cover"
               />

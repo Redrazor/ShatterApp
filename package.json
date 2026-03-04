@@ -15,7 +15,9 @@
     "db:migrate": "tsx server/db/migrate.ts",
     "seed": "tsx server/db/seed.ts",
     "server": "tsx server/index.ts",
-    "dev:all": "concurrently \"npm run dev\" \"npm run server\""
+    "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
+    "images:compress": "tsx scripts/compress-images.ts",
+    "images:deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
     "better-sqlite3": "^12.6.2",
@@ -38,7 +40,9 @@
     "@vue/test-utils": "^2.4.6",
     "concurrently": "^9.2.1",
     "drizzle-kit": "^0.31.9",
+    "firebase-tools": "^15.8.0",
     "happy-dom": "^17.3.1",
+    "sharp": "^0.34.5",
     "supertest": "^7.2.2",
     "tailwindcss": "^4.0.6",
     "tsx": "^4.19.2",

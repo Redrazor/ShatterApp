@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import type { Character } from '../../types/index.ts'
+import { imageUrl, eraIconMap } from '../../utils/imageUrl.ts'
 
 const props = defineProps<{ character: Character | null; show: boolean }>()
 defineEmits<{ (e: 'close'): void }>()
@@ -20,15 +21,15 @@ watch(() => props.show, (val) => {
 
 const frontImage = computed((): string => {
   if (!props.character) return ''
-  if (activeView.value === 'card')   return props.character.cardFront ?? ''
-  if (activeView.value === 'stance') return props.character.stance1 ?? ''
+  if (activeView.value === 'card')   return imageUrl(props.character.cardFront)
+  if (activeView.value === 'stance') return imageUrl(props.character.stance1)
   return ''
 })
 
 const backImage = computed((): string => {
   if (!props.character) return ''
-  if (activeView.value === 'card')   return props.character.cardBack ?? ''
-  if (activeView.value === 'stance') return props.character.stance2 ?? ''
+  if (activeView.value === 'card')   return imageUrl(props.character.cardBack)
+  if (activeView.value === 'stance') return imageUrl(props.character.stance2)
   return ''
 })
 
@@ -44,12 +45,6 @@ const needsRotation = computed(() =>
   (activeView.value === 'card' && isFlipped.value) || activeView.value === 'stance'
 )
 
-const eraIconMap: Record<string, string> = {
-  'Clone Wars':   '/images/era/clone-wars.png',
-  'Empire':       '/images/era/empire.png',
-  'Civil War':    '/images/era/civil-war.png',
-  'New Republic': '/images/era/new-republic.png',
-}
 
 const eras = computed(() =>
   props.character?.era.split(';').map(e => e.trim()).filter(Boolean) ?? []

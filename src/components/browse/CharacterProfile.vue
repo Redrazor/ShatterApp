@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCharactersStore } from '../../stores/characters.ts'
 import KeywordChip from '../ui/KeywordChip.vue'
+import { imageUrl, eraIconMap } from '../../utils/imageUrl.ts'
 
 const route  = useRoute()
 const router = useRouter()
@@ -35,14 +36,14 @@ watch(activeView, () => { isFlipped.value = false })
 
 const frontImage = computed((): string => {
   if (!character.value) return ''
-  if (activeView.value === 'card')   return character.value.cardFront ?? ''
-  if (activeView.value === 'stance') return character.value.stance1   ?? ''
+  if (activeView.value === 'card')   return imageUrl(character.value.cardFront)
+  if (activeView.value === 'stance') return imageUrl(character.value.stance1)
   return ''
 })
 const backImage = computed((): string => {
   if (!character.value) return ''
-  if (activeView.value === 'card')   return character.value.cardBack ?? ''
-  if (activeView.value === 'stance') return character.value.stance2  ?? ''
+  if (activeView.value === 'card')   return imageUrl(character.value.cardBack)
+  if (activeView.value === 'stance') return imageUrl(character.value.stance2)
   return ''
 })
 const hasBack       = computed(() => !!backImage.value)
@@ -59,12 +60,6 @@ const related = computed(() =>
 )
 
 // ── Era icons ─────────────────────────────────────────────
-const eraIconMap: Record<string, string> = {
-  'Clone Wars':   '/images/era/clone-wars.png',
-  'Empire':       '/images/era/empire.png',
-  'Civil War':    '/images/era/civil-war.png',
-  'New Republic': '/images/era/new-republic.png',
-}
 const eras = computed(() =>
   character.value?.era.split(';').map(e => e.trim()).filter(Boolean) ?? []
 )

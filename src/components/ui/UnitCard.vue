@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Character } from '../../types/index.ts'
+import { imageUrl, eraIconMap } from '../../utils/imageUrl.ts'
 
 const props = defineProps<{
   character: Character
@@ -28,12 +29,6 @@ const costLabel = props.character.unitType === 'Primary'
   ? `SP ${props.character.sp}`
   : `PC ${props.character.pc}`
 
-const eraIconMap: Record<string, string> = {
-  'Clone Wars':   '/images/era/clone-wars.png',
-  'Empire':       '/images/era/empire.png',
-  'Civil War':    '/images/era/civil-war.png',
-  'New Republic': '/images/era/new-republic.png',
-}
 
 const eras = computed(() =>
   props.character.era.split(';').map(e => e.trim()).filter(Boolean)
@@ -86,7 +81,7 @@ function goToSwp(e: MouseEvent) {
     <div class="aspect-[13/10] w-full overflow-hidden bg-sw-dark sm:aspect-auto sm:w-16 sm:flex-shrink-0">
       <img
         v-if="character.thumbnail"
-        :src="character.thumbnail"
+        :src="imageUrl(character.thumbnail)"
         :alt="character.name"
         class="h-full w-full object-contain transition-transform group-hover:scale-105"
         loading="lazy"

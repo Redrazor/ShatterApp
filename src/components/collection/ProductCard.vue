@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Product } from '../../types/index.ts'
+import { imageUrl } from '../../utils/imageUrl.ts'
 
 defineProps<{
   product: Product
@@ -22,7 +23,7 @@ defineEmits<{ (e: 'toggle'): void }>()
     <div class="aspect-[4/3] w-full overflow-hidden bg-sw-dark">
       <img
         v-if="product.mainImage || product.thumbnail"
-        :src="product.mainImage || product.thumbnail"
+        :src="imageUrl(product.mainImage || product.thumbnail)"
         :alt="product.name"
         class="h-full w-full object-contain"
         loading="lazy"
