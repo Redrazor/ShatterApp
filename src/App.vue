@@ -24,6 +24,7 @@ onMounted(() => {
               { to: '/play', label: 'Play' },
               { to: '/collection', label: 'Collection' },
               { to: '/reference', label: 'Reference', short: 'Ref' },
+              { to: '/roll', label: 'Roll' },
             ]"
             :key="route.to"
             :to="route.to"

@@ -19,6 +19,7 @@ const router = createRouter({
     { path: '/play', component: () => import('../views/PlayView.vue') },
     { path: '/collection', component: () => import('../views/CollectionView.vue') },
     { path: '/reference', component: () => import('../views/ReferenceView.vue') },
+    { path: '/roll', component: () => import('../views/RollView.vue') },
   ],
 })
 

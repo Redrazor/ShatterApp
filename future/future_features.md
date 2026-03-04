@@ -259,48 +259,77 @@ A floating "comparison tray" (max 3 units):
 
 ## #6 — Shatterpoint dice roller
 
-**User feedback:** A built-in dice roller tuned for Shatterpoint's custom dice (Attack, Defence, Boost) would let players resolve rolls without needing a separate app or physical dice.
+**User feedback:** A built-in dice roller tuned for Shatterpoint's custom dice (Attack, Defence) would let players resolve rolls without needing a separate app or physical dice.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — v1.3.5. Two-column layout (Attack / Defense), numbered roll buttons 1–12, per-die edit/reroll/remove, add-die face picker, multi-select reroll mode, CSS wobble animation, SVG die faces built from real dice image, reactive Duel Result (crits + max(0, strikes − blocks)).
 
 ### Context
-Shatterpoint uses 3 custom dice types:
-- **Attack** (red): Hit, Critical, Shove, Blank
-- **Defence** (blue): Block, Dodge, Blank
-- **Boost** (white): Hit, Block, Shove, Blank, Wild
+Shatterpoint uses **2** custom dice types:
 
-All logic is pure client-side math — no backend needed. Results rendering is the main effort.
+**Attack die (d8) — red:**
+| Roll | Face | Count |
+|---|---|---|
+| 8 | Crit | 1 |
+| 5–7 | Strike | 3 |
+| 3–4 | Expertise | 2 |
+| 1–2 | Failure | 2 |
+
+**Defense die (d6) — blue:**
+| Roll | Face | Count |
+|---|---|---|
+| 5–6 | Block | 2 |
+| 3–4 | Expertise | 2 |
+| 1–2 | Failure | 2 |
+
+### Expertise Mechanic
+Expertise results are **wild** — each Expertise face can be spent to either:
+- **Transform** an existing die result to any other face (e.g. Strike → Crit, or Failure → Block)
+- **Add** a new result die to the pool (e.g. add a free Strike or Block)
+- Both (one Expertise = one action; multiple Expertise = multiple actions)
+
+The roller UI must support this interactively: after a roll, the player spends unspent Expertise results one at a time to mutate the pool before finalising the total.
 
 ### Feature Breakdown
 
-- Dice selector: choose how many of each type to roll (e.g. 3 attack + 2 defence)
-- Roll button → animated "tumble" → show face for each die
-- Result summary: total hits, crits, blocks, etc.
-- Reroll support: tap individual dice faces to lock/unlock, then reroll unlocked dice
-- Optional: roll history for the session
+1. **Dice selector:** `+` / `–` buttons to choose how many Attack (d8) and Defense (d6) dice to roll
+2. **Roll:** Animated spin → each die settles on a face (Crit / Strike / Expertise / Failure / Block)
+3. **Expertise spending panel:** Appears when any die shows Expertise
+   - Shows count of available (unspent) Expertise results
+   - Two actions per Expertise spend:
+     - **Transform:** click any die in the pool → cycle or pick a new face from a small popover
+     - **Add die:** pick a face type to inject into the results pool as a new "bonus" die
+   - Spent Expertise counter decrements; panel hides when all spent or dismissed
+4. **Results summary:** Running total of Crits, Strikes, Blocks, Failures (Expertise shown separately as "unspent")
+5. **Reroll:** tap individual dice to lock/unlock, reroll unlocked only (resets Expertise spending)
+6. **Clear / Reset:** start over
 
 ### Options
 
 | Option | Cost | Effort | Notes |
 |---|---|---|---|
-| **Simple text result** | Free | 2 hrs | Roll → show emoji/text faces. No animation. |
-| **SVG die faces** | Free | 4–6 hrs | Custom SVG for each face, CSS flip animation. Polished feel. |
+| **Simple text result** | Free | 2 hrs | Roll → show text faces. No animation, no Expertise UI. |
+| **SVG die faces + CSS animation** | Free | 4–6 hrs | Custom SVG per face, CSS spin on roll. Polished feel, no deps. |
 | **3D dice (dice-box lib)** | Free | 1–2 days | `@3d-dice/dice-box` WebGL dice. Very impressive but heavyweight. |
 
 ### Recommended Approach
-**SVG die faces with CSS animation:** Design 4–6 SVG faces per die type (the symbols are simple enough). Use a CSS `rotateY` animation on roll. Fast to build, looks great, no heavy deps.
+**SVG die faces with CSS animation.** 4 distinct face symbols (Crit, Strike/Block, Expertise, Failure) rendered as SVG, coloured by die type. CSS `rotateY` spin on roll. Expertise spending UI as an inline action row below the dice pool.
 
 ### Implementation Notes
-- New route: `/roll` or a floating panel accessible from any view
+- New route: `/roll`
 - New files:
-  - `src/components/dice/DiceRoller.vue` — main roller UI
-  - `src/components/dice/DieFace.vue` — SVG face component keyed by `{ type, face }`
-  - `src/utils/dice.ts` — `rollDie(type): Face`, face probability tables
-- Die face probabilities per the Shatterpoint rulebook:
-  - Attack: 2× Hit, 1× Critical, 1× Shove, 2× Blank (6 sides)
-  - Defence: 2× Block, 1× Dodge, 3× Blank (6 sides)
-  - Boost: 1× Hit, 1× Block, 1× Shove, 1× Wild, 2× Blank (6 sides)
-- Keep the roller accessible from the Build view ("Test your squad") as a quick panel
+  - `src/utils/dice.ts` — `rollAttack(): AttackFace`, `rollDefense(): DefenseFace`, face enums, probability tables
+  - `src/components/dice/DieFace.vue` — SVG face keyed by `{ type: 'attack'|'defense', face }`
+  - `src/components/dice/DiceRoller.vue` — full roller UI incl. Expertise spending
+  - `src/views/RollView.vue` — thin page wrapper
+- Face types:
+  - Attack faces: `'crit' | 'strike' | 'expertise' | 'failure'`
+  - Defense faces: `'block' | 'expertise' | 'failure'`
+- Each die in the pool is a reactive object `{ type, face, locked, isBonus, id }`
+- Expertise spend state: `expertiseAvailable = ref(0)`, decrements on each action
+- Transform popover: shows only valid face options for that die's type
+- Add-die action: injects a new die with `isBonus: true` and chosen face into the pool
+- Rerolling resets `expertiseAvailable` and clears all bonus dice
+- Nav entry: "Roll" tab in main nav
 
 ---
 
@@ -385,3 +414,128 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 
 **Files:**
 - `src/views/PlayView.vue` — LE mode branch
+
+---
+
+## #10 — Dice Roller: Roll History Log
+
+**Context:** Players sometimes need to reference a previous roll result mid-game (e.g. disputed outcome, multi-roll sequence). A session log avoids re-rolling unnecessarily.
+
+**Status:** `[ ]`
+
+### Feature Breakdown
+
+- Collapsible log panel below the Duel Result box
+- Each entry records: timestamp, attack dice count + result breakdown, defense dice count + result breakdown, final Hits value
+- Session-only (cleared on page refresh or explicit "Clear log" action)
+- Entries are prepended (newest first)
+- Optional: tap an entry to copy a plain-text summary to clipboard (e.g. "4A vs 2D → 2 Hits")
+
+### Implementation Notes
+- `DiceRoller.vue`: maintain a `rollLog = ref<RollEntry[]>([])`, push on each roll and on Duel Result change triggered by a deliberate roll (not on manual face edits)
+- `RollEntry` type: `{ time: string; atkCounts: Record<string, number>; defCounts: Record<string, number>; hits: number }`
+- Log panel styled consistently with Results and Duel Result boxes
+- Limit to last 20 entries to avoid unbounded growth
+
+---
+
+## #11 — Dice Roller: Real-Time Multiplayer (WebSocket)
+
+**Context:** At the table, both players want to roll simultaneously and see a shared Duel Result without passing a phone back and forth. A WebSocket-backed room allows each player to control only their side while both see the live result.
+
+**Status:** `[ ]`
+
+### Feature Breakdown
+
+- **Room system:** Player A creates a room and shares a 4-character code; Player B joins via the code
+- **Role selection prompt:** On joining a room, each player is asked "Are you Attacking or Defending?" — role is locked for that session
+- **Split view:** Each player sees only their own column (Attack or Defense) with full interaction (roll, add, change, remove dice). The opposing column is read-only/hidden.
+- **Duel Result:** Shown to both players in real time, updates as either side changes their dice
+- **Sync protocol:** On any pool mutation (roll, face change, add, remove), the client emits the full pool summary to the server; server broadcasts to the other client in the room
+- **Disconnection handling:** Show a "Waiting for opponent…" banner if the other player disconnects; allow rejoin by room code
+
+### Options
+
+| Option | Cost | Effort | Notes |
+|---|---|---|---|
+| **Socket.io on existing Express server** | Free | 1–2 days | Add `socket.io` to `server/index.ts`; rooms are in-memory Maps. Easy to ship on Render. |
+| **Dedicated WebSocket server (ws library)** | Free | 1–2 days | Lighter than Socket.io, no automatic reconnection. |
+| **Partykit.io** | Free tier | 4–6 hrs | Managed WebSocket hosting, zero infra. Drop-in SDK. Simplest deployment path. |
+
+### Recommended Approach
+**Partykit.io** for zero-infra simplicity, or **Socket.io on the existing Express server** to avoid a new service. Room state is ephemeral (in-memory); no persistence needed.
+
+### Implementation Notes
+- New files: `src/composables/useDiceRoom.ts` — wraps socket connection, exposes `createRoom`, `joinRoom`, `sendSummary`, `onOpponentSummary`
+- `DiceColumn.vue` gets an optional `readonly` prop — when `true`, disables all interactions and shows a "Read only" badge
+- `DiceRoller.vue` adds a room join/create panel above the columns when multiplayer mode is active
+- Roll history log (#10) should include opponent rolls when in multiplayer mode
+- **Server changes:** `server/index.ts` — add Socket.io or ws upgrade; new `server/rooms.ts` — in-memory room Map
+
+---
+
+## #12 — Play View: Profile-Linked Dice Rolls
+
+**Context:** Rather than manually counting dice, players should be able to tap "Attack" or "Defend" on a unit's profile in the Play view and be taken directly to the roller with the correct number of dice pre-rolled based on that unit's stats and active stance.
+
+**Status:** `[ ]`
+
+### Feature Breakdown
+
+- **Action buttons on Play profile:** Each unit card in Play view gains two button rows:
+  - Row 1: `[ Attack ]` / `[ Defend ]`
+  - Row 2: `[ Melee ]` / `[ Ranged ]` (shown after role is chosen; only relevant roles enabled based on stance)
+- **Stance tracking:** The Play view tracks which stance is active for each unit (Stance 1 / Stance 2). This is already partially tracked in the struggle store; extend it to be per-unit and persistent for the session.
+- **Dice count from stats:** On tap, read the unit's relevant stat from the active stance:
+  - Attack → Melee Attack dice count or Ranged Attack dice count
+  - Defend → Defense dice count
+- **Navigate to roller:** Pass dice count and role to the roller (via route query or shared state), auto-roll on arrival
+- **Stance summary panel under roller:** Below the Duel Result, show a compact read-only snapshot of the active stance stats (HP, SP, Attack, Defense, relevant abilities text) so the player can immediately interpret the result (e.g. "Each hit removes 1 HP")
+- **Deep link:** The roller page accepts `?role=attack&count=4&unitId=82` query params so the Play view can construct the link directly
+
+### Implementation Notes
+- `src/views/PlayView.vue`: add `activeStance: Record<unitId, 1|2>` state, per-unit attack/defend buttons
+- `src/views/RollView.vue`: read query params on mount, pre-roll if params present, show stance panel if `unitId` provided
+- `src/components/dice/StancePanel.vue` (NEW): compact stat block from character + active stance data
+- Character data available via `useCharactersStore` (already loaded)
+- Stat mapping: stance 1 stats vs stance 2 stats — confirm field names from `src/types/index.ts`
+
+---
+
+## #13 — Play View: Unit Conditions System
+
+**Context:** Shatterpoint has a set of conditions (Disarmed, Weakened, Exhausted, Hobbled, etc.) that can be applied to units during play. Tracking them manually is error-prone. Conditions should be markable on each unit's profile in Play view, display a symbol, and mechanically affect dice options in the roller.
+
+**Status:** `[ ]`
+
+### Conditions & Mechanical Effects
+
+| Condition | Symbol | Dice Impact |
+|---|---|---|
+| **Disarmed** | ⚔️✗ | Expertise results on attack dice cannot be changed to other faces |
+| **Weakened** | ↓ | Attack dice count reduced by 1 (min 1) |
+| **Exhausted** | 💤 | Cannot attack (attack buttons disabled) |
+| **Hobbled** | 🦶 | Ranged attack option disabled |
+| **Exposed** | 👁️ | Defense dice count reduced by 1 (min 0) |
+
+*(Condition list and exact rules to be verified against official AMG rulebook)*
+
+### Feature Breakdown
+
+- **Condition picker on Play profile:** Tap a "Conditions" chip/button on a unit card to open a small overlay showing all condition icons. Tap to toggle each on/off.
+- **Active condition icons:** Applied conditions appear as small icon chips below the unit name on the Play card
+- **Dice roller integration (via #12 link):** When navigating to the roller from a unit profile, active conditions are passed along and enforced:
+  - Disarmed → expertise face-change blocked (greyed out in the face picker popover)
+  - Weakened → dice count decremented before rolling
+  - Exhausted → attack button disabled on the profile
+  - Hobbled → ranged option disabled
+  - Exposed → defense count decremented
+- **Persistence:** Conditions persist for the game session (cleared on "New Game" / reset)
+
+### Implementation Notes
+- `src/stores/playState.ts` (NEW or extend existing play store): `conditions: Record<unitId, ConditionKey[]>`
+- `ConditionKey` enum: `'disarmed' | 'weakened' | 'exhausted' | 'hobbled' | 'exposed'`
+- `src/components/play/ConditionPicker.vue` (NEW): icon grid overlay, emits toggled condition list
+- `DiceColumn.vue`: accept optional `conditions` prop; enforce Disarmed lock on expertise face changes; adjust initial roll count for Weakened/Exposed
+- SVG or emoji icons per condition — consider a consistent icon set (Heroicons or custom SVG)
+- **Requires #12** (profile-linked rolls) to be built first for condition enforcement in the roller to work end-to-end
