@@ -1,6 +1,6 @@
 # ShatterApp
 
-**[Live App](https://shatterapp.vercel.app)** · **[GitHub](https://github.com/Redrazor/ShatterApp)** · **[Ko-fi](https://ko-fi.com/redrazor)** · MIT License
+**[Live App](https://shatterapp.com)** · **[GitHub](https://github.com/Redrazor/ShatterApp)** · **[Ko-fi](https://ko-fi.com/redrazor)** · MIT License
 
 A companion web app for **Star Wars: Shatterpoint**, the skirmish miniatures game by Atomic Mass Games.
 
