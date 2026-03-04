@@ -1,4 +1,4 @@
-import type { CompactBuild, CompactProfile } from '../types/index.ts'
+import type { CompactBuild } from '../types/index.ts'
 
 function toBase64url(str: string): string {
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
@@ -30,27 +30,6 @@ export function decodeBuild(str: string): CompactBuild | null {
     if (!Array.isArray(obj.s[0]) || obj.s[0].length !== 3) return null
     if (!Array.isArray(obj.s[1]) || obj.s[1].length !== 3) return null
     return obj as CompactBuild
-  } catch {
-    return null
-  }
-}
-
-export function encodeProfile(
-  owned: string[],
-  fav: number[],
-  lists: CompactBuild[],
-): string {
-  const profile: CompactProfile = { v: 1, owned, fav, lists }
-  return toBase64url(JSON.stringify(profile))
-}
-
-export function decodeProfile(str: string): CompactProfile | null {
-  try {
-    const obj = JSON.parse(fromBase64url(str))
-    if (typeof obj !== 'object' || !obj) return null
-    if (obj.v !== 1) return null
-    if (!Array.isArray(obj.owned) || !Array.isArray(obj.fav) || !Array.isArray(obj.lists)) return null
-    return obj as CompactProfile
   } catch {
     return null
   }

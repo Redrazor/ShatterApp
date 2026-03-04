@@ -3,19 +3,31 @@ import { ref, computed, onMounted } from 'vue'
 import { useProductsStore } from '../stores/products.ts'
 import { useCollectionStore } from '../stores/collection.ts'
 import { useCharactersStore } from '../stores/characters.ts'
-import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import ProductCard from '../components/collection/ProductCard.vue'
-import { encodeProfile } from '../utils/profileShare.ts'
+import { useDataBackup } from '../composables/useDataBackup.ts'
 
 const productsStore = useProductsStore()
 const collectionStore = useCollectionStore()
 const charactersStore = useCharactersStore()
-const sfStore = useStrikeForceStore()
+const { exportData, importData, importError, importSuccess, exportSuccess } = useDataBackup()
+
+const fileInput = ref<HTMLInputElement | null>(null)
 
 onMounted(() => {
   productsStore.load()
   charactersStore.load()
 })
+
+function triggerImport() {
+  fileInput.value?.click()
+}
+
+function onFileChange(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (file) importData(file)
+  // reset so the same file can be re-imported if needed
+  ;(e.target as HTMLInputElement).value = ''
+}
 
 const ownedCount = computed(() => productsStore.products.filter(
   (p) => collectionStore.isOwned(p.swp),
@@ -40,15 +52,6 @@ const eraStats = computed(() => {
   return [...map.entries()].map(([era, { total, owned }]) => ({ era, total, owned })).sort((a, b) => a.era.localeCompare(b.era))
 })
 
-const linkCopied = ref(false)
-
-async function copyProfileLink() {
-  const encoded = encodeProfile(collectionStore.owned, [], sfStore.savedLists)
-  const url = `${window.location.origin}/?p=${encoded}`
-  await navigator.clipboard.writeText(url)
-  linkCopied.value = true
-  setTimeout(() => { linkCopied.value = false }, 2000)
-}
 </script>
 
 <template>
@@ -68,15 +71,26 @@ async function copyProfileLink() {
             <span class="stat-lbl">Units owned</span>
           </div>
         </div>
+
+        <!-- Backup controls -->
         <div class="flex items-center gap-2">
+          <input ref="fileInput" type="file" accept=".json" class="hidden" @change="onFileChange" />
           <button
             class="rounded-lg border border-sw-gold/30 px-3 py-1.5 text-xs text-sw-gold/70 transition-colors hover:border-sw-gold hover:text-sw-gold"
-            @click="copyProfileLink"
+            @click="exportData"
           >
-            Copy Profile Link
+            Export
+          </button>
+          <button
+            class="rounded-lg border border-sw-gold/30 px-3 py-1.5 text-xs text-sw-gold/70 transition-colors hover:border-sw-gold hover:text-sw-gold"
+            @click="triggerImport"
+          >
+            Import
           </button>
           <Transition name="fade">
-            <span v-if="linkCopied" class="text-xs text-green-400">Link copied!</span>
+            <span v-if="exportSuccess" class="text-xs text-green-400">Exported!</span>
+            <span v-else-if="importSuccess" class="text-xs text-green-400">Imported!</span>
+            <span v-else-if="importError" class="text-xs text-red-400">{{ importError }}</span>
           </Transition>
         </div>
       </div>

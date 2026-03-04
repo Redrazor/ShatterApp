@@ -44,7 +44,7 @@
 
 **User feedback:** Users lose their collection and saved Strike Force lists when localStorage is cleared, they switch device, or the app redeploys. Need a more permanent backup/sync solution.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done (Phase A) — v1.3.1. Export/Import buttons added to Collection view. `src/composables/useDataBackup.ts` handles JSON backup (`{ version, collection, savedLists }`). Profile share link and AppImportBanner removed. Phase B (Firebase cloud sync) deferred to Phase 2 alongside #7 (mobile).
 
 ### Context
 Currently both `collection` and `strikeForce` stores use `pinia-plugin-persistedstate` → localStorage. This is device- and browser-specific. The app already has a basic profile share link (`/?p=<encoded>`) but it requires manual effort and isn't a true backup.
@@ -68,7 +68,7 @@ Firebase is already in the project (for image CDN at `shatterapp-images.web.app`
 - Files: `src/views/CollectionView.vue` or a new `src/views/SettingsView.vue`, new composable `src/composables/useDataBackup.ts`
 - No backend changes required
 
-**Phase B — Google login + Firestore (proper solution):**
+**Phase B — Google login + Firestore (proper solution) — Phase 2, pair with mobile (#7):**
 - Firebase is already set up (`firebase.json`, `.firebaserc` → project `shatterapp-images`)
 - Add `firebase` JS SDK to frontend: `npm install firebase`
 - Enable Firebase Auth (Google provider) in Firebase Console
@@ -81,12 +81,12 @@ Firebase is already in the project (for image CDN at `shatterapp-images.web.app`
   - `src/composables/useCloudSync.ts` — watch stores, debounce write to Firestore
   - `src/components/AppHeader.vue` (or `App.vue`) — Google Sign-In button
 - Firestore free tier: 50k reads/day, 20k writes/day — more than sufficient for this scale
+- **Ship alongside #7 (Capacitor/mobile)** — cloud sync is more valuable once the app is installable
 
 ### Implementation Notes
 - Ship Phase A immediately — gives users a manual backup today
 - Phase B can run alongside localStorage (Firestore as source of truth on login, localStorage as offline cache)
 - Keep auth optional — app remains fully functional without login
-- Profile share links already exist (`src/utils/profileShare.ts`) and can be reused for the JSON structure
 
 ---
 

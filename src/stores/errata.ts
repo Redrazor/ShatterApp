@@ -23,9 +23,9 @@ export const useErrataStore = defineStore('errata', () => {
     return data.value[String(characterId)] ?? []
   }
 
-  function isCardArtCurrent(characterId: number): boolean | null {
+  function isCardArtCurrent(characterId: number): boolean {
     const entries = getErrata(characterId)
-    if (entries.length === 0) return null
+    if (entries.length === 0) return true
     return entries[0].cardArtCurrent
   }
 

@@ -72,12 +72,6 @@ export interface CompactBuild {
   s: [[number, number, number], [number, number, number]]
 }
 
-export interface CompactProfile {
-  v: 1
-  owned: string[]
-  fav: number[]
-  lists: CompactBuild[]
-}
 
 export function hasStrikeForceConflict(squads: [Squad, Squad]): boolean {
   const units: Character[] = []

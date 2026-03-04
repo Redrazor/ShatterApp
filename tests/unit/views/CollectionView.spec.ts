@@ -53,11 +53,6 @@ describe('CollectionView', () => {
   beforeEach(() => {
     pinia = createPinia()
     setActivePinia(pinia)
-    Object.defineProperty(navigator, 'clipboard', {
-      value: { writeText: vi.fn().mockResolvedValue(undefined) },
-      configurable: true,
-      writable: true,
-    })
   })
 
   function mountView(storeSetup?: () => void) {
@@ -143,11 +138,19 @@ describe('CollectionView', () => {
     expect(wrapper.text()).toContain('2')
   })
 
-  it('"Copy Profile Link" button exists', () => {
+  it('Export button exists', () => {
     const wrapper = mountView(() => {
       useProductsStore().products = [makeProduct()]
     })
-    const btn = wrapper.findAll('button').find(b => b.text().includes('Copy Profile Link'))
+    const btn = wrapper.findAll('button').find(b => b.text() === 'Export')
+    expect(btn).toBeTruthy()
+  })
+
+  it('Import button exists', () => {
+    const wrapper = mountView(() => {
+      useProductsStore().products = [makeProduct()]
+    })
+    const btn = wrapper.findAll('button').find(b => b.text() === 'Import')
     expect(btn).toBeTruthy()
   })
 

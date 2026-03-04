@@ -1,47 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
-import { decodeProfile } from './utils/profileShare.ts'
-import type { CompactProfile } from './types/index.ts'
-import AppImportBanner from './components/AppImportBanner.vue'
-import { useCollectionStore } from './stores/collection.ts'
-import { useStrikeForceStore } from './stores/strikeForce.ts'
+import { onMounted } from 'vue'
+import { RouterLink, RouterView } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
 
-const route = useRoute()
-const router = useRouter()
-const collectionStore = useCollectionStore()
-const sfStore = useStrikeForceStore()
-
-const pendingProfile = ref<CompactProfile | null>(null)
-
-onMounted(async () => {
+onMounted(() => {
   // Attempt programmatic portrait lock (works in PWA / fullscreen contexts)
   ;(screen.orientation as unknown as { lock?: (o: string) => Promise<void> })?.lock?.('portrait-primary')?.catch(() => {})
-
-  // Wait for the initial navigation (including / → /browse redirect) to settle
-  // before reading query params, otherwise route.query may still be empty.
-  await router.isReady()
-
-  // Check for profile import link
-  const p = route.query.p as string | undefined
-  if (p) {
-    const profile = decodeProfile(p)
-    if (profile) pendingProfile.value = profile
-    router.replace({ query: { ...route.query, p: undefined } })
-  }
 })
-
-function handleImport() {
-  if (!pendingProfile.value) return
-  collectionStore.importOwned(pendingProfile.value.owned)
-  sfStore.importLists(pendingProfile.value.lists)
-  pendingProfile.value = null
-}
-
-function handleDismiss() {
-  pendingProfile.value = null
-}
 </script>
 
 <template>
@@ -71,14 +36,6 @@ function handleDismiss() {
         </div>
       </div>
     </nav>
-
-    <!-- Profile import banner -->
-    <AppImportBanner
-      v-if="pendingProfile"
-      :profile="pendingProfile"
-      @import="handleImport"
-      @dismiss="handleDismiss"
-    />
 
     <!-- Main content -->
     <main class="mx-auto max-w-7xl px-4 py-6">

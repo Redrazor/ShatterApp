@@ -20,7 +20,7 @@ defineEmits<{ (e: 'toggle'): void }>()
     ]"
   >
     <!-- Product image -->
-    <div class="aspect-[4/3] w-full overflow-hidden bg-sw-dark">
+    <div class="aspect-[4/3] w-full overflow-hidden bg-sw-dark pt-[15px]">
       <img
         v-if="product.mainImage || product.thumbnail"
         :src="imageUrl(product.mainImage || product.thumbnail)"

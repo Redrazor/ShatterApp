@@ -55,7 +55,7 @@ const errataStore = useErrataStore()
 errataStore.load()
 
 const artStatus = computed(() =>
-  props.character ? errataStore.isCardArtCurrent(props.character.id) : null
+  props.character ? errataStore.isCardArtCurrent(props.character.id) : true
 )
 const errata = computed(() =>
   props.character ? errataStore.getErrata(props.character.id) : []
@@ -100,7 +100,7 @@ const errata = computed(() =>
             </div>
 
             <!-- Card freshness badge -->
-            <div v-if="artStatus !== null" class="px-3 pb-1">
+            <div class="px-3 pb-1">
               <span v-if="artStatus" class="text-[10px] font-semibold text-green-400">✓ Card Updated</span>
               <span v-else class="text-[10px] font-semibold text-amber-400">⚠ Card Not Updated</span>
             </div>
