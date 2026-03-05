@@ -337,7 +337,7 @@ The roller UI must support this interactively: after a roll, the player spends u
 
 **User feedback:** Users want an installable mobile app with offline support, especially for use at the game table where internet may be spotty.
 
-**Status:** `[~]` Phase A done — v1.3.6. Custom `beforeinstallprompt` banner (`AppInstallBanner.vue`) with Android install flow + iOS "Share → Add to Home Screen" hint. Dismiss is persisted to localStorage. Phase B (Capacitor) deferred to Version 2.
+**Status:** `[x]` Done — v1.4.0. Phase A (PWA install banner) shipped in v1.3.6. v1.4.0 completes the mobile pass: hamburger nav, per-screen responsive fixes (Browse, Build, Play, Roll), mission picker swipe + fullscreen zoom (rotated 90°), struggle tracker vertical layout on mobile (P1 buttons top, vertical rail, P2 buttons bottom), struggle cards single-column vertical display. Phase B (Capacitor) deferred to Version 2.
 
 ### Context
 The app is already a PWA (Vite PWA plugin with service worker). The main gap is that installing from the browser home screen is low-discoverability. Capacitor wraps the existing Vue/Vite build into a native iOS/Android shell with no rewrite needed.

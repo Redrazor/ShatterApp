@@ -37,7 +37,7 @@ const colClass = (n: number) => n === 2 ? 'grid-cols-2' : 'grid-cols-3'
       >
         <div class="absolute inset-0 bg-black/70" @click="$emit('close')" />
 
-        <div class="relative z-10 w-full max-w-2xl rounded-xl border border-sw-gold/30 bg-sw-card shadow-2xl overflow-hidden">
+        <div class="relative z-10 w-full max-w-2xl rounded-xl border border-sw-gold/30 bg-sw-card shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
           <!-- Header -->
           <div class="flex items-center justify-between border-b border-sw-gold/20 px-4 py-3">
             <h2 class="font-semibold text-sw-gold">Compare</h2>
@@ -63,7 +63,7 @@ const colClass = (n: number) => n === 2 ? 'grid-cols-2' : 'grid-cols-3'
           </div>
 
           <!-- Stat rows -->
-          <div class="divide-y divide-sw-gold/10">
+          <div class="divide-y divide-sw-gold/10 overflow-y-auto">
             <div v-for="row in rows" :key="row.label">
               <div class="px-4 pt-2 text-[9px] uppercase tracking-widest text-sw-text/40">{{ row.label }}</div>
               <div :class="['grid pb-2', colClass(chars.length)]">

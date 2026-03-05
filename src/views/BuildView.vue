@@ -231,7 +231,7 @@ function importSharedBuild() {
     <Transition name="fade">
       <div
         v-if="saveFeedback"
-        class="no-print fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-full bg-sw-card border border-sw-gold/30 px-4 py-2 text-sm text-sw-gold shadow-xl"
+        class="no-print fixed bottom-6 inset-x-4 mx-auto z-50 w-fit rounded-full bg-sw-card border border-sw-gold/30 px-4 py-2 text-sm text-sw-gold shadow-xl text-center"
       >
         {{ saveFeedback }}
       </div>

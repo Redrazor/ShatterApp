@@ -44,7 +44,12 @@ function goToSwp(e: MouseEvent) {
 
 <template>
   <button
-    class="group relative flex w-full flex-col overflow-hidden rounded-xl border border-sw-gold/20 bg-sw-card shadow-md transition-all hover:border-sw-gold hover:shadow-sw-gold/20 text-left sm:flex-row"
+    :class="[
+      'group relative flex w-full flex-col overflow-hidden rounded-xl border bg-sw-card shadow-md transition-all text-left sm:flex-row',
+      comparing
+        ? 'border-sw-gold ring-2 ring-sw-gold shadow-[0_0_12px_rgba(201,168,76,0.4)]'
+        : 'border-sw-gold/20 hover:border-sw-gold hover:shadow-sw-gold/20',
+    ]"
     @click="$emit('click')"
   >
     <!-- SWP badge (top-left) -->
@@ -78,15 +83,15 @@ function goToSwp(e: MouseEvent) {
     </div>
 
     <!-- Thumbnail: portrait on mobile, slim strip on sm+ -->
-    <div class="aspect-[13/10] w-full overflow-hidden bg-sw-dark sm:aspect-auto sm:w-16 sm:flex-shrink-0">
+    <div class="flex w-full items-center justify-center pt-5 px-4 pb-2 bg-sw-dark sm:aspect-auto sm:w-16 sm:flex-shrink-0 sm:p-0">
       <img
         v-if="character.thumbnail"
         :src="imageUrl(character.thumbnail)"
         :alt="character.name"
-        class="h-full w-full object-contain transition-transform group-hover:scale-105"
+        class="h-28 w-28 object-contain transition-transform group-hover:scale-105 sm:h-full sm:w-full"
         loading="lazy"
       />
-      <div v-else class="flex h-full w-full items-center justify-center text-4xl text-sw-text/20 sm:text-2xl">⚔</div>
+      <div v-else class="flex h-28 w-28 items-center justify-center text-4xl text-sw-text/20 sm:h-full sm:w-full sm:text-2xl">⚔</div>
     </div>
 
     <!-- Info -->

@@ -109,7 +109,7 @@ function addTag(tag: string) {
         v-for="tag in tagSuggestions"
         :key="tag"
         class="cursor-pointer px-3 py-1.5 text-sm text-sw-text hover:bg-sw-gold/10"
-        @mousedown.prevent="addTag(tag)"
+        @click="addTag(tag)"
       >
         {{ tag }}
       </li>

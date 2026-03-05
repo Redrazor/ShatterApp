@@ -22,7 +22,7 @@ const hasRolled = computed(() =>
 <template>
   <div class="space-y-4">
     <h1 class="text-2xl font-bold text-sw-gold">Dice Roller</h1>
-    <div class="grid grid-cols-2 gap-6 md:gap-10">
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-10">
       <DiceColumn type="attack"  @update:summary="atkSummary = $event" />
       <DiceColumn type="defense" @update:summary="defSummary = $event" />
     </div>

@@ -59,7 +59,7 @@ onBeforeUnmount(() => {
   <Transition name="slide-up">
     <div
       v-if="visible"
-      class="fixed bottom-4 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-xl border border-sw-gold/30 bg-sw-card/95 px-4 py-3 shadow-xl backdrop-blur-sm"
+      class="fixed bottom-4 inset-x-4 z-50 mx-auto max-w-sm rounded-xl border border-sw-gold/30 bg-sw-card/95 px-4 py-3 shadow-xl backdrop-blur-sm"
     >
       <div class="flex items-start gap-3">
         <span class="mt-0.5 text-2xl">📱</span>
@@ -98,5 +98,5 @@ onBeforeUnmount(() => {
 .slide-up-enter-active,
 .slide-up-leave-active { transition: all 0.3s ease; }
 .slide-up-enter-from,
-.slide-up-leave-to  { opacity: 0; transform: translate(-50%, 1rem); }
+.slide-up-leave-to  { opacity: 0; transform: translateY(1rem); }
 </style>

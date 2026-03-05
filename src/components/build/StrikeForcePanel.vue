@@ -19,9 +19,9 @@ defineEmits<{
 
 <template>
   <div class="rounded-xl border border-sw-gold/20 bg-sw-card p-4 space-y-4">
-    <div class="flex items-center justify-between">
-      <h2 class="text-lg font-bold text-sw-gold">Strike Force</h2>
-      <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
+      <h2 class="text-lg font-bold text-sw-gold flex-1">Strike Force</h2>
+      <div class="flex flex-wrap items-center gap-1">
         <span
           v-if="isComplete"
           class="rounded-full bg-green-500/20 px-3 py-0.5 text-xs font-medium text-green-400 no-print"
@@ -41,7 +41,7 @@ defineEmits<{
           Share
         </button>
         <button
-          class="no-print rounded px-2 py-1 text-xs text-sw-text/40 hover:text-sw-gold"
+          class="no-print hidden sm:block rounded px-2 py-1 text-xs text-sw-text/40 hover:text-sw-gold"
           @click="$emit('print')"
         >
           Print

@@ -10,6 +10,39 @@ const missionsStore = useMissionsStore()
 const pickerIndex = ref(0)
 const slideDir = ref<'left' | 'right'>('right')
 const cardCollapsed = ref(false)
+const touchStartX = ref(0)
+const missionFullscreen = ref(false)
+const missionFullscreenSrc = ref('')
+const fsTouchStartX = ref(0)
+
+function openFullscreen(src: string) {
+  missionFullscreenSrc.value = src
+  missionFullscreen.value = true
+}
+
+function onTouchStart(e: TouchEvent) {
+  touchStartX.value = e.touches[0].clientX
+}
+function onTouchEnd(e: TouchEvent) {
+  const dx = e.changedTouches[0].clientX - touchStartX.value
+  if (Math.abs(dx) < 40) return
+  if (dx > 0) goPrev()
+  else goNext()
+}
+
+function onFsTouchStart(e: TouchEvent) {
+  fsTouchStartX.value = e.touches[0].clientX
+}
+function onFsTouchEnd(e: TouchEvent) {
+  const dx = e.changedTouches[0].clientX - fsTouchStartX.value
+  if (Math.abs(dx) < 40) {
+    missionFullscreen.value = false
+    return
+  }
+  if (dx > 0) goPrev()
+  else goNext()
+  missionFullscreenSrc.value = imageUrl(missionsStore.missions[pickerIndex.value].card)
+}
 watch(() => store.selectedMission, () => { cardCollapsed.value = false })
 const cardImgWidth = ref<number | null>(null)
 
@@ -64,32 +97,36 @@ function isP2Innermost(pos: number): boolean {
   return store.p2InnermostSlot !== null && pos === store.p2InnermostSlot
 }
 
-function cellClass(pos: number): string {
+function cellClass(pos: number, vertical = false): string {
   const p1Filled = isP1Filled(pos)
   const p2Filled = isP2Filled(pos)
   const p1Win = store.p1WinsStruggle && isP1Innermost(pos)
   const p2Win = store.p2WinsStruggle && isP2Innermost(pos)
 
-  let base = 'relative flex items-center justify-center flex-1 min-w-0 rounded select-none transition-all duration-150 h-10 '
+  let base = vertical
+    ? 'relative flex items-center justify-center w-full flex-none rounded select-none transition-all duration-150 h-10 '
+    : 'relative flex items-center justify-center flex-1 min-w-0 rounded select-none transition-all duration-150 h-10 '
 
   if (pos === 0) {
-    base += 'flex-none w-11 !h-12 rounded-lg '
+    base += vertical ? 'w-full !h-14 rounded-lg ' : 'flex-none w-11 !h-12 rounded-lg '
     base += 'bg-gradient-to-b from-zinc-800 to-zinc-950 '
     base += 'border-2 border-amber-500/40 '
     base += 'shadow-[inset_0_2px_6px_rgba(0,0,0,0.6),0_0_10px_rgba(245,158,11,0.2)] '
   } else if (p1Filled) {
     base += 'bg-gradient-to-b from-sky-400 to-blue-700 '
     base += 'border border-sky-300/20 '
-    base += 'shadow-[0_3px_0_0_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.22)] '
+    base += vertical
+      ? 'shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] active:scale-95 '
+      : 'shadow-[0_3px_0_0_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.22)] active:shadow-[0_1px_0_0_rgba(0,0,0,0.55)] active:translate-y-0.5 '
     base += 'cursor-pointer hover:from-sky-300 hover:to-blue-600 '
-    base += 'active:shadow-[0_1px_0_0_rgba(0,0,0,0.55)] active:translate-y-0.5 '
     if (p1Win) base += 'ring-2 ring-green-400 shadow-[0_0_12px_rgba(74,222,128,0.55)] animate-pulse '
   } else if (p2Filled) {
     base += 'bg-gradient-to-b from-amber-300 to-amber-700 '
     base += 'border border-amber-200/20 '
-    base += 'shadow-[0_3px_0_0_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.22)] '
+    base += vertical
+      ? 'shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] active:scale-95 '
+      : 'shadow-[0_3px_0_0_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.22)] active:shadow-[0_1px_0_0_rgba(0,0,0,0.55)] active:translate-y-0.5 '
     base += 'cursor-pointer hover:from-amber-200 hover:to-amber-600 '
-    base += 'active:shadow-[0_1px_0_0_rgba(0,0,0,0.55)] active:translate-y-0.5 '
     if (p2Win) base += 'ring-2 ring-green-400 shadow-[0_0_12px_rgba(74,222,128,0.55)] animate-pulse '
   } else if (pos < 0) {
     base += 'bg-gradient-to-b from-zinc-900 to-zinc-950 border border-zinc-700/25 '
@@ -191,17 +228,56 @@ const ROMAN = ['I', 'II', 'III']
       <!-- Missions loaded -->
       <template v-else-if="missionsStore.missions.length > 0">
 
-        <!-- Grid: arrows in outer cols, card+name+dots+button share the center col (same width) -->
-        <div class="grid gap-x-3 gap-y-4" style="grid-template-columns: 2.5rem 1fr 2.5rem">
+        <!-- ── MOBILE: full-width card, swipe to navigate ── -->
+        <div class="flex flex-col gap-4 sm:hidden"
+          @touchstart.passive="onTouchStart"
+          @touchend.passive="onTouchEnd"
+        >
+          <div class="relative w-full overflow-hidden rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center"
+               style="min-height: 56vw">
+            <Transition :name="`card-slide-${slideDir}`" mode="out-in">
+              <img
+                :key="pickerIndex"
+                :src="imageUrl(missionsStore.missions[pickerIndex].card)"
+                class="w-full object-contain max-h-[65vh]"
+                alt="mission card"
+              />
+            </Transition>
+            <button
+              class="absolute bottom-2 right-2 z-20 rounded-lg bg-black/60 p-2 text-white/60 backdrop-blur-sm transition-colors hover:text-white"
+              @click.stop="openFullscreen(imageUrl(missionsStore.missions[pickerIndex].card))"
+            >⛶</button>
+          </div>
 
-          <!-- Left arrow — col 1, vertically centred against the card -->
+          <div class="text-center font-semibold text-zinc-200">
+            {{ missionsStore.missions[pickerIndex].name }}
+          </div>
+
+          <div class="flex justify-center gap-1.5">
+            <span
+              v-for="(_, i) in missionsStore.missions" :key="i"
+              class="block h-1.5 w-1.5 rounded-full transition-colors duration-200"
+              :class="i === pickerIndex ? 'bg-amber-400' : 'bg-zinc-600'"
+            />
+          </div>
+
+          <button
+            class="w-full rounded-xl bg-amber-500 px-4 py-3 font-bold text-zinc-900
+                   shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all
+                   hover:bg-amber-400 active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
+            @click="store.confirmMission(missionsStore.missions[pickerIndex])"
+          >▶ Play this Mission</button>
+        </div>
+
+        <!-- ── DESKTOP: 3-col grid with arrow buttons ── -->
+        <div class="hidden sm:grid gap-x-3 gap-y-4" style="grid-template-columns: 2.5rem 1fr 2.5rem">
+
           <button
             class="self-center flex h-24 w-full items-center justify-center
                    rounded-lg border-2 border-zinc-400 bg-zinc-700 text-white
                    shadow-[0_4px_14px_rgba(0,0,0,0.8)]
                    transition-all hover:border-amber-400 hover:bg-amber-500 hover:text-zinc-900
-                   active:scale-95
-                   disabled:cursor-not-allowed disabled:opacity-20
+                   active:scale-95 disabled:cursor-not-allowed disabled:opacity-20
                    disabled:hover:border-zinc-400 disabled:hover:bg-zinc-700 disabled:hover:text-white"
             :disabled="pickerIndex === 0"
             @click="goPrev"
@@ -211,9 +287,7 @@ const ROMAN = ['I', 'II', 'III']
             </svg>
           </button>
 
-          <!-- Card — col 2, fixed height prevents flicker on out-in transition -->
-          <div class="overflow-hidden rounded-2xl border border-zinc-700/50 bg-zinc-900 p-2 shadow-2xl
-                      flex items-center justify-center"
+          <div class="overflow-hidden rounded-2xl border border-zinc-700/50 bg-zinc-900 p-2 shadow-2xl flex items-center justify-center"
                style="height: 338px;">
             <Transition :name="`card-slide-${slideDir}`" mode="out-in">
               <img
@@ -226,14 +300,12 @@ const ROMAN = ['I', 'II', 'III']
             </Transition>
           </div>
 
-          <!-- Right arrow — col 3, vertically centred against the card -->
           <button
             class="self-center flex h-24 w-full items-center justify-center
                    rounded-lg border-2 border-zinc-400 bg-zinc-700 text-white
                    shadow-[0_4px_14px_rgba(0,0,0,0.8)]
                    transition-all hover:border-amber-400 hover:bg-amber-500 hover:text-zinc-900
-                   active:scale-95
-                   disabled:cursor-not-allowed disabled:opacity-20
+                   active:scale-95 disabled:cursor-not-allowed disabled:opacity-20
                    disabled:hover:border-zinc-400 disabled:hover:bg-zinc-700 disabled:hover:text-white"
             :disabled="pickerIndex === missionsStore.missions.length - 1"
             @click="goNext"
@@ -243,32 +315,25 @@ const ROMAN = ['I', 'II', 'III']
             </svg>
           </button>
 
-          <!-- Mission name — col 2 -->
           <div class="col-start-2 text-center font-semibold text-zinc-200">
             {{ missionsStore.missions[pickerIndex].name }}
           </div>
 
-          <!-- Dot indicators — col 2 -->
           <div class="col-start-2 flex justify-center gap-1.5">
             <span
-              v-for="(_, i) in missionsStore.missions"
-              :key="i"
+              v-for="(_, i) in missionsStore.missions" :key="i"
               class="block h-1.5 w-1.5 rounded-full transition-colors duration-200"
               :class="i === pickerIndex ? 'bg-amber-400' : 'bg-zinc-600'"
             />
           </div>
 
-          <!-- Confirm button — col 2, width clamped to rendered card image width -->
           <button
             class="col-start-2 mx-auto w-full rounded-xl bg-amber-500 px-4 py-3 font-bold text-zinc-900
                    shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all
-                   hover:bg-amber-400
-                   active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
+                   hover:bg-amber-400 active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
             :style="cardImgWidth ? { maxWidth: cardImgWidth + 'px' } : {}"
             @click="store.confirmMission(missionsStore.missions[pickerIndex])"
-          >
-            ▶ Play this Mission
-          </button>
+          >▶ Play this Mission</button>
 
         </div>
       </template>
@@ -306,12 +371,18 @@ const ROMAN = ['I', 'II', 'III']
 
         <!-- Expanded: full-size card -->
         <template v-else>
-          <img
-            data-testid="mission-card"
-            :src="imageUrl(store.selectedMission.card)"
-            class="w-full max-h-[322px] rounded-lg object-contain"
-            alt="mission card"
-          />
+          <div class="relative">
+            <img
+              data-testid="mission-card"
+              :src="imageUrl(store.selectedMission.card)"
+              class="w-full max-h-[322px] rounded-lg object-contain"
+              alt="mission card"
+            />
+            <button
+              class="absolute bottom-2 right-2 z-20 rounded-lg bg-black/60 p-2 text-white/60 backdrop-blur-sm transition-colors hover:text-white sm:hidden"
+              @click.stop="openFullscreen(imageUrl(store.selectedMission.card))"
+            >⛶</button>
+          </div>
           <div class="mt-1 flex items-center justify-between px-1">
             <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
               {{ store.selectedMission.name }}
@@ -382,9 +453,128 @@ const ROMAN = ['I', 'II', 'III']
       </Transition>
 
       <!-- ══════════════════════════════════════════
-           STRUGGLE TRACK
+           VERTICAL STRUGGLE TRACK (mobile only)
            ══════════════════════════════════════════ -->
-      <div class="overflow-hidden rounded-2xl border border-zinc-700/60 bg-zinc-900 shadow-2xl">
+      <div class="sm:hidden overflow-hidden rounded-2xl border border-zinc-700/60 bg-zinc-900 shadow-2xl">
+
+        <!-- P1 header + move buttons -->
+        <div class="border-b border-zinc-800/80 px-4 py-3 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">▲ P1</span>
+            <span class="rounded-full bg-sky-950 px-2 py-0.5 text-[10px] font-bold tabular-nums text-sky-400 border border-sky-800/50">{{ store.p1Momentum }}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              class="rounded-lg bg-gradient-to-b from-zinc-700 to-zinc-800 px-2 py-3 text-sm font-bold
+                     border border-zinc-600/50 text-sky-300 transition-all
+                     shadow-[0_4px_0_0_rgba(0,0,0,0.5)] hover:from-zinc-600 hover:to-zinc-700 hover:text-sky-200
+                     active:shadow-[0_1px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px]
+                     disabled:opacity-25 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:shadow-[0_4px_0_0_rgba(0,0,0,0.5)]"
+              :disabled="store.strugglePosition <= -8"
+              @click="store.moveStruggle(-3)"
+            >▲▲ +3</button>
+            <button
+              class="rounded-lg bg-gradient-to-b from-zinc-700 to-zinc-800 px-2 py-3 text-sm font-bold
+                     border border-zinc-600/50 text-sky-300 transition-all
+                     shadow-[0_4px_0_0_rgba(0,0,0,0.5)] hover:from-zinc-600 hover:to-zinc-700 hover:text-sky-200
+                     active:shadow-[0_1px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px]
+                     disabled:opacity-25 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:shadow-[0_4px_0_0_rgba(0,0,0,0.5)]"
+              :disabled="store.strugglePosition <= -8"
+              @click="store.moveStruggle(-1)"
+            >▲ +1</button>
+          </div>
+        </div>
+
+        <!-- Vertical rail -->
+        <div class="px-3 py-2">
+          <div
+            class="relative w-full rounded-xl
+                   bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950
+                   border border-zinc-800/80
+                   shadow-[inset_0_3px_10px_rgba(0,0,0,0.7)]"
+          >
+            <div class="pointer-events-none absolute inset-y-3 left-[9px] w-px rounded-full bg-zinc-700/30" />
+            <div class="pointer-events-none absolute inset-y-3 right-[9px] w-px rounded-full bg-zinc-700/30" />
+            <div class="flex flex-col w-full gap-0.5 py-1 px-1">
+              <div
+                v-for="pos in POSITIONS"
+                :key="pos"
+                :class="cellClass(pos, true)"
+                @click="onCellClick(pos)"
+              >
+                <span
+                  v-if="pos !== 0 && !isP1Filled(pos) && !isP2Filled(pos)"
+                  class="text-[9px] font-bold text-zinc-700 tabular-nums select-none"
+                >{{ Math.abs(pos) }}</span>
+
+                <div
+                  v-if="isP1Filled(pos) || isP2Filled(pos)"
+                  class="pointer-events-none absolute inset-y-1.5 left-1.5 w-px rounded-full opacity-40"
+                  :class="isP1Filled(pos) ? 'bg-sky-200' : 'bg-amber-100'"
+                />
+
+                <span
+                  v-if="pos === 0"
+                  class="relative z-10 text-lg select-none text-amber-500
+                         drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]"
+                >✴</span>
+
+                <div
+                  v-if="pos === store.strugglePosition"
+                  class="absolute inset-1.5 z-20 rounded-full
+                         bg-gradient-to-b from-white to-zinc-200
+                         border border-white/90
+                         shadow-[0_0_14px_rgba(255,255,255,0.65),0_2px_0_rgba(0,0,0,0.5)]"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Readout bar -->
+          <div class="mt-2.5 flex items-center justify-between px-0.5">
+            <span class="text-[10px] text-zinc-600">tap cells → momentum</span>
+            <span
+              class="rounded border border-zinc-700/60 bg-zinc-800 px-2 py-0.5
+                     text-xs font-bold tabular-nums text-zinc-300"
+            >{{ store.strugglePosition > 0 ? '+' : '' }}{{ store.strugglePosition }}</span>
+            <span class="text-[10px] text-zinc-600">▲▼ to move</span>
+          </div>
+        </div>
+
+        <!-- P2 move buttons + header -->
+        <div class="border-t border-zinc-800/80 px-4 py-3 space-y-2.5">
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              class="rounded-lg bg-gradient-to-b from-zinc-700 to-zinc-800 px-2 py-3 text-sm font-bold
+                     border border-zinc-600/50 text-amber-400 transition-all
+                     shadow-[0_4px_0_0_rgba(0,0,0,0.5)] hover:from-zinc-600 hover:to-zinc-700 hover:text-amber-300
+                     active:shadow-[0_1px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px]
+                     disabled:opacity-25 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:shadow-[0_4px_0_0_rgba(0,0,0,0.5)]"
+              :disabled="store.strugglePosition >= 8"
+              @click="store.moveStruggle(1)"
+            >▼ +1</button>
+            <button
+              class="rounded-lg bg-gradient-to-b from-zinc-700 to-zinc-800 px-2 py-3 text-sm font-bold
+                     border border-zinc-600/50 text-amber-400 transition-all
+                     shadow-[0_4px_0_0_rgba(0,0,0,0.5)] hover:from-zinc-600 hover:to-zinc-700 hover:text-amber-300
+                     active:shadow-[0_1px_0_0_rgba(0,0,0,0.5)] active:translate-y-[3px]
+                     disabled:opacity-25 disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:shadow-[0_4px_0_0_rgba(0,0,0,0.5)]"
+              :disabled="store.strugglePosition >= 8"
+              @click="store.moveStruggle(3)"
+            >▼▼ +3</button>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="rounded-full bg-amber-950 px-2 py-0.5 text-[10px] font-bold tabular-nums text-amber-400 border border-amber-800/50">{{ store.p2Momentum }}</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">P2 ▼</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           STRUGGLE TRACK (desktop only)
+           ══════════════════════════════════════════ -->
+      <div class="hidden sm:block overflow-hidden rounded-2xl border border-zinc-700/60 bg-zinc-900 shadow-2xl">
 
         <!-- Track header -->
         <div class="flex items-center justify-between border-b border-zinc-800/80 px-4 py-2.5">
@@ -463,8 +653,8 @@ const ROMAN = ['I', 'II', 'III']
         </div>
       </div>
 
-      <!-- ── Move controls ── -->
-      <div class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 px-4 py-3">
+      <!-- ── Move controls (desktop only — mobile uses integrated buttons in vertical track) ── -->
+      <div class="hidden sm:block rounded-xl border border-zinc-700/50 bg-zinc-900/80 px-4 py-3">
         <div class="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
           Move Struggle Token
         </div>
@@ -501,11 +691,11 @@ const ROMAN = ['I', 'II', 'III']
         <div class="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
           Struggle Cards
         </div>
-        <div class="grid grid-cols-3 gap-2">
-          <div v-for="(cardImg, i) in store.struggleCards" :key="i">
+        <div class="flex flex-col gap-6 sm:grid sm:grid-cols-3 sm:gap-2">
+          <div v-for="(cardImg, i) in store.struggleCards" :key="i" class="w-full sm:w-auto">
             <div
               data-testid="card-flipper"
-              class="card-flipper"
+              class="card-flipper mx-auto"
               :class="{ revealed: store.revealedCount > i }"
             >
               <!-- Face-down back -->
@@ -542,6 +732,28 @@ const ROMAN = ['I', 'II', 'III']
     </template>
 
   </div>
+
+  <!-- Mission fullscreen overlay (mobile, rotated 90°) -->
+  <Teleport to="body">
+    <Transition name="fs">
+      <div
+        v-if="missionFullscreen"
+        class="fixed inset-0 z-[60] flex items-center justify-center overflow-hidden bg-black sm:hidden"
+        @touchstart="onFsTouchStart"
+        @touchend="onFsTouchEnd"
+      >
+        <img
+          :src="missionFullscreenSrc"
+          alt="Mission card fullscreen"
+          class="fs-mission"
+        />
+        <button
+          class="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white/70 transition-colors hover:text-white"
+          @click.stop="missionFullscreen = false"
+        >✕</button>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -608,4 +820,18 @@ const ROMAN = ['I', 'II', 'III']
   color: rgb(113 113 122);
   user-select: none;
 }
+
+/* ── Mission fullscreen (rotated landscape) ── */
+.fs-mission {
+  transform: rotate(90deg);
+  width: 100vh;
+  height: 100vw;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+.fs-enter-active,
+.fs-leave-active { transition: opacity 0.15s ease; }
+.fs-enter-from,
+.fs-leave-to     { opacity: 0; }
 </style>
