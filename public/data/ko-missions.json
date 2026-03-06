@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "Explore the Ruins",
+    "missionFront": "/images/ko/explore-the-ruins-mission-front.png",
+    "missionBack": "/images/ko/explore-the-ruins-mission-back.png",
+    "stages": [
+      {
+        "front": "/images/ko/explore-the-ruins-stage-1-front.png",
+        "back": "/images/ko/explore-the-ruins-stage-1-back.png"
+      },
+      {
+        "front": "/images/ko/explore-the-ruins-stage-2-front.png",
+        "back": "/images/ko/explore-the-ruins-stage-2-back.png"
+      }
+    ],
+    "tracker": "/images/ko/explore-the-ruins-tracker.png"
+  },
+  { "id": 2, "name": "Foil the Heist", "stages": [] },
+  { "id": 3, "name": "Trigger a Chain Reaction", "stages": [] },
+  { "id": 4, "name": "Extract the Agent", "stages": [] },
+  { "id": 5, "name": "Jailbreak", "stages": [] },
+  { "id": 6, "name": "Crash Landing", "stages": [] }
+]

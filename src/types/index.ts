@@ -37,6 +37,20 @@ export interface Mission {
   struggles: Record<string, string[]>
 }
 
+export interface KoStageCard {
+  front: string
+  back: string
+}
+
+export interface KoMission {
+  id: number
+  name: string
+  missionFront?: string
+  missionBack?: string
+  stages: KoStageCard[]
+  tracker?: string
+}
+
 export interface Product {
   id: number
   name: string

@@ -5,7 +5,9 @@ import { createRouter, createMemoryHistory } from 'vue-router'
 import PlayView from '../../../src/views/PlayView.vue'
 import { useStruggleStore } from '../../../src/stores/struggle.ts'
 import { useMissionsStore } from '../../../src/stores/missions.ts'
-import type { Mission } from '../../../src/types/index.ts'
+import { useKeyopsStore } from '../../../src/stores/keyops.ts'
+import { useKoMissionsStore } from '../../../src/stores/koMissions.ts'
+import type { Mission, KoMission } from '../../../src/types/index.ts'
 
 const stubs = {
   Transition: { template: '<slot/>' },
@@ -178,7 +180,7 @@ describe('PlayView', () => {
       store.strugglePosition = -8
       const wrapper = mountViewWithMission()
       await wrapper.vm.$nextTick()
-      expect(wrapper.text()).toContain('Player 1 Wins the Struggle')
+      expect(wrapper.text()).toContain('P1 Wins the Struggle')
     })
 
     it('shows win banner when p2WinsStruggle is true', async () => {
@@ -187,7 +189,7 @@ describe('PlayView', () => {
       store.strugglePosition = 8
       const wrapper = mountViewWithMission()
       await wrapper.vm.$nextTick()
-      expect(wrapper.text()).toContain('Player 2 Wins the Struggle')
+      expect(wrapper.text()).toContain('P2 Wins the Struggle')
     })
 
     it('shows game over overlay when p1 has 2 wins', async () => {
@@ -366,6 +368,124 @@ describe('PlayView', () => {
       const wrapper = mountView()
       const flippers = wrapper.findAll('[data-testid="card-flipper"]')
       expect(flippers).toHaveLength(0)
+    })
+  })
+
+  // ── Key Operations mode ───────────────────────────────────────────────────
+
+  describe('key operations mode', () => {
+    const mockKoMission: KoMission = {
+      id: 1,
+      name: 'Explore the Ruins',
+      missionFront: '/images/ko/explore-the-ruins-mission-front.png',
+      missionBack: '/images/ko/explore-the-ruins-mission-back.png',
+      stages: [
+        { front: '/images/ko/stage-1-front.png', back: '/images/ko/stage-1-back.png' },
+        { front: '/images/ko/stage-2-front.png', back: '/images/ko/stage-2-back.png' },
+      ],
+      tracker: '/images/ko/explore-the-ruins-tracker.png',
+    }
+
+    it('renders Key Ops tab in mode switcher', () => {
+      const wrapper = mountView()
+      expect(wrapper.text()).toContain('Key Ops')
+    })
+
+    it('switching to Key Ops mode shows KO picker', async () => {
+      const wrapper = mountView()
+      const keyOpsTab = wrapper.findAll('button').find(b => b.text() === 'Key Ops')
+      expect(keyOpsTab).toBeDefined()
+      await keyOpsTab!.trigger('click')
+      expect(wrapper.text()).toContain('Choose Mission')
+    })
+
+    it('switching to Key Ops mode calls resetCampaign', async () => {
+      const koStore = useKeyopsStore()
+      koStore.aggressorCampaignWins = 1
+      const wrapper = mountView()
+      const keyOpsTab = wrapper.findAll('button').find(b => b.text() === 'Key Ops')
+      await keyOpsTab!.trigger('click')
+      expect(koStore.aggressorCampaignWins).toBe(0)
+    })
+
+    it('shows KO mission card in game area when KO mission is selected', async () => {
+      const koStore = useKeyopsStore()
+      koStore.mode = 'key-operations'
+      koStore.selectedKoMission = mockKoMission
+      const wrapper = mountView()
+      await wrapper.vm.$nextTick()
+      const img = wrapper.find('[data-testid="mission-card"]')
+      expect(img.exists()).toBe(true)
+      expect(img.attributes('src')).toContain('explore-the-ruins-mission-front')
+    })
+
+    it('renders KoMissionInteraction when KO mission is selected', async () => {
+      const koStore = useKeyopsStore()
+      koStore.mode = 'key-operations'
+      koStore.selectedKoMission = mockKoMission
+      const wrapper = mountView()
+      await wrapper.vm.$nextTick()
+      // ExploreTheRuins renders "Mysterious Workings"
+      expect(wrapper.text()).toContain('Mysterious Workings')
+    })
+
+    it('KO picker carousel shows missionFront image instead of placeholder', async () => {
+      const koStore = useKeyopsStore()
+      const koMissionsStore = useKoMissionsStore()
+      koStore.mode = 'key-operations'
+      koMissionsStore.missions = [mockKoMission]
+      const wrapper = mountView()
+      await wrapper.vm.$nextTick()
+      const img = wrapper.find('img[alt="mission card"]')
+      expect(img.exists()).toBe(true)
+      expect(img.attributes('src')).toContain('explore-the-ruins-mission-front')
+    })
+
+    it('does not render campaign pip bar in KO mode', async () => {
+      const koStore = useKeyopsStore()
+      koStore.mode = 'key-operations'
+      koStore.selectedKoMission = mockKoMission
+      const wrapper = mountView()
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).not.toContain('Campaign')
+      expect(wrapper.text()).not.toContain('Op 1/3')
+    })
+
+    it('KO mission card is collapsible in State B', async () => {
+      const koStore = useKeyopsStore()
+      koStore.mode = 'key-operations'
+      koStore.selectedKoMission = mockKoMission
+      const wrapper = mountView()
+      await wrapper.vm.$nextTick()
+      // Card starts expanded — collapse it
+      const missionCard = wrapper.find('[data-testid="mission-card"]')
+      expect(missionCard.exists()).toBe(true)
+      // Click the collapsible container
+      const collapseDiv = wrapper.find('.cursor-pointer.select-none')
+      await collapseDiv.trigger('click')
+      expect(wrapper.find('[data-testid="mission-card"]').exists()).toBe(false)
+    })
+
+    it('KO mission card has flip button in top-right corner', async () => {
+      const koStore = useKeyopsStore()
+      koStore.mode = 'key-operations'
+      koStore.selectedKoMission = mockKoMission
+      const wrapper = mountView()
+      await wrapper.vm.$nextTick()
+      const flipBtn = wrapper.findAll('button').find(b => b.text() === 'Flip →')
+      expect(flipBtn).toBeDefined()
+    })
+
+    it('KO mission card flip button switches to back image', async () => {
+      const koStore = useKeyopsStore()
+      koStore.mode = 'key-operations'
+      koStore.selectedKoMission = mockKoMission
+      const wrapper = mountView()
+      await wrapper.vm.$nextTick()
+      const flipBtn = wrapper.findAll('button').find(b => b.text() === 'Flip →')
+      await flipBtn!.trigger('click')
+      const img = wrapper.find('[data-testid="mission-card"]')
+      expect(img.attributes('src')).toContain('explore-the-ruins-mission-back')
     })
   })
 

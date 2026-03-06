@@ -2,10 +2,127 @@
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useStruggleStore } from '../stores/struggle.ts'
 import { useMissionsStore } from '../stores/missions.ts'
+import { useKeyopsStore, type GameMode } from '../stores/keyops.ts'
+import { useKoMissionsStore } from '../stores/koMissions.ts'
 import { imageUrl } from '../utils/imageUrl.ts'
+import KoStageCards from '../components/play/KoStageCards.vue'
+import KoMissionInteraction from '../components/play/KoMissionInteraction.vue'
 
 const store = useStruggleStore()
 const missionsStore = useMissionsStore()
+const koStore = useKeyopsStore()
+const koMissionsStore = useKoMissionsStore()
+
+const MODES: { value: GameMode; label: string; disabled?: boolean }[] = [
+  { value: 'standard', label: 'Standard' },
+  { value: 'key-operations', label: 'Key Ops' },
+  { value: 'legendary', label: 'Legendary', disabled: true },
+]
+
+const isKO = computed(() => koStore.mode === 'key-operations')
+const inGame = computed(() =>
+  isKO.value ? !!koStore.selectedKoMission : !!store.selectedMission,
+)
+const pickerMissions = computed(() =>
+  isKO.value ? koMissionsStore.missions : missionsStore.missions,
+)
+const pickerLoading = computed(() =>
+  isKO.value ? koMissionsStore.loading : missionsStore.loading,
+)
+const p1Label = computed(() => (isKO.value ? 'Aggressor' : 'P1'))
+const p2Label = computed(() => (isKO.value ? 'Sentinel' : 'P2'))
+
+const winPlayerLabel = computed(() => {
+  if (winPlayer.value === null) return ''
+  return winPlayer.value === 1 ? p1Label.value : p2Label.value
+})
+
+const opWinnerRole = computed<'aggressor' | 'sentinel' | null>(() => {
+  if (!store.gameOver) return null
+  return store.p1Wins === 2 ? 'aggressor' : 'sentinel'
+})
+const opWinnerLabel = computed(() =>
+  opWinnerRole.value === 'aggressor' ? p1Label.value : p2Label.value,
+)
+const currentOp = computed(() => koStore.opResults.length + 1)
+// In KO mode the struggle marker only appears when both sides have full momentum
+const koMarkerVisible = computed(
+  () => isKO.value && store.p1Momentum === 8 && store.p2Momentum === 8,
+)
+
+// Single computed gate for the game-over overlay
+const gameOverVisible = computed(
+  () =>
+    (!isKO.value && store.gameOver) ||
+    (isKO.value && (store.gameOver || koStore.campaignOver)),
+)
+
+function opPipClass(i: number, pendingCurrent = false): string {
+  const result = koStore.opResults[i - 1]
+  if (result === 'aggressor') return 'bg-sky-400 border-sky-300'
+  if (result === 'sentinel') return 'bg-amber-400 border-amber-300'
+  if (pendingCurrent && i === koStore.opResults.length + 1)
+    return 'bg-zinc-600 border-zinc-500 animate-pulse'
+  return 'bg-zinc-800 border-zinc-600'
+}
+
+function selectMode(m: GameMode) {
+  if (koStore.mode === m) return
+  koStore.mode = m
+  koStore.resetCampaign()
+  store.resetGame()
+  pickerIndex.value = 0
+}
+
+function playSelectedMission() {
+  const m = pickerMissions.value[pickerIndex.value]
+  if (isKO.value) selectKoMission(m as import('../types/index.ts').KoMission)
+  else confirmMission(m as import('../types/index.ts').Mission)
+}
+
+function pickerCardSrc(item: import('../types/index.ts').Mission | import('../types/index.ts').KoMission): string | undefined {
+  return (item as import('../types/index.ts').Mission).card
+    ?? (item as import('../types/index.ts').KoMission).missionFront
+}
+
+function claimOp() {
+  if (opWinnerRole.value === null) return
+  koStore.claimOp(opWinnerRole.value)
+  koStore.resetKoMission()
+  store.resetGame()
+}
+
+function selectKoMission(m: import('../types/index.ts').KoMission) {
+  koStore.selectKoMission(m)
+  store.p1Momentum = 0
+  store.p2Momentum = 0
+}
+
+function newCampaign() {
+  koStore.resetCampaign()
+  store.resetGame()
+}
+
+function handleReset() {
+  if (isKO.value) koStore.resetKoMission()
+  store.resetGame()
+}
+
+function confirmMission(mission: import('../types/index.ts').Mission) {
+  store.confirmMission(mission)
+  if (isKO.value) {
+    store.p1Momentum = 0
+    store.p2Momentum = 0
+  }
+}
+
+function handleClaimStruggle(player: 1 | 2) {
+  store.claimStruggle(player)
+  if (isKO.value) {
+    store.p1Momentum = 0
+    store.p2Momentum = 0
+  }
+}
 
 const pickerIndex = ref(0)
 const slideDir = ref<'left' | 'right'>('right')
@@ -41,9 +158,12 @@ function onFsTouchEnd(e: TouchEvent) {
   }
   if (dx > 0) goPrev()
   else goNext()
-  missionFullscreenSrc.value = imageUrl(missionsStore.missions[pickerIndex.value].card)
+  const card = pickerCardSrc(pickerMissions.value[pickerIndex.value])
+  if (card) missionFullscreenSrc.value = imageUrl(card)
 }
+const koMissionFlipped = ref(false)
 watch(() => store.selectedMission, () => { cardCollapsed.value = false })
+watch(() => koStore.selectedKoMission, () => { koMissionFlipped.value = false })
 const cardImgWidth = ref<number | null>(null)
 
 function onCardImgLoad(e: Event) {
@@ -58,17 +178,17 @@ function goPrev() {
   pickerIndex.value--
 }
 function goNext() {
-  if (pickerIndex.value >= missionsStore.missions.length - 1) return
+  if (pickerIndex.value >= pickerMissions.value.length - 1) return
   slideDir.value = 'right'
   pickerIndex.value++
 }
 
 // Arrow keys: cycle missions in picker (State A) or move token during game (State B)
 function onKeyDown(e: KeyboardEvent) {
-  if (store.selectedMission) {
+  if (inGame.value && !isKO.value) {
     if (e.key === 'ArrowLeft') { e.preventDefault(); store.moveStruggle(-1) }
     if (e.key === 'ArrowRight') { e.preventDefault(); store.moveStruggle(1) }
-  } else if (missionsStore.missions.length > 0) {
+  } else if (!inGame.value && pickerMissions.value.length > 0) {
     if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev() }
     if (e.key === 'ArrowRight') { e.preventDefault(); goNext() }
   }
@@ -76,6 +196,7 @@ function onKeyDown(e: KeyboardEvent) {
 onMounted(() => {
   window.addEventListener('keydown', onKeyDown)
   missionsStore.load()
+  koMissionsStore.load()
 })
 onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
@@ -166,28 +287,83 @@ const ROMAN = ['I', 'II', 'III']
     <!-- ── Game over overlay (always in DOM, full-screen fixed) ── -->
     <Transition name="fade">
       <div
-        v-if="store.gameOver"
+        v-if="gameOverVisible"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 px-6"
       >
         <div
           class="w-full max-w-sm rounded-2xl border border-amber-500/30 bg-zinc-900 p-8 text-center
                  shadow-[0_0_60px_rgba(201,168,76,0.15)]"
         >
-          <div class="mb-3 text-6xl">⚔</div>
-          <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500/50">
-            Game Over
-          </div>
-          <div class="mb-6 text-2xl font-bold text-amber-400">
-            Player {{ gameWinner }} Wins!
-          </div>
-          <button
-            class="w-full rounded-lg bg-amber-500 px-4 py-2.5 font-bold text-zinc-900
-                   shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all hover:bg-amber-400
-                   active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
-            @click="store.resetGame()"
-          >
-            New Game
-          </button>
+          <!-- KO: Campaign complete -->
+          <template v-if="isKO && koStore.campaignOver">
+            <div class="mb-3 text-5xl">⚔</div>
+            <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500/50">
+              Campaign Complete
+            </div>
+            <div class="mb-4 text-2xl font-bold text-amber-400">
+              {{ koStore.campaignWinner === 'aggressor' ? p1Label : p2Label }} Wins the Campaign!
+            </div>
+            <div class="mb-6 flex justify-center gap-2">
+              <div
+                v-for="i in 3" :key="i"
+                class="h-5 w-5 rounded-full border transition-colors"
+                :class="opPipClass(i)"
+              />
+            </div>
+            <button
+              class="w-full rounded-lg bg-amber-500 px-4 py-2.5 font-bold text-zinc-900
+                     shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all hover:bg-amber-400
+                     active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
+              @click="newCampaign()"
+            >
+              New Campaign
+            </button>
+          </template>
+
+          <!-- KO: Op complete (campaign not yet over) -->
+          <template v-else-if="isKO && store.gameOver">
+            <div class="mb-3 text-5xl">⚔</div>
+            <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500/50">
+              Op {{ currentOp }} Complete
+            </div>
+            <div class="mb-4 text-2xl font-bold text-amber-400">
+              {{ opWinnerLabel }} Wins!
+            </div>
+            <div class="mb-6 flex justify-center gap-2">
+              <div
+                v-for="i in 3" :key="i"
+                class="h-5 w-5 rounded-full border transition-colors"
+                :class="opPipClass(i, true)"
+              />
+            </div>
+            <button
+              class="w-full rounded-lg bg-amber-500 px-4 py-2.5 font-bold text-zinc-900
+                     shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all hover:bg-amber-400
+                     active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
+              @click="claimOp()"
+            >
+              Next Op →
+            </button>
+          </template>
+
+          <!-- Standard: Game over -->
+          <template v-else>
+            <div class="mb-3 text-6xl">⚔</div>
+            <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500/50">
+              Game Over
+            </div>
+            <div class="mb-6 text-2xl font-bold text-amber-400">
+              Player {{ gameWinner }} Wins!
+            </div>
+            <button
+              class="w-full rounded-lg bg-amber-500 px-4 py-2.5 font-bold text-zinc-900
+                     shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all hover:bg-amber-400
+                     active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
+              @click="store.resetGame()"
+            >
+              New Game
+            </button>
+          </template>
         </div>
       </div>
     </Transition>
@@ -196,21 +372,44 @@ const ROMAN = ['I', 'II', 'III']
     <div class="flex items-center justify-between">
       <h1 class="text-xl font-bold tracking-wide text-amber-400">⚔ Play</h1>
       <button
-        v-if="store.selectedMission"
+        v-if="inGame"
         class="rounded-lg border border-zinc-700 bg-zinc-800/60 px-3 py-1.5 text-xs font-medium text-zinc-400
                shadow-[0_2px_0_0_rgba(0,0,0,0.4)] transition-all
                hover:border-zinc-500 hover:text-zinc-200
                active:shadow-none active:translate-y-0.5"
-        @click="store.resetGame()"
+        @click="handleReset()"
       >
         Reset
+      </button>
+    </div>
+
+    <!-- ── Mode selector ── -->
+    <div class="flex gap-1 rounded-lg border border-zinc-700/60 bg-zinc-900/60 p-1">
+      <button
+        v-for="m in MODES" :key="m.value"
+        class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all leading-tight"
+        :class="[
+          m.disabled
+            ? 'cursor-not-allowed text-zinc-700'
+            : koStore.mode === m.value
+              ? 'bg-amber-500 text-zinc-900 shadow-[0_2px_0_rgba(0,0,0,0.3)]'
+              : 'text-zinc-500 hover:text-zinc-300'
+        ]"
+        :disabled="m.disabled"
+        @click="!m.disabled && selectMode(m.value)"
+      >
+        <span v-if="m.disabled" class="flex flex-col items-center gap-0.5">
+          <span>{{ m.label }}</span>
+          <span class="text-[9px] normal-case tracking-normal font-normal text-zinc-700">coming soon</span>
+        </span>
+        <span v-else>{{ m.label }}</span>
       </button>
     </div>
 
     <!-- ══════════════════════════════════════════
          STATE A: Mission Picker
          ══════════════════════════════════════════ -->
-    <template v-if="!store.selectedMission">
+    <template v-if="!inGame">
       <!-- Section label -->
       <div class="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
         Choose Mission
@@ -218,7 +417,7 @@ const ROMAN = ['I', 'II', 'III']
 
       <!-- Loading skeleton -->
       <div
-        v-if="missionsStore.loading"
+        v-if="pickerLoading"
         class="flex flex-col gap-3 rounded-2xl border border-zinc-700/40 bg-zinc-900/60 p-6"
       >
         <div class="mx-auto h-48 w-full animate-pulse rounded-xl bg-zinc-800" />
@@ -226,36 +425,50 @@ const ROMAN = ['I', 'II', 'III']
       </div>
 
       <!-- Missions loaded -->
-      <template v-else-if="missionsStore.missions.length > 0">
+      <template v-else-if="pickerMissions.length > 0">
 
         <!-- ── MOBILE: full-width card, swipe to navigate ── -->
         <div class="flex flex-col gap-4 sm:hidden"
           @touchstart.passive="onTouchStart"
           @touchend.passive="onTouchEnd"
         >
-          <div class="relative w-full overflow-hidden rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center"
-               style="min-height: 56vw">
+          <div class="relative w-full rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center"
+               :class="isKO ? 'p-4' : 'overflow-hidden'"
+               :style="isKO ? {} : { minHeight: '56vw' }">
             <Transition :name="`card-slide-${slideDir}`" mode="out-in">
               <img
+                v-if="pickerCardSrc(pickerMissions[pickerIndex])"
                 :key="pickerIndex"
-                :src="imageUrl(missionsStore.missions[pickerIndex].card)"
-                class="w-full object-contain max-h-[65vh]"
+                :src="imageUrl(pickerCardSrc(pickerMissions[pickerIndex])!)"
+                :class="isKO ? 'w-[58%] h-auto mx-auto rounded-lg' : 'w-full object-contain max-h-[65vh]'"
                 alt="mission card"
               />
+              <div
+                v-else
+                :key="`placeholder-${pickerIndex}`"
+                class="flex w-full items-center justify-center px-6 py-12 text-center"
+              >
+                <div>
+                  <div class="mb-2 text-3xl">⚔</div>
+                  <div class="text-sm font-semibold text-zinc-400">{{ pickerMissions[pickerIndex].name }}</div>
+                  <div class="mt-1 text-[11px] text-zinc-700">Mission card coming soon</div>
+                </div>
+              </div>
             </Transition>
             <button
+              v-if="pickerCardSrc(pickerMissions[pickerIndex])"
               class="absolute bottom-2 right-2 z-20 rounded-lg bg-black/60 p-2 text-white/60 backdrop-blur-sm transition-colors hover:text-white"
-              @click.stop="openFullscreen(imageUrl(missionsStore.missions[pickerIndex].card))"
+              @click.stop="openFullscreen(imageUrl(pickerCardSrc(pickerMissions[pickerIndex])!))"
             >⛶</button>
           </div>
 
           <div class="text-center font-semibold text-zinc-200">
-            {{ missionsStore.missions[pickerIndex].name }}
+            {{ pickerMissions[pickerIndex].name }}
           </div>
 
           <div class="flex justify-center gap-1.5">
             <span
-              v-for="(_, i) in missionsStore.missions" :key="i"
+              v-for="(_, i) in pickerMissions" :key="i"
               class="block h-1.5 w-1.5 rounded-full transition-colors duration-200"
               :class="i === pickerIndex ? 'bg-amber-400' : 'bg-zinc-600'"
             />
@@ -265,7 +478,7 @@ const ROMAN = ['I', 'II', 'III']
             class="w-full rounded-xl bg-amber-500 px-4 py-3 font-bold text-zinc-900
                    shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all
                    hover:bg-amber-400 active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
-            @click="store.confirmMission(missionsStore.missions[pickerIndex])"
+            @click="playSelectedMission()"
           >▶ Play this Mission</button>
         </div>
 
@@ -287,16 +500,29 @@ const ROMAN = ['I', 'II', 'III']
             </svg>
           </button>
 
-          <div class="overflow-hidden rounded-2xl border border-zinc-700/50 bg-zinc-900 p-2 shadow-2xl flex items-center justify-center"
-               style="height: 338px;">
+          <div class="rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center"
+               :class="isKO ? 'p-4' : 'overflow-hidden p-2'"
+               :style="isKO ? {} : { height: '338px' }">
             <Transition :name="`card-slide-${slideDir}`" mode="out-in">
               <img
+                v-if="pickerCardSrc(pickerMissions[pickerIndex])"
                 :key="pickerIndex"
-                :src="imageUrl(missionsStore.missions[pickerIndex].card)"
-                class="w-full rounded-xl object-contain max-h-[322px]"
+                :src="imageUrl(pickerCardSrc(pickerMissions[pickerIndex])!)"
+                :class="isKO ? 'w-[58%] h-auto mx-auto rounded-xl' : 'w-full rounded-xl object-contain max-h-[322px]'"
                 alt="mission card"
                 @load="onCardImgLoad"
               />
+              <div
+                v-else
+                :key="`placeholder-${pickerIndex}`"
+                class="flex w-full items-center justify-center px-6 py-12 text-center"
+              >
+                <div>
+                  <div class="mb-2 text-4xl">⚔</div>
+                  <div class="text-sm font-semibold text-zinc-400">{{ pickerMissions[pickerIndex].name }}</div>
+                  <div class="mt-1 text-[11px] text-zinc-700">Mission card coming soon</div>
+                </div>
+              </div>
             </Transition>
           </div>
 
@@ -307,7 +533,7 @@ const ROMAN = ['I', 'II', 'III']
                    transition-all hover:border-amber-400 hover:bg-amber-500 hover:text-zinc-900
                    active:scale-95 disabled:cursor-not-allowed disabled:opacity-20
                    disabled:hover:border-zinc-400 disabled:hover:bg-zinc-700 disabled:hover:text-white"
-            :disabled="pickerIndex === missionsStore.missions.length - 1"
+            :disabled="pickerIndex === pickerMissions.length - 1"
             @click="goNext"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -316,12 +542,12 @@ const ROMAN = ['I', 'II', 'III']
           </button>
 
           <div class="col-start-2 text-center font-semibold text-zinc-200">
-            {{ missionsStore.missions[pickerIndex].name }}
+            {{ pickerMissions[pickerIndex].name }}
           </div>
 
           <div class="col-start-2 flex justify-center gap-1.5">
             <span
-              v-for="(_, i) in missionsStore.missions" :key="i"
+              v-for="(_, i) in pickerMissions" :key="i"
               class="block h-1.5 w-1.5 rounded-full transition-colors duration-200"
               :class="i === pickerIndex ? 'bg-amber-400' : 'bg-zinc-600'"
             />
@@ -332,7 +558,7 @@ const ROMAN = ['I', 'II', 'III']
                    shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all
                    hover:bg-amber-400 active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
             :style="cardImgWidth ? { maxWidth: cardImgWidth + 'px' } : {}"
-            @click="store.confirmMission(missionsStore.missions[pickerIndex])"
+            @click="playSelectedMission()"
           >▶ Play this Mission</button>
 
         </div>
@@ -354,8 +580,8 @@ const ROMAN = ['I', 'II', 'III']
 
       <!-- ── Mission card (collapsible) ── -->
       <div
-        class="overflow-hidden rounded-xl border border-zinc-700/50 bg-zinc-900/80 cursor-pointer select-none"
-        :class="cardCollapsed ? 'p-0' : 'p-2'"
+        class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 cursor-pointer select-none"
+        :class="[cardCollapsed ? 'p-0' : 'p-2', isKO ? '' : 'overflow-hidden']"
         @click="cardCollapsed = !cardCollapsed"
       >
         <!-- Collapsed: slim name bar -->
@@ -364,39 +590,62 @@ const ROMAN = ['I', 'II', 'III']
           class="flex items-center justify-between px-3 py-2"
         >
           <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
-            {{ store.selectedMission.name }}
+            {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission.name }}
           </span>
           <span class="text-[10px] text-zinc-600">▼ expand</span>
         </div>
 
         <!-- Expanded: full-size card -->
         <template v-else>
-          <div class="relative">
+          <div class="relative flex" :class="isKO ? 'justify-center' : ''">
             <img
+              v-if="!isKO"
               data-testid="mission-card"
               :src="imageUrl(store.selectedMission.card)"
               class="w-full max-h-[322px] rounded-lg object-contain"
               alt="mission card"
             />
+            <!-- KO: fixed aspect-ratio container keeps front & back the same display size -->
+            <div
+              v-else
+              class="w-[58%] rounded-lg overflow-hidden"
+              style="aspect-ratio: 800/660"
+            >
+              <img
+                data-testid="mission-card"
+                :src="imageUrl(koMissionFlipped ? koStore.selectedKoMission!.missionBack! : koStore.selectedKoMission!.missionFront!)"
+                class="w-full h-full object-contain rounded-lg"
+                :alt="koMissionFlipped ? 'Mission card back' : 'Mission card front'"
+              />
+            </div>
+            <!-- KO flip button — top-right corner -->
             <button
+              v-if="isKO && koStore.selectedKoMission?.missionBack"
+              class="absolute top-2 right-2 z-20 rounded-lg border border-zinc-600 bg-black/70 px-2.5 py-1 text-[10px] font-medium text-zinc-300 backdrop-blur-sm transition-colors hover:border-zinc-400 hover:text-zinc-100"
+              @click.stop="koMissionFlipped = !koMissionFlipped"
+            >
+              {{ koMissionFlipped ? '↩ Front' : 'Flip →' }}
+            </button>
+            <button
+              v-if="!isKO"
               class="absolute bottom-2 right-2 z-20 rounded-lg bg-black/60 p-2 text-white/60 backdrop-blur-sm transition-colors hover:text-white sm:hidden"
               @click.stop="openFullscreen(imageUrl(store.selectedMission.card))"
             >⛶</button>
           </div>
           <div class="mt-1 flex items-center justify-between px-1">
             <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
-              {{ store.selectedMission.name }}
+              {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission.name }}
             </span>
             <span class="text-[10px] text-zinc-600">▲ collapse</span>
           </div>
         </template>
       </div>
 
-      <!-- ── Scoreboard ── -->
-      <div class="flex items-center gap-3 rounded-xl border border-zinc-700/50 bg-zinc-900/80 px-4 py-3">
-        <!-- P1 -->
+      <!-- ── Scoreboard (standard mode only) ── -->
+      <div v-if="!isKO" class="flex items-center gap-3 rounded-xl border border-zinc-700/50 bg-zinc-900/80 px-4 py-3">
+        <!-- P1 / Aggressor -->
         <div class="flex flex-1 items-center gap-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">P1</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-400">{{ p1Label }}</span>
           <div class="flex gap-1">
             <span
               v-for="i in 2"
@@ -417,7 +666,7 @@ const ROMAN = ['I', 'II', 'III']
           </div>
         </div>
 
-        <!-- P2 -->
+        <!-- P2 / Sentinel -->
         <div class="flex flex-1 items-center justify-end gap-2">
           <div class="flex gap-1">
             <span
@@ -429,23 +678,24 @@ const ROMAN = ['I', 'II', 'III']
                 : 'text-zinc-700'"
             >⚔</span>
           </div>
-          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">P2</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">{{ p2Label }}</span>
         </div>
       </div>
 
-      <!-- ── Win banner ── -->
+
+      <!-- ── Win banner (standard mode only) ── -->
       <Transition name="slide-down">
         <div
-          v-if="winPlayer !== null"
+          v-if="!isKO && winPlayer !== null"
           class="overflow-hidden rounded-xl border border-green-500/30 bg-green-950/50"
         >
           <div class="border-b border-green-500/20 px-4 py-2.5 text-center text-sm font-bold text-green-400">
-            ⚔ Player {{ winPlayer }} Wins the Struggle!
+            ⚔ {{ winPlayerLabel }} Wins the Struggle!
           </div>
           <button
             class="w-full px-4 py-2.5 text-sm font-semibold text-green-300 transition-colors
                    hover:bg-green-500/10 active:bg-green-500/20"
-            @click="store.claimStruggle(winPlayer as 1 | 2)"
+            @click="handleClaimStruggle(winPlayer as 1 | 2)"
           >
             Claim Struggle →
           </button>
@@ -460,10 +710,10 @@ const ROMAN = ['I', 'II', 'III']
         <!-- P1 header + move buttons -->
         <div class="border-b border-zinc-800/80 px-4 py-3 space-y-2.5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">▲ P1</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">▲ {{ p1Label }}</span>
             <span class="rounded-full bg-sky-950 px-2 py-0.5 text-[10px] font-bold tabular-nums text-sky-400 border border-sky-800/50">{{ store.p1Momentum }}</span>
           </div>
-          <div class="grid grid-cols-2 gap-2">
+          <div v-if="!isKO" class="grid grid-cols-2 gap-2">
             <button
               class="rounded-lg bg-gradient-to-b from-zinc-700 to-zinc-800 px-2 py-3 text-sm font-bold
                      border border-zinc-600/50 text-sky-300 transition-all
@@ -520,7 +770,7 @@ const ROMAN = ['I', 'II', 'III']
                 >✴</span>
 
                 <div
-                  v-if="pos === store.strugglePosition"
+                  v-if="pos === store.strugglePosition && (!isKO || koMarkerVisible)"
                   class="absolute inset-1.5 z-20 rounded-full
                          bg-gradient-to-b from-white to-zinc-200
                          border border-white/90
@@ -533,17 +783,20 @@ const ROMAN = ['I', 'II', 'III']
           <!-- Readout bar -->
           <div class="mt-2.5 flex items-center justify-between px-0.5">
             <span class="text-[10px] text-zinc-600">tap cells → momentum</span>
-            <span
-              class="rounded border border-zinc-700/60 bg-zinc-800 px-2 py-0.5
-                     text-xs font-bold tabular-nums text-zinc-300"
-            >{{ store.strugglePosition > 0 ? '+' : '' }}{{ store.strugglePosition }}</span>
-            <span class="text-[10px] text-zinc-600">▲▼ to move</span>
+            <template v-if="!isKO">
+              <span
+                class="rounded border border-zinc-700/60 bg-zinc-800 px-2 py-0.5
+                       text-xs font-bold tabular-nums text-zinc-300"
+              >{{ store.strugglePosition > 0 ? '+' : '' }}{{ store.strugglePosition }}</span>
+              <span class="text-[10px] text-zinc-600">▲▼ to move</span>
+            </template>
+            <span v-else class="text-[10px] text-zinc-700">fill both sides to place marker</span>
           </div>
         </div>
 
         <!-- P2 move buttons + header -->
         <div class="border-t border-zinc-800/80 px-4 py-3 space-y-2.5">
-          <div class="grid grid-cols-2 gap-2">
+          <div v-if="!isKO" class="grid grid-cols-2 gap-2">
             <button
               class="rounded-lg bg-gradient-to-b from-zinc-700 to-zinc-800 px-2 py-3 text-sm font-bold
                      border border-zinc-600/50 text-amber-400 transition-all
@@ -565,7 +818,7 @@ const ROMAN = ['I', 'II', 'III']
           </div>
           <div class="flex items-center justify-between">
             <span class="rounded-full bg-amber-950 px-2 py-0.5 text-[10px] font-bold tabular-nums text-amber-400 border border-amber-800/50">{{ store.p2Momentum }}</span>
-            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">P2 ▼</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">{{ p2Label }} ▼</span>
           </div>
         </div>
 
@@ -579,7 +832,7 @@ const ROMAN = ['I', 'II', 'III']
         <!-- Track header -->
         <div class="flex items-center justify-between border-b border-zinc-800/80 px-4 py-2.5">
           <div class="flex items-center gap-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">◀ P1</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">◀ {{ p1Label }}</span>
             <span
               class="rounded-full bg-sky-950 px-2 py-0.5 text-[10px] font-bold tabular-nums text-sky-400
                      border border-sky-800/50"
@@ -591,7 +844,7 @@ const ROMAN = ['I', 'II', 'III']
               class="rounded-full bg-amber-950 px-2 py-0.5 text-[10px] font-bold tabular-nums text-amber-400
                      border border-amber-800/50"
             >{{ store.p2Momentum }}</span>
-            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">P2 ▶</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">{{ p2Label }} ▶</span>
           </div>
         </div>
 
@@ -631,7 +884,7 @@ const ROMAN = ['I', 'II', 'III']
               >✴</span>
 
               <div
-                v-if="pos === store.strugglePosition"
+                v-if="pos === store.strugglePosition && (!isKO || koMarkerVisible)"
                 class="absolute inset-1.5 z-20 rounded-full
                        bg-gradient-to-b from-white to-zinc-200
                        border border-white/90
@@ -644,17 +897,20 @@ const ROMAN = ['I', 'II', 'III']
           <!-- Readout bar -->
           <div class="mt-2.5 flex items-center justify-between px-0.5">
             <span class="text-[10px] text-zinc-600">tap cells → momentum</span>
-            <span
-              class="rounded border border-zinc-700/60 bg-zinc-800 px-2 py-0.5
-                     text-xs font-bold tabular-nums text-zinc-300"
-            >{{ store.strugglePosition > 0 ? '+' : '' }}{{ store.strugglePosition }}</span>
-            <span class="text-[10px] text-zinc-600">← → to move</span>
+            <template v-if="!isKO">
+              <span
+                class="rounded border border-zinc-700/60 bg-zinc-800 px-2 py-0.5
+                       text-xs font-bold tabular-nums text-zinc-300"
+              >{{ store.strugglePosition > 0 ? '+' : '' }}{{ store.strugglePosition }}</span>
+              <span class="text-[10px] text-zinc-600">← → to move</span>
+            </template>
+            <span v-else class="text-[10px] text-zinc-700">fill both sides to place marker</span>
           </div>
         </div>
       </div>
 
       <!-- ── Move controls (desktop only — mobile uses integrated buttons in vertical track) ── -->
-      <div class="hidden sm:block rounded-xl border border-zinc-700/50 bg-zinc-900/80 px-4 py-3">
+      <div v-if="!isKO" class="hidden sm:block rounded-xl border border-zinc-700/50 bg-zinc-900/80 px-4 py-3">
         <div class="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
           Move Struggle Token
         </div>
@@ -683,9 +939,13 @@ const ROMAN = ['I', 'II', 'III']
         </div>
       </div>
 
-      <!-- ── Struggle cards ── -->
+      <!-- ── KO: Stage cards + Mission interaction ── -->
+      <KoStageCards v-if="isKO" />
+      <KoMissionInteraction v-if="isKO" />
+
+      <!-- ── Struggle cards (standard mode only) ── -->
       <div
-        v-if="store.struggleCards"
+        v-if="!isKO && store.struggleCards"
         class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-3"
       >
         <div class="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
@@ -715,8 +975,8 @@ const ROMAN = ['I', 'II', 'III']
         </div>
       </div>
 
-      <!-- ── Rules reference ── -->
-      <details class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-3">
+      <!-- ── Rules reference (standard mode only) ── -->
+      <details v-if="!isKO" class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-3">
         <summary class="cursor-pointer select-none text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
           Rules Quick Reference
         </summary>
