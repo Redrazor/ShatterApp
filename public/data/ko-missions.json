@@ -16,7 +16,17 @@
     ],
     "tracker": "/images/ko/explore-the-ruins-tracker.png"
   },
-  { "id": 2, "name": "Foil the Heist", "stages": [] },
+  {
+    "id": 2,
+    "name": "Foil the Heist",
+    "missionFront": "/images/ko/foil-the-heist-mission-front.png",
+    "missionBack":  "/images/ko/foil-the-heist-mission-back.png",
+    "stages": [
+      { "front": "/images/ko/foil-the-heist-stage-1-front.png", "back": "/images/ko/foil-the-heist-stage-1-back.png" },
+      { "front": "/images/ko/foil-the-heist-stage-2-front.png", "back": "/images/ko/foil-the-heist-stage-2-back.png" }
+    ],
+    "tracker": "/images/ko/foil-the-heist-tracker.png"
+  },
   { "id": 3, "name": "Trigger a Chain Reaction", "stages": [] },
   { "id": 4, "name": "Extract the Agent", "stages": [] },
   { "id": 5, "name": "Jailbreak", "stages": [] },
