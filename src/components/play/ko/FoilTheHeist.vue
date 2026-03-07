@@ -72,6 +72,118 @@ const setbackWarning = computed(() => setbacks.value >= MAX_SETBACKS)
 <template>
   <div class="space-y-4">
 
+    <!-- ─── Sections D + F: Force Field + Setbacks (2-column) ────────────── -->
+    <div class="grid grid-cols-2 gap-3">
+
+      <!-- ─── Section D: Force Field Power Tracker ──────────────────────── -->
+      <div class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-3 py-3">
+        <div class="mb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
+          Force Field
+        </div>
+
+        <!-- Current position label -->
+        <div class="mb-2">
+          <div
+            class="rounded px-2 py-1 text-xs font-bold transition-colors"
+            :class="atFullPower
+              ? 'bg-red-900/50 border border-red-600/60 text-red-300'
+              : atFieldEngaged
+                ? 'bg-amber-900/40 border border-amber-600/50 text-amber-300'
+                : 'bg-zinc-800 border border-zinc-600 text-zinc-300'"
+          >
+            {{ currentLabel() }}
+            <div v-if="atFullPower" class="text-[9px] font-normal opacity-70">Stage ends</div>
+            <div v-else-if="atFieldEngaged" class="text-[9px] font-normal opacity-70">Remove 1 momentum</div>
+          </div>
+        </div>
+
+        <!-- Track visualization -->
+        <div class="mb-2 flex flex-wrap gap-0.5">
+          <div
+            v-for="(label, i) in TRACK_LABELS"
+            :key="i"
+            class="flex items-center justify-center rounded text-[8px] font-bold transition-all"
+            :class="[
+              i === fieldPower
+                ? 'bg-amber-500 text-black w-7 h-7 ring-2 ring-amber-300'
+                : i < fieldPower
+                  ? 'bg-zinc-600 text-zinc-400 w-5 h-5'
+                  : 'bg-zinc-800 text-zinc-600 w-5 h-5',
+              NAMED_POSITIONS.has(i) && i !== fieldPower ? 'ring-1 ring-zinc-500' : ''
+            ]"
+            :title="NAMED_POSITIONS.has(i) ? label : ''"
+          >
+            {{ NAMED_POSITIONS.has(i) ? (i === 0 ? 'PD' : i === 5 ? 'FE' : i === 8 ? 'FE' : 'FP') : '▶' }}
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex flex-col gap-1.5">
+          <button
+            class="rounded border border-blue-800/60 bg-blue-900/30 px-2 py-1.5 text-[10px] font-semibold text-blue-300
+                   hover:border-blue-500 hover:bg-blue-800/40 transition-colors
+                   disabled:cursor-not-allowed disabled:opacity-40"
+            :disabled="fieldPower === 0"
+            @click="moveBack"
+          >← Power Down</button>
+          <button
+            class="rounded border border-red-800/60 bg-red-900/30 px-2 py-1.5 text-[10px] font-semibold text-red-300
+                   hover:border-red-500 hover:bg-red-800/40 transition-colors
+                   disabled:cursor-not-allowed disabled:opacity-40"
+            :disabled="fieldPower === maxPosition"
+            @click="moveForward"
+          >Power Up →</button>
+        </div>
+      </div>
+
+      <!-- ─── Section F: Setbacks ────────────────────────────────────────── -->
+      <div class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-3 py-3">
+        <div class="mb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
+          Setbacks
+        </div>
+
+        <div class="mb-2 flex items-center gap-2">
+          <span
+            class="text-2xl font-bold tabular-nums transition-colors"
+            :class="setbackWarning ? 'text-red-400' : 'text-zinc-200'"
+          >{{ setbacks }}</span>
+          <span class="text-[10px] text-zinc-600">/ {{ MAX_SETBACKS }}</span>
+        </div>
+        <div v-if="setbackWarning" class="mb-2 text-[10px] font-semibold text-red-400">
+          Aggressor captured!
+        </div>
+
+        <!-- Pip row -->
+        <div class="mb-2 flex flex-wrap gap-1">
+          <div
+            v-for="n in MAX_SETBACKS"
+            :key="n"
+            class="h-4 w-4 rounded-sm border transition-colors"
+            :class="n <= setbacks
+              ? 'bg-red-700 border-red-600'
+              : 'bg-zinc-800 border-zinc-700'"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <button
+            class="rounded border border-zinc-700 bg-zinc-800/60 px-2 py-1.5 text-[10px] font-semibold text-zinc-400
+                   hover:border-zinc-500 hover:text-zinc-200 transition-colors
+                   disabled:cursor-not-allowed disabled:opacity-40"
+            :disabled="setbacks === 0"
+            @click="removeSetback"
+          >− Remove</button>
+          <button
+            class="rounded border border-red-800/60 bg-red-900/30 px-2 py-1.5 text-[10px] font-semibold text-red-300
+                   hover:border-red-600 hover:bg-red-800/40 transition-colors
+                   disabled:cursor-not-allowed disabled:opacity-40"
+            :disabled="setbackWarning"
+            @click="addSetback"
+          >+ Add Setback</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ─── Section C: Tracker ───────────────────────────────────────────── -->
     <div
       v-if="koStore.selectedKoMission?.tracker"
@@ -85,123 +197,6 @@ const setbackWarning = computed(() => setbacks.value >= MAX_SETBACKS)
         class="w-full h-auto rounded-lg mx-auto block"
         alt="Foil the Heist Dashboard"
       />
-    </div>
-
-    <!-- ─── Section D: Force Field Power Tracker ─────────────────────────── -->
-    <div class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-3">
-      <div class="mb-3 text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
-        Force Field Power Tracker
-      </div>
-
-      <!-- Current position label -->
-      <div class="mb-3 flex items-center gap-3">
-        <div
-          class="rounded-lg px-3 py-1.5 text-sm font-bold transition-colors"
-          :class="atFullPower
-            ? 'bg-red-900/50 border border-red-600/60 text-red-300'
-            : atFieldEngaged
-              ? 'bg-amber-900/40 border border-amber-600/50 text-amber-300'
-              : 'bg-zinc-800 border border-zinc-600 text-zinc-300'"
-        >
-          {{ currentLabel() }}
-          <span v-if="atFullPower" class="ml-1 text-[10px] font-normal opacity-70">(Stage ends)</span>
-          <span v-else-if="atFieldEngaged" class="ml-1 text-[10px] font-normal opacity-70">(Aggressor removes 1 momentum)</span>
-        </div>
-        <div class="text-[11px] text-zinc-600">Position {{ fieldPower }} / {{ maxPosition }}</div>
-      </div>
-
-      <!-- Track visualization -->
-      <div class="mb-3 flex items-center gap-1 flex-wrap">
-        <div
-          v-for="(label, i) in TRACK_LABELS"
-          :key="i"
-          class="flex items-center justify-center rounded text-[9px] font-bold transition-all"
-          :class="[
-            i === fieldPower
-              ? 'bg-amber-500 text-black w-8 h-8 ring-2 ring-amber-300'
-              : i < fieldPower
-                ? 'bg-zinc-600 text-zinc-400 w-6 h-6'
-                : 'bg-zinc-800 text-zinc-600 w-6 h-6',
-            NAMED_POSITIONS.has(i) && i !== fieldPower ? 'ring-1 ring-zinc-500' : ''
-          ]"
-          :title="NAMED_POSITIONS.has(i) ? label : ''"
-        >
-          {{ NAMED_POSITIONS.has(i) ? (i === 0 ? 'PD' : i === 5 ? 'FE' : i === 8 ? 'FE' : 'FP') : '▶' }}
-        </div>
-      </div>
-
-      <!-- Controls -->
-      <div class="flex gap-2">
-        <button
-          class="rounded-lg border border-blue-800/60 bg-blue-900/30 px-3 py-2 text-xs font-semibold text-blue-300
-                 shadow-[0_2px_0_0_rgba(0,0,0,0.4)] transition-all
-                 hover:border-blue-500 hover:bg-blue-800/40
-                 active:shadow-none active:translate-y-0.5
-                 disabled:cursor-not-allowed disabled:opacity-40"
-          :disabled="fieldPower === 0"
-          @click="moveBack"
-        >
-          ← Power Down
-        </button>
-        <button
-          class="rounded-lg border border-red-800/60 bg-red-900/30 px-3 py-2 text-xs font-semibold text-red-300
-                 shadow-[0_2px_0_0_rgba(0,0,0,0.4)] transition-all
-                 hover:border-red-500 hover:bg-red-800/40
-                 active:shadow-none active:translate-y-0.5
-                 disabled:cursor-not-allowed disabled:opacity-40"
-          :disabled="fieldPower === maxPosition"
-          @click="moveForward"
-        >
-          Power Up →
-        </button>
-      </div>
-    </div>
-
-    <!-- ─── Section F: Setbacks ───────────────────────────────────────────── -->
-    <div class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-3">
-      <div class="mb-3 text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
-        Setbacks
-      </div>
-
-      <div class="mb-2 flex items-center gap-3">
-        <span
-          class="text-2xl font-bold tabular-nums transition-colors"
-          :class="setbackWarning ? 'text-red-400' : 'text-zinc-200'"
-        >{{ setbacks }}</span>
-        <span class="text-[10px] text-zinc-600">damage tokens / {{ MAX_SETBACKS }}</span>
-        <span v-if="setbackWarning" class="text-[10px] font-semibold text-red-400">
-          Aggressor captured — Foil the Heist!
-        </span>
-      </div>
-
-      <!-- Pip row -->
-      <div class="mb-3 flex flex-wrap gap-1.5">
-        <div
-          v-for="n in MAX_SETBACKS"
-          :key="n"
-          class="h-5 w-5 rounded-sm border transition-colors"
-          :class="n <= setbacks
-            ? 'bg-red-700 border-red-600'
-            : 'bg-zinc-800 border-zinc-700'"
-        />
-      </div>
-
-      <div class="flex gap-2">
-        <button
-          class="rounded-lg border border-zinc-700 bg-zinc-800/60 px-3 py-2 text-xs font-semibold text-zinc-400
-                 hover:border-zinc-500 hover:text-zinc-200 transition-colors
-                 disabled:cursor-not-allowed disabled:opacity-40"
-          :disabled="setbacks === 0"
-          @click="removeSetback"
-        >− Remove</button>
-        <button
-          class="rounded-lg border border-red-800/60 bg-red-900/30 px-3 py-2 text-xs font-semibold text-red-300
-                 hover:border-red-600 hover:bg-red-800/40 transition-colors
-                 disabled:cursor-not-allowed disabled:opacity-40"
-          :disabled="setbackWarning"
-          @click="addSetback"
-        >+ Add Setback</button>
-      </div>
     </div>
 
   </div>
