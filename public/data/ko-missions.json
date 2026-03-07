@@ -59,6 +59,23 @@
     ],
     "tracker": "/images/ko/extract-the-agent-tracker.png"
   },
-  { "id": 5, "name": "Jailbreak", "stages": [] },
+  {
+    "id": 5,
+    "name": "Jailbreak",
+    "missionFront": "/images/ko/jailbreak-mission-front.png",
+    "stages": [
+      { "cards": [
+          "/images/ko/jailbreak-mission-back.png",
+          "/images/ko/jailbreak-stage-1-face-1.png",
+          "/images/ko/jailbreak-stage-1-face-2.png",
+          "/images/ko/jailbreak-stage-1-face-3.png",
+          "/images/ko/jailbreak-stage-1-face-4.png"
+        ]
+      },
+      { "front": "/images/ko/jailbreak-stage-2-front.png",
+        "back":  "/images/ko/jailbreak-stage-2-back.png" }
+    ],
+    "tracker": "/images/ko/jailbreak-tracker.png"
+  },
   { "id": 6, "name": "Crash Landing", "stages": [] }
 ]
