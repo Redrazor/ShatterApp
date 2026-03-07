@@ -54,21 +54,6 @@ function currentLabel(): string {
   return TRACK_LABELS[fieldPower.value]
 }
 
-// ─── Section E: Struggle Tracker ─────────────────────────────────────────────
-const MAX_MOMENTUM = 10
-
-const aggressorMomentum = ref(0)
-const sentinelMomentum = ref(0)
-
-function addMomentum(side: 'aggressor' | 'sentinel', n = 1) {
-  if (side === 'aggressor') aggressorMomentum.value = Math.min(MAX_MOMENTUM, aggressorMomentum.value + n)
-  else sentinelMomentum.value = Math.min(MAX_MOMENTUM, sentinelMomentum.value + n)
-}
-function removeMomentum(side: 'aggressor' | 'sentinel', n = 1) {
-  if (side === 'aggressor') aggressorMomentum.value = Math.max(0, aggressorMomentum.value - n)
-  else sentinelMomentum.value = Math.max(0, sentinelMomentum.value - n)
-}
-
 // ─── Section F: Setbacks ─────────────────────────────────────────────────────
 const MAX_SETBACKS = 10
 
@@ -169,83 +154,6 @@ const setbackWarning = computed(() => setbacks.value >= MAX_SETBACKS)
         >
           Power Up →
         </button>
-      </div>
-    </div>
-
-    <!-- ─── Section E: Struggle Tracker ──────────────────────────────────── -->
-    <div class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-3">
-      <div class="mb-3 text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
-        Struggle Tracker
-      </div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <!-- Aggressor -->
-        <div class="rounded-lg border border-red-900/40 bg-red-950/20 p-3">
-          <div class="mb-2 text-[10px] font-bold text-red-400">Aggressor</div>
-          <div class="mb-2 flex items-center gap-2">
-            <span class="text-xl font-bold tabular-nums text-red-200">{{ aggressorMomentum }}</span>
-            <span class="text-[10px] text-zinc-600">momentum</span>
-          </div>
-          <div class="flex gap-1">
-            <button
-              class="rounded border border-red-900/50 bg-red-950/40 px-2 py-1 text-xs font-bold text-red-400
-                     hover:bg-red-900/40 transition-colors disabled:opacity-40"
-              :disabled="aggressorMomentum === 0"
-              @click="removeMomentum('aggressor')"
-            >−</button>
-            <button
-              class="rounded border border-red-700/50 bg-red-900/30 px-2 py-1 text-xs font-bold text-red-300
-                     hover:bg-red-800/40 transition-colors disabled:opacity-40"
-              :disabled="aggressorMomentum >= MAX_MOMENTUM"
-              @click="addMomentum('aggressor')"
-            >+</button>
-          </div>
-        </div>
-
-        <!-- Sentinel -->
-        <div class="rounded-lg border border-blue-900/40 bg-blue-950/20 p-3">
-          <div class="mb-2 text-[10px] font-bold text-blue-400">Sentinel</div>
-          <div class="mb-2 flex items-center gap-2">
-            <span class="text-xl font-bold tabular-nums text-blue-200">{{ sentinelMomentum }}</span>
-            <span class="text-[10px] text-zinc-600">momentum</span>
-          </div>
-          <div class="flex gap-1">
-            <button
-              class="rounded border border-blue-900/50 bg-blue-950/40 px-2 py-1 text-xs font-bold text-blue-400
-                     hover:bg-blue-900/40 transition-colors disabled:opacity-40"
-              :disabled="sentinelMomentum === 0"
-              @click="removeMomentum('sentinel')"
-            >−</button>
-            <button
-              class="rounded border border-blue-700/50 bg-blue-900/30 px-2 py-1 text-xs font-bold text-blue-300
-                     hover:bg-blue-800/40 transition-colors disabled:opacity-40"
-              :disabled="sentinelMomentum >= MAX_MOMENTUM"
-              @click="addMomentum('sentinel')"
-            >+</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Full tracker visual -->
-      <div class="mt-3">
-        <div class="mb-1 flex justify-between text-[9px] text-zinc-700">
-          <span>Aggressor</span>
-          <span>Sentinel</span>
-        </div>
-        <div class="flex h-4 overflow-hidden rounded-full border border-zinc-700">
-          <div
-            class="bg-red-700 transition-all duration-300"
-            :style="{ width: `${(aggressorMomentum / MAX_MOMENTUM) * 50}%` }"
-          />
-          <div class="flex-1 bg-zinc-800" />
-          <div
-            class="bg-blue-700 transition-all duration-300"
-            :style="{ width: `${(sentinelMomentum / MAX_MOMENTUM) * 50}%` }"
-          />
-        </div>
-        <div class="mt-1 text-center text-[10px] text-zinc-600">
-          {{ aggressorMomentum }} / {{ MAX_MOMENTUM }} each
-        </div>
       </div>
     </div>
 
