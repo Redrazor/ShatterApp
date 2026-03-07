@@ -42,7 +42,23 @@
     ],
     "tracker": "/images/ko/trigger-a-chain-reaction-tracker.png"
   },
-  { "id": 4, "name": "Extract the Agent", "stages": [] },
+  {
+    "id": 4,
+    "name": "Extract the Agent",
+    "missionFront": "/images/ko/extract-the-agent-mission-front.png",
+    "missionBack":  "/images/ko/extract-the-agent-mission-back.png",
+    "stages": [
+      { "front": "/images/ko/extract-the-agent-stage-1-front.png", "back": "/images/ko/extract-the-agent-stage-1-back.png" },
+      { "cards": [
+          "/images/ko/extract-the-agent-stage-2-face-1.png",
+          "/images/ko/extract-the-agent-stage-2-face-2.png",
+          "/images/ko/extract-the-agent-stage-2-face-3.png",
+          "/images/ko/extract-the-agent-stage-2-face-4.png"
+        ]
+      }
+    ],
+    "tracker": "/images/ko/extract-the-agent-tracker.png"
+  },
   { "id": 5, "name": "Jailbreak", "stages": [] },
   { "id": 6, "name": "Crash Landing", "stages": [] }
 ]

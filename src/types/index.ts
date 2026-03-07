@@ -38,8 +38,9 @@ export interface Mission {
 }
 
 export interface KoStageCard {
-  front: string
-  back: string
+  front?: string
+  back?: string
+  cards?: string[]  // multi-face override (e.g. 4-page Stage II); supersedes front/back
 }
 
 export interface KoMission {

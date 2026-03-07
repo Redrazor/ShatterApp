@@ -47,7 +47,8 @@ from PIL import Image
 
 # ── Card detection ────────────────────────────────────────────────────────
 
-def find_cards_on_page(img_path: str, padding: int = 6) -> list[tuple[int, int, int, int]]:
+def find_cards_on_page(img_path: str, padding: int = 6,
+                       card_color: str = "red") -> list[tuple[int, int, int, int]]:
     """
     Detect card bounding boxes on a single AMG print-sheet page.
 
@@ -67,55 +68,74 @@ def find_cards_on_page(img_path: str, padding: int = 6) -> list[tuple[int, int, 
         return []
     c1_top = int(content_rows[0])
 
-    # ── Step 2: Pure-red separator scan → split point ─────────────────────
-    # The two cards are separated by a thin pure-red horizontal band.
-    # Scan top→bottom from the vertical midpoint; the first row where >95%
-    # of interior pixels are solid red (r>90, g<70, b<70) is the split.
+    # ── Step 2: Separator scan → split point ──────────────────────────────
+    # The two cards are separated by a thin solid-colour horizontal band.
+    # Scan top→bottom from the vertical midpoint; the first row where >85%
+    # of interior pixels match the card colour is the split.
     xi1, xi2 = int(w * 0.10), int(w * 0.90)
     r_ch, g_ch, b_ch = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
 
+    def separator_frac(y: int) -> float:
+        rs = r_ch[y, xi1:xi2]
+        gs = g_ch[y, xi1:xi2]
+        bs = b_ch[y, xi1:xi2]
+        if card_color == "grey":
+            # Low-saturation grey (dark to mid): brightness 150–480, max-min < 40
+            bright = rs.astype(int) + gs.astype(int) + bs.astype(int)
+            sat = (np.maximum(np.maximum(rs, gs), bs).astype(int) -
+                   np.minimum(np.minimum(rs, gs), bs).astype(int))
+            return ((bright > 150) & (bright < 480) & (sat < 40)).mean()
+        else:
+            return ((rs > 90) & (gs < 70) & (bs < 70)).mean()
+
+    sep_threshold = 0.70 if card_color == "grey" else 0.85
     split_y: int | None = None
     for y in range(h // 2, h):
-        red_frac = (
-            (r_ch[y, xi1:xi2] > 90) &
-            (g_ch[y, xi1:xi2] < 70) &
-            (b_ch[y, xi1:xi2] < 70)
-        ).mean()
-        if red_frac > 0.85:
+        if separator_frac(y) > sep_threshold:
             split_y = y
             break
 
     if split_y is None:
-        # Fallback: no pure-red separator found — treat as single card
+        # Fallback: no separator found — treat as single card
         c1_bottom = int(content_rows[-1])
         c2_top = None
     else:
-        # Card 1 ends just before the pure-red separator
+        # Card 1 ends just before the separator
         c1_bottom = split_y - 1
-        # Card 2 starts AT the separator (includes red band + back title header)
+        # Card 2 starts AT the separator (includes band + back title header)
         c2_top = split_y
 
-    # ── Step 3: Last thick red band → Card 2 bottom ───────────────────────
-    is_red = (r_ch > 100) & (g_ch < 70) & (b_ch < 70)
-    last_thick_red: int | None = None
+    # ── Step 3: Last thick card-colour band → Card 2 bottom ───────────────
+    def is_card_color_row(y: int) -> np.ndarray:
+        rs = r_ch[y, xi1:xi2]
+        gs = g_ch[y, xi1:xi2]
+        bs = b_ch[y, xi1:xi2]
+        if card_color == "grey":
+            bright = rs.astype(int) + gs.astype(int) + bs.astype(int)
+            sat = (np.maximum(np.maximum(rs, gs), bs).astype(int) -
+                   np.minimum(np.minimum(rs, gs), bs).astype(int))
+            return (bright > 150) & (bright < 480) & (sat < 40)
+        else:
+            return (rs > 100) & (gs < 70) & (bs < 70)
+
+    last_thick_band: int | None = None
     for y in range(h - 1, c1_bottom, -1):
-        row_red = is_red[y, xi1:xi2]
-        # Max continuous red run in interior
+        row_mask = is_card_color_row(y)
         max_run = cur = 0
-        for v in row_red:
+        for v in row_mask:
             cur = cur + 1 if v else 0
             if cur > max_run:
                 max_run = cur
         if max_run > int((xi2 - xi1) * 0.3):
-            last_thick_red = y
+            last_thick_band = y
             break
-    if last_thick_red is None:
+    if last_thick_band is None:
         # Fallback: last row with any non-white content below Card 1
         for y in range(h - 1, c1_bottom, -1):
             if arr[y, xi1:xi2, :].min() < 200:
-                last_thick_red = y
+                last_thick_band = y
                 break
-    c2_bottom = last_thick_red if last_thick_red is not None else h - 50
+    c2_bottom = last_thick_band if last_thick_band is not None else h - 50
 
     # ── Step 4: X-bounds from mid-section of each card ────────────────────
     def x_bounds(top: int, bottom: int) -> tuple[int, int]:
@@ -185,6 +205,8 @@ def main() -> None:
     parser.add_argument("--dpi",      type=int, default=300, help="Render DPI (default: 300)")
     parser.add_argument("--tracker-pages", type=str, default="",
                         help="Comma-separated 1-based page numbers that are full-page trackers (e.g. '4')")
+    parser.add_argument("--card-color", choices=["red", "grey"], default="red",
+                        help="Card border/separator colour for detection (default: red)")
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
@@ -197,7 +219,7 @@ def main() -> None:
         for i, page_path in enumerate(pages, start=1):
             page_num = f"page{i:02d}"
             img = Image.open(page_path)
-            cards = find_cards_on_page(page_path)
+            cards = find_cards_on_page(page_path, card_color=args.card_color)
 
             if i in tracker_pages or len(cards) == 1:
                 # Treat as single tracker card — union all detected boxes
