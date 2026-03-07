@@ -432,15 +432,16 @@ const ROMAN = ['I', 'II', 'III']
           @touchstart.passive="onTouchStart"
           @touchend.passive="onTouchEnd"
         >
-          <div class="relative w-full rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center"
-               :class="isKO ? 'p-4' : 'overflow-hidden'"
-               :style="isKO ? {} : { minHeight: '56vw' }">
+          <div class="relative w-full rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center overflow-hidden"
+               :class="isKO ? 'p-4' : ''"
+               :style="isKO ? { minHeight: '160px' } : { minHeight: '56vw' }">
             <Transition :name="`card-slide-${slideDir}`" mode="out-in">
               <img
                 v-if="pickerCardSrc(pickerMissions[pickerIndex])"
                 :key="pickerIndex"
                 :src="imageUrl(pickerCardSrc(pickerMissions[pickerIndex])!)"
                 :class="isKO ? 'w-[58%] h-auto mx-auto rounded-lg' : 'w-full object-contain max-h-[65vh]'"
+                :style="isKO ? { aspectRatio: '800/523' } : undefined"
                 alt="mission card"
               />
               <div
@@ -500,15 +501,16 @@ const ROMAN = ['I', 'II', 'III']
             </svg>
           </button>
 
-          <div class="rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center"
-               :class="isKO ? 'p-4' : 'overflow-hidden p-2'"
-               :style="isKO ? {} : { height: '338px' }">
+          <div class="relative rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center overflow-hidden"
+               :class="isKO ? 'p-4' : 'p-2'"
+               :style="isKO ? { minHeight: '160px' } : { height: '338px' }">
             <Transition :name="`card-slide-${slideDir}`" mode="out-in">
               <img
                 v-if="pickerCardSrc(pickerMissions[pickerIndex])"
                 :key="pickerIndex"
                 :src="imageUrl(pickerCardSrc(pickerMissions[pickerIndex])!)"
                 :class="isKO ? 'w-[58%] h-auto mx-auto rounded-xl' : 'w-full rounded-xl object-contain max-h-[322px]'"
+                :style="isKO ? { aspectRatio: '800/523' } : undefined"
                 alt="mission card"
                 @load="onCardImgLoad"
               />

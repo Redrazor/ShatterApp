@@ -89,11 +89,11 @@ const zoomedTotal = computed(() => {
 
     <!-- Stage card strip -->
     <template v-else>
-      <div class="flex gap-3 overflow-x-auto pb-1">
+      <div class="grid grid-cols-2 gap-3">
         <div
           v-for="(stage, i) in koStore.selectedKoMission.stages"
           :key="i"
-          class="relative flex-none transition-all duration-300"
+          class="relative transition-all duration-300"
           :class="[
             i === koStore.koStageIndex
               ? 'ring-2 ring-amber-400 rounded-lg shadow-[0_0_12px_rgba(245,158,11,0.3)] cursor-pointer'
@@ -101,7 +101,6 @@ const zoomedTotal = computed(() => {
                 ? 'opacity-40 cursor-default'
                 : 'opacity-20 cursor-default'
           ]"
-          style="width: 66vw; max-width: 390px;"
           @click="i === koStore.koStageIndex && openZoom(i)"
         >
           <img
@@ -142,14 +141,6 @@ const zoomedTotal = computed(() => {
             </button>
           </template>
         </div>
-      </div>
-      <div class="mt-2 flex justify-center gap-1.5">
-        <span
-          v-for="(_, i) in koStore.selectedKoMission.stages"
-          :key="i"
-          class="block h-1.5 w-1.5 rounded-full transition-colors duration-200"
-          :class="i === koStore.koStageIndex ? 'bg-amber-400' : i < koStore.koStageIndex ? 'bg-zinc-500' : 'bg-zinc-700'"
-        />
       </div>
     </template>
   </div>
