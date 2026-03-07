@@ -47,6 +47,7 @@ export interface KoMission {
   name: string
   missionFront?: string
   missionBack?: string
+  missionCards?: string[]
   stages: KoStageCard[]
   tracker?: string
 }

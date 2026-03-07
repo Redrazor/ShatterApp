@@ -21,6 +21,11 @@
     "name": "Foil the Heist",
     "missionFront": "/images/ko/foil-the-heist-mission-front.png",
     "missionBack":  "/images/ko/foil-the-heist-mission-back.png",
+    "missionCards": [
+      "/images/ko/foil-the-heist-mission-front.png",
+      "/images/ko/foil-the-heist-mission-back.png",
+      "/images/ko/foil-the-heist-mission-card-3.png"
+    ],
     "stages": [
       { "front": "/images/ko/foil-the-heist-stage-1-front.png", "back": "/images/ko/foil-the-heist-stage-1-back.png" },
       { "front": "/images/ko/foil-the-heist-stage-2-front.png", "back": "/images/ko/foil-the-heist-stage-2-back.png" }

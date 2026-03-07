@@ -161,9 +161,9 @@ function onFsTouchEnd(e: TouchEvent) {
   const card = pickerCardSrc(pickerMissions.value[pickerIndex.value])
   if (card) missionFullscreenSrc.value = imageUrl(card)
 }
-const koMissionFlipped = ref(false)
+const koMissionCardIndex = ref(0)
 watch(() => store.selectedMission, () => { cardCollapsed.value = false })
-watch(() => koStore.selectedKoMission, () => { koMissionFlipped.value = false })
+watch(() => koStore.selectedKoMission, () => { koMissionCardIndex.value = 0 })
 const cardImgWidth = ref<number | null>(null)
 
 function onCardImgLoad(e: Event) {
@@ -605,7 +605,7 @@ const ROMAN = ['I', 'II', 'III']
               class="w-full max-h-[322px] rounded-lg object-contain"
               alt="mission card"
             />
-            <!-- KO: fixed aspect-ratio container keeps front & back the same display size -->
+            <!-- KO: fixed aspect-ratio container keeps all card faces the same display size -->
             <div
               v-else
               class="w-[58%] rounded-lg overflow-hidden"
@@ -613,19 +613,43 @@ const ROMAN = ['I', 'II', 'III']
             >
               <img
                 data-testid="mission-card"
-                :src="imageUrl(koMissionFlipped ? koStore.selectedKoMission!.missionBack! : koStore.selectedKoMission!.missionFront!)"
+                :src="imageUrl(
+                  koStore.selectedKoMission!.missionCards
+                    ? koStore.selectedKoMission!.missionCards[koMissionCardIndex]
+                    : koMissionCardIndex === 0
+                      ? koStore.selectedKoMission!.missionFront!
+                      : koStore.selectedKoMission!.missionBack!
+                )"
                 class="w-full h-full object-contain rounded-lg"
-                :alt="koMissionFlipped ? 'Mission card back' : 'Mission card front'"
+                :alt="`Mission card face ${koMissionCardIndex + 1}`"
               />
             </div>
-            <!-- KO flip button — top-right corner -->
-            <button
-              v-if="isKO && koStore.selectedKoMission?.missionBack"
-              class="absolute top-2 right-2 z-20 rounded-lg border border-zinc-600 bg-black/70 px-2.5 py-1 text-[10px] font-medium text-zinc-300 backdrop-blur-sm transition-colors hover:border-zinc-400 hover:text-zinc-100"
-              @click.stop="koMissionFlipped = !koMissionFlipped"
-            >
-              {{ koMissionFlipped ? '↩ Front' : 'Flip →' }}
-            </button>
+            <!-- KO: multi-face buttons (1|2|3) or standard flip -->
+            <template v-if="isKO && koStore.selectedKoMission">
+              <!-- 3-face button row -->
+              <div
+                v-if="koStore.selectedKoMission.missionCards && koStore.selectedKoMission.missionCards.length > 2"
+                class="absolute top-2 right-2 z-20 flex rounded-lg overflow-hidden border border-zinc-600 bg-black/70 backdrop-blur-sm"
+              >
+                <button
+                  v-for="(_, i) in koStore.selectedKoMission.missionCards"
+                  :key="i"
+                  class="px-2.5 py-1 text-[10px] font-bold transition-colors"
+                  :class="koMissionCardIndex === i
+                    ? 'bg-amber-500/80 text-zinc-900'
+                    : 'text-zinc-300 hover:text-zinc-100 hover:bg-white/10'"
+                  @click.stop="koMissionCardIndex = i"
+                >{{ i + 1 }}</button>
+              </div>
+              <!-- Standard flip button -->
+              <button
+                v-else-if="koStore.selectedKoMission.missionBack"
+                class="absolute top-2 right-2 z-20 rounded-lg border border-zinc-600 bg-black/70 px-2.5 py-1 text-[10px] font-medium text-zinc-300 backdrop-blur-sm transition-colors hover:border-zinc-400 hover:text-zinc-100"
+                @click.stop="koMissionCardIndex = koMissionCardIndex === 0 ? 1 : 0"
+              >
+                {{ koMissionCardIndex === 1 ? '↩ Front' : 'Flip →' }}
+              </button>
+            </template>
             <button
               v-if="!isKO"
               class="absolute bottom-2 right-2 z-20 rounded-lg bg-black/60 p-2 text-white/60 backdrop-blur-sm transition-colors hover:text-white sm:hidden"
