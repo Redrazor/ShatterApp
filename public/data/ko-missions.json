@@ -65,11 +65,11 @@
     "missionFront": "/images/ko/jailbreak-mission-front.png",
     "stages": [
       { "cards": [
-          "/images/ko/jailbreak-mission-back.png",
           "/images/ko/jailbreak-stage-1-face-1.png",
           "/images/ko/jailbreak-stage-1-face-2.png",
           "/images/ko/jailbreak-stage-1-face-3.png",
-          "/images/ko/jailbreak-stage-1-face-4.png"
+          "/images/ko/jailbreak-stage-1-face-4.png",
+          "/images/ko/jailbreak-stage-1-face-5.png"
         ]
       },
       { "front": "/images/ko/jailbreak-stage-2-front.png",
