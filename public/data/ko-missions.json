@@ -77,5 +77,23 @@
     ],
     "tracker": "/images/ko/jailbreak-tracker.png"
   },
-  { "id": 6, "name": "Crash Landing", "stages": [] }
+  {
+    "id": 6,
+    "name": "Crash Landing",
+    "missionFront": "/images/ko/crash-landing-mission-front.png",
+    "stages": [
+      { "cards": [
+          "/images/ko/crash-landing-stage-1-face-1.png",
+          "/images/ko/crash-landing-stage-1-face-2.png",
+          "/images/ko/crash-landing-stage-1-face-3.png"
+        ]
+      },
+      { "cards": [
+          "/images/ko/crash-landing-stage-2-face-1.png",
+          "/images/ko/crash-landing-stage-2-face-2.png"
+        ]
+      }
+    ],
+    "tracker": "/images/ko/crash-landing-tracker.png"
+  }
 ]
