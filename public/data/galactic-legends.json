@@ -1,0 +1,58 @@
+[
+  {
+    "id": "maul",
+    "name": "Maul",
+    "force": 6,
+    "orderCards": [
+      {
+        "id": "maul-predator",
+        "name": "Predator",
+        "forceRefresh": 2,
+        "effect": "Maul may move up to 2 times before activating.",
+        "legendAbility": "Hatred: Maul heals 1 damage for each enemy model he destroys this activation."
+      },
+      {
+        "id": "maul-cunning",
+        "name": "Cunning Strategist",
+        "forceRefresh": 1,
+        "effect": "One Minion unit may activate before Maul this turn.",
+        "legendAbility": "Master Manipulator: Move the Victory Tracker forward 1 space."
+      },
+      {
+        "id": "maul-rage",
+        "name": "Unbridled Rage",
+        "forceRefresh": 3,
+        "effect": "Maul gains Reckless Attack this activation.",
+        "legendAbility": "Savage: Maul may make an additional attack after his first."
+      },
+      {
+        "id": "maul-shadow",
+        "name": "Shadow of the Sith",
+        "forceRefresh": 0,
+        "effect": "Maul may deploy from reserve without spending an action.",
+        "legendAbility": "Phantom Menace: Place Maul in base contact with any terrain feature."
+      },
+      {
+        "id": "maul-domination",
+        "name": "Domination",
+        "forceRefresh": 2,
+        "effect": "Maul counts as 2 models for objective control this round.",
+        "legendAbility": "Overwhelming Presence: All enemy models within 3 of Maul are Suppressed."
+      },
+      {
+        "id": "maul-patience",
+        "name": "Dark Patience",
+        "forceRefresh": 1,
+        "effect": "Maul may spend Force to cancel up to 2 hits this activation.",
+        "legendAbility": "Iron Will: Remove all conditions from Maul."
+      },
+      {
+        "id": "maul-the-hunt",
+        "name": "The Hunt",
+        "forceRefresh": 2,
+        "effect": "Minion units may reroll 1 attack die each this turn.",
+        "legendAbility": "Pack Tactics: Each Minion unit that damages an enemy model grants Maul 1 Force."
+      }
+    ]
+  }
+]

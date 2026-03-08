@@ -53,6 +53,32 @@ export interface KoMission {
   tracker?: string
 }
 
+export interface LegendaryOrderCard {
+  id: string
+  name: string
+  forceRefresh: number  // 0 = none
+  effect: string
+  legendAbility: string
+}
+
+export interface LegendaryMission {
+  id: number
+  name: string
+  missionCard?: string
+  cadreForce: number
+  squadPointLimit: number
+  dashboardImage?: string
+}
+
+export interface GalacticLegend {
+  id: string
+  name: string
+  force: number
+  orderCards: LegendaryOrderCard[]
+  statCard?: string
+  stanceCard?: string
+}
+
 export interface Product {
   id: number
   name: string

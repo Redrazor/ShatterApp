@@ -4,31 +4,47 @@ import { useStruggleStore } from '../stores/struggle.ts'
 import { useMissionsStore } from '../stores/missions.ts'
 import { useKeyopsStore, type GameMode } from '../stores/keyops.ts'
 import { useKoMissionsStore } from '../stores/koMissions.ts'
+import { useLegendaryStore } from '../stores/legendary.ts'
+import { useLegendaryMissionsStore } from '../stores/legendaryMissions.ts'
+import { useGalacticLegendsStore } from '../stores/galacticLegends.ts'
 import { imageUrl } from '../utils/imageUrl.ts'
 import KoStageCards from '../components/play/KoStageCards.vue'
 import KoMissionInteraction from '../components/play/KoMissionInteraction.vue'
+import VictoryTracker from '../components/play/legendary/VictoryTracker.vue'
+import LegendaryForcePools from '../components/play/legendary/LegendaryForcePools.vue'
+import LegendaryTurnOrder from '../components/play/legendary/LegendaryTurnOrder.vue'
+import LegendaryMissionInteraction from '../components/play/legendary/LegendaryMissionInteraction.vue'
 
 const store = useStruggleStore()
 const missionsStore = useMissionsStore()
 const koStore = useKeyopsStore()
 const koMissionsStore = useKoMissionsStore()
+const legendaryStore = useLegendaryStore()
+const legendaryMissionsStore = useLegendaryMissionsStore()
+const galacticLegendsStore = useGalacticLegendsStore()
 
 const MODES: { value: GameMode; label: string; disabled?: boolean }[] = [
   { value: 'standard', label: 'Standard' },
   { value: 'key-operations', label: 'Key Ops' },
-  { value: 'legendary', label: 'Legendary', disabled: true },
+  { value: 'legendary', label: 'Legendary' },
 ]
 
 const isKO = computed(() => koStore.mode === 'key-operations')
-const inGame = computed(() =>
-  isKO.value ? !!koStore.selectedKoMission : !!store.selectedMission,
-)
-const pickerMissions = computed(() =>
-  isKO.value ? koMissionsStore.missions : missionsStore.missions,
-)
-const pickerLoading = computed(() =>
-  isKO.value ? koMissionsStore.loading : missionsStore.loading,
-)
+const isLegendary = computed(() => koStore.mode === 'legendary')
+// Legendary picker has two steps: 'mission' (pick a mission) then 'legend' (pick a GL)
+const legendaryPickerStep = ref<'mission' | 'legend'>('mission')
+const inGame = computed(() => {
+  if (isLegendary.value) return legendaryStore.legendaryInGame
+  return isKO.value ? !!koStore.selectedKoMission : !!store.selectedMission
+})
+const pickerMissions = computed(() => {
+  if (isLegendary.value) return legendaryMissionsStore.missions as unknown as import('../types/index.ts').Mission[]
+  return isKO.value ? koMissionsStore.missions : missionsStore.missions
+})
+const pickerLoading = computed(() => {
+  if (isLegendary.value) return legendaryMissionsStore.loading
+  return isKO.value ? koMissionsStore.loading : missionsStore.loading
+})
 const p1Label = computed(() => (isKO.value ? 'Aggressor' : 'P1'))
 const p2Label = computed(() => (isKO.value ? 'Sentinel' : 'P2'))
 
@@ -53,7 +69,8 @@ const koMarkerVisible = computed(
 // Single computed gate for the game-over overlay
 const gameOverVisible = computed(
   () =>
-    (!isKO.value && store.gameOver) ||
+    (isLegendary.value && legendaryStore.legendaryOver) ||
+    (!isKO.value && !isLegendary.value && store.gameOver) ||
     (isKO.value && (store.gameOver || koStore.campaignOver)),
 )
 
@@ -71,18 +88,33 @@ function selectMode(m: GameMode) {
   koStore.mode = m
   koStore.resetCampaign()
   store.resetGame()
+  legendaryStore.resetLegendary()
+  legendaryPickerStep.value = 'mission'
   pickerIndex.value = 0
 }
 
 function playSelectedMission() {
   const m = pickerMissions.value[pickerIndex.value]
-  if (isKO.value) selectKoMission(m as import('../types/index.ts').KoMission)
-  else confirmMission(m as import('../types/index.ts').Mission)
+  if (isLegendary.value) {
+    legendaryStore.selectMission(m as unknown as import('../types/index.ts').LegendaryMission)
+    pickerIndex.value = 0
+    legendaryPickerStep.value = 'legend'
+  } else if (isKO.value) {
+    selectKoMission(m as import('../types/index.ts').KoMission)
+  } else {
+    confirmMission(m as import('../types/index.ts').Mission)
+  }
 }
 
-function pickerCardSrc(item: import('../types/index.ts').Mission | import('../types/index.ts').KoMission): string | undefined {
+function selectGalacticLegend(index: number) {
+  const gl = galacticLegendsStore.legends[index]
+  if (gl) legendaryStore.selectGalacticLegend(gl)
+}
+
+function pickerCardSrc(item: import('../types/index.ts').Mission | import('../types/index.ts').KoMission | import('../types/index.ts').LegendaryMission): string | undefined {
   return (item as import('../types/index.ts').Mission).card
     ?? (item as import('../types/index.ts').KoMission).missionFront
+    ?? (item as import('../types/index.ts').LegendaryMission).missionCard
 }
 
 function claimOp() {
@@ -104,8 +136,14 @@ function newCampaign() {
 }
 
 function handleReset() {
-  if (isKO.value) koStore.resetKoMission()
-  store.resetGame()
+  if (isLegendary.value) {
+    legendaryStore.resetLegendary()
+    legendaryPickerStep.value = 'mission'
+    pickerIndex.value = 0
+  } else {
+    if (isKO.value) koStore.resetKoMission()
+    store.resetGame()
+  }
 }
 
 function confirmMission(mission: import('../types/index.ts').Mission) {
@@ -197,6 +235,8 @@ onMounted(() => {
   window.addEventListener('keydown', onKeyDown)
   missionsStore.load()
   koMissionsStore.load()
+  legendaryMissionsStore.load()
+  galacticLegendsStore.load()
 })
 onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
@@ -294,8 +334,27 @@ const ROMAN = ['I', 'II', 'III']
           class="w-full max-w-sm rounded-2xl border border-amber-500/30 bg-zinc-900 p-8 text-center
                  shadow-[0_0_60px_rgba(201,168,76,0.15)]"
         >
+          <!-- Legendary: GL wins -->
+          <template v-if="isLegendary">
+            <div class="mb-3 text-5xl">⚡</div>
+            <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500/50">
+              Legendary Encounter Over
+            </div>
+            <div class="mb-6 text-2xl font-bold text-amber-400">
+              Galactic Legend Wins!
+            </div>
+            <button
+              class="w-full rounded-lg bg-amber-500 px-4 py-2.5 font-bold text-zinc-900
+                     shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all hover:bg-amber-400
+                     active:shadow-[0_1px_0_0_rgba(0,0,0,0.4)] active:translate-y-[3px]"
+              @click="handleReset()"
+            >
+              New Game
+            </button>
+          </template>
+
           <!-- KO: Campaign complete -->
-          <template v-if="isKO && koStore.campaignOver">
+          <template v-else-if="isKO && koStore.campaignOver">
             <div class="mb-3 text-5xl">⚔</div>
             <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500/50">
               Campaign Complete
@@ -398,11 +457,7 @@ const ROMAN = ['I', 'II', 'III']
         :disabled="m.disabled"
         @click="!m.disabled && selectMode(m.value)"
       >
-        <span v-if="m.disabled" class="flex flex-col items-center gap-0.5">
-          <span>{{ m.label }}</span>
-          <span class="text-[9px] normal-case tracking-normal font-normal text-zinc-700">coming soon</span>
-        </span>
-        <span v-else>{{ m.label }}</span>
+        {{ m.label }}
       </button>
     </div>
 
@@ -412,12 +467,57 @@ const ROMAN = ['I', 'II', 'III']
     <template v-if="!inGame">
       <!-- Section label -->
       <div class="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
-        Choose Mission
+        <template v-if="isLegendary && legendaryPickerStep === 'legend'">Choose Galactic Legend</template>
+        <template v-else>Choose Mission</template>
       </div>
 
-      <!-- Loading skeleton -->
+      <!-- ── Legendary: Galactic Legend picker ── -->
+      <template v-if="isLegendary && legendaryPickerStep === 'legend'">
+        <div class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 px-4 py-3 space-y-3">
+          <div class="text-xs font-semibold text-zinc-400">
+            Mission: <span class="text-amber-400">{{ legendaryStore.selectedMission?.name }}</span>
+          </div>
+          <!-- GL list or empty state -->
+          <template v-if="galacticLegendsStore.loading">
+            <div class="flex flex-col gap-2">
+              <div class="h-10 animate-pulse rounded-lg bg-zinc-800" />
+              <div class="h-10 animate-pulse rounded-lg bg-zinc-800" />
+            </div>
+          </template>
+          <template v-else-if="galacticLegendsStore.legends.length > 0">
+            <div class="flex flex-col gap-2">
+              <button
+                v-for="(gl, i) in galacticLegendsStore.legends"
+                :key="gl.id"
+                class="flex items-center gap-3 rounded-lg border border-zinc-700/50 bg-zinc-800 px-3 py-2.5
+                       text-left transition-all hover:border-amber-600/40 hover:bg-zinc-700/60 active:scale-95"
+                @click="selectGalacticLegend(i)"
+              >
+                <span class="text-lg">⚡</span>
+                <div>
+                  <div class="text-sm font-bold text-zinc-200">{{ gl.name }}</div>
+                  <div class="text-[10px] text-zinc-500">Force {{ gl.force }} · {{ gl.orderCards.length }} Order Cards</div>
+                </div>
+              </button>
+            </div>
+          </template>
+          <template v-else>
+            <div class="rounded-lg border border-zinc-700/30 bg-zinc-800/40 px-3 py-6 text-center text-[11px] text-zinc-600">
+              No Galactic Legends available yet — data coming soon.
+            </div>
+          </template>
+          <!-- Back button -->
+          <button
+            class="w-full rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-3 py-2 text-xs font-medium text-zinc-500
+                   transition-all hover:border-zinc-500 hover:text-zinc-300 active:scale-95"
+            @click="legendaryPickerStep = 'mission'; pickerIndex = 0"
+          >← Back to Mission</button>
+        </div>
+      </template>
+
+      <!-- Loading skeleton (non-legendary, or legendary mission step) -->
       <div
-        v-if="pickerLoading"
+        v-else-if="pickerLoading"
         class="flex flex-col gap-3 rounded-2xl border border-zinc-700/40 bg-zinc-900/60 p-6"
       >
         <div class="mx-auto h-48 w-full animate-pulse rounded-xl bg-zinc-800" />
@@ -425,7 +525,7 @@ const ROMAN = ['I', 'II', 'III']
       </div>
 
       <!-- Missions loaded -->
-      <template v-else-if="pickerMissions.length > 0">
+      <template v-else-if="!pickerLoading && pickerMissions.length > 0">
 
         <!-- ── MOBILE: full-width card, swipe to navigate ── -->
         <div class="flex flex-col gap-4 sm:hidden"
@@ -568,7 +668,7 @@ const ROMAN = ['I', 'II', 'III']
 
       <!-- Empty / error state -->
       <div
-        v-else
+        v-else-if="!isLegendary || legendaryPickerStep === 'mission'"
         class="rounded-2xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-8 text-center text-sm text-zinc-500"
       >
         No missions available
@@ -579,6 +679,145 @@ const ROMAN = ['I', 'II', 'III']
          STATE B: Game in progress
          ══════════════════════════════════════════ -->
     <template v-else>
+
+      <!-- ══════════════════════════════════════════
+           LEGENDARY MODE game content
+           ══════════════════════════════════════════ -->
+      <template v-if="isLegendary && legendaryStore.selectedMission && legendaryStore.selectedGalacticLegend">
+
+        <!-- Turn order (always visible at top) -->
+        <LegendaryTurnOrder
+          :phase="legendaryStore.turnPhase"
+          :round="legendaryStore.roundNumber"
+          @next="(inc) => legendaryStore.nextTurnPhase(inc)"
+        />
+
+        <!-- Mission card (collapsible) -->
+        <div
+          class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 cursor-pointer select-none overflow-hidden"
+          :class="cardCollapsed ? 'p-0' : 'p-2'"
+          @click="cardCollapsed = !cardCollapsed"
+        >
+          <div v-if="cardCollapsed" class="flex items-center justify-between px-3 py-2">
+            <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
+              {{ legendaryStore.selectedMission.name }}
+            </span>
+            <span class="text-[10px] text-zinc-600">▼ expand</span>
+          </div>
+          <template v-else>
+            <div
+              v-if="legendaryStore.selectedMission.missionCard"
+              class="flex justify-center"
+            >
+              <img
+                :src="imageUrl(legendaryStore.selectedMission.missionCard)"
+                class="w-full max-h-[322px] rounded-lg object-contain"
+                alt="mission card"
+              />
+            </div>
+            <div
+              v-else
+              class="flex items-center justify-center px-6 py-8 text-center"
+            >
+              <div>
+                <div class="mb-2 text-3xl">⚡</div>
+                <div class="text-sm font-semibold text-zinc-400">{{ legendaryStore.selectedMission.name }}</div>
+                <div class="mt-1 text-[11px] text-zinc-700">Mission card coming soon</div>
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between px-1">
+              <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
+                {{ legendaryStore.selectedMission.name }} ·
+                <span class="text-amber-500">{{ legendaryStore.selectedGalacticLegend.name }}</span>
+              </span>
+              <span class="text-[10px] text-zinc-600">▲ collapse</span>
+            </div>
+          </template>
+        </div>
+
+        <!-- Victory Tracker -->
+        <VictoryTracker
+          :position="legendaryStore.victoryPosition"
+          @advance="legendaryStore.advanceVictory()"
+          @retreat="legendaryStore.retreatVictory()"
+        />
+
+        <!-- Force Pools -->
+        <LegendaryForcePools
+          :cadre1-force="legendaryStore.cadre1Force"
+          :cadre2-force="legendaryStore.cadre2Force"
+          :legend-force="legendaryStore.legendForce"
+          :cadre-force-refresh="legendaryStore.cadreForceRefresh"
+          @adjust="(player, delta) => legendaryStore.adjustForce(player, delta)"
+        />
+
+        <!-- Mission interaction / dashboard -->
+        <LegendaryMissionInteraction :mission="legendaryStore.selectedMission" />
+
+        <!-- Rules Quick Reference -->
+        <details class="rounded-xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-3">
+          <summary class="cursor-pointer select-none text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600">
+            Legendary Encounters — Rules Reference
+          </summary>
+          <div class="mt-3 space-y-3 text-xs leading-relaxed text-zinc-500">
+            <div>
+              <p class="mb-1 font-semibold text-zinc-300">Players &amp; Squads</p>
+              <p><span class="font-semibold text-zinc-400">Cadre players (×2):</span> Each builds 2 Secondary + 2 Supporting units. No Primary unit. Same Era, within Mission SP limit.</p>
+              <p class="mt-1"><span class="font-semibold text-zinc-400">Galactic Legend player:</span> GL unit + 1 Minion set from the Minion List. No duplicate unique names across any squad.</p>
+            </div>
+            <div>
+              <p class="mb-1 font-semibold text-zinc-300">Turn Order</p>
+              <p>Cadre 1 → Cadre 2 → Galactic Legend (repeat). Cadre players choose their own order each round. Both Cadres share <span class="text-zinc-300">one reserve slot</span> — can't reserve if the other cadre's unit is already in Reserve.</p>
+            </div>
+            <div>
+              <p class="mb-1 font-semibold text-zinc-300">Galactic Legend Turn (4 steps)</p>
+              <ol class="list-decimal list-inside space-y-0.5">
+                <li><span class="text-zinc-400">Reveal Order Cards</span> — reveal 2 from deck, choose 1; resolve its Effect; discard both.</li>
+                <li><span class="text-zinc-400">Minion Activations</span> — all Minion units activate.</li>
+                <li><span class="text-zinc-400">Strategic Redeployment</span> — mission-specific.</li>
+                <li><span class="text-zinc-400">GL Activation</span> — Galactic Legend unit activates.</li>
+              </ol>
+              <p class="mt-1"><span class="font-semibold text-zinc-400">Shatterpoint card:</span> if revealed, the other card is auto-chosen AND its Legend Ability triggers. On Turn 1: set aside, draw a replacement, shuffle back in at round end.</p>
+            </div>
+            <div>
+              <p class="mb-1 font-semibold text-zinc-300">Victory Tracker &amp; Alert Levels</p>
+              <p>The GL advances the tracker by completing plot objectives. Reaching space 9 = GL wins.</p>
+              <div class="mt-1.5 grid grid-cols-3 gap-1 text-[10px]">
+                <div class="rounded border border-emerald-800/40 bg-emerald-950/30 px-2 py-1 text-center">
+                  <div class="font-bold text-emerald-400">Condition Green</div>
+                  <div class="text-emerald-700">Spaces 1–3</div>
+                  <div class="text-emerald-600">0 Force/turn</div>
+                </div>
+                <div class="rounded border border-yellow-800/40 bg-yellow-950/30 px-2 py-1 text-center">
+                  <div class="font-bold text-yellow-400">Yellow Alert</div>
+                  <div class="text-yellow-700">Spaces 4–6</div>
+                  <div class="text-yellow-600">+1 Force/turn</div>
+                </div>
+                <div class="rounded border border-red-800/40 bg-red-950/30 px-2 py-1 text-center">
+                  <div class="font-bold text-red-400">Red Alert</div>
+                  <div class="text-red-700">Spaces 7–9</div>
+                  <div class="text-red-600">+2 Force/turn</div>
+                </div>
+              </div>
+              <p class="mt-1">Cadre Force Refresh happens once per Cadre turn, before the first activation.</p>
+            </div>
+            <div>
+              <p class="mb-1 font-semibold text-zinc-300">GL Order Deck</p>
+              <p>7 unique Order Cards + 1 Shatterpoint Card. Each card has a <span class="text-zinc-400">Force Refresh</span> value (Force GL gains that turn), an <span class="text-zinc-400">Effect</span>, and a <span class="text-zinc-400">Legend Ability</span> (Shatterpoint only). Force is <span class="text-zinc-300">not</span> refreshed when the deck is reshuffled — only from the drawn card's value.</p>
+            </div>
+            <div>
+              <p class="mb-1 font-semibold text-zinc-300">Force Pools</p>
+              <p><span class="text-zinc-400">GL:</span> equal to the GL unit's Force stat. <span class="text-zinc-400">Each Cadre:</span> amount specified by the Mission. Cadre players spend Force for abilities; GL spends for their own. Refreshed per Alert Level table above.</p>
+            </div>
+          </div>
+        </details>
+
+      </template>
+
+      <!-- ══════════════════════════════════════════
+           STANDARD / KO game content
+           ══════════════════════════════════════════ -->
+      <template v-else-if="!isLegendary">
 
       <!-- ── Mission card (collapsible) ── -->
       <div
@@ -592,7 +831,7 @@ const ROMAN = ['I', 'II', 'III']
           class="flex items-center justify-between px-3 py-2"
         >
           <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
-            {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission.name }}
+            {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission?.name }}
           </span>
           <span class="text-[10px] text-zinc-600">▼ expand</span>
         </div>
@@ -603,7 +842,7 @@ const ROMAN = ['I', 'II', 'III']
             <img
               v-if="!isKO"
               data-testid="mission-card"
-              :src="imageUrl(store.selectedMission.card)"
+              :src="imageUrl(store.selectedMission!.card)"
               class="w-full max-h-[322px] rounded-lg object-contain"
               alt="mission card"
             />
@@ -655,12 +894,12 @@ const ROMAN = ['I', 'II', 'III']
             <button
               v-if="!isKO"
               class="absolute bottom-2 right-2 z-20 rounded-lg bg-black/60 p-2 text-white/60 backdrop-blur-sm transition-colors hover:text-white sm:hidden"
-              @click.stop="openFullscreen(imageUrl(store.selectedMission.card))"
+              @click.stop="openFullscreen(imageUrl(store.selectedMission!.card))"
             >⛶</button>
           </div>
           <div class="mt-1 flex items-center justify-between px-1">
             <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
-              {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission.name }}
+              {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission?.name }}
             </span>
             <span class="text-[10px] text-zinc-600">▲ collapse</span>
           </div>
@@ -1014,6 +1253,8 @@ const ROMAN = ['I', 'II', 'III']
           <p><span class="font-semibold text-zinc-300">Winning:</span> Struggle token lands on your innermost momentum token space. Win 2 struggles to win the game.</p>
         </div>
       </details>
+
+      </template> <!-- end v-else-if="!isLegendary" -->
 
     </template>
 
