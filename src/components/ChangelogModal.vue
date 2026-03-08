@@ -8,15 +8,7 @@ const entries = [
     date: '2026-03-08',
     changes: [
       'Fixed broken images in "In the same pack" section of unit profiles',
-      'Added PWA icons; fixed pre-existing TS build errors',
       'Added changelog modal accessible from footer version badge',
-    ],
-  },
-  {
-    version: '1.5.8',
-    date: '2026-03-08',
-    changes: [
-      'Keepalive workflow: ping /api/health with timeout and continue-on-error',
     ],
   },
   {
@@ -51,7 +43,6 @@ const entries = [
     date: '2026-03-06',
     changes: [
       'Key Operations mode — mission picker, mission-specific tracker components',
-      'Full test coverage for KO stores and components',
     ],
   },
   {
@@ -111,8 +102,6 @@ const entries = [
     date: '2026-03-04',
     changes: [
       'Errata / balance history system per unit',
-      'AMG CDN images via Firebase Hosting',
-      'Keepalive ping to prevent Render.com cold starts',
       'Various stat corrections',
     ],
   },
@@ -120,7 +109,7 @@ const entries = [
     version: '1.2.1',
     date: '2026-03-03',
     changes: [
-      'Live on shatterapp.com — Vercel + Render.com + Firebase image CDN',
+      'Live on shatterapp.com',
       'Footer, license, public GitHub repo',
     ],
   },
@@ -145,8 +134,6 @@ const entries = [
     date: '2026-03-03',
     changes: [
       'Initial release — Browse, Build, Collection views',
-      'SQLite backend with Express API',
-      'Character/mission/product data from pointbreaksw.com',
     ],
   },
 ]
