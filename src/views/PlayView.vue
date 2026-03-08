@@ -592,7 +592,7 @@ const ROMAN = ['I', 'II', 'III']
           class="flex items-center justify-between px-3 py-2"
         >
           <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
-            {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission.name }}
+            {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission?.name }}
           </span>
           <span class="text-[10px] text-zinc-600">▼ expand</span>
         </div>
@@ -603,7 +603,7 @@ const ROMAN = ['I', 'II', 'III']
             <img
               v-if="!isKO"
               data-testid="mission-card"
-              :src="imageUrl(store.selectedMission.card)"
+              :src="imageUrl(store.selectedMission?.card)"
               class="w-full max-h-[322px] rounded-lg object-contain"
               alt="mission card"
             />
@@ -655,12 +655,12 @@ const ROMAN = ['I', 'II', 'III']
             <button
               v-if="!isKO"
               class="absolute bottom-2 right-2 z-20 rounded-lg bg-black/60 p-2 text-white/60 backdrop-blur-sm transition-colors hover:text-white sm:hidden"
-              @click.stop="openFullscreen(imageUrl(store.selectedMission.card))"
+              @click.stop="openFullscreen(imageUrl(store.selectedMission?.card))"
             >⛶</button>
           </div>
           <div class="mt-1 flex items-center justify-between px-1">
             <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
-              {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission.name }}
+              {{ isKO ? koStore.selectedKoMission?.name : store.selectedMission?.name }}
             </span>
             <span class="text-[10px] text-zinc-600">▲ collapse</span>
           </div>

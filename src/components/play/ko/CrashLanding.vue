@@ -16,7 +16,6 @@ function toggleHurt(i: number) {
 }
 function resetHurt() { hurt.value = [true, true, true] }
 
-const anyHurt = computed(() => hurt.value.some(Boolean))
 
 // ─── Stage II: Survival Gear ──────────────────────────────────────────────────
 // 4 gear types, each tracked by a token that moves down 3 positions:
