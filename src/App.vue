@@ -3,8 +3,10 @@ import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
 import AppInstallBanner from './components/AppInstallBanner.vue'
+import ChangelogModal from './components/ChangelogModal.vue'
 
 const menuOpen = ref(false)
+const showChangelog = ref(false)
 const router = useRouter()
 
 const routes = [
@@ -95,11 +97,17 @@ onMounted(() => {
       </div>
       <div class="text-xs text-sw-text/40">
         All card images and associated artwork are copyright © Atomic Mass Games, Lucasfilm Ltd. and Disney. Used for fan reference purposes only.
+        <span class="mx-2">·</span>
+        <button
+          class="text-sw-text/30 hover:text-sw-gold transition-colors"
+          @click="showChangelog = true"
+        >v1.5.10</button>
       </div>
     </footer>
   </div>
 
   <AppInstallBanner />
+  <ChangelogModal :show="showChangelog" @close="showChangelog = false" />
 
   <!-- Landscape blocker -->
   <div class="landscape-block">
