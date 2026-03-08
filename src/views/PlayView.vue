@@ -200,8 +200,10 @@ function onFsTouchEnd(e: TouchEvent) {
   if (card) missionFullscreenSrc.value = imageUrl(card)
 }
 const koMissionCardIndex = ref(0)
+const legendaryMissionCardIndex = ref(0)
 watch(() => store.selectedMission, () => { cardCollapsed.value = false })
 watch(() => koStore.selectedKoMission, () => { koMissionCardIndex.value = 0 })
+watch(() => legendaryStore.selectedMission, () => { legendaryMissionCardIndex.value = 0; cardCollapsed.value = false })
 const cardImgWidth = ref<number | null>(null)
 
 function onCardImgLoad(e: Event) {
@@ -694,38 +696,64 @@ const ROMAN = ['I', 'II', 'III']
 
         <!-- Mission card (collapsible) -->
         <div
-          class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 cursor-pointer select-none overflow-hidden"
+          class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 select-none overflow-hidden"
           :class="cardCollapsed ? 'p-0' : 'p-2'"
-          @click="cardCollapsed = !cardCollapsed"
         >
-          <div v-if="cardCollapsed" class="flex items-center justify-between px-3 py-2">
+          <!-- Collapsed bar -->
+          <div
+            v-if="cardCollapsed"
+            class="flex cursor-pointer items-center justify-between px-3 py-2"
+            @click="cardCollapsed = false"
+          >
             <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
               {{ legendaryStore.selectedMission.name }}
             </span>
             <span class="text-[10px] text-zinc-600">▼ expand</span>
           </div>
           <template v-else>
-            <div
-              v-if="legendaryStore.selectedMission.missionCard"
-              class="flex justify-center"
-            >
+            <!-- Multi-face card container -->
+            <div class="relative flex justify-center">
               <img
-                :src="imageUrl(legendaryStore.selectedMission.missionCard)"
-                class="w-full max-h-[322px] rounded-lg object-contain"
+                v-if="legendaryStore.selectedMission.missionCards?.length"
+                :src="imageUrl(legendaryStore.selectedMission.missionCards[legendaryMissionCardIndex])"
+                class="w-full rounded-lg object-contain"
+                style="aspect-ratio: 800/523"
                 alt="mission card"
               />
-            </div>
-            <div
-              v-else
-              class="flex items-center justify-center px-6 py-8 text-center"
-            >
-              <div>
-                <div class="mb-2 text-3xl">⚡</div>
-                <div class="text-sm font-semibold text-zinc-400">{{ legendaryStore.selectedMission.name }}</div>
-                <div class="mt-1 text-[11px] text-zinc-700">Mission card coming soon</div>
+              <img
+                v-else-if="legendaryStore.selectedMission.missionCard"
+                :src="imageUrl(legendaryStore.selectedMission.missionCard)"
+                class="w-full rounded-lg object-contain"
+                style="aspect-ratio: 800/523"
+                alt="mission card"
+              />
+              <div
+                v-else
+                class="flex w-full items-center justify-center px-6 py-8 text-center"
+              >
+                <div>
+                  <div class="mb-2 text-3xl">⚡</div>
+                  <div class="text-sm font-semibold text-zinc-400">{{ legendaryStore.selectedMission.name }}</div>
+                  <div class="mt-1 text-[11px] text-zinc-700">Mission card coming soon</div>
+                </div>
+              </div>
+              <!-- Face selector pills -->
+              <div
+                v-if="legendaryStore.selectedMission.missionCards && legendaryStore.selectedMission.missionCards.length > 1"
+                class="absolute top-2 right-2 z-20 flex rounded-lg overflow-hidden border border-zinc-600 bg-black/70 backdrop-blur-sm"
+              >
+                <button
+                  v-for="(_, i) in legendaryStore.selectedMission.missionCards"
+                  :key="i"
+                  class="px-2.5 py-1 text-[10px] font-bold transition-colors"
+                  :class="legendaryMissionCardIndex === i
+                    ? 'bg-amber-500/80 text-zinc-900'
+                    : 'text-zinc-300 hover:text-zinc-100 hover:bg-white/10'"
+                  @click.stop="legendaryMissionCardIndex = i"
+                >{{ i + 1 }}</button>
               </div>
             </div>
-            <div class="mt-1 flex items-center justify-between px-1">
+            <div class="mt-1 flex cursor-pointer items-center justify-between px-1" @click="cardCollapsed = true">
               <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
                 {{ legendaryStore.selectedMission.name }} ·
                 <span class="text-amber-500">{{ legendaryStore.selectedGalacticLegend.name }}</span>

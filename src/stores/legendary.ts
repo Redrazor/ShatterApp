@@ -26,8 +26,8 @@ export const useLegendaryStore = defineStore(
 
     // ── Computed ──────────────────────────────────────────────
     const alertLevel = computed<'green' | 'yellow' | 'red'>(() => {
-      if (victoryPosition.value <= 3) return 'green'
-      if (victoryPosition.value <= 6) return 'yellow'
+      if (victoryPosition.value <= 2) return 'green'
+      if (victoryPosition.value <= 5) return 'yellow'
       return 'red'
     })
 
@@ -44,7 +44,7 @@ export const useLegendaryStore = defineStore(
       )
     })
 
-    const legendaryOver = computed(() => victoryPosition.value >= 9)
+    const legendaryOver = computed(() => victoryPosition.value >= 8)
 
     const legendaryInGame = computed(
       () => !!selectedMission.value && !!selectedGalacticLegend.value,
@@ -65,7 +65,7 @@ export const useLegendaryStore = defineStore(
     }
 
     function advanceVictory(n = 1) {
-      victoryPosition.value = Math.min(9, victoryPosition.value + n)
+      victoryPosition.value = Math.min(8, victoryPosition.value + n)
     }
 
     function retreatVictory(n = 1) {

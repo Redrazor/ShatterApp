@@ -65,6 +65,7 @@ export interface LegendaryMission {
   id: number
   name: string
   missionCard?: string
+  missionCards?: string[]
   cadreForce: number
   squadPointLimit: number
   dashboardImage?: string

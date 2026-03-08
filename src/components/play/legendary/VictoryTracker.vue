@@ -10,19 +10,16 @@ const emit = defineEmits<{
   retreat: []
 }>()
 
-const SPACES = Array.from({ length: 9 }, (_, i) => i + 1)
+// 9 spaces: 0–8  (matches physical dashboard)
+const SPACES = Array.from({ length: 9 }, (_, i) => i)
 
 function alertFor(space: number): 'green' | 'yellow' | 'red' {
-  if (space <= 3) return 'green'
-  if (space <= 6) return 'yellow'
+  if (space <= 2) return 'green'
+  if (space <= 5) return 'yellow'
   return 'red'
 }
 
-const alertLevel = computed<'green' | 'yellow' | 'red'>(() => {
-  if (props.position <= 3) return 'green'
-  if (props.position <= 6) return 'yellow'
-  return 'red'
-})
+const alertLevel = computed(() => alertFor(props.position))
 
 const alertLabel = computed(() => {
   if (alertLevel.value === 'green') return 'Condition Green'
@@ -88,7 +85,7 @@ const alertBadgeClass = computed(() => {
       </div>
     </div>
 
-    <!-- Track spaces -->
+    <!-- Track spaces 0–8 -->
     <div class="flex gap-0.5">
       <div
         v-for="space in SPACES"
@@ -96,7 +93,6 @@ const alertBadgeClass = computed(() => {
         :class="spaceClass(space)"
       >
         {{ space }}
-        <!-- GL token -->
         <div
           v-if="space === position"
           class="absolute inset-0.5 rounded-sm border border-white/50 bg-white/15 backdrop-blur-sm"
@@ -104,17 +100,11 @@ const alertBadgeClass = computed(() => {
       </div>
     </div>
 
-    <!-- Section labels -->
+    <!-- Zone labels -->
     <div class="flex gap-0.5 text-[9px]">
-      <div class="flex flex-1 justify-center text-emerald-700 font-semibold">1–3</div>
-      <div class="flex flex-1 justify-center text-emerald-700 font-semibold"></div>
-      <div class="flex flex-1 justify-center text-emerald-700 font-semibold"></div>
-      <div class="flex flex-1 justify-center text-yellow-800 font-semibold">4–6</div>
-      <div class="flex flex-1 justify-center text-yellow-800 font-semibold"></div>
-      <div class="flex flex-1 justify-center text-yellow-800 font-semibold"></div>
-      <div class="flex flex-1 justify-center text-red-900 font-semibold">7–9</div>
-      <div class="flex flex-1 justify-center text-red-900 font-semibold"></div>
-      <div class="flex flex-1 justify-center text-red-900 font-semibold"></div>
+      <div class="flex-[3] text-center font-semibold text-emerald-700">0 – 2</div>
+      <div class="flex-[3] text-center font-semibold text-yellow-800">3 – 5</div>
+      <div class="flex-[3] text-center font-semibold text-red-900">6 – 8</div>
     </div>
 
     <!-- +/- controls -->
@@ -134,7 +124,7 @@ const alertBadgeClass = computed(() => {
                shadow-[0_3px_0_0_rgba(0,0,0,0.5)] hover:from-red-600 hover:to-red-800
                active:shadow-[0_1px_0_0_rgba(0,0,0,0.5)] active:translate-y-[2px]
                disabled:opacity-30 disabled:cursor-not-allowed disabled:active:translate-y-0"
-        :disabled="position >= 9"
+        :disabled="position >= 8"
         @click="emit('advance')"
       >Advance →</button>
     </div>

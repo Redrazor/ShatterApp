@@ -1,8 +1,30 @@
 [
   {
     "id": 1,
-    "name": "Legendary Mission 1",
-    "cadreForce": 3,
-    "squadPointLimit": 10
+    "name": "Make an Entrance",
+    "missionCard": "/images/le/make-an-entrance-mission.png",
+    "missionCards": [
+      "/images/le/make-an-entrance-mission.png",
+      "/images/le/make-an-entrance-deployment.png",
+      "/images/le/make-an-entrance-rules.png"
+    ],
+    "dashboardImage": "/images/le/make-an-entrance-dashboard.png",
+    "cadreForce": 4,
+    "squadPointLimit": 16
+  },
+  {
+    "id": 2,
+    "name": "Uninvited Guests",
+    "missionCard": "/images/le/uninvited-guests-mission.png",
+    "missionCards": [
+      "/images/le/uninvited-guests-mission.png",
+      "/images/le/uninvited-guests-deployment.png",
+      "/images/le/uninvited-guests-rules-1.png",
+      "/images/le/uninvited-guests-rules-2.png",
+      "/images/le/uninvited-guests-rules-3.png"
+    ],
+    "dashboardImage": "/images/le/uninvited-guests-dashboard.png",
+    "cadreForce": 4,
+    "squadPointLimit": 17
   }
 ]

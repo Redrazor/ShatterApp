@@ -110,7 +110,7 @@ describe('useLegendaryStore', () => {
   it('advanceVictory does not exceed 9', () => {
     const store = useLegendaryStore()
     for (let i = 0; i < 15; i++) store.advanceVictory()
-    expect(store.victoryPosition).toBe(9)
+    expect(store.victoryPosition).toBe(8)
   })
 
   it('retreatVictory decrements position', () => {
@@ -126,39 +126,39 @@ describe('useLegendaryStore', () => {
     expect(store.victoryPosition).toBe(0)
   })
 
-  it('legendaryOver is true at position 9', () => {
+  it('legendaryOver is true at position 8', () => {
     const store = useLegendaryStore()
-    store.advanceVictory(9)
+    store.advanceVictory(8)
     expect(store.legendaryOver).toBe(true)
   })
 
   it('legendaryOver is false below position 9', () => {
     const store = useLegendaryStore()
-    store.advanceVictory(8)
+    store.advanceVictory(7)
     expect(store.legendaryOver).toBe(false)
   })
 
   // ── Alert Levels ───────────────────────────────────────────────────────────
 
-  it('alertLevel is green at positions 0–3', () => {
+  it('alertLevel is green at positions 0–2', () => {
     const store = useLegendaryStore()
-    for (const pos of [0, 1, 2, 3]) {
+    for (const pos of [0, 1, 2]) {
       store.victoryPosition = pos
       expect(store.alertLevel).toBe('green')
     }
   })
 
-  it('alertLevel is yellow at positions 4–6', () => {
+  it('alertLevel is yellow at positions 3–5', () => {
     const store = useLegendaryStore()
-    for (const pos of [4, 5, 6]) {
+    for (const pos of [3, 4, 5]) {
       store.victoryPosition = pos
       expect(store.alertLevel).toBe('yellow')
     }
   })
 
-  it('alertLevel is red at positions 7–9', () => {
+  it('alertLevel is red at positions 6–8', () => {
     const store = useLegendaryStore()
-    for (const pos of [7, 8, 9]) {
+    for (const pos of [6, 7, 8]) {
       store.victoryPosition = pos
       expect(store.alertLevel).toBe('red')
     }
@@ -166,19 +166,19 @@ describe('useLegendaryStore', () => {
 
   it('cadreForceRefresh is 0 in green', () => {
     const store = useLegendaryStore()
-    store.victoryPosition = 2
+    store.victoryPosition = 1
     expect(store.cadreForceRefresh).toBe(0)
   })
 
   it('cadreForceRefresh is 1 in yellow', () => {
     const store = useLegendaryStore()
-    store.victoryPosition = 5
+    store.victoryPosition = 4
     expect(store.cadreForceRefresh).toBe(1)
   })
 
   it('cadreForceRefresh is 2 in red', () => {
     const store = useLegendaryStore()
-    store.victoryPosition = 8
+    store.victoryPosition = 7
     expect(store.cadreForceRefresh).toBe(2)
   })
 
