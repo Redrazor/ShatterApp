@@ -535,15 +535,15 @@ const ROMAN = ['I', 'II', 'III']
           @touchend.passive="onTouchEnd"
         >
           <div class="relative w-full rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center overflow-hidden"
-               :class="isKO ? 'p-4' : ''"
-               :style="isKO ? { minHeight: '160px' } : { minHeight: '56vw' }">
+               :class="isKO || isLegendary ? 'p-4' : ''"
+               :style="isKO || isLegendary ? { minHeight: '160px' } : { minHeight: '56vw' }">
             <Transition :name="`card-slide-${slideDir}`" mode="out-in">
               <img
                 v-if="pickerCardSrc(pickerMissions[pickerIndex])"
                 :key="pickerIndex"
                 :src="imageUrl(pickerCardSrc(pickerMissions[pickerIndex])!)"
-                :class="isKO ? 'w-[58%] h-auto mx-auto rounded-lg' : 'w-full object-contain max-h-[65vh]'"
-                :style="isKO ? { aspectRatio: '800/523' } : undefined"
+                :class="isKO || isLegendary ? 'w-[58%] h-auto mx-auto rounded-lg' : 'w-full object-contain max-h-[65vh]'"
+                :style="isKO || isLegendary ? { aspectRatio: '800/523' } : undefined"
                 alt="mission card"
               />
               <div
@@ -604,15 +604,15 @@ const ROMAN = ['I', 'II', 'III']
           </button>
 
           <div class="relative rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl flex items-center justify-center overflow-hidden"
-               :class="isKO ? 'p-4' : 'p-2'"
-               :style="isKO ? { minHeight: '160px' } : { height: '338px' }">
+               :class="isKO || isLegendary ? 'p-4' : 'p-2'"
+               :style="isKO || isLegendary ? { minHeight: '160px' } : { height: '338px' }">
             <Transition :name="`card-slide-${slideDir}`" mode="out-in">
               <img
                 v-if="pickerCardSrc(pickerMissions[pickerIndex])"
                 :key="pickerIndex"
                 :src="imageUrl(pickerCardSrc(pickerMissions[pickerIndex])!)"
-                :class="isKO ? 'w-[58%] h-auto mx-auto rounded-xl' : 'w-full rounded-xl object-contain max-h-[322px]'"
-                :style="isKO ? { aspectRatio: '800/523' } : undefined"
+                :class="isKO || isLegendary ? 'w-[58%] h-auto mx-auto rounded-xl' : 'w-full rounded-xl object-contain max-h-[322px]'"
+                :style="isKO || isLegendary ? { aspectRatio: '800/523' } : undefined"
                 alt="mission card"
                 @load="onCardImgLoad"
               />
@@ -716,14 +716,14 @@ const ROMAN = ['I', 'II', 'III']
               <img
                 v-if="legendaryStore.selectedMission.missionCards?.length"
                 :src="imageUrl(legendaryStore.selectedMission.missionCards[legendaryMissionCardIndex])"
-                class="w-full rounded-lg object-contain"
+                class="w-[58%] mx-auto rounded-lg object-contain"
                 style="aspect-ratio: 800/523"
                 alt="mission card"
               />
               <img
                 v-else-if="legendaryStore.selectedMission.missionCard"
                 :src="imageUrl(legendaryStore.selectedMission.missionCard)"
-                class="w-full rounded-lg object-contain"
+                class="w-[58%] mx-auto rounded-lg object-contain"
                 style="aspect-ratio: 800/523"
                 alt="mission card"
               />
