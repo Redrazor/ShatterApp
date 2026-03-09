@@ -239,7 +239,7 @@ const errata = computed(() =>
             >
               <img
                 v-if="rel.thumbnail"
-                :src="rel.thumbnail"
+                :src="imageUrl(rel.thumbnail)"
                 :alt="rel.name"
                 class="h-14 w-14 rounded object-contain"
               />
