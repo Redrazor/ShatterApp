@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.7.0',
+    date: '2026-03-09',
+    changes: [
+      'Reference view: new Keywords tab with searchable glossary of all keyword definitions',
+    ],
+  },
+  {
     version: '1.6.0',
     date: '2026-03-09',
     changes: [
