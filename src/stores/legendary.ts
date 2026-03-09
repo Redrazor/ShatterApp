@@ -1,19 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { LegendaryMission, GalacticLegend } from '../types/index.ts'
+import type { LegendaryMission } from '../types/index.ts'
 
 export const useLegendaryStore = defineStore(
   'legendary',
   () => {
     const selectedMission = ref<LegendaryMission | null>(null)
-    const selectedGalacticLegend = ref<GalacticLegend | null>(null)
 
     // Victory Tracker: 0 = not started, 1–9 = current position
     const victoryPosition = ref(0)
-
-    // GL Order Deck — track which cards have been used (by id)
-    const usedOrderCardIds = ref<string[]>([])
-    const shatterpointRevealed = ref(false)
 
     // Force pools
     const cadre1Force = ref(0)
@@ -37,18 +32,9 @@ export const useLegendaryStore = defineStore(
       return 2
     })
 
-    const remainingOrderCards = computed(() => {
-      if (!selectedGalacticLegend.value) return []
-      return selectedGalacticLegend.value.orderCards.filter(
-        (c) => !usedOrderCardIds.value.includes(c.id),
-      )
-    })
-
     const legendaryOver = computed(() => victoryPosition.value >= 8)
 
-    const legendaryInGame = computed(
-      () => !!selectedMission.value && !!selectedGalacticLegend.value,
-    )
+    const legendaryInGame = computed(() => !!selectedMission.value)
 
     // ── Actions ──────────────────────────────────────────────
     function selectMission(m: LegendaryMission) {
@@ -57,34 +43,12 @@ export const useLegendaryStore = defineStore(
       cadre2Force.value = m.cadreForce
     }
 
-    function selectGalacticLegend(gl: GalacticLegend) {
-      selectedGalacticLegend.value = gl
-      legendForce.value = gl.force
-      usedOrderCardIds.value = []
-      shatterpointRevealed.value = false
-    }
-
     function advanceVictory(n = 1) {
       victoryPosition.value = Math.min(8, victoryPosition.value + n)
     }
 
     function retreatVictory(n = 1) {
       victoryPosition.value = Math.max(0, victoryPosition.value - n)
-    }
-
-    function useOrderCard(id: string) {
-      if (!usedOrderCardIds.value.includes(id)) {
-        usedOrderCardIds.value.push(id)
-      }
-    }
-
-    function restoreOrderCard(id: string) {
-      usedOrderCardIds.value = usedOrderCardIds.value.filter((i) => i !== id)
-    }
-
-    function refreshOrderDeck() {
-      usedOrderCardIds.value = []
-      shatterpointRevealed.value = false
     }
 
     function nextTurnPhase(incrementRound = false) {
@@ -104,10 +68,7 @@ export const useLegendaryStore = defineStore(
 
     function resetLegendary() {
       selectedMission.value = null
-      selectedGalacticLegend.value = null
       victoryPosition.value = 0
-      usedOrderCardIds.value = []
-      shatterpointRevealed.value = false
       cadre1Force.value = 0
       cadre2Force.value = 0
       legendForce.value = 0
@@ -117,10 +78,7 @@ export const useLegendaryStore = defineStore(
 
     return {
       selectedMission,
-      selectedGalacticLegend,
       victoryPosition,
-      usedOrderCardIds,
-      shatterpointRevealed,
       cadre1Force,
       cadre2Force,
       legendForce,
@@ -128,16 +86,11 @@ export const useLegendaryStore = defineStore(
       roundNumber,
       alertLevel,
       cadreForceRefresh,
-      remainingOrderCards,
       legendaryOver,
       legendaryInGame,
       selectMission,
-      selectGalacticLegend,
       advanceVictory,
       retreatVictory,
-      useOrderCard,
-      restoreOrderCard,
-      refreshOrderDeck,
       nextTurnPhase,
       adjustForce,
       resetLegendary,

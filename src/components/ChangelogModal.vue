@@ -4,6 +4,15 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.6.1',
+    date: '2026-03-09',
+    changes: [
+      'Legendary Encounters: removed GL picker — selecting a mission now goes straight into the game',
+      'GL Force Pool remains on the game screen for manual tracking',
+      'Raised test coverage threshold to 75%',
+    ],
+  },
+  {
     version: '1.6.0',
     date: '2026-03-09',
     changes: [
