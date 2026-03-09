@@ -4,6 +4,18 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.6.0',
+    date: '2026-03-09',
+    changes: [
+      'Legendary Encounters mode — 3-player asymmetric play',
+      'Victory Tracker (9 positions, Green/Yellow/Red Alert Levels)',
+      'GL Order Deck management (7 cards + Shatterpoint)',
+      'Force Pools for cadre1, cadre2, and Galactic Legend',
+      'Turn phase pill indicator',
+      'Mission 1 "Make an Entrance" and Mission 2 "Uninvited Guests" interactive trackers',
+    ],
+  },
+  {
     version: '1.5.10',
     date: '2026-03-08',
     changes: [
