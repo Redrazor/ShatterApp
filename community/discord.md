@@ -16,11 +16,14 @@ Hey all — I've been working on a free web companion for Shatterpoint and figur
 **shatterapp.com** — no login, works on mobile, installs as a PWA.
 
 It covers the main stuff I found myself wanting at the table:
-→ Browse all units with filters, card art, and stat comparisons
+→ Browse all units with filters, card art, stat comparisons, and balance history
 → Build and share Strike Force lists with a link
-→ Track struggles during a game without pen and paper
+→ Track struggles during a game — Standard, Key Operations, and Legendary Encounters modes
+→ Key Operations missions 1–6 with interactive trackers
+→ Legendary Encounters — Victory Tracker, GL Order Deck, Force Pools, and mission dashboards
+→ Shatterpoint dice roller with Expertise spending and Duel Result
 → Mark off which packs you own
 
-Still adding things — feedback welcome. What would make your games easier?
+Still actively adding things — feedback welcome. What would make your games easier?
 
 [screenshot]
