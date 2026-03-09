@@ -1,23 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useLegendaryStore } from '../../../src/stores/legendary.ts'
-import type { LegendaryMission, GalacticLegend } from '../../../src/types/index.ts'
+import type { LegendaryMission } from '../../../src/types/index.ts'
 
 const mockMission: LegendaryMission = {
   id: 1,
   name: 'Test Mission',
   cadreForce: 3,
   squadPointLimit: 10,
-}
-
-const mockGL: GalacticLegend = {
-  id: 'maul',
-  name: 'Maul',
-  force: 5,
-  orderCards: [
-    { id: 'card-1', name: 'Relentless', forceRefresh: 2, effect: 'Move twice.', legendAbility: 'Rage' },
-    { id: 'card-2', name: 'Strike', forceRefresh: 0, effect: 'Attack.', legendAbility: 'Fury' },
-  ],
 }
 
 describe('useLegendaryStore', () => {
@@ -27,10 +17,9 @@ describe('useLegendaryStore', () => {
 
   // ── Initial state ──────────────────────────────────────────────────────────
 
-  it('starts with no mission or GL selected', () => {
+  it('starts with no mission selected', () => {
     const store = useLegendaryStore()
     expect(store.selectedMission).toBeNull()
-    expect(store.selectedGalacticLegend).toBeNull()
   })
 
   it('starts with victoryPosition at 0', () => {
@@ -78,24 +67,9 @@ describe('useLegendaryStore', () => {
     expect(store.cadre2Force).toBe(3)
   })
 
-  // ── selectGalacticLegend ───────────────────────────────────────────────────
-
-  it('selectGalacticLegend stores the GL', () => {
-    const store = useLegendaryStore()
-    store.selectGalacticLegend(mockGL)
-    expect(store.selectedGalacticLegend).toEqual(mockGL)
-  })
-
-  it('selectGalacticLegend initialises legend force from GL', () => {
-    const store = useLegendaryStore()
-    store.selectGalacticLegend(mockGL)
-    expect(store.legendForce).toBe(5)
-  })
-
-  it('legendaryInGame is true when both mission and GL are selected', () => {
+  it('legendaryInGame is true when mission is selected', () => {
     const store = useLegendaryStore()
     store.selectMission(mockMission)
-    store.selectGalacticLegend(mockGL)
     expect(store.legendaryInGame).toBe(true)
   })
 
@@ -107,7 +81,7 @@ describe('useLegendaryStore', () => {
     expect(store.victoryPosition).toBe(1)
   })
 
-  it('advanceVictory does not exceed 9', () => {
+  it('advanceVictory does not exceed 8', () => {
     const store = useLegendaryStore()
     for (let i = 0; i < 15; i++) store.advanceVictory()
     expect(store.victoryPosition).toBe(8)
@@ -132,7 +106,7 @@ describe('useLegendaryStore', () => {
     expect(store.legendaryOver).toBe(true)
   })
 
-  it('legendaryOver is false below position 9', () => {
+  it('legendaryOver is false below position 8', () => {
     const store = useLegendaryStore()
     store.advanceVictory(7)
     expect(store.legendaryOver).toBe(false)
@@ -180,44 +154,6 @@ describe('useLegendaryStore', () => {
     const store = useLegendaryStore()
     store.victoryPosition = 7
     expect(store.cadreForceRefresh).toBe(2)
-  })
-
-  // ── Order Deck ─────────────────────────────────────────────────────────────
-
-  it('useOrderCard adds id to usedOrderCardIds', () => {
-    const store = useLegendaryStore()
-    store.useOrderCard('card-1')
-    expect(store.usedOrderCardIds).toContain('card-1')
-  })
-
-  it('useOrderCard does not add duplicates', () => {
-    const store = useLegendaryStore()
-    store.useOrderCard('card-1')
-    store.useOrderCard('card-1')
-    expect(store.usedOrderCardIds.filter(id => id === 'card-1')).toHaveLength(1)
-  })
-
-  it('restoreOrderCard removes id from usedOrderCardIds', () => {
-    const store = useLegendaryStore()
-    store.useOrderCard('card-1')
-    store.restoreOrderCard('card-1')
-    expect(store.usedOrderCardIds).not.toContain('card-1')
-  })
-
-  it('refreshOrderDeck clears all used ids', () => {
-    const store = useLegendaryStore()
-    store.useOrderCard('card-1')
-    store.useOrderCard('card-2')
-    store.refreshOrderDeck()
-    expect(store.usedOrderCardIds).toHaveLength(0)
-  })
-
-  it('remainingOrderCards excludes used cards', () => {
-    const store = useLegendaryStore()
-    store.selectGalacticLegend(mockGL)
-    store.useOrderCard('card-1')
-    expect(store.remainingOrderCards).toHaveLength(1)
-    expect(store.remainingOrderCards[0].id).toBe('card-2')
   })
 
   // ── Turn Phase ─────────────────────────────────────────────────────────────
@@ -275,8 +211,17 @@ describe('useLegendaryStore', () => {
     expect(store.cadre2Force).toBe(2)
   })
 
+  it('adjustForce adjusts legend force', () => {
+    const store = useLegendaryStore()
+    store.legendForce = 3
+    store.adjustForce('legend', 2)
+    expect(store.legendForce).toBe(5)
+  })
+
   it('adjustForce does not let force go below 0', () => {
     const store = useLegendaryStore()
+    store.adjustForce('cadre1', -10)
+    expect(store.cadre1Force).toBe(0)
     store.adjustForce('legend', -10)
     expect(store.legendForce).toBe(0)
   })
@@ -286,18 +231,14 @@ describe('useLegendaryStore', () => {
   it('resetLegendary clears all state', () => {
     const store = useLegendaryStore()
     store.selectMission(mockMission)
-    store.selectGalacticLegend(mockGL)
     store.advanceVictory(5)
-    store.useOrderCard('card-1')
     store.nextTurnPhase(false)
     store.adjustForce('cadre1', 3)
 
     store.resetLegendary()
 
     expect(store.selectedMission).toBeNull()
-    expect(store.selectedGalacticLegend).toBeNull()
     expect(store.victoryPosition).toBe(0)
-    expect(store.usedOrderCardIds).toHaveLength(0)
     expect(store.turnPhase).toBe('cadre1')
     expect(store.roundNumber).toBe(1)
     expect(store.cadre1Force).toBe(0)

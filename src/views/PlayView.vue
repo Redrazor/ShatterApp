@@ -6,7 +6,6 @@ import { useKeyopsStore, type GameMode } from '../stores/keyops.ts'
 import { useKoMissionsStore } from '../stores/koMissions.ts'
 import { useLegendaryStore } from '../stores/legendary.ts'
 import { useLegendaryMissionsStore } from '../stores/legendaryMissions.ts'
-import { useGalacticLegendsStore } from '../stores/galacticLegends.ts'
 import { imageUrl } from '../utils/imageUrl.ts'
 import KoStageCards from '../components/play/KoStageCards.vue'
 import KoMissionInteraction from '../components/play/KoMissionInteraction.vue'
@@ -21,7 +20,6 @@ const koStore = useKeyopsStore()
 const koMissionsStore = useKoMissionsStore()
 const legendaryStore = useLegendaryStore()
 const legendaryMissionsStore = useLegendaryMissionsStore()
-const galacticLegendsStore = useGalacticLegendsStore()
 
 const MODES: { value: GameMode; label: string; disabled?: boolean }[] = [
   { value: 'standard', label: 'Standard' },
@@ -31,8 +29,6 @@ const MODES: { value: GameMode; label: string; disabled?: boolean }[] = [
 
 const isKO = computed(() => koStore.mode === 'key-operations')
 const isLegendary = computed(() => koStore.mode === 'legendary')
-// Legendary picker has two steps: 'mission' (pick a mission) then 'legend' (pick a GL)
-const legendaryPickerStep = ref<'mission' | 'legend'>('mission')
 const inGame = computed(() => {
   if (isLegendary.value) return legendaryStore.legendaryInGame
   return isKO.value ? !!koStore.selectedKoMission : !!store.selectedMission
@@ -89,7 +85,6 @@ function selectMode(m: GameMode) {
   koStore.resetCampaign()
   store.resetGame()
   legendaryStore.resetLegendary()
-  legendaryPickerStep.value = 'mission'
   pickerIndex.value = 0
 }
 
@@ -97,18 +92,11 @@ function playSelectedMission() {
   const m = pickerMissions.value[pickerIndex.value]
   if (isLegendary.value) {
     legendaryStore.selectMission(m as unknown as import('../types/index.ts').LegendaryMission)
-    pickerIndex.value = 0
-    legendaryPickerStep.value = 'legend'
   } else if (isKO.value) {
     selectKoMission(m as import('../types/index.ts').KoMission)
   } else {
     confirmMission(m as import('../types/index.ts').Mission)
   }
-}
-
-function selectGalacticLegend(index: number) {
-  const gl = galacticLegendsStore.legends[index]
-  if (gl) legendaryStore.selectGalacticLegend(gl)
 }
 
 function pickerCardSrc(item: import('../types/index.ts').Mission | import('../types/index.ts').KoMission | import('../types/index.ts').LegendaryMission): string | undefined {
@@ -138,7 +126,6 @@ function newCampaign() {
 function handleReset() {
   if (isLegendary.value) {
     legendaryStore.resetLegendary()
-    legendaryPickerStep.value = 'mission'
     pickerIndex.value = 0
   } else {
     if (isKO.value) koStore.resetKoMission()
@@ -238,7 +225,6 @@ onMounted(() => {
   missionsStore.load()
   koMissionsStore.load()
   legendaryMissionsStore.load()
-  galacticLegendsStore.load()
 })
 onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
@@ -468,58 +454,11 @@ const ROMAN = ['I', 'II', 'III']
          ══════════════════════════════════════════ -->
     <template v-if="!inGame">
       <!-- Section label -->
-      <div class="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
-        <template v-if="isLegendary && legendaryPickerStep === 'legend'">Choose Galactic Legend</template>
-        <template v-else>Choose Mission</template>
-      </div>
+      <div class="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Choose Mission</div>
 
-      <!-- ── Legendary: Galactic Legend picker ── -->
-      <template v-if="isLegendary && legendaryPickerStep === 'legend'">
-        <div class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 px-4 py-3 space-y-3">
-          <div class="text-xs font-semibold text-zinc-400">
-            Mission: <span class="text-amber-400">{{ legendaryStore.selectedMission?.name }}</span>
-          </div>
-          <!-- GL list or empty state -->
-          <template v-if="galacticLegendsStore.loading">
-            <div class="flex flex-col gap-2">
-              <div class="h-10 animate-pulse rounded-lg bg-zinc-800" />
-              <div class="h-10 animate-pulse rounded-lg bg-zinc-800" />
-            </div>
-          </template>
-          <template v-else-if="galacticLegendsStore.legends.length > 0">
-            <div class="flex flex-col gap-2">
-              <button
-                v-for="(gl, i) in galacticLegendsStore.legends"
-                :key="gl.id"
-                class="flex items-center gap-3 rounded-lg border border-zinc-700/50 bg-zinc-800 px-3 py-2.5
-                       text-left transition-all hover:border-amber-600/40 hover:bg-zinc-700/60 active:scale-95"
-                @click="selectGalacticLegend(i)"
-              >
-                <span class="text-lg">⚡</span>
-                <div>
-                  <div class="text-sm font-bold text-zinc-200">{{ gl.name }}</div>
-                  <div class="text-[10px] text-zinc-500">Force {{ gl.force }} · {{ gl.orderCards.length }} Order Cards</div>
-                </div>
-              </button>
-            </div>
-          </template>
-          <template v-else>
-            <div class="rounded-lg border border-zinc-700/30 bg-zinc-800/40 px-3 py-6 text-center text-[11px] text-zinc-600">
-              No Galactic Legends available yet — data coming soon.
-            </div>
-          </template>
-          <!-- Back button -->
-          <button
-            class="w-full rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-3 py-2 text-xs font-medium text-zinc-500
-                   transition-all hover:border-zinc-500 hover:text-zinc-300 active:scale-95"
-            @click="legendaryPickerStep = 'mission'; pickerIndex = 0"
-          >← Back to Mission</button>
-        </div>
-      </template>
-
-      <!-- Loading skeleton (non-legendary, or legendary mission step) -->
+      <!-- Loading skeleton -->
       <div
-        v-else-if="pickerLoading"
+        v-if="pickerLoading"
         class="flex flex-col gap-3 rounded-2xl border border-zinc-700/40 bg-zinc-900/60 p-6"
       >
         <div class="mx-auto h-48 w-full animate-pulse rounded-xl bg-zinc-800" />
@@ -670,7 +609,7 @@ const ROMAN = ['I', 'II', 'III']
 
       <!-- Empty / error state -->
       <div
-        v-else-if="!isLegendary || legendaryPickerStep === 'mission'"
+        v-else
         class="rounded-2xl border border-zinc-700/40 bg-zinc-900/60 px-4 py-8 text-center text-sm text-zinc-500"
       >
         No missions available
@@ -685,7 +624,7 @@ const ROMAN = ['I', 'II', 'III']
       <!-- ══════════════════════════════════════════
            LEGENDARY MODE game content
            ══════════════════════════════════════════ -->
-      <template v-if="isLegendary && legendaryStore.selectedMission && legendaryStore.selectedGalacticLegend">
+      <template v-if="isLegendary && legendaryStore.selectedMission">
 
         <!-- Turn order (always visible at top) -->
         <LegendaryTurnOrder
@@ -755,8 +694,7 @@ const ROMAN = ['I', 'II', 'III']
             </div>
             <div class="mt-1 flex cursor-pointer items-center justify-between px-1" @click="cardCollapsed = true">
               <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">
-                {{ legendaryStore.selectedMission.name }} ·
-                <span class="text-amber-500">{{ legendaryStore.selectedGalacticLegend.name }}</span>
+                {{ legendaryStore.selectedMission.name }}
               </span>
               <span class="text-[10px] text-zinc-600">▲ collapse</span>
             </div>
