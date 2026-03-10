@@ -374,7 +374,7 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 
 **Context:** Players sometimes need to reference a previous roll result mid-game (e.g. disputed outcome, multi-roll sequence). A session log avoids re-rolling unnecessarily.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — collapsible log panel in DiceRoller.vue. Logs on deliberate rolls only (numbered buttons), not manual face edits. Newest first, capped at 20, persisted to localStorage (survives refresh), Clear button. Shows Atk/Def face breakdown + hits + timestamp.
 
 ### Feature Breakdown
 
@@ -397,6 +397,8 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 **Context:** At the table, both players want to roll simultaneously and see a shared Duel Result without passing a phone back and forth. A WebSocket-backed room allows each player to control only their side while both see the live result.
 
 **Status:** `[ ]`
+
+> **Note:** Once multiplayer is built, extend #13 (Unit Roster) to support a second opponent team. The local player edits their own roster; the opponent's roster syncs read-only over the WebSocket room.
 
 ### Feature Breakdown
 
@@ -433,6 +435,8 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 
 **Status:** `[ ]`
 
+> **Note:** Build this as part of the Play view unit-tracking update (#13). Logic is tied to active units in a current game — not a standalone browse feature. Must be completed **before** multiplayer (#11), as conditions (#13) and profile-linked rolls feed directly into the multiplayer dice sharing flow.
+
 ### Feature Breakdown
 
 - **Action buttons on Play profile:** Each unit card in Play view gains two button rows:
@@ -455,40 +459,169 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 
 ---
 
-## #13 — Play View: Unit Conditions System
+## #13 — Play View: Unit Roster + Conditions + Damage Tracking
 
-**Context:** Shatterpoint has a set of conditions (Disarmed, Weakened, Exhausted, Hobbled, etc.) that can be applied to units during play. Tracking them manually is error-prone. Conditions should be markable on each unit's profile in Play view, display a symbol, and mechanically affect dice options in the roller.
+**Context:** The Play view currently has no concept of active units. This feature adds a full unit roster tab to Play: build or import your Strike Team, track damage per unit, and apply/remove conditions during play.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — Units tab added to Play view (alongside Tracker). Import from active build or manual unit picker. Per-unit damage track (auto-wounds on overflow), wound counter with manual ±, 5 toggle conditions (Hunker, Disarmed, Strained, Exposed, Pinned). Removed overlay when wounds ≥ durability. Roster locks on mission confirm, resets on Reset Game. Persisted to localStorage.
 
-### Conditions & Mechanical Effects
+### Conditions (manual toggles)
 
-| Condition | Symbol | Dice Impact |
-|---|---|---|
-| **Disarmed** | ⚔️✗ | Expertise results on attack dice cannot be changed to other faces |
-| **Weakened** | ↓ | Attack dice count reduced by 1 (min 1) |
-| **Exhausted** | 💤 | Cannot attack (attack buttons disabled) |
-| **Hobbled** | 🦶 | Ranged attack option disabled |
-| **Exposed** | 👁️ | Defense dice count reduced by 1 (min 0) |
+| Condition |
+|---|
+| Hunker |
+| Disarmed |
+| Strained |
+| Exposed |
+| Pinned |
 
-*(Condition list and exact rules to be verified against official AMG rulebook)*
+Dice roller enforcement deferred to #12 (profile-linked rolls).
+
+**Wounded is not a toggle** — it is an auto-managed counter driven by the damage track (see Damage & Wound Mechanic below).
 
 ### Feature Breakdown
 
-- **Condition picker on Play profile:** Tap a "Conditions" chip/button on a unit card to open a small overlay showing all condition icons. Tap to toggle each on/off.
-- **Active condition icons:** Applied conditions appear as small icon chips below the unit name on the Play card
-- **Dice roller integration (via #12 link):** When navigating to the roller from a unit profile, active conditions are passed along and enforced:
-  - Disarmed → expertise face-change blocked (greyed out in the face picker popover)
-  - Weakened → dice count decremented before rolling
-  - Exhausted → attack button disabled on the profile
-  - Hobbled → ranged option disabled
-  - Exposed → defense count decremented
-- **Persistence:** Conditions persist for the game session (cleared on "New Game" / reset)
+#### A — Unit roster setup (pre-game)
+- New **"Units" tab** in Play view alongside the existing "Tracker" tab
+- When no units are added, show two options:
+  - **"Import from active build"** — pulls all units from the current `strikeForce` draft (primary + secondary + support)
+  - **"Add unit"** — search/picker to manually add any character from the full roster
+- Units can be freely added or removed until the game starts (mission confirmed)
+
+#### B — Lock mechanic
+- When the user confirms a mission (`inGame = true`), the roster is **locked**
+- Locked state: add/remove buttons hidden, no roster changes possible
+- A lock icon badge appears on the Units tab
+- Only "Reset Game" unlocks the roster and clears all state
+
+#### C — Per-unit tracking (in-game)
+Each unit card in the Units tab shows:
+- Thumbnail + name
+- **Damage track:** row of filled/empty circles (0..stamina). Tap a circle to set damage to that position; tap the active last circle to remove 1 damage. Filling the last circle auto-increments wounds and resets damage to 0.
+- **Wound counter:** `− N +` buttons showing accumulated wound tokens. Auto-increments when damage track overflows. Manually adjustable with `−`/`+` at any time.
+- **Condition chips:** active conditions shown as small labelled pills below the name
+- **"Conditions" button:** opens a small overlay grid with all 5 toggle conditions; tap to toggle on/off
+- Unit dimmed + **"Removed"** overlay when `wounds >= durability`
+
+#### D — Damage & Wound Mechanic
+```
+tap damage circle at position N:
+  if N == current damage (last filled): damage -= 1   // undo
+  else: damage = N
+  if damage >= stamina:
+    damage = 0
+    wounds += 1
+
+wounds − button: wounds = max(0, wounds - 1), clear Removed if applicable
+wounds + button: wounds += 1
+isRemoved: wounds >= durability
+```
+
+#### D — Persistence & reset
+- Roster + damage + conditions persist across page refreshes (Pinia persist)
+- **Reset Game** clears everything: roster, damage, conditions, lock state
+- On reset, the user returns to the empty roster setup screen
+
+#### E — Future: 2-team support (post-multiplayer #11)
+- Add opponent team tracking — read-only view of the opponent's squad
+- Opponent can only update their own side; changes sync via the multiplayer WebSocket room
+- Tracked separately in store as `myUnits[]` / `opponentUnits[]`
+
+### Data Design
+
+```typescript
+type ConditionKey = 'hunker' | 'disarmed' | 'strained' | 'exposed' | 'pinned'
+
+interface PlayUnit {
+  id: number
+  name: string
+  thumbnail: string
+  stamina: number      // from Character.stamina — damage capacity per wound
+  durability: number   // from Character.durability — wounds before Removed
+  damage: number       // 0..stamina-1 (resets to 0 on wound)
+  wounds: number       // accumulated wound tokens (0..durability)
+  conditions: ConditionKey[]
+}
+
+// isRemoved: wounds >= durability
+```
+
+### Store: `src/stores/playUnits.ts` (NEW)
+- `units: PlayUnit[]`
+- `locked: boolean`
+- `addUnit(character: Character)` — no-op if locked or duplicate
+- `removeUnit(id: number)` — no-op if locked
+- `importFromBuild(characters: Character[])` — bulk import, no-op if locked
+- `lock()` — called when mission is confirmed in PlayView
+- `unlock()` — called on reset
+- `tapDamage(id, position)` — set damage to position; if position == current damage, decrement; if result >= stamina, reset to 0 and increment wounds
+- `adjustWounds(id, delta)` — wounds = clamp(wounds + delta, 0, ∞)
+- `toggleCondition(id, condition)` — add if absent, remove if present
+- `reset()` — clears units, damage, conditions, sets locked = false
+- `{ persist: true }`
+
+### New Components
+- `src/components/play/units/UnitsTab.vue` — full tab content (setup screen or roster)
+- `src/components/play/units/UnitRosterCard.vue` — per-unit card: thumbnail, damage track, condition chips
+- `src/components/play/units/ConditionPicker.vue` — 6-condition toggle overlay
+- `src/components/play/units/UnitSearchPicker.vue` — search + add from character list
+
+### PlayView changes
+- Add tab bar: **Tracker** | **Units** (only visible once mode is selected)
+- Call `playUnitsStore.lock()` when mission is confirmed (all 3 modes)
+- Call `playUnitsStore.reset()` inside `handleReset()`
+- Pass characters store to UnitSearchPicker and importFromBuild
+
+---
+
+## #14 — Homebrew Unit Profile Builder
+
+**Context:** Players create custom or unofficial units (fan-made, campaign variants, modified profiles) and want to use the same app infrastructure — Browse, Build, Play — with their own characters alongside official ones.
+
+**Status:** `[ ]`
+
+### Feature Breakdown
+
+#### A — Profile builder UI
+- New route `/homebrew` or accessible from Browse/Collection via an "Add custom unit" button
+- Form fields covering the full `Character` shape:
+  - Name, unit type (Primary / Secondary / Support), era, tags (free-text, semicolon-separated)
+  - Points cost (PC), Strike Points (SP), Stamina, Durability, Force
+  - Optional: thumbnail upload (crop to circular token via unit-thumbnail-gen pipeline), card art upload
+  - Stances (text description or image upload per stance)
+- Live preview of the unit card as fields are filled
+
+#### B — Local storage persistence
+- Homebrew units stored in a new `homebrew` Pinia store (`{ persist: true }`)
+- Assigned synthetic IDs in a negative range (e.g. `-1`, `-2`, …) to avoid collisions with official character IDs
+- Exported/imported alongside collection data in the JSON backup (#2)
+
+#### C — Integration with existing features
+- Homebrew units appear in Browse with a "Homebrew" badge
+- Available in the Strike Force builder (subject to normal points/type rules)
+- Available in the Play view unit roster (UnitSearchPicker shows homebrew units)
+- **Not** included in Collection view (collection tracks official packs only)
+
+#### D — Share & export
+- Individual homebrew unit exportable as a JSON file
+- Shareable via a URL-encoded link (extend `profileShare.ts` encoding)
+
+### Data Design
+
+```typescript
+interface HomebrewCharacter extends Character {
+  isHomebrew: true
+  createdAt: string   // ISO date
+}
+```
+
+Stored in `src/stores/homebrew.ts`:
+- `units: HomebrewCharacter[]`
+- `addUnit(data)` / `updateUnit(id, data)` / `deleteUnit(id)`
+- IDs: `-(Date.now())` or a counter starting at -1
 
 ### Implementation Notes
-- `src/stores/playState.ts` (NEW or extend existing play store): `conditions: Record<unitId, ConditionKey[]>`
-- `ConditionKey` enum: `'disarmed' | 'weakened' | 'exhausted' | 'hobbled' | 'exposed'`
-- `src/components/play/ConditionPicker.vue` (NEW): icon grid overlay, emits toggled condition list
-- `DiceColumn.vue`: accept optional `conditions` prop; enforce Disarmed lock on expertise face changes; adjust initial roll count for Weakened/Exposed
-- SVG or emoji icons per condition — consider a consistent icon set (Heroicons or custom SVG)
-- **Requires #12** (profile-linked rolls) to be built first for condition enforcement in the roller to work end-to-end
+- Keep the builder form simple — not every field is required. Missing fields fall back to safe defaults (e.g. `stamina: 1`, `durability: 1`, `pc: null`).
+- Thumbnail upload: accept PNG/JPG, run through the circular crop logic client-side (canvas API or a lightweight Cropper.js integration) — no server needed.
+- Official characters are read-only; homebrew characters are fully editable.
+- Consider a "Clone official unit" shortcut — pre-fills the form from an existing character, letting the user tweak specific stats without starting from scratch.

@@ -24,5 +24,9 @@ export const useCharactersStore = defineStore('characters', () => {
     }
   }
 
-  return { characters, loading, error, load }
+  function charactersBySwp(swpCode: string): Character[] {
+    return characters.value.filter(c => c.swpCode === swpCode)
+  }
+
+  return { characters, loading, error, load, charactersBySwp }
 })
