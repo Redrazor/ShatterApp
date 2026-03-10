@@ -4,6 +4,15 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.7.0',
+    date: '2026-03-09',
+    changes: [
+      'Unit profile modal: shows model names included in the pack',
+      'Unit profile modal: shows character exclusion warning when applicable',
+      'Unit profile modal: shows extra cards info when applicable',
+    ],
+  },
+  {
     version: '1.6.0',
     date: '2026-03-09',
     changes: [

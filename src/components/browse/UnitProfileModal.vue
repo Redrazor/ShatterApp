@@ -222,6 +222,30 @@ const errata = computed(() =>
               </ul>
             </div>
 
+            <!-- Model names -->
+            <div v-if="character.model">
+              <p class="mb-2 text-[10px] uppercase tracking-wider text-sw-text/40">Models in Pack</p>
+              <div class="flex flex-wrap gap-1">
+                <span
+                  v-for="m in character.model.split(';').map(s => s.trim()).filter(Boolean)"
+                  :key="m"
+                  class="rounded-full border border-sw-gold/15 bg-black/20 px-2 py-0.5 text-xs text-sw-text/60"
+                >{{ m }}</span>
+              </div>
+            </div>
+
+            <!-- Character exclusion -->
+            <div v-if="character.characterExclusion">
+              <p class="mb-1 text-[10px] uppercase tracking-wider text-sw-text/40">Exclusion</p>
+              <p class="text-xs text-amber-400/80">⚠ {{ character.characterExclusion }}</p>
+            </div>
+
+            <!-- Extra cards -->
+            <div v-if="character.extraCards">
+              <p class="mb-1 text-[10px] uppercase tracking-wider text-sw-text/40">Extra Cards</p>
+              <p class="text-xs text-sw-text/60">{{ character.extraCards }}</p>
+            </div>
+
             <!-- Balance History -->
             <details class="rounded-xl border border-white/8 bg-black/20 px-4 py-3">
               <summary class="cursor-pointer select-none text-[10px] font-bold uppercase tracking-[0.15em] text-sw-text/40">
