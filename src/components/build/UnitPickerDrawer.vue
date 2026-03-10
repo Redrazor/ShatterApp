@@ -43,10 +43,12 @@ const filtered = computed(() => {
   })
 })
 
-function isConflicting(char: Character): boolean {
-  if (props.excludedNames?.has(char.name)) return true
-  if (char.characterType && props.excludedCharacterTypes?.has(char.characterType)) return true
-  return false
+/** Returns a human-readable reason why this unit can't be picked, or null if it can. */
+function conflictReason(char: Character): string | null {
+  if (props.excludedNames?.has(char.name)) return 'Already in squad'
+  if (char.characterType && props.excludedCharacterTypes?.has(char.characterType))
+    return `${char.characterType} already used`
+  return null
 }
 
 function select(char: Character) {
@@ -91,9 +93,10 @@ function select(char: Character) {
             <button
               v-for="char in filtered"
               :key="char.id"
-              :disabled="isConflicting(char)"
+              :disabled="!!conflictReason(char)"
+              :title="conflictReason(char) ?? undefined"
               class="flex w-full items-center gap-3 border-b border-sw-gold/10 px-4 py-3 text-left transition-colors"
-              :class="isConflicting(char) ? 'opacity-40 cursor-not-allowed' : 'hover:bg-sw-gold/10'"
+              :class="conflictReason(char) ? 'opacity-40 cursor-not-allowed' : 'hover:bg-sw-gold/10'"
               @click="select(char)"
             >
               <img
@@ -106,7 +109,9 @@ function select(char: Character) {
                 <p class="truncate text-sm font-medium text-sw-text">{{ char.name }}</p>
                 <p class="text-xs text-sw-text/50">{{ char.unitType }} · {{ char.era }}</p>
               </div>
-              <span v-if="isConflicting(char)" class="shrink-0 text-xs text-sw-text/40">In team</span>
+              <span v-if="conflictReason(char)" class="shrink-0 text-xs text-amber-500/70 italic">
+                {{ conflictReason(char) }}
+              </span>
               <span v-else class="shrink-0 text-sm font-bold text-sw-gold">
                 {{ char.unitType === 'Primary' ? `SP ${char.sp}` : `PC ${char.pc}` }}
               </span>
