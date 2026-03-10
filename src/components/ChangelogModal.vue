@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.8.0',
+    date: '2026-03-10',
+    changes: [
+      'Compare modal: added Eras count, Stances count, and Tags rows',
+      'Tags display as centred chips sized to text, stacked per column',
+    ],
+  },
+  {
     version: '1.6.0',
     date: '2026-03-09',
     changes: [
