@@ -15,14 +15,7 @@
 
 **Context:** Key Operations (KO) is an asymmetric 2-player competitive format. One player is the **Aggressor**, the other the **Sentinel**. Uses the same struggle track as Standard play with additional asymmetric mechanics.
 
-**Status:** `[ ]`
-
-### Feature Breakdown
-
-- **Role labels:** Replace "P1 / P2" with "Aggressor / Sentinel" (amber / blue — same palette as existing players)
-- **Advantage Cards:** Each player has 3 role-specific card chips (Flanking / Reserve / Coordinated Assault for Aggressor; Defensive / Support / Reinforcement for Sentinel). Tap to mark used.
-- **Campaign mode:** 3-op series. First to win 2 ops wins the campaign. Campaign progress shown as 3 pip bar above the struggle track.
-- **Mode selector:** Tab bar at top of PlayView: `[ Standard ] [ Key Operations ] [ Legendary Encounters ]`. Switching resets the current game.
+**Status:** `[x]` Done — mode selector, Aggressor/Sentinel labels, campaign mode (3-op series, pip bar, campaign-over), KO mission picker with all 6 missions + interactive stage trackers. Advantage Cards descoped — not building.
 
 ### Implementation Notes
 - New store: `src/stores/keyops.ts` — campaign state (persisted) + advantage card state (session)

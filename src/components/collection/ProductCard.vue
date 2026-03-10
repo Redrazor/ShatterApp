@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import type { Product } from '../../types/index.ts'
+import { ref } from 'vue'
+import type { Product, Character } from '../../types/index.ts'
 import { imageUrl } from '../../utils/imageUrl.ts'
 
 defineProps<{
   product: Product
   owned: boolean
+  chars: Character[]
+  ownedCharacterIds: Set<number>
 }>()
 
-defineEmits<{ (e: 'toggle'): void }>()
+defineEmits<{
+  (e: 'toggle'): void
+  (e: 'toggleCharacter', id: number): void
+}>()
+
+const expanded = ref(false)
 </script>
 
 <template>
@@ -59,6 +67,37 @@ defineEmits<{ (e: 'toggle'): void }>()
       >
         {{ owned ? '✓ Owned' : '+ Mark Owned' }}
       </button>
+
+      <!-- Characters expand toggle -->
+      <button
+        v-if="chars.length > 0"
+        class="text-xs text-sw-text/40 hover:text-sw-text/70 transition-colors text-center"
+        @click="expanded = !expanded"
+      >
+        {{ expanded ? '▲ Hide units' : `▼ Units (${chars.length})` }}
+      </button>
+
+      <!-- Individual character ownership -->
+      <div v-if="expanded && chars.length > 0" class="space-y-1 pt-1 border-t border-sw-gold/10">
+        <div
+          v-for="char in chars"
+          :key="char.id"
+          class="flex items-center justify-between gap-2"
+        >
+          <span class="text-xs text-sw-text/70 truncate">{{ char.name }}</span>
+          <button
+            :class="[
+              'shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors',
+              ownedCharacterIds.has(char.id)
+                ? 'bg-sw-gold/20 text-sw-gold'
+                : 'border border-sw-gold/20 text-sw-text/40 hover:border-sw-gold/50',
+            ]"
+            @click="$emit('toggleCharacter', char.id)"
+          >
+            {{ ownedCharacterIds.has(char.id) ? '✓' : '+' }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>

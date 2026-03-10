@@ -5,7 +5,10 @@ import { rollAttack, rollDefense, ATTACK_FACES, DEFENSE_FACES } from '../../util
 import type { DieState, AttackFace, DefenseFace } from '../../utils/dice.ts'
 
 const props = defineProps<{ type: 'attack' | 'defense' }>()
-const emit = defineEmits<{ (e: 'update:summary', val: Record<string, number>): void }>()
+const emit = defineEmits<{
+  (e: 'update:summary', val: Record<string, number>): void
+  (e: 'rolled'): void
+}>()
 
 let nextId = 0
 const pool         = ref<DieState[]>([])
@@ -39,6 +42,7 @@ function roll(n: number) {
   }))
 
   setTimeout(() => { rolling.value = false }, 550)
+  emit('rolled')
 }
 
 // ── Die interaction ───────────────────────────────────────────

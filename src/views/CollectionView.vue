@@ -127,7 +127,10 @@ const eraStats = computed(() => {
         :key="product.id"
         :product="product"
         :owned="collectionStore.isOwned(product.swp)"
+        :chars="charactersStore.charactersBySwp(product.swp)"
+        :owned-character-ids="collectionStore.ownedCharacterSet"
         @toggle="collectionStore.toggleOwned(product.swp)"
+        @toggle-character="collectionStore.toggleCharacterOwned($event)"
       />
     </div>
   </div>

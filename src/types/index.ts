@@ -1,3 +1,22 @@
+export type ConditionKey = 'hunker' | 'disarmed' | 'strained' | 'exposed' | 'pinned'
+
+export interface PlayUnit {
+  id: number
+  name: string
+  thumbnail: string
+  unitType: string
+  stamina: number
+  durability: number
+  fp: number
+  stance1?: string
+  stance2?: string
+  activeStance: 1 | 2
+  damage: number
+  wounds: number
+  conditions: ConditionKey[]
+  tags: string[]
+}
+
 export interface Character {
   id: number
   name: string

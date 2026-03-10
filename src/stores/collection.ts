@@ -5,8 +5,10 @@ export const useCollectionStore = defineStore(
   'collection',
   () => {
     const owned = ref<string[]>([])
+    const ownedCharacterIds = ref<number[]>([])
 
     const ownedSwpSet = computed(() => new Set(owned.value))
+    const ownedCharacterSet = computed(() => new Set(ownedCharacterIds.value))
 
     function isOwned(swp: string): boolean {
       return ownedSwpSet.value.has(swp)
@@ -21,11 +23,34 @@ export const useCollectionStore = defineStore(
       }
     }
 
+    function isCharacterOwned(id: number): boolean {
+      return ownedCharacterSet.value.has(id)
+    }
+
+    function toggleCharacterOwned(id: number): void {
+      const idx = ownedCharacterIds.value.indexOf(id)
+      if (idx === -1) {
+        ownedCharacterIds.value.push(id)
+      } else {
+        ownedCharacterIds.value.splice(idx, 1)
+      }
+    }
+
     function importOwned(newOwned: string[]): void {
       owned.value = [...newOwned]
     }
 
-    return { owned, ownedSwpSet, isOwned, toggleOwned, importOwned }
+    return {
+      owned,
+      ownedSwpSet,
+      ownedCharacterIds,
+      ownedCharacterSet,
+      isOwned,
+      toggleOwned,
+      isCharacterOwned,
+      toggleCharacterOwned,
+      importOwned,
+    }
   },
   { persist: true },
 )

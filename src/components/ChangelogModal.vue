@@ -4,6 +4,33 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.9.0',
+    date: '2026-03-10',
+    changes: [
+      'Play — Force Pool: aggregate FP from all roster units shown as spendable tokens at top of Units tab',
+      'Play — Force tokens use the Shatterpoint starburst symbol; click to spend/restore, Refresh button resets all',
+      'Play — Condition chips are now clickable to remove directly from the card',
+      'Play — Unit cards show profile tags; tap a tag to highlight all roster-mates sharing that keyword (auto-clears after 5s)',
+    ],
+  },
+  {
+    version: '1.8.1',
+    date: '2026-03-10',
+    changes: [
+      'Added full card art and thumbnails for SWP62 Delta Squad (Boss, Fixer, Sev & Scorch)',
+      'Added full card art and thumbnails for SWP63 Terror from Below (Riff Tamson, Nossor Ri, Aqua Droids)',
+      'Fixed Republic Clone Commandos ability card (updated to v1.3 errata, stamina 7)',
+    ],
+  },
+  {
+    version: '1.8.0',
+    date: '2026-03-10',
+    changes: [
+      'Pack contents expansion — tap "Units (N)" on any product card to see included characters',
+      'Individual character ownership — mark individual models as owned (for off-pack purchases)',
+    ],
+  },
+  {
     version: '1.6.0',
     date: '2026-03-09',
     changes: [

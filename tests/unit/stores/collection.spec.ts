@@ -74,4 +74,51 @@ describe('useCollectionStore', () => {
     store.importOwned([])
     expect(store.owned).toEqual([])
   })
+
+  describe('individual character ownership', () => {
+    it('starts with empty ownedCharacterIds', () => {
+      const store = useCollectionStore()
+      expect(store.ownedCharacterIds).toEqual([])
+    })
+
+    it('toggleCharacterOwned adds a character id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(42)
+      expect(store.ownedCharacterIds).toContain(42)
+    })
+
+    it('toggleCharacterOwned removes an already-owned character id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(42)
+      store.toggleCharacterOwned(42)
+      expect(store.ownedCharacterIds).not.toContain(42)
+    })
+
+    it('isCharacterOwned returns true for owned id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(7)
+      expect(store.isCharacterOwned(7)).toBe(true)
+    })
+
+    it('isCharacterOwned returns false for non-owned id', () => {
+      const store = useCollectionStore()
+      expect(store.isCharacterOwned(999)).toBe(false)
+    })
+
+    it('ownedCharacterSet reflects current state', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(1)
+      store.toggleCharacterOwned(2)
+      expect(store.ownedCharacterSet.has(1)).toBe(true)
+      expect(store.ownedCharacterSet.has(2)).toBe(true)
+      expect(store.ownedCharacterSet.has(3)).toBe(false)
+    })
+
+    it('ownedCharacterSet updates after removal', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(5)
+      store.toggleCharacterOwned(5)
+      expect(store.ownedCharacterSet.has(5)).toBe(false)
+    })
+  })
 })
