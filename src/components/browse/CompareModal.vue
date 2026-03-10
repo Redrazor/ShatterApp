@@ -16,6 +16,8 @@ const rows: { label: string; key: (c: Character) => string | number }[] = [
   { label: 'Durability', key: c => c.durability },
   { label: 'Stamina',    key: c => c.stamina },
   { label: 'FP',         key: c => c.fp },
+  { label: 'Eras',       key: c => eras(c).length },
+  { label: 'Stances',    key: c => [c.stance1, c.stance2].filter(Boolean).length },
 ]
 
 function isBest(field: { key: (c: Character) => string | number }, char: Character) {
@@ -64,6 +66,7 @@ const colClass = (n: number) => n === 2 ? 'grid-cols-2' : 'grid-cols-3'
 
           <!-- Stat rows -->
           <div class="divide-y divide-sw-gold/10 overflow-y-auto">
+            <!-- Numeric / single-value rows -->
             <div v-for="row in rows" :key="row.label">
               <div class="px-4 pt-2 text-[9px] uppercase tracking-widest text-sw-text/40">{{ row.label }}</div>
               <div :class="['grid pb-2', colClass(chars.length)]">
@@ -73,6 +76,24 @@ const colClass = (n: number) => n === 2 ? 'grid-cols-2' : 'grid-cols-3'
                   :class="['px-4 py-1 text-center text-sm font-medium transition-colors',
                     isBest(row, char) ? 'text-green-400' : 'text-sw-text/70']"
                 >{{ row.key(char) }}</div>
+              </div>
+            </div>
+
+            <!-- Tags row -->
+            <div>
+              <div class="px-4 pt-2 text-[9px] uppercase tracking-widest text-sw-text/40">Tags</div>
+              <div :class="['grid pb-3', colClass(chars.length)]">
+                <div v-for="char in chars" :key="char.id" class="min-w-0 px-3 pt-1 flex flex-col items-center gap-1">
+                  <span
+                    v-if="char.tags.length === 0"
+                    class="text-xs text-sw-text/30 italic"
+                  >None</span>
+                  <span
+                    v-for="tag in char.tags"
+                    :key="tag"
+                    class="rounded-full border border-sw-gold/20 px-1.5 py-0.5 text-[10px] text-sw-text/60"
+                  >{{ tag }}</span>
+                </div>
               </div>
             </div>
           </div>
