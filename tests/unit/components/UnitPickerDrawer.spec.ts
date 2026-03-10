@@ -129,4 +129,54 @@ describe('UnitPickerDrawer', () => {
     expect(wrapper.text()).toContain('Han Solo')
     expect(wrapper.text()).toContain('Leia')
   })
+
+  it('shows "Already in squad" reason for excluded name', () => {
+    const wrapper = mount(UnitPickerDrawer, {
+      props: {
+        ...defaultProps,
+        role: null,
+        excludedNames: new Set(['Luke']),
+      },
+      global: { stubs: { Teleport: true } },
+    })
+    expect(wrapper.text()).toContain('Already in squad')
+  })
+
+  it('shows characterType conflict reason for excluded type', () => {
+    const wrapper = mount(UnitPickerDrawer, {
+      props: {
+        ...defaultProps,
+        role: null,
+        excludedCharacterTypes: new Set(['Hero']),
+      },
+      global: { stubs: { Teleport: true } },
+    })
+    expect(wrapper.text()).toContain('Hero already used')
+  })
+
+  it('disables conflicting units', () => {
+    const wrapper = mount(UnitPickerDrawer, {
+      props: {
+        ...defaultProps,
+        role: null,
+        excludedNames: new Set(['Luke']),
+      },
+      global: { stubs: { Teleport: true } },
+    })
+    const buttons = wrapper.findAll('button').filter(b => b.text().includes('Luke'))
+    expect(buttons[0].attributes('disabled')).toBeDefined()
+  })
+
+  it('does not disable non-conflicting units', () => {
+    const wrapper = mount(UnitPickerDrawer, {
+      props: {
+        ...defaultProps,
+        role: null,
+        excludedNames: new Set(['Luke']),
+      },
+      global: { stubs: { Teleport: true } },
+    })
+    const buttons = wrapper.findAll('button').filter(b => b.text().includes('Han Solo'))
+    expect(buttons[0].attributes('disabled')).toBeUndefined()
+  })
 })

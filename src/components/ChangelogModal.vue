@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.8.0',
+    date: '2026-03-10',
+    changes: [
+      'Build view: disabled units now show why they can\'t be picked ("Already in squad", "[Type] already used")',
+    ],
+  },
+  {
     version: '1.6.0',
     date: '2026-03-09',
     changes: [
