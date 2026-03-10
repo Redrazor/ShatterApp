@@ -64,7 +64,7 @@ describe('KoStageCards', () => {
     koStore.selectedKoMission = mockMission
     koStore.koStageIndex = 0
     const wrapper = mountComp()
-    const cards = wrapper.findAll('[style*="max-width"]')
+    const cards = wrapper.findAll('div.relative')
     expect(cards[0].classes()).toContain('cursor-pointer')
   })
 
@@ -73,7 +73,7 @@ describe('KoStageCards', () => {
     koStore.selectedKoMission = mockMission
     koStore.koStageIndex = 0
     const wrapper = mountComp()
-    const cards = wrapper.findAll('[style*="max-width"]')
+    const cards = wrapper.findAll('div.relative')
     expect(cards[1].classes()).toContain('cursor-default')
   })
 
@@ -91,7 +91,7 @@ describe('KoStageCards', () => {
     koStore.selectedKoMission = mockMission
     koStore.koStageIndex = 0
     const wrapper = mountComp()
-    const cards = wrapper.findAll('[style*="max-width"]')
+    const cards = wrapper.findAll('div.relative')
     await cards[0].trigger('click')
     expect(wrapper.text()).toContain('Close')
   })
@@ -101,7 +101,7 @@ describe('KoStageCards', () => {
     koStore.selectedKoMission = mockMission
     koStore.koStageIndex = 0
     const wrapper = mountComp()
-    const cards = wrapper.findAll('[style*="max-width"]')
+    const cards = wrapper.findAll('div.relative')
     await cards[1].trigger('click')
     expect(wrapper.text()).not.toContain('Close')
   })
@@ -111,7 +111,7 @@ describe('KoStageCards', () => {
     koStore.selectedKoMission = mockMission
     koStore.koStageIndex = 0
     const wrapper = mountComp()
-    await wrapper.findAll('[style*="max-width"]')[0].trigger('click')
+    await wrapper.findAll('div.relative')[0].trigger('click')
     const overlayImg = wrapper.findAll('img').find(img =>
       img.attributes('src')?.includes('stage-1-front')
     )
@@ -123,7 +123,7 @@ describe('KoStageCards', () => {
     koStore.selectedKoMission = mockMission
     koStore.koStageIndex = 0
     const wrapper = mountComp()
-    await wrapper.findAll('[style*="max-width"]')[0].trigger('click')
+    await wrapper.findAll('div.relative')[0].trigger('click')
     const flipBtn = wrapper.findAll('button').find(b => b.text() === 'Flip →')
     await flipBtn!.trigger('click')
     const overlayImg = wrapper.findAll('img').find(img =>
@@ -137,7 +137,7 @@ describe('KoStageCards', () => {
     koStore.selectedKoMission = mockMission
     koStore.koStageIndex = 0
     const wrapper = mountComp()
-    await wrapper.findAll('[style*="max-width"]')[0].trigger('click')
+    await wrapper.findAll('div.relative')[0].trigger('click')
     const closeBtn = wrapper.findAll('button').find(b => b.text().includes('Close'))
     await closeBtn!.trigger('click')
     expect(wrapper.text()).not.toContain('Close')

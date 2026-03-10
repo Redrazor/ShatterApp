@@ -625,3 +625,29 @@ Stored in `src/stores/homebrew.ts`:
 - Thumbnail upload: accept PNG/JPG, run through the circular crop logic client-side (canvas API or a lightweight Cropper.js integration) — no server needed.
 - Official characters are read-only; homebrew characters are fully editable.
 - Consider a "Clone official unit" shortcut — pre-fills the form from an existing character, letting the user tweak specific stats without starting from scratch.
+
+
+---
+
+## #15 — Play View: Unit Information Panel
+
+**Status:** `[~]` In progress
+
+**Description:** Upgrade the Play view's UnitRosterCard to show richer unit data inline, replacing the generic `UnitProfileModal` with a lightweight stance-image viewer and surfacing combat stats and abilities directly on the card.
+
+### Sub-features
+
+1. **Stance modal** — Tapping a unit's thumbnail/name opens `PlayUnitStanceModal.vue`: a lightweight overlay showing the stance card image with a Flip button to toggle between stance1/stance2 images. No full character profile, no external data required.
+
+2. **Stance name labels** — The S1/S2 stance switcher buttons display the real stance name from `stances.json` (e.g. "Form V Djem So") instead of generic "S1"/"S2". Falls back to "S1"/"S2" if data is unavailable.
+
+3. **Active stats bar** — After the stance switcher, a row of pill badges shows the active stance's ranged range, attack, and defense dice counts, and melee attack and defense. Updates when the active stance changes. Hidden if `stances.json` has no data for this unit.
+
+4. **Abilities display** — Below the tag chips, a bordered section lists all abilities from `abilities.json` with a leading icon image (by ability type), bold ability name, and parsed description text. Keywords matching the unit's tags render in amber; other known keywords render bold white; `[icon_name]` inline tokens render as small icon images.
+
+### Data files
+- `public/data/stances.json` — populated by the `stance-extract` skill
+- `public/data/abilities.json` — populated by the `ability-extract` skill
+
+### Graceful degradation
+All four sub-features degrade cleanly when data files are absent or a unit has no entry.
