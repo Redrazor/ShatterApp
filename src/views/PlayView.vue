@@ -7,12 +7,16 @@ import { useKoMissionsStore } from '../stores/koMissions.ts'
 import { useLegendaryStore } from '../stores/legendary.ts'
 import { useLegendaryMissionsStore } from '../stores/legendaryMissions.ts'
 import { useGalacticLegendsStore } from '../stores/galacticLegends.ts'
+import { usePlayUnitsStore } from '../stores/playUnits.ts'
+import { useCharactersStore } from '../stores/characters.ts'
+import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import { imageUrl } from '../utils/imageUrl.ts'
 import KoStageCards from '../components/play/KoStageCards.vue'
 import KoMissionInteraction from '../components/play/KoMissionInteraction.vue'
 import VictoryTracker from '../components/play/legendary/VictoryTracker.vue'
 import LegendaryForcePools from '../components/play/legendary/LegendaryForcePools.vue'
 import LegendaryTurnOrder from '../components/play/legendary/LegendaryTurnOrder.vue'
+import UnitsTab from '../components/play/units/UnitsTab.vue'
 import LegendaryMissionInteraction from '../components/play/legendary/LegendaryMissionInteraction.vue'
 
 const store = useStruggleStore()
@@ -22,6 +26,12 @@ const koMissionsStore = useKoMissionsStore()
 const legendaryStore = useLegendaryStore()
 const legendaryMissionsStore = useLegendaryMissionsStore()
 const galacticLegendsStore = useGalacticLegendsStore()
+const playUnitsStore = usePlayUnitsStore()
+const charactersStore = useCharactersStore()
+const strikeForceStore = useStrikeForceStore()
+
+const playTab = ref<'tracker' | 'units'>('tracker')
+
 
 const MODES: { value: GameMode; label: string; disabled?: boolean }[] = [
   { value: 'standard', label: 'Standard' },
@@ -108,7 +118,10 @@ function playSelectedMission() {
 
 function selectGalacticLegend(index: number) {
   const gl = galacticLegendsStore.legends[index]
-  if (gl) legendaryStore.selectGalacticLegend(gl)
+  if (gl) {
+    legendaryStore.selectGalacticLegend(gl)
+    playUnitsStore.lock()
+  }
 }
 
 function pickerCardSrc(item: import('../types/index.ts').Mission | import('../types/index.ts').KoMission | import('../types/index.ts').LegendaryMission): string | undefined {
@@ -128,6 +141,7 @@ function selectKoMission(m: import('../types/index.ts').KoMission) {
   koStore.selectKoMission(m)
   store.p1Momentum = 0
   store.p2Momentum = 0
+  playUnitsStore.lock()
 }
 
 function newCampaign() {
@@ -144,6 +158,8 @@ function handleReset() {
     if (isKO.value) koStore.resetKoMission()
     store.resetGame()
   }
+  playUnitsStore.reset()
+  playTab.value = 'tracker'
 }
 
 function confirmMission(mission: import('../types/index.ts').Mission) {
@@ -152,6 +168,7 @@ function confirmMission(mission: import('../types/index.ts').Mission) {
     store.p1Momentum = 0
     store.p2Momentum = 0
   }
+  playUnitsStore.lock()
 }
 
 function handleClaimStruggle(player: 1 | 2) {
@@ -239,6 +256,7 @@ onMounted(() => {
   koMissionsStore.load()
   legendaryMissionsStore.load()
   galacticLegendsStore.load()
+  charactersStore.load()
 })
 onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
@@ -462,6 +480,42 @@ const ROMAN = ['I', 'II', 'III']
         {{ m.label }}
       </button>
     </div>
+
+    <!-- ── Play tab bar ── -->
+    <div class="flex gap-1 rounded-lg border border-zinc-700/40 bg-zinc-900/40 p-1">
+      <button
+        class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
+        :class="playTab === 'tracker'
+          ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
+          : 'text-zinc-500 hover:text-zinc-300'"
+        @click="playTab = 'tracker'"
+      >Tracker</button>
+      <button
+        class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all flex items-center justify-center gap-1"
+        :class="playTab === 'units'
+          ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
+          : 'text-zinc-500 hover:text-zinc-300'"
+        @click="playTab = 'units'"
+      >
+        Units
+        <span v-if="playUnitsStore.locked" class="text-amber-500 text-[9px]">🔒</span>
+        <span v-else-if="playUnitsStore.hasUnits" class="rounded-full bg-zinc-600 px-1 text-[9px] text-zinc-300">{{ playUnitsStore.units.length }}</span>
+      </button>
+    </div>
+
+    <!-- ── Units tab ── -->
+    <UnitsTab
+      v-if="playTab === 'units'"
+      :characters="charactersStore.characters"
+      :saved-lists="strikeForceStore.savedLists"
+      :squad0-valid="strikeForceStore.isSquad0Valid"
+      :locked="playUnitsStore.locked"
+    />
+
+    <!-- ══════════════════════════════════════════
+         TRACKER TAB CONTENT
+         ══════════════════════════════════════════ -->
+    <template v-if="playTab === 'tracker'">
 
     <!-- ══════════════════════════════════════════
          STATE A: Mission Picker
@@ -1284,7 +1338,9 @@ const ROMAN = ['I', 'II', 'III']
 
       </template> <!-- end v-else-if="!isLegendary" -->
 
-    </template>
+    </template> <!-- end STATE B -->
+
+    </template> <!-- end tracker tab -->
 
   </div>
 
