@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { Ability } from '../../../composables/useAbilities.ts'
 import { imageUrl } from '../../../utils/imageUrl.ts'
 
@@ -9,7 +9,19 @@ const props = defineProps<{
   keywords: Record<string, string>
 }>()
 
+const showTooltip = ref(false)
+
 const iconSrc = computed(() => imageUrl(`/images/icons/${props.ability.type}.png`))
+
+const TYPE_DESCRIPTIONS: Record<string, { label: string; description: string }> = {
+  innate:   { label: 'Innate',    description: 'Always active — no Force cost. This ability is in effect at all times and does not need to be triggered.' },
+  active:   { label: 'Active',    description: 'Costs Force (⊕) to use. Spend the listed number of Force points to activate this ability during your turn.' },
+  reactive: { label: 'Reactive',  description: 'Triggered by an opponent\'s action. Spend Force (⊕) to use this ability in response to a specific game event.' },
+  tactic:   { label: 'Tactic',    description: 'A tactical ability. Spend Force (⊕) to gain a strategic advantage outside of normal attacks.' },
+  identity: { label: 'Identity',  description: 'A unique ability that defines this character. Spend Force (⊕) as indicated — these abilities reflect the unit\'s signature role.' },
+}
+
+const typeInfo = computed(() => TYPE_DESCRIPTIONS[props.ability.type] ?? { label: props.ability.type, description: '' })
 
 const renderedDescription = computed(() => {
   const tags = props.unitTags
@@ -27,7 +39,7 @@ const renderedDescription = computed(() => {
     if (iconMatch) {
       const iconName = iconMatch[1].toLowerCase().replace(/\s+/g, '_')
       const src = imageUrl(`/images/icons/${iconName}.png`)
-      return `<img src="${src}" class="inline h-3.5 w-3.5 align-middle mx-0.5" alt="${iconName}" onerror="this.replaceWith(document.createTextNode('[${iconMatch[1]}]'))" />`
+      return `<img src="${src}" class="inline-block h-4 w-4 align-middle mx-0.5 object-contain" alt="${iconName}" onerror="this.replaceWith(document.createTextNode('[${iconMatch[1]}]'))" />`
     }
 
     // Text segment — highlight keywords
@@ -49,16 +61,35 @@ const renderedDescription = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-start gap-1.5 text-xs">
-    <img
-      :src="iconSrc"
-      class="h-4 w-4 flex-shrink-0 mt-0.5"
-      :alt="ability.type"
-      onerror="this.style.display='none'"
-    />
+  <div class="flex items-start gap-2">
+    <!-- Ability type icon with tooltip -->
+    <div class="relative flex-shrink-0">
+      <img
+        :src="iconSrc"
+        class="h-6 w-6 mt-0.5 object-contain cursor-pointer"
+        :alt="ability.type"
+        onerror="this.style.display='none'"
+        @mouseenter="showTooltip = true"
+        @mouseleave="showTooltip = false"
+        @click.stop="showTooltip = !showTooltip"
+      />
+      <!-- Tooltip -->
+      <div
+        v-if="showTooltip"
+        class="absolute left-8 top-0 z-50 w-64 rounded-lg border border-zinc-700 bg-zinc-900 p-2.5 shadow-xl text-xs text-zinc-300 leading-relaxed"
+        @mouseenter="showTooltip = true"
+        @mouseleave="showTooltip = false"
+      >
+        <div class="flex items-center gap-1.5 mb-1">
+          <img :src="iconSrc" class="h-5 w-5 object-contain flex-shrink-0" />
+          <span class="font-bold text-zinc-100 text-sm">{{ typeInfo.label }}</span>
+        </div>
+        <p class="text-zinc-400">{{ typeInfo.description }}</p>
+      </div>
+    </div>
     <div>
-      <span class="font-bold text-zinc-200 text-[11px]">{{ ability.name }}</span>
-      <p class="text-zinc-500 leading-relaxed mt-0.5" v-html="renderedDescription" />
+      <span class="font-bold text-zinc-200 text-sm">{{ ability.name }}</span>
+      <p class="text-zinc-400 text-xs leading-relaxed mt-0.5" v-html="renderedDescription" />
     </div>
   </div>
 </template>

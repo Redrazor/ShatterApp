@@ -26,6 +26,7 @@ const emit = defineEmits<{
 }>()
 
 const showConditionPicker = ref(false)
+const showAbilities = ref(false)
 
 const { getStances } = useStances()
 const { getAbilities } = useAbilities()
@@ -98,6 +99,22 @@ const isDimmed = computed(() =>
         <div class="text-[10px] text-zinc-600 mt-0.5">{{ unit.unitType }}</div>
       </div>
 
+      <!-- Combat stats buttons -->
+      <div v-if="activeStanceStat" class="flex items-center gap-1 flex-shrink-0" @click.stop>
+        <template v-if="activeStanceStat.ranged && activeStanceStat.ranged.attack !== null">
+          <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Ranged</span>
+          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-400 cursor-default" title="Range">{{ activeStanceStat.ranged.range ?? '—' }}</button>
+          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-300 cursor-default" title="Attack">{{ activeStanceStat.ranged.attack }}⚔</button>
+          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-300 cursor-default" title="Defense">{{ activeStanceStat.ranged.defense }}🛡</button>
+        </template>
+        <span v-if="activeStanceStat.ranged?.attack !== null && activeStanceStat.melee?.attack !== null" class="text-zinc-700 select-none px-0.5">|</span>
+        <template v-if="activeStanceStat.melee && activeStanceStat.melee.attack !== null">
+          <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Melee</span>
+          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-amber-900/40 text-zinc-300 cursor-default" title="Attack">{{ activeStanceStat.melee.attack }}⚔</button>
+          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-amber-900/40 text-zinc-300 cursor-default" title="Defense">{{ activeStanceStat.melee.defense }}🛡</button>
+        </template>
+      </div>
+
       <!-- Actions -->
       <div class="flex items-center gap-1.5 flex-shrink-0" @click.stop>
         <button
@@ -137,29 +154,6 @@ const isDimmed = computed(() =>
         >{{ stance2Name }}</button>
       </div>
       <div v-else-if="unit.stance1" class="ml-auto text-[10px] text-zinc-600">{{ stance1Name }}</div>
-    </div>
-
-    <!-- Active stance stats bar -->
-    <div v-if="activeStanceStat" class="flex flex-wrap gap-1.5 mb-2.5 text-[10px]">
-      <template v-if="activeStanceStat.ranged && activeStanceStat.ranged.attack !== null">
-        <span class="rounded px-1.5 py-0.5 bg-zinc-800 border border-zinc-700/40 text-zinc-400">
-          🔫 Rng {{ activeStanceStat.ranged.range ?? '—' }}
-        </span>
-        <span class="rounded px-1.5 py-0.5 bg-zinc-800 border border-zinc-700/40 text-zinc-400">
-          ⚔ {{ activeStanceStat.ranged.attack }} atk
-        </span>
-        <span class="rounded px-1.5 py-0.5 bg-zinc-800 border border-zinc-700/40 text-zinc-400">
-          🛡 {{ activeStanceStat.ranged.defense }} def
-        </span>
-      </template>
-      <template v-if="activeStanceStat.melee && activeStanceStat.melee.attack !== null">
-        <span class="rounded px-1.5 py-0.5 bg-zinc-800 border border-amber-900/30 text-zinc-400">
-          ✕ {{ activeStanceStat.melee.attack }} atk
-        </span>
-        <span class="rounded px-1.5 py-0.5 bg-zinc-800 border border-amber-900/30 text-zinc-400">
-          🛡 {{ activeStanceStat.melee.defense }} def
-        </span>
-      </template>
     </div>
 
     <!-- Active condition chips (clickable to remove) -->
@@ -234,15 +228,24 @@ const isDimmed = computed(() =>
       >{{ tag }}</button>
     </div>
 
-    <!-- Abilities section -->
-    <div v-if="abilities.length > 0" class="mt-2.5 space-y-2 border-t border-zinc-800 pt-2.5">
-      <AbilityRow
-        v-for="ab in abilities"
-        :key="ab.name"
-        :ability="ab"
-        :unit-tags="unit.tags"
-        :keywords="keywords"
-      />
+    <!-- Abilities section (collapsible) -->
+    <div v-if="abilities.length > 0" class="mt-2.5 border-t border-zinc-800 pt-2.5">
+      <button
+        class="flex w-full items-center justify-between text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-600 hover:text-zinc-400 transition-colors"
+        @click="showAbilities = !showAbilities"
+      >
+        <span>Abilities ({{ abilities.length }})</span>
+        <span>{{ showAbilities ? '▲' : '▼' }}</span>
+      </button>
+      <div v-if="showAbilities" class="mt-2.5 space-y-3">
+        <AbilityRow
+          v-for="ab in abilities"
+          :key="ab.name"
+          :ability="ab"
+          :unit-tags="unit.tags"
+          :keywords="keywords"
+        />
+      </div>
     </div>
 
     <!-- Condition picker -->
