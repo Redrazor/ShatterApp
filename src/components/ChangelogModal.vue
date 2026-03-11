@@ -4,6 +4,16 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.10.0',
+    date: '2026-03-11',
+    changes: [
+      'Play — Ability type icons (active, reactive, tactic, innate, identity) re-cropped from SWP01 card art for clean, accurate visuals',
+      'Play — Ability type icon tooltip: hover/tap to see what each ability type means',
+      'Play — Combat stats (Ranged/Melee atk/def) shown as labelled buttons in the unit header row',
+      'Play — Abilities section is now collapsible and shows larger, more readable text',
+    ],
+  },
+  {
     version: '1.9.0',
     date: '2026-03-10',
     changes: [
