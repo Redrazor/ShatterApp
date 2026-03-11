@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { Character, CompactBuild } from '../../../types/index.ts'
+import type { Character, CompactBuild, PlayUnit } from '../../../types/index.ts'
 import { usePlayUnitsStore } from '../../../stores/playUnits.ts'
 import UnitRosterCard from './UnitRosterCard.vue'
 import UnitSearchPicker from './UnitSearchPicker.vue'
-import UnitProfileModal from '../../browse/UnitProfileModal.vue'
+import PlayUnitStanceModal from './PlayUnitStanceModal.vue'
 import BuildListPicker from './BuildListPicker.vue'
 import ForcePool from './ForcePool.vue'
 
@@ -18,7 +18,7 @@ const props = defineProps<{
 const store = usePlayUnitsStore()
 const showPicker = ref(false)
 const showListPicker = ref(false)
-const profileCharacter = ref<Character | null>(null)
+const profileUnit = ref<PlayUnit | null>(null)
 const showProfile = ref(false)
 const activeTag = ref<string | null>(null)
 let tagTimer: ReturnType<typeof setTimeout> | null = null
@@ -38,9 +38,9 @@ function onListSelected(sq0: Character[], sq1: Character[], sq1Complete: boolean
 }
 
 function openProfile(unitId: number) {
-  const char = props.characters.find(c => c.id === unitId) ?? null
-  if (!char) return
-  profileCharacter.value = char
+  const unit = store.units.find(u => u.id === unitId) ?? null
+  if (!unit) return
+  profileUnit.value = unit
   showProfile.value = true
 }
 </script>
@@ -164,9 +164,9 @@ function openProfile(unitId: number) {
       @close="showListPicker = false"
     />
 
-    <!-- Unit profile modal -->
-    <UnitProfileModal
-      :character="profileCharacter"
+    <!-- Unit stance modal -->
+    <PlayUnitStanceModal
+      :unit="profileUnit"
       :show="showProfile"
       @close="showProfile = false"
     />

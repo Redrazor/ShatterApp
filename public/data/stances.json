@@ -1,0 +1,2098 @@
+{
+  "46": {
+    "characterId": 46,
+    "name": "Logray, Bright Tree Shaman",
+    "swpCode": "SWP39",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Wisdom of the Woods",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Omen of Strength",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "45": {
+    "characterId": 45,
+    "name": "Boushh (Leia Organa)",
+    "swpCode": "SWP22",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Rough and Tumble",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 6 }
+      }
+    ]
+  },
+  "44": {
+    "characterId": 44,
+    "name": "Naboo Royal Handmaidens",
+    "swpCode": "SWP15",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Absolute Loyalty",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "43": {
+    "characterId": 43,
+    "name": "Sabe, Royal Bodyguard",
+    "swpCode": "SWP15",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Decoy",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "42": {
+    "characterId": 42,
+    "name": "Bounty Hunters",
+    "swpCode": "SWP09",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Hunting Season",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "41": {
+    "characterId": 41,
+    "name": "Aurra Sing",
+    "swpCode": "SWP09",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Not Asking Permission",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "40": {
+    "characterId": 40,
+    "name": "Queen Padme Amidala",
+    "swpCode": "SWP15",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Aggressive Negotiations",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Faith in Diplomacy",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "39": {
+    "characterId": 39,
+    "name": "Cad Bane, Notorious Hunter",
+    "swpCode": "SWP09",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Needs No Introduction",
+        "ranged": { "range": 4, "attack": 8, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "As Long As I Get Paid",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "38": {
+    "characterId": 38,
+    "name": "ARF Clone Troopers",
+    "swpCode": "SWP08",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Recon Force",
+        "ranged": { "range": 5, "attack": 7, "defense": 4 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "37": {
+    "characterId": 37,
+    "name": "CT-411 Commander Ponds",
+    "swpCode": "SWP08",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Superior Recon",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "36": {
+    "characterId": 36,
+    "name": "Savage Opress",
+    "swpCode": "SWP07",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Unchained Rage",
+        "ranged": { "range": null, "attack": null, "defense": 4 },
+        "melee": { "attack": 7, "defense": 4 }
+      }
+    ]
+  },
+  "35": {
+    "characterId": 35,
+    "name": "Jedi Master Mace Windu",
+    "swpCode": "SWP08",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form VII Vaapad",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Jedi Master",
+        "ranged": { "range": 4, "attack": 6, "defense": 6 },
+        "melee": { "attack": 6, "defense": 6 }
+      }
+    ]
+  },
+  "34": {
+    "characterId": 34,
+    "name": "Nightsister Acolytes",
+    "swpCode": "SWP07",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Shadow Hunters",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "33": {
+    "characterId": 33,
+    "name": "Mother Talzin",
+    "swpCode": "SWP07",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Great Mother",
+        "ranged": { "range": 4, "attack": 7, "defense": 7 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Wrath",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "32": {
+    "characterId": 32,
+    "name": "Fourth Sister",
+    "swpCode": "SWP12",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form II Makashi",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "31": {
+    "characterId": 31,
+    "name": "Fifth Brother",
+    "swpCode": "SWP12",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form II Makashi",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "30": {
+    "characterId": 30,
+    "name": "Darth Vader, Jedi Hunter",
+    "swpCode": "SWP30",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Dark Rage",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form V Djem So",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 6 }
+      }
+    ]
+  },
+  "29": {
+    "characterId": 29,
+    "name": "Obi-Wan Kenobi, Out of Hiding",
+    "swpCode": "SWP30",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form III Soresu",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "28": {
+    "characterId": 28,
+    "name": "Third Sister",
+    "swpCode": "SWP12",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form II Makashi",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "27": {
+    "characterId": 27,
+    "name": "Grand Inquisitor, Fallen Jedi",
+    "swpCode": "SWP12",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form II Makashi",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form V Djem So",
+        "ranged": { "range": 4, "attack": 6, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "26": {
+    "characterId": 26,
+    "name": "B2 Battle Droids",
+    "swpCode": "SWP05",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Suppression Protocol",
+        "ranged": { "range": 5, "attack": 6, "defense": 4 },
+        "melee": { "attack": 5, "defense": 3 }
+      }
+    ]
+  },
+  "25": {
+    "characterId": 25,
+    "name": "Kraken, Super Tactical Droid",
+    "swpCode": "SWP05",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Ruthless Logic",
+        "ranged": { "range": 5, "attack": 7, "defense": 4 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "24": {
+    "characterId": 24,
+    "name": "Republic Clone Commandos",
+    "swpCode": "SWP04",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Commando Training",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "23": {
+    "characterId": 23,
+    "name": "General Grievous",
+    "swpCode": "SWP05",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Quad Arm Attack",
+        "ranged": { "range": null, "attack": null, "defense": 4 },
+        "melee": { "attack": 8, "defense": 4 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Cunning Warlord",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "22": {
+    "characterId": 22,
+    "name": "Barriss Offee, Jedi Padawan",
+    "swpCode": "SWP04",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form III Soresu",
+        "ranged": { "range": null, "attack": null, "defense": 4 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "21": {
+    "characterId": 21,
+    "name": "Jedi Master Luminara Unduli",
+    "swpCode": "SWP04",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form II Makashi",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form III Soresu",
+        "ranged": { "range": null, "attack": null, "defense": 6 },
+        "melee": { "attack": 6, "defense": 6 }
+      }
+    ]
+  },
+  "11": {
+    "characterId": 11,
+    "name": "501st Clone Troopers",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Advanced Combat Training",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "12": {
+    "characterId": 12,
+    "name": "B1 Battle Droids",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Countless",
+        "ranged": { "range": 5, "attack": 7, "defense": 4 },
+        "melee": { "attack": 5, "defense": 3 }
+      }
+    ]
+  },
+  "13": {
+    "characterId": 13,
+    "name": "Mandalorian Super Commandos",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Disruptive Tactics",
+        "ranged": { "range": 4, "attack": 5, "defense": 4 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "14": {
+    "characterId": 14,
+    "name": "General Obi-Wan Kenobi",
+    "swpCode": "SWP06",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form III Soresu",
+        "ranged": { "range": null, "attack": null, "defense": null },
+        "melee": { "attack": 5, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form IV Ataru",
+        "ranged": { "range": null, "attack": null, "defense": 6 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "15": {
+    "characterId": 15,
+    "name": "CC-2224 Clone Commander Cody",
+    "swpCode": "SWP06",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Concentrated Firepower",
+        "ranged": { "range": 5, "attack": 6, "defense": 4 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "17": {
+    "characterId": 17,
+    "name": "Count Dooku, Separatist Leader",
+    "swpCode": "SWP03",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form II Makashi",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 7 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Force Mastery",
+        "ranged": { "range": 4, "attack": 8, "defense": 6 },
+        "melee": { "attack": 6, "defense": 6 }
+      }
+    ]
+  },
+  "18": {
+    "characterId": 18,
+    "name": "Jango Fett, Bounty Hunter",
+    "swpCode": "SWP03",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Resourceful Gunslinger",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "19": {
+    "characterId": 19,
+    "name": "MagnaGuard",
+    "swpCode": "SWP03",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Defensive Programs",
+        "ranged": { "range": null, "attack": null, "defense": null },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "20": {
+    "characterId": 20,
+    "name": "Padawan Ahsoka Tano",
+    "swpCode": "SWP11",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Jar'Kai",
+        "ranged": { "range": null, "attack": null, "defense": null },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "16": {
+    "characterId": 16,
+    "name": "212th Clone Troopers",
+    "swpCode": "SWP06",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Bullseye Training",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 4, "defense": 4 }
+      }
+    ]
+  },
+  "1": {
+    "characterId": 1,
+    "name": "General Anakin Skywalker",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form V Djem So",
+        "ranged": {
+          "range": 4,
+          "attack": 6,
+          "defense": 5
+        },
+        "melee": {
+          "attack": 8,
+          "defense": 5
+        }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form V Shien",
+        "ranged": {
+          "range": null,
+          "attack": null,
+          "defense": 6
+        },
+        "melee": {
+          "attack": 7,
+          "defense": 6
+        }
+      }
+    ]
+  },
+  "2": {
+    "characterId": 2,
+    "name": "Asajj Ventress, Sith Assassin",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form II Makashi",
+        "ranged": {
+          "range": null,
+          "attack": null,
+          "defense": 5
+        },
+        "melee": {
+          "attack": 7,
+          "defense": 6
+        }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Jar'Kai",
+        "ranged": {
+          "range": null,
+          "attack": null,
+          "defense": 5
+        },
+        "melee": {
+          "attack": 8,
+          "defense": 6
+        }
+      }
+    ]
+  },
+  "10": {
+    "characterId": 10,
+    "name": "Clan Kryze Mandalorians",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Skirmish Tactics",
+        "ranged": {
+          "range": 4,
+          "attack": 6,
+          "defense": 5
+        },
+        "melee": {
+          "attack": 5,
+          "defense": 4
+        }
+      }
+    ]
+  },
+  "8": {
+    "characterId": 8,
+    "name": "Bo-Katan Kryze",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Close Support",
+        "ranged": {
+          "range": 4,
+          "attack": 6,
+          "defense": 4
+        },
+        "melee": {
+          "attack": 7,
+          "defense": 4
+        }
+      }
+    ]
+  },
+  "7": {
+    "characterId": 7,
+    "name": "Kalani, Super Tactical Droid",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Cold Logic",
+        "ranged": {
+          "range": 5,
+          "attack": 7,
+          "defense": 4
+        },
+        "melee": {
+          "attack": 6,
+          "defense": 3
+        }
+      }
+    ]
+  },
+  "6": {
+    "characterId": 6,
+    "name": "Gar Saxon, Merciless Commander",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Concentrated Assault",
+        "ranged": {
+          "range": 5,
+          "attack": 6,
+          "defense": 4
+        },
+        "melee": {
+          "attack": 7,
+          "defense": 4
+        }
+      }
+    ]
+  },
+  "5": {
+    "characterId": 5,
+    "name": "CC-7567 Captain Rex",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Tactical Supremacy",
+        "ranged": {
+          "range": 5,
+          "attack": 7,
+          "defense": 5
+        },
+        "melee": {
+          "attack": 7,
+          "defense": 5
+        }
+      }
+    ]
+  },
+  "4": {
+    "characterId": 4,
+    "name": "Ahsoka Tano, Jedi No More",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Jar'Kai",
+        "ranged": {
+          "range": null,
+          "attack": null,
+          "defense": 5
+        },
+        "melee": {
+          "attack": 7,
+          "defense": 5
+        }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form V Shien Reverse Grip",
+        "ranged": {
+          "range": null,
+          "attack": null,
+          "defense": 6
+        },
+        "melee": {
+          "attack": 6,
+          "defense": 6
+        }
+      }
+    ]
+  },
+  "3": {
+    "characterId": 3,
+    "name": "Lord Maul",
+    "swpCode": "SWP01",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Dark Rage",
+        "ranged": {
+          "range": null,
+          "attack": null,
+          "defense": 5
+        },
+        "melee": {
+          "attack": 7,
+          "defense": 5
+        }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Sinister Cunning",
+        "ranged": {
+          "range": 4,
+          "attack": 7,
+          "defense": 6
+        },
+        "melee": {
+          "attack": 6,
+          "defense": 6
+        }
+      }
+    ]
+  },
+  "47": {
+    "characterId": 47,
+    "name": "Jedi Master Plo Koon",
+    "swpCode": "SWP11",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form V Djem So",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form III Soresu",
+        "ranged": { "range": null, "attack": null, "defense": 6 },
+        "melee": { "attack": 5, "defense": 6 }
+      }
+    ]
+  },
+  "48": {
+    "characterId": 48,
+    "name": "Stormtrooper Sergeant",
+    "swpCode": "SWP21",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Forward Assault",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "49": {
+    "characterId": 49,
+    "name": "Lando and R2-D2, Inside Job",
+    "swpCode": "SWP22",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "On the Sly",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "50": {
+    "characterId": 50,
+    "name": "Darth Vader, The Emperor's Servant",
+    "swpCode": "SWP21",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form V Djem So",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 8, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form V Shien",
+        "ranged": { "range": 4, "attack": 5, "defense": 6 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "51": {
+    "characterId": 51,
+    "name": "C-3PO and R2-D2",
+    "swpCode": "SWP39",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Against My Programming",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Angry Trilling",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "52": {
+    "characterId": 52,
+    "name": "Jedi Knight Luke Skywalker",
+    "swpCode": "SWP22",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form V Djem So",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 8, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form III Soresu",
+        "ranged": { "range": null, "attack": null, "defense": 6 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "53": {
+    "characterId": 53,
+    "name": "Stormtroopers",
+    "swpCode": "SWP21",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Assault Training",
+        "ranged": { "range": 5, "attack": 5, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "54": {
+    "characterId": 54,
+    "name": "Leia Organa, Freedom Fighter",
+    "swpCode": "SWP27",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Stealth Mission",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Frontal Assault",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "55": {
+    "characterId": 55,
+    "name": "Paploo, Curious Creature",
+    "swpCode": "SWP27",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Loaded Questions",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "56": {
+    "characterId": 56,
+    "name": "Ewok Trappers",
+    "swpCode": "SWP39",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Running Traps",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "57": {
+    "characterId": 57,
+    "name": "Wicket, Intrepid Warrior",
+    "swpCode": "SWP39",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Wary Vigilance",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "58": {
+    "characterId": 58,
+    "name": "Ewok Hunters",
+    "swpCode": "SWP27",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Walkabout",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "59": {
+    "characterId": 59,
+    "name": "Chief Chirpa",
+    "swpCode": "SWP27",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Bright Tree Elder",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 6, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Fury of the Forest",
+        "ranged": { "range": null, "attack": null, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "60": {
+    "characterId": 60,
+    "name": "CC-3636 Commander Wolffe",
+    "swpCode": "SWP11",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Practical Strategist",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "61": {
+    "characterId": 61,
+    "name": "104th Wolfpack Troopers",
+    "swpCode": "SWP11",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Strength in Numbers",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "62": {
+    "characterId": 62,
+    "name": "Moff Gideon",
+    "swpCode": "SWP26",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Burn Them Out",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Self-Interest",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "63": {
+    "characterId": 63,
+    "name": "Hondo, Honest Businessman",
+    "swpCode": "SWP10",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Clever Captain",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Pugnacious Pirate",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "64": {
+    "characterId": 64,
+    "name": "Greef Karga",
+    "swpCode": "SWP24",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Middle Man",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "65": {
+    "characterId": 65,
+    "name": "IG-11, Assassin Droid",
+    "swpCode": "SWP24",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Bondsman Guild Protocol",
+        "ranged": { "range": 5, "attack": 7, "defense": 6 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "66": {
+    "characterId": 66,
+    "name": "Death Trooper Escort",
+    "swpCode": "SWP26",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Death Trooper Training",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "67": {
+    "characterId": 67,
+    "name": "Dark Troopers",
+    "swpCode": "SWP26",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Combat Programming",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "68": {
+    "characterId": 68,
+    "name": "Clone Sergeant Hunter",
+    "swpCode": "SWP38",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Huntsman",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Knife Fighter",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "69": {
+    "characterId": 69,
+    "name": "Wrecker and Omega",
+    "swpCode": "SWP38",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Boom!",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Tuning Out Distractions",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "70": {
+    "characterId": 70,
+    "name": "Gwarm",
+    "swpCode": "SWP10",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Enforcer",
+        "ranged": { "range": 5, "attack": 5, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "71": {
+    "characterId": 71,
+    "name": "Weequay Pirates",
+    "swpCode": "SWP10",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Raider",
+        "ranged": { "range": 4, "attack": 6, "defense": 4 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "72": {
+    "characterId": 72,
+    "name": "Crosshair",
+    "swpCode": "SWP38",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Bad Play",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "73": {
+    "characterId": 73,
+    "name": "Echo and Tech",
+    "swpCode": "SWP38",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Military Intelligence",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "74": {
+    "characterId": 74,
+    "name": "The Mandalorian",
+    "swpCode": "SWP24",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Bring You In Warm",
+        "ranged": { "range": 4, "attack": 6, "defense": 6 },
+        "melee": { "attack": 7, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Bring You In Cold",
+        "ranged": { "range": 5, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 6 }
+      }
+    ]
+  },
+  "75": {
+    "characterId": 75,
+    "name": "Commander Iden Versio",
+    "swpCode": "SWP34",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Full Auto",
+        "ranged": { "range": 5, "attack": 8, "defense": 5 },
+        "melee": { "attack": 6, "defense": 4 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Burst Fire",
+        "ranged": { "range": 5, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "76": {
+    "characterId": 76,
+    "name": "Imperial Special Forces",
+    "swpCode": "SWP34",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "ISF Doctrine",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "77": {
+    "characterId": 77,
+    "name": "General Solo",
+    "swpCode": "SWP35",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Gunslinger",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Smug Scoundrel",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 6 }
+      }
+    ]
+  },
+  "78": {
+    "characterId": 78,
+    "name": "Chewie",
+    "swpCode": "SWP35",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Disarming",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "79": {
+    "characterId": 79,
+    "name": "Kanan Jarrus, Spectre-1",
+    "swpCode": "SWP29",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form III Soresu",
+        "ranged": { "range": null, "attack": null, "defense": 6 },
+        "melee": { "attack": 8, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Pack Leader",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "80": {
+    "characterId": 80,
+    "name": "\"Zeb\" Orrelios, Spectre-4",
+    "swpCode": "SWP29",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Honor Guard Captain",
+        "ranged": { "range": 5, "attack": 6, "defense": 4 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "113": {
+    "characterId": 113,
+    "name": "Jedi Master Kit Fisto",
+    "swpCode": "SWP37",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form I Shii-Cho",
+        "ranged": null,
+        "melee": { "attack": 7, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form IV Ataru",
+        "ranged": null,
+        "melee": { "attack": 9, "defense": 4 }
+      }
+    ]
+  },
+  "112": {
+    "characterId": 112,
+    "name": "Padawan Learners",
+    "swpCode": "SWP50",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form I Shii-Cho",
+        "ranged": null,
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "111": {
+    "characterId": 111,
+    "name": "Jedi Master Shaak Ti",
+    "swpCode": "SWP50",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form IV Ataru",
+        "ranged": null,
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "110": {
+    "characterId": 110,
+    "name": "Jedi Master Ki-Adi-Mundi",
+    "swpCode": "SWP50",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form II Makashi",
+        "ranged": null,
+        "melee": { "attack": 7, "defense": 4 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Form V Shien",
+        "ranged": null,
+        "melee": { "attack": 8, "defense": 5 }
+      }
+    ]
+  },
+  "109": {
+    "characterId": 109,
+    "name": "IG-88B, Created to Succeed",
+    "swpCode": "SWP25",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Any Means Necessary",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 7, "defense": 4 }
+      }
+    ]
+  },
+  "108": {
+    "characterId": 108,
+    "name": "Bossk, Single-Minded Slayer",
+    "swpCode": "SWP25",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Cold-Blooded Killer",
+        "ranged": { "range": 5, "attack": 7, "defense": 4 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "107": {
+    "characterId": 107,
+    "name": "Wing Guard",
+    "swpCode": "SWP47",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Security Training",
+        "ranged": { "range": 4, "attack": 5, "defense": 4 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "106": {
+    "characterId": 106,
+    "name": "Snowtroopers",
+    "swpCode": "SWP46",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Blizzard Tactics",
+        "ranged": { "range": 5, "attack": 5, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "105": {
+    "characterId": 105,
+    "name": "The Armorer",
+    "swpCode": "SWP16",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Strength of the Hammer",
+        "ranged": null,
+        "melee": { "attack": 8, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Insight of the Forge",
+        "ranged": null,
+        "melee": { "attack": 7, "defense": 6 }
+      }
+    ]
+  },
+  "104": {
+    "characterId": 104,
+    "name": "Elite Squad Troopers",
+    "swpCode": "SWP36",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Imperial Marksmanship",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "103": {
+    "characterId": 103,
+    "name": "Lobot, Computer Liaison Officer",
+    "swpCode": "SWP47",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Cybernetic Enhancements",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "102": {
+    "characterId": 102,
+    "name": "Lando Calrissian, Galactic Entrepeneur",
+    "swpCode": "SWP47",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Idiot's Array",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Pure Sabacc",
+        "ranged": { "range": 4, "attack": 8, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "101": {
+    "characterId": 101,
+    "name": "Snowtrooper Lieutenant",
+    "swpCode": "SWP46",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Disciplined Assault",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "100": {
+    "characterId": 100,
+    "name": "General Veers, Tactical Genius",
+    "swpCode": "SWP46",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Let The Rabble Come",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Lay Siege",
+        "ranged": { "range": 5, "attack": 7, "defense": 6 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "99": {
+    "characterId": 99,
+    "name": "Dengar, The Demolisher",
+    "swpCode": "SWP25",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Brute Force",
+        "ranged": { "range": 5, "attack": 5, "defense": 4 },
+        "melee": { "attack": 8, "defense": 5 }
+      }
+    ]
+  },
+  "98": {
+    "characterId": 98,
+    "name": "Boba Fett, On Contract",
+    "swpCode": "SWP25",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Notorious Disintegrator",
+        "ranged": { "range": 5, "attack": 7, "defense": 4 },
+        "melee": { "attack": 7, "defense": 4 }
+      }
+    ]
+  },
+  "97": {
+    "characterId": 97,
+    "name": "Covert Mandalorians",
+    "swpCode": "SWP16",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Adherents of The Way",
+        "ranged": { "range": 4, "attack": 5, "defense": 4 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "96": {
+    "characterId": 96,
+    "name": "Paz Vizsla",
+    "swpCode": "SWP16",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Heavy Firepower",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Fearless",
+        "ranged": null,
+        "melee": { "attack": 8, "defense": 6 }
+      }
+    ]
+  },
+  "95": {
+    "characterId": 95,
+    "name": "ES-04, Firebrand",
+    "swpCode": "SWP36",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Flamewall",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "94": {
+    "characterId": 94,
+    "name": "CT-9904, Elite Squad Leader",
+    "swpCode": "SWP36",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Bad Play",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Target Eliminated",
+        "ranged": { "range": 5, "attack": 8, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "93": {
+    "characterId": 93,
+    "name": "ISB Agents",
+    "swpCode": "SWP28",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "ISB Doctrines",
+        "ranged": { "range": 4, "attack": 6, "defense": 4 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "92": {
+    "characterId": 92,
+    "name": "Agent Kallus, Inside Man",
+    "swpCode": "SWP28",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Tactical Supremacy",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "91": {
+    "characterId": 91,
+    "name": "Grand Admiral Thrawn",
+    "swpCode": "SWP28",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Strategic Genius",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Aggressive Assault",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "90": {
+    "characterId": 90,
+    "name": "Han and Chewie, In It For The Money",
+    "swpCode": "SWP41",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Brash Bravado",
+        "ranged": { "range": 5, "attack": 7, "defense": 4 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "89": {
+    "characterId": 89,
+    "name": "Luke Skywalker, Daring Hero",
+    "swpCode": "SWP41",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Act on Instinct",
+        "ranged": { "range": 5, "attack": 6, "defense": 4 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "88": {
+    "characterId": 88,
+    "name": "Princess Leia, Charming to the Last",
+    "swpCode": "SWP41",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Covert Rebel",
+        "ranged": { "range": 5, "attack": 5, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Aggressive Ambassador",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "87": {
+    "characterId": 87,
+    "name": "Hera Syndulla, Spectre-2",
+    "swpCode": "SWP44",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Difficult Choices",
+        "ranged": { "range": 4, "attack": 7, "defense": 4 },
+        "melee": { "attack": 6, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Spread a Little Light",
+        "ranged": { "range": 4, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "86": {
+    "characterId": 86,
+    "name": "Ezra Bridger, Spectre-6",
+    "swpCode": "SWP29",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Fast Learner",
+        "ranged": { "range": 4, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "85": {
+    "characterId": 85,
+    "name": "Rebel Commandos",
+    "swpCode": "SWP35",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Commando Training",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "84": {
+    "characterId": 84,
+    "name": "Del Meeko, Inferno Squad",
+    "swpCode": "SWP34",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Suppressive Fire",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  },
+  "83": {
+    "characterId": 83,
+    "name": "Gideon Hask, Inferno Squad",
+    "swpCode": "SWP34",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Imperial Aggression",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "82": {
+    "characterId": 82,
+    "name": "\"Chopper\" (C1-10P), Spectre-3",
+    "swpCode": "SWP44",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Droid Rage",
+        "ranged": { "range": 3, "attack": 6, "defense": 4 },
+        "melee": { "attack": 8, "defense": 5 }
+      }
+    ]
+  },
+  "134": {
+    "characterId": 134,
+    "name": "Aqua Droids",
+    "swpCode": "SWP63",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Assault Protocol",
+        "ranged": { "range": 5, "attack": 7, "defense": 6 },
+        "melee": { "attack": 4, "defense": 4 }
+      }
+    ]
+  },
+  "133": {
+    "characterId": 133,
+    "name": "Nossor Ri",
+    "swpCode": "SWP63",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Opportunist",
+        "ranged": { "range": 4, "attack": 6, "defense": 6 },
+        "melee": { "attack": 4, "defense": 5 }
+      }
+    ]
+  },
+  "132": {
+    "characterId": 132,
+    "name": "Riff Tamson",
+    "swpCode": "SWP63",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Savagery",
+        "ranged": { "range": 3, "attack": 6, "defense": 7 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Cruelty",
+        "ranged": { "range": 3, "attack": 7, "defense": 6 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "131": {
+    "characterId": 131,
+    "name": "\"Sev\" and \"Scorch\"",
+    "swpCode": "SWP62",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Specialists",
+        "ranged": { "range": 5, "attack": 7, "defense": 6 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "130": {
+    "characterId": 130,
+    "name": "RC-1140 \"Fixer\"",
+    "swpCode": "SWP62",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Tactical Supremacy",
+        "ranged": { "range": 5, "attack": 7, "defense": 7 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "129": {
+    "characterId": 129,
+    "name": "RC-1138 \"Boss\"",
+    "swpCode": "SWP62",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Rapid Fire",
+        "ranged": { "range": 5, "attack": 7, "defense": 6 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Wet Work",
+        "ranged": { "range": 5, "attack": 6, "defense": 7 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "128": {
+    "characterId": 128,
+    "name": "Baze Malbus and Chirrut Îmwe",
+    "swpCode": "SWP52",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "The Force Is With Me",
+        "ranged": { "range": 5, "attack": 6, "defense": 6 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "I Am One With the Force",
+        "ranged": { "range": 5, "attack": 6, "defense": 6 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "127": {
+    "characterId": 127,
+    "name": "Bodhi Rook",
+    "swpCode": "SWP52",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Making it Right",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "126": {
+    "characterId": 126,
+    "name": "Jyn Erso, Stardust",
+    "swpCode": "SWP52",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Aggravated Assault",
+        "ranged": { "range": 4, "attack": 6, "defense": 7 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Resisting Arrest",
+        "ranged": { "range": 4, "attack": 7, "defense": 6 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "125": {
+    "characterId": 125,
+    "name": "Death Troopers",
+    "swpCode": "SWP51",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Death Trooper Tactics",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "124": {
+    "characterId": 124,
+    "name": "Death Trooper Specialist",
+    "swpCode": "SWP51",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Enhanced Elite",
+        "ranged": { "range": 5, "attack": 7, "defense": 7 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "123": {
+    "characterId": 123,
+    "name": "Rebel Pathfinders",
+    "swpCode": "SWP31",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Covert Strike",
+        "ranged": { "range": 5, "attack": 6, "defense": 6 },
+        "melee": { "attack": 4, "defense": 5 }
+      }
+    ]
+  },
+  "122": {
+    "characterId": 122,
+    "name": "K-2SO, Outspoken Enforcer",
+    "swpCode": "SWP31",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Effortless Efficiency",
+        "ranged": { "range": 4, "attack": 7, "defense": 7 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "121": {
+    "characterId": 121,
+    "name": "Captain Cassian Andor",
+    "swpCode": "SWP31",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "All the Way",
+        "ranged": { "range": 4, "attack": 7, "defense": 7 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Light it Up",
+        "ranged": { "range": 5, "attack": 8, "defense": 6 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "120": {
+    "characterId": 120,
+    "name": "Darth Vader, Fallen Master",
+    "swpCode": "SWP81",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form V Djem So",
+        "ranged": null,
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "119": {
+    "characterId": 119,
+    "name": "Ahsoka Tano, Fulcrum",
+    "swpCode": "SWP81",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form V Shien Reverse Grip",
+        "ranged": null,
+        "melee": { "attack": 7, "defense": 6 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Jar'Kai",
+        "ranged": null,
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "118": {
+    "characterId": 118,
+    "name": "Shoretroopers",
+    "swpCode": "SWP51",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Garrison Tactics",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "117": {
+    "characterId": 117,
+    "name": "Director Krennic",
+    "swpCode": "SWP51",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "High Aspirations",
+        "ranged": { "range": 4, "attack": 8, "defense": 6 },
+        "melee": { "attack": 5, "defense": 5 }
+      },
+      {
+        "stanceNumber": 2,
+        "stanceName": "Arrogance",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "116": {
+    "characterId": 116,
+    "name": "Fil's Clones",
+    "swpCode": "SWP37",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Advanced Combat Training",
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 5, "defense": 4 }
+      }
+    ]
+  },
+  "115": {
+    "characterId": 115,
+    "name": "CC-3714 Clone Commander Fil",
+    "swpCode": "SWP37",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Element of Surprise",
+        "ranged": { "range": 4, "attack": 5, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "114": {
+    "characterId": 114,
+    "name": "Nahdar Vebb, Jedi Knight",
+    "swpCode": "SWP37",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form IV Ataru",
+        "ranged": null,
+        "melee": { "attack": 7, "defense": 4 }
+      }
+    ]
+  },
+  "81": {
+    "characterId": 81,
+    "name": "Sabine Wren, Spectre-5",
+    "swpCode": "SWP44",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "My Way",
+        "ranged": { "range": 4, "attack": 6, "defense": 4 },
+        "melee": { "attack": 6, "defense": 4 }
+      }
+    ]
+  }
+}
