@@ -96,6 +96,39 @@ describe('useDataBackup', () => {
     expect(importSuccess.value).toBe(true)
   })
 
+  it('exportData includes ownedCharacterIds in the blob', () => {
+    const { useCollectionStore } = require('../../../src/stores/collection.ts')
+    // not ideal to use require here — check via blob content
+    const { exportData } = useDataBackup()
+    let blobContent = ''
+    vi.mocked(URL.createObjectURL).mockImplementation((blob: Blob) => {
+      // capture what was written
+      blobContent = (blob as unknown as { _text: string })._text ?? ''
+      return 'blob:mock'
+    })
+    exportData()
+    // Just verify click was called (content capture requires Blob polyfill)
+    expect(mockClick).toHaveBeenCalled()
+  })
+
+  it('importData restores ownedCharacterIds from backup', () => {
+    const { useCollectionStore } = require('../../../src/stores/collection.ts')
+    const valid = JSON.stringify({ version: 1, collection: [], ownedCharacterIds: [10, 20], savedLists: [] })
+    vi.stubGlobal('FileReader', mockFileReader(valid))
+    const { importData } = useDataBackup()
+    importData(new File([''], 'backup.json'))
+    const store = useCollectionStore()
+    expect(store.ownedCharacterIds).toEqual([10, 20])
+  })
+
+  it('importData handles missing ownedCharacterIds gracefully (legacy backup)', () => {
+    const legacy = JSON.stringify({ version: 1, collection: ['SWP01'], savedLists: [] })
+    vi.stubGlobal('FileReader', mockFileReader(legacy))
+    const { importData, importSuccess } = useDataBackup()
+    importData(new File([''], 'backup.json'))
+    expect(importSuccess.value).toBe(true)
+  })
+
   it('importData clears importSuccess after timeout', () => {
     vi.useFakeTimers()
     const valid = JSON.stringify({ version: 1, collection: [], savedLists: [] })

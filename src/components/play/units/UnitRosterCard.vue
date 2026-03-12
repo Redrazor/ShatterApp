@@ -99,34 +99,34 @@ const isDimmed = computed(() =>
         <div class="text-[10px] text-zinc-600 mt-0.5">{{ unit.unitType }}</div>
       </div>
 
-      <!-- Combat stats buttons -->
-      <div v-if="activeStanceStat" class="flex items-center gap-1 flex-shrink-0" @click.stop>
-        <template v-if="activeStanceStat.ranged && activeStanceStat.ranged.attack !== null">
-          <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Ranged</span>
-          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-400 cursor-default" title="Range">{{ activeStanceStat.ranged.range ?? '—' }}</button>
-          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-300 cursor-default" title="Attack">{{ activeStanceStat.ranged.attack }}⚔</button>
-          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-300 cursor-default" title="Defense">{{ activeStanceStat.ranged.defense }}🛡</button>
-        </template>
-        <span v-if="activeStanceStat.ranged?.attack !== null && activeStanceStat.melee?.attack !== null" class="text-zinc-700 select-none px-0.5">|</span>
-        <template v-if="activeStanceStat.melee && activeStanceStat.melee.attack !== null">
-          <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Melee</span>
-          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-amber-900/40 text-zinc-300 cursor-default" title="Attack">{{ activeStanceStat.melee.attack }}⚔</button>
-          <button disabled class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-amber-900/40 text-zinc-300 cursor-default" title="Defense">{{ activeStanceStat.melee.defense }}🛡</button>
-        </template>
-      </div>
-
       <!-- Actions -->
       <div class="flex items-center gap-1.5 flex-shrink-0" @click.stop>
         <button
-          class="rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-2 py-1 text-[10px] font-semibold text-zinc-500 transition-all hover:border-zinc-500 hover:text-zinc-300 active:scale-95"
+          class="rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-3 py-2 text-[11px] font-semibold text-zinc-500 transition-all hover:border-zinc-500 hover:text-zinc-300 active:scale-95"
           @click="showConditionPicker = true"
         >Conditions</button>
         <button
           v-if="canRemove"
-          class="rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-2 py-1 text-[10px] font-semibold text-red-600 transition-all hover:border-red-700 hover:text-red-400 active:scale-95"
+          class="rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-2.5 py-2 text-[11px] font-semibold text-red-600 transition-all hover:border-red-700 hover:text-red-400 active:scale-95"
           @click="emit('remove')"
         >✕</button>
       </div>
+    </div>
+
+    <!-- Combat stats row (own line — avoids header overflow on mobile) -->
+    <div v-if="activeStanceStat" class="flex items-center gap-1 flex-wrap mb-2">
+      <template v-if="activeStanceStat.ranged && activeStanceStat.ranged.attack !== null">
+        <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Ranged</span>
+        <span class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-400" title="Range">{{ activeStanceStat.ranged.range ?? '—' }}</span>
+        <span class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-300" title="Attack">{{ activeStanceStat.ranged.attack }}⚔</span>
+        <span class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-zinc-700/50 text-zinc-300" title="Defense">{{ activeStanceStat.ranged.defense }}🛡</span>
+      </template>
+      <span v-if="activeStanceStat.ranged?.attack !== null && activeStanceStat.melee?.attack !== null" class="text-zinc-700 select-none px-0.5">|</span>
+      <template v-if="activeStanceStat.melee && activeStanceStat.melee.attack !== null">
+        <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Melee</span>
+        <span class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-amber-900/40 text-zinc-300" title="Attack">{{ activeStanceStat.melee.attack }}⚔</span>
+        <span class="rounded px-1.5 py-0.5 text-xs font-bold bg-zinc-800 border border-amber-900/40 text-zinc-300" title="Defense">{{ activeStanceStat.melee.defense }}🛡</span>
+      </template>
     </div>
 
     <!-- Stats row -->
@@ -141,14 +141,14 @@ const isDimmed = computed(() =>
       </div>
 
       <!-- Stance switcher -->
-      <div v-if="unit.stance1 && unit.stance2" class="ml-auto flex rounded-lg border border-zinc-700/50 overflow-hidden max-w-[160px]">
+      <div v-if="unit.stance1 && unit.stance2" class="ml-auto flex rounded-lg border border-zinc-700/50 overflow-hidden">
         <button
-          class="px-2 py-0.5 text-[10px] font-bold transition-colors truncate"
+          class="px-2 py-1 text-[10px] font-bold transition-colors leading-tight text-center"
           :class="unit.activeStance === 1 ? 'bg-amber-500/80 text-zinc-900' : 'text-zinc-500 hover:text-zinc-300'"
           @click="emit('set-stance', 1)"
         >{{ stance1Name }}</button>
         <button
-          class="px-2 py-0.5 text-[10px] font-bold transition-colors border-l border-zinc-700/50 truncate"
+          class="px-2 py-1 text-[10px] font-bold transition-colors border-l border-zinc-700/50 leading-tight text-center"
           :class="unit.activeStance === 2 ? 'bg-amber-500/80 text-zinc-900' : 'text-zinc-500 hover:text-zinc-300'"
           @click="emit('set-stance', 2)"
         >{{ stance2Name }}</button>
@@ -178,7 +178,7 @@ const isDimmed = computed(() =>
         <button
           v-for="i in unit.stamina"
           :key="i"
-          class="flex-1 rounded h-4 transition-all active:scale-95"
+          class="flex-1 rounded h-7 transition-all active:scale-95"
           :class="i <= unit.damage
             ? 'bg-red-500 border border-red-400/40 shadow-[0_0_6px_rgba(239,68,68,0.4)]'
             : 'bg-zinc-800 border border-zinc-700/40 hover:border-zinc-500'"
@@ -204,12 +204,12 @@ const isDimmed = computed(() =>
       </div>
       <div class="flex items-center gap-1">
         <button
-          class="h-6 w-6 rounded border border-zinc-700/50 bg-zinc-800 text-sm font-bold text-zinc-400 transition-all hover:border-zinc-500 hover:text-zinc-200 active:scale-95 flex items-center justify-center"
+          class="h-10 w-10 rounded-lg border border-zinc-700/50 bg-zinc-800 text-base font-bold text-zinc-400 transition-all hover:border-zinc-500 hover:text-zinc-200 active:scale-95 flex items-center justify-center"
           @click="emit('adjust-wounds', -1)"
         >−</button>
-        <span class="w-5 text-center text-xs font-bold text-zinc-300">{{ unit.wounds }}</span>
+        <span class="w-6 text-center text-sm font-bold text-zinc-300">{{ unit.wounds }}</span>
         <button
-          class="h-6 w-6 rounded border border-zinc-700/50 bg-zinc-800 text-sm font-bold text-zinc-400 transition-all hover:border-zinc-500 hover:text-zinc-200 active:scale-95 flex items-center justify-center"
+          class="h-10 w-10 rounded-lg border border-zinc-700/50 bg-zinc-800 text-base font-bold text-zinc-400 transition-all hover:border-zinc-500 hover:text-zinc-200 active:scale-95 flex items-center justify-center"
           @click="emit('adjust-wounds', 1)"
         >+</button>
       </div>
@@ -220,7 +220,7 @@ const isDimmed = computed(() =>
       <button
         v-for="tag in tags"
         :key="tag"
-        class="rounded-full px-2 py-0.5 text-[9px] font-semibold transition-all active:scale-95"
+        class="rounded-full px-2 py-0.5 text-[11px] font-semibold transition-all active:scale-95"
         :class="activeTag === tag
           ? 'border border-amber-400/60 bg-amber-500/20 text-amber-300'
           : 'border border-zinc-700/40 bg-zinc-800/50 text-zinc-600 hover:border-zinc-500 hover:text-zinc-400'"

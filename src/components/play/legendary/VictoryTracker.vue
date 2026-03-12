@@ -101,10 +101,10 @@ const alertBadgeClass = computed(() => {
     </div>
 
     <!-- Zone labels -->
-    <div class="flex gap-0.5 text-[9px]">
-      <div class="flex-[3] text-center font-semibold text-emerald-700">0 – 2</div>
-      <div class="flex-[3] text-center font-semibold text-yellow-800">3 – 5</div>
-      <div class="flex-[3] text-center font-semibold text-red-900">6 – 8</div>
+    <div class="flex gap-0.5 text-[10px]">
+      <div class="flex-[3] text-center font-semibold text-emerald-500">0 – 2</div>
+      <div class="flex-[3] text-center font-semibold text-yellow-500">3 – 5</div>
+      <div class="flex-[3] text-center font-semibold text-red-500">6 – 8</div>
     </div>
 
     <!-- +/- controls -->

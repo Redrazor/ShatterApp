@@ -67,7 +67,7 @@ function goToSwp(e: MouseEvent) {
     >✓</span>
 
     <!-- Favorite + Compare buttons (bottom-right, hover reveal) -->
-    <div class="absolute bottom-1.5 right-1.5 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+    <div class="absolute bottom-1.5 right-1.5 z-10 flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
       <button
         class="rounded bg-black/60 p-1 text-xs leading-none backdrop-blur-sm transition-colors hover:bg-black/80"
         :class="favorited ? 'text-red-400' : 'text-sw-text/50'"

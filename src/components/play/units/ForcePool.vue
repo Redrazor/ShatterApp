@@ -27,7 +27,7 @@ const store = usePlayUnitsStore()
     </div>
 
     <!-- Token grid -->
-    <div class="flex flex-wrap gap-2.5">
+    <div class="grid grid-cols-6 gap-2">
       <button
         v-for="i in store.totalFp"
         :key="i"

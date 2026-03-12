@@ -73,6 +73,12 @@ const renderedDescription = computed(() => {
         @mouseleave="showTooltip = false"
         @click.stop="showTooltip = !showTooltip"
       />
+      <!-- Tap-outside backdrop to dismiss tooltip on mobile -->
+      <div
+        v-if="showTooltip"
+        class="fixed inset-0 z-40"
+        @click.stop="showTooltip = false"
+      />
       <!-- Tooltip -->
       <div
         v-if="showTooltip"
