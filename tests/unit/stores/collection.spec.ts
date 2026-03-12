@@ -114,6 +114,21 @@ describe('useCollectionStore', () => {
       expect(store.ownedCharacterSet.has(3)).toBe(false)
     })
 
+    it('importCharacterOwned replaces current ownedCharacterIds', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(1)
+      store.toggleCharacterOwned(2)
+      store.importCharacterOwned([10, 20, 30])
+      expect(store.ownedCharacterIds).toEqual([10, 20, 30])
+    })
+
+    it('importCharacterOwned clears ids when passed empty array', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(5)
+      store.importCharacterOwned([])
+      expect(store.ownedCharacterIds).toEqual([])
+    })
+
     it('ownedCharacterSet updates after removal', () => {
       const store = useCollectionStore()
       store.toggleCharacterOwned(5)

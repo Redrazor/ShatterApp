@@ -80,33 +80,30 @@ describe('FilterPanel', () => {
     expect((emitted![0][0] as SearchFilters).era).toBe('GCW')
   })
 
-  it('emits update:filters with ownedOnly on checkbox change', async () => {
+  it('emits update:filters with ownedOnly on button click', async () => {
     const wrapper = mount(FilterPanel, {
       props: { filters: defaultFilters(), eras: [] },
     })
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    await checkbox.setValue(true)
+    const btn = wrapper.findAll('button').find(b => b.text().includes('Owned only'))
+    await btn!.trigger('click')
     const emitted = wrapper.emitted('update:filters')
     expect(emitted).toBeTruthy()
     expect((emitted![0][0] as SearchFilters).ownedOnly).toBe(true)
   })
 
-  it('renders owned-only checkbox', () => {
+  it('renders owned-only toggle button', () => {
     const wrapper = mount(FilterPanel, {
       props: { filters: defaultFilters(), eras: [] },
     })
-    expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Owned only')
   })
 
-  it('emits update:filters with favoritesOnly true when favorites checkbox checked', async () => {
+  it('emits update:filters with favoritesOnly true when favorites button clicked', async () => {
     const wrapper = mount(FilterPanel, {
       props: { filters: defaultFilters(), eras: [] },
     })
-    const checkboxes = wrapper.findAll('input[type="checkbox"]')
-    // Second checkbox is Favorites
-    const favCheckbox = checkboxes[1]
-    await favCheckbox.setValue(true)
+    const btn = wrapper.findAll('button').find(b => b.text().includes('Favorites'))
+    await btn!.trigger('click')
     const emitted = wrapper.emitted('update:filters')
     expect(emitted).toBeTruthy()
     expect((emitted![0][0] as SearchFilters).favoritesOnly).toBe(true)

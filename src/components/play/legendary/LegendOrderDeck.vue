@@ -49,7 +49,7 @@ const nextLegendAbility = props.orderCards.find(c => !props.usedIds.includes(c.i
     </div>
 
     <!-- Order cards grid -->
-    <div v-if="orderCards.length > 0" class="grid grid-cols-2 gap-1.5 sm:grid-cols-3 lg:grid-cols-4">
+    <div v-if="orderCards.length > 0" class="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-4">
       <div
         v-for="card in orderCards"
         :key="card.id"
@@ -57,7 +57,7 @@ const nextLegendAbility = props.orderCards.find(c => !props.usedIds.includes(c.i
         @click="emit('toggleCard', card.id)"
       >
         <div class="flex items-start justify-between gap-1">
-          <div class="text-[10px] font-bold leading-tight text-zinc-200">{{ card.name }}</div>
+          <div class="text-xs font-bold leading-tight text-zinc-200">{{ card.name }}</div>
           <div
             v-if="card.forceRefresh > 0"
             class="shrink-0 rounded border border-sky-800/50 bg-sky-950/60 px-1 py-0.5 text-[9px] font-bold text-sky-400"
@@ -67,7 +67,7 @@ const nextLegendAbility = props.orderCards.find(c => !props.usedIds.includes(c.i
             class="shrink-0 rounded border border-zinc-700/40 bg-zinc-900 px-1 py-0.5 text-[9px] text-zinc-600"
           >0F</div>
         </div>
-        <div class="mt-1 text-[9px] leading-tight text-zinc-500 line-clamp-2">{{ card.effect }}</div>
+        <div class="mt-1 text-[11px] leading-snug text-zinc-500">{{ card.effect }}</div>
         <div
           v-if="isUsed(card.id)"
           class="mt-1 text-[9px] font-bold uppercase tracking-wide text-zinc-600"

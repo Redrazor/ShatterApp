@@ -40,6 +40,10 @@ export const useCollectionStore = defineStore(
       owned.value = [...newOwned]
     }
 
+    function importCharacterOwned(ids: number[]): void {
+      ownedCharacterIds.value = [...ids]
+    }
+
     return {
       owned,
       ownedSwpSet,
@@ -50,6 +54,7 @@ export const useCollectionStore = defineStore(
       isCharacterOwned,
       toggleCharacterOwned,
       importOwned,
+      importCharacterOwned,
     }
   },
   { persist: true },

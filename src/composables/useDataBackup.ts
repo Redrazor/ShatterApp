@@ -6,6 +6,7 @@ import type { CompactBuild } from '../types/index.ts'
 interface BackupData {
   version: 1
   collection: string[]
+  ownedCharacterIds: number[]
   savedLists: CompactBuild[]
 }
 
@@ -27,6 +28,7 @@ export function useDataBackup() {
     const data: BackupData = {
       version: 1,
       collection: [...collectionStore.owned],
+      ownedCharacterIds: [...collectionStore.ownedCharacterIds],
       savedLists: [...sfStore.savedLists],
     }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -49,6 +51,7 @@ export function useDataBackup() {
         const parsed = JSON.parse(e.target?.result as string)
         if (!isValidBackup(parsed)) throw new Error('Invalid backup file')
         collectionStore.importOwned(parsed.collection)
+        collectionStore.importCharacterOwned(parsed.ownedCharacterIds ?? [])
         sfStore.savedLists.splice(0, sfStore.savedLists.length, ...parsed.savedLists)
         sfStore.activeIndex = -1
         importSuccess.value = true

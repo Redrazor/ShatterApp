@@ -24,7 +24,7 @@ const filtered = computed(() => {
       @click.self="$emit('close')"
     >
       <div class="absolute inset-0 bg-black/70" @click="$emit('close')" />
-      <div class="relative z-10 w-full max-w-sm flex flex-col rounded-2xl border border-zinc-700/60 bg-zinc-900 shadow-2xl max-h-[80vh]">
+      <div class="relative z-10 w-full max-w-sm flex flex-col rounded-2xl border border-zinc-700/60 bg-zinc-900 shadow-2xl max-h-[50vh]">
         <!-- Header -->
         <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
           <span class="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400">Add Unit</span>

@@ -71,26 +71,22 @@ function addTag(tag: string) {
     </select>
 
     <!-- Owned only -->
-    <label class="flex cursor-pointer items-center gap-2 text-sm text-sw-text">
-      <input
-        type="checkbox"
-        class="accent-sw-gold"
-        :checked="filters.ownedOnly"
-        @change="update({ ownedOnly: ($event.target as HTMLInputElement).checked })"
-      />
-      Owned only
-    </label>
+    <button
+      class="rounded-full border px-3 py-1.5 text-sm font-semibold transition-all active:scale-95"
+      :class="filters.ownedOnly
+        ? 'border-sw-gold bg-sw-gold/20 text-sw-gold'
+        : 'border-sw-gold/30 text-sw-text/60 hover:border-sw-gold/60 hover:text-sw-text'"
+      @click="update({ ownedOnly: !filters.ownedOnly })"
+    >✓ Owned only</button>
 
     <!-- Favorites only -->
-    <label class="flex cursor-pointer items-center gap-2 text-sm text-sw-text">
-      <input
-        type="checkbox"
-        class="accent-sw-gold"
-        :checked="filters.favoritesOnly"
-        @change="update({ favoritesOnly: ($event.target as HTMLInputElement).checked })"
-      />
-      ♥ Favorites
-    </label>
+    <button
+      class="rounded-full border px-3 py-1.5 text-sm font-semibold transition-all active:scale-95"
+      :class="filters.favoritesOnly
+        ? 'border-red-400 bg-red-400/20 text-red-400'
+        : 'border-sw-gold/30 text-sw-text/60 hover:border-sw-gold/60 hover:text-sw-text'"
+      @click="update({ favoritesOnly: !filters.favoritesOnly })"
+    >♥ Favorites</button>
   </div>
 
   <!-- Tag type-ahead input -->

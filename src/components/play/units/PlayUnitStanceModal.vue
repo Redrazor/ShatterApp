@@ -34,15 +34,15 @@ const currentImage = () => {
       @click.self="emit('close')"
     >
       <div class="relative flex flex-col items-center gap-3 max-w-sm w-full">
-        <!-- Close button -->
-        <button
-          class="absolute -top-2 -right-2 z-10 h-8 w-8 rounded-full border border-zinc-600 bg-zinc-800 text-zinc-400
-                 flex items-center justify-center text-sm transition-all hover:border-zinc-400 hover:text-zinc-200 active:scale-90"
-          @click="emit('close')"
-        >✕</button>
-
-        <!-- Unit name -->
-        <div class="text-sm font-bold text-zinc-200 self-start">{{ unit.name }}</div>
+        <!-- Header: name + close -->
+        <div class="flex items-center justify-between w-full">
+          <div class="text-sm font-bold text-zinc-200">{{ unit.name }}</div>
+          <button
+            class="h-10 w-10 rounded-full border border-zinc-600 bg-zinc-800 text-zinc-400
+                   flex items-center justify-center text-sm transition-all hover:border-zinc-400 hover:text-zinc-200 active:scale-90"
+            @click="emit('close')"
+          >✕</button>
+        </div>
 
         <!-- Stance image -->
         <img
