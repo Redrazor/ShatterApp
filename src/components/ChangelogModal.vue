@@ -4,6 +4,20 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.11.0',
+    date: '2026-03-12',
+    changes: [
+      'Mobile — Combat stats redesigned: full-width stance switcher + one row per type (Ranged/Melee) with properly sized buttons',
+      'Mobile — Favorites and Owned filter buttons now always visible (no longer hover-only)',
+      'Mobile — KO and Legendary mission cards now display at full width, same as Standard',
+      'Mobile — Ability tooltip dismissible by tapping outside on touch devices',
+      'Mobile — Unit search picker height reduced to stay visible above keyboard',
+      'Mobile — Force Pool tokens use a consistent 6-column grid layout',
+      'Play — Legendary mode no longer shows a Galactic Legend picker step (auto-selected)',
+      'Collection export now includes individually owned unit IDs',
+    ],
+  },
+  {
     version: '1.10.0',
     date: '2026-03-11',
     changes: [
