@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.12.0',
+    date: '2026-03-13',
+    changes: [
+      'Play — Rule keywords (Immunity, Impact, Protection, Scale, Sharpshooter, Steadfast) highlighted amber in ability descriptions; tap for inline rulebook tooltip',
+      'Play — Clicking a unit tag now highlights matching references in ability text',
+    ],
+  },
+  {
     version: '1.11.2',
     date: '2026-03-13',
     changes: [
