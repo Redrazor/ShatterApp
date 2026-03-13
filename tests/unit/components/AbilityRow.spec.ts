@@ -77,6 +77,20 @@ describe('AbilityRow', () => {
     expect(html).toContain('Enrage')
   })
 
+  it('highlights activeTag in amber even when it is not in the keywords map', () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, description: 'This unit is a Jedi and gains power.' },
+        unitTags: [],
+        keywords, // keywords map does NOT contain 'Jedi'
+        activeTag: 'Jedi',
+      },
+    })
+    const html = wrapper.html()
+    expect(html).toContain('text-amber-400')
+    expect(html).toContain('Jedi')
+  })
+
   it('does not highlight unknown words', () => {
     const wrapper = mount(AbilityRow, {
       props: {

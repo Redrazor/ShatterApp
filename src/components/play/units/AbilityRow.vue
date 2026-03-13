@@ -68,7 +68,11 @@ const renderedDescription = computed(() => {
 
     // Text segment — highlight regular keywords
     let seg = part
-    for (const kw of kwKeys) {
+    // Build highlight list: all known keywords + activeTag if not already included
+    const highlightKws = props.activeTag && !kwKeys.includes(props.activeTag)
+      ? [...kwKeys, props.activeTag]
+      : kwKeys
+    for (const kw of highlightKws) {
       const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const regex = new RegExp(`\\b${escaped}\\b`, 'g')
       if (regex.test(seg)) {
