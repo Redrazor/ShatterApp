@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.11.2',
+    date: '2026-03-13',
+    changes: [
+      'Play — Combat stat buttons are compact on desktop instead of full-width',
+    ],
+  },
+  {
     version: '1.11.1',
     date: '2026-03-13',
     changes: [
