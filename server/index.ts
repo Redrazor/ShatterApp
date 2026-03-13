@@ -3,12 +3,15 @@ import cors from 'cors'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { sqlite } from './db/index.ts'
+import { runSeed } from './db/seed.ts'
 import { createCharactersRouter } from './routes/characters.ts'
 import { createMissionsRouter } from './routes/missions.ts'
 import { createProductsRouter } from './routes/products.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT ?? 3001
+
+runSeed(sqlite)
 
 const app = express()
 

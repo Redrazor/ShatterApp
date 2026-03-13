@@ -284,6 +284,22 @@ async function main(): Promise<void> {
   sqlite.close()
 }
 
+export function runSeed(sqlite: Sqlite): void {
+  dropTables(sqlite)
+  createTables(sqlite)
+
+  const chars = readJson<Character>('characters.json')
+  seedCharacters(sqlite, chars)
+
+  const ms = readJson<Mission>('missions.json')
+  seedMissions(sqlite, ms)
+
+  const prods = readJson<Product>('products.json')
+  seedProducts(sqlite, prods)
+
+  console.log(`Seed complete: ${chars.length} characters, ${ms.length} missions, ${prods.length} products`)
+}
+
 // Only run when executed directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   main().catch(e => { console.error(e); process.exit(1) })

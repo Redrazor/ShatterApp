@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '1.11.1',
+    date: '2026-03-13',
+    changes: [
+      'Server now auto-seeds the database on startup — production data always reflects the latest JSON',
+    ],
+  },
+  {
     version: '1.11.0',
     date: '2026-03-12',
     changes: [
