@@ -251,6 +251,7 @@ const isDimmed = computed(() =>
           :ability="ab"
           :unit-tags="unit.tags"
           :keywords="keywords"
+          :active-tag="activeTag"
         />
       </div>
     </div>
