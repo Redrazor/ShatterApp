@@ -63,6 +63,20 @@ describe('AbilityRow', () => {
     expect(html).toContain('Enrage')
   })
 
+  it('highlights activeTag keyword in amber even when not in unitTags', () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, description: 'Gains Enrage when wounded.' },
+        unitTags: [],
+        keywords,
+        activeTag: 'Enrage',
+      },
+    })
+    const html = wrapper.html()
+    expect(html).toContain('text-amber-400')
+    expect(html).toContain('Enrage')
+  })
+
   it('does not highlight unknown words', () => {
     const wrapper = mount(AbilityRow, {
       props: {
@@ -135,5 +149,101 @@ describe('AbilityRow', () => {
     })
     const icon = wrapper.find('img')
     expect(icon.attributes('src')).toContain('reactive')
+  })
+
+  it('renders a rule keyword as a clickable amber button', () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, description: 'This unit has Protection.' },
+        unitTags: [],
+        keywords,
+      },
+    })
+    const html = wrapper.html()
+    expect(html).toContain('data-rule-kw="Protection"')
+    expect(html).toContain('text-amber-400')
+    expect(html).toContain('Protection')
+  })
+
+  it('renders rule keyword with [X] notation highlighted (e.g. Immunity [exposed])', () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, description: 'Has Immunity [exposed] at all times.' },
+        unitTags: [],
+        keywords,
+      },
+    })
+    const html = wrapper.html()
+    expect(html).toContain('data-rule-kw="Immunity"')
+    expect(html).toContain('Immunity [exposed]')
+  })
+
+  it('shows rule keyword tooltip when button in description is clicked', async () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, description: 'This unit has Protection.' },
+        unitTags: [],
+        keywords,
+      },
+      attachTo: document.body,
+    })
+    // Click the Protection button via event delegation on the <p>
+    const p = wrapper.find('p')
+    // Simulate click with a target that has data-rule-kw
+    const btn = wrapper.find('[data-rule-kw="Protection"]')
+    expect(btn.exists()).toBe(true)
+    await btn.trigger('click')
+    const html = wrapper.html()
+    expect(html).toContain('When this character is defending')
+  })
+
+  it('dismisses rule keyword tooltip when backdrop is clicked', async () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, description: 'This unit has Protection.' },
+        unitTags: [],
+        keywords,
+      },
+      attachTo: document.body,
+    })
+    const btn = wrapper.find('[data-rule-kw="Protection"]')
+    await btn.trigger('click')
+    // tooltip visible
+    expect(wrapper.html()).toContain('When this character is defending')
+    // backdrop appears
+    const backdrop = wrapper.find('.fixed.inset-0.z-40')
+    expect(backdrop.exists()).toBe(true)
+    await backdrop.trigger('click')
+    expect(wrapper.html()).not.toContain('When this character is defending')
+  })
+
+  it('toggles rule keyword tooltip off when same keyword clicked twice', async () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, description: 'This unit has Scale.' },
+        unitTags: [],
+        keywords,
+      },
+      attachTo: document.body,
+    })
+    const btn = wrapper.find('[data-rule-kw="Scale"]')
+    await btn.trigger('click')
+    expect(wrapper.html()).toContain('advance or dash')
+    await btn.trigger('click')
+    expect(wrapper.html()).not.toContain('advance or dash')
+  })
+
+  it('does not interfere with icon tokens next to rule keywords', () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, description: 'Spend [force] and use Sharpshooter [2].' },
+        unitTags: [],
+        keywords,
+      },
+    })
+    const html = wrapper.html()
+    expect(html).toContain('icons/force.png')
+    expect(html).toContain('data-rule-kw="Sharpshooter"')
+    expect(html).toContain('Sharpshooter [2]')
   })
 })

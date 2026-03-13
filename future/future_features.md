@@ -631,7 +631,7 @@ Stored in `src/stores/homebrew.ts`:
 
 ## #15 — Play View: Unit Information Panel
 
-**Status:** `[~]` In progress
+**Status:** `[x]` Done — v1.11.2
 
 **Description:** Upgrade the Play view's UnitRosterCard to show richer unit data inline, replacing the generic `UnitProfileModal` with a lightweight stance-image viewer and surfacing combat stats and abilities directly on the card.
 
