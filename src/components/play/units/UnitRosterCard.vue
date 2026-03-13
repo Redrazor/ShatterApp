@@ -130,32 +130,32 @@ const isDimmed = computed(() =>
       <!-- Stance tabs — full width, easy tap targets -->
       <div v-if="unit.stance1 && unit.stance2" class="flex">
         <button
-          class="flex-1 py-2 text-xs font-bold transition-colors leading-tight text-center"
+          class="flex-1 py-2 sm:py-1.5 text-xs font-bold transition-colors leading-tight text-center"
           :class="unit.activeStance === 1 ? 'bg-amber-500/80 text-zinc-900' : 'text-zinc-500 bg-zinc-800/60 hover:text-zinc-300'"
           @click="emit('set-stance', 1)"
         >{{ stance1Name }}</button>
         <button
-          class="flex-1 py-2 text-xs font-bold transition-colors border-l border-zinc-700/50 leading-tight text-center"
+          class="flex-1 py-2 sm:py-1.5 text-xs font-bold transition-colors border-l border-zinc-700/50 leading-tight text-center"
           :class="unit.activeStance === 2 ? 'bg-amber-500/80 text-zinc-900' : 'text-zinc-500 bg-zinc-800/60 hover:text-zinc-300'"
           @click="emit('set-stance', 2)"
         >{{ stance2Name }}</button>
       </div>
       <div v-else-if="unit.stance1" class="py-2 px-3 text-xs font-bold text-zinc-500 bg-zinc-800/60">{{ stance1Name }}</div>
 
-      <!-- Combat stat buttons — one row per type, flex-1 fills width evenly -->
+      <!-- Combat stat buttons — full-width on mobile, compact on desktop -->
       <div class="flex flex-col gap-1.5 px-2 py-2 bg-zinc-900/60">
         <!-- Ranged row -->
         <div v-if="activeStanceStat.ranged && activeStanceStat.ranged.attack !== null" class="flex items-center gap-1.5">
           <span class="text-[8px] font-bold uppercase tracking-wider text-zinc-600 w-9 shrink-0">Ranged</span>
-          <button class="flex-1 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 text-xs font-bold text-zinc-400 active:scale-95" title="Range">{{ activeStanceStat.ranged.range ?? '—' }}</button>
-          <button class="flex-1 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 text-xs font-bold text-zinc-300 active:scale-95" title="Attack">{{ activeStanceStat.ranged.attack }}⚔</button>
-          <button class="flex-1 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 text-xs font-bold text-zinc-300 active:scale-95" title="Defense">{{ activeStanceStat.ranged.defense }}🛡</button>
+          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-400 active:scale-95" title="Range">{{ activeStanceStat.ranged.range ?? '—' }}</button>
+          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95" title="Attack">{{ activeStanceStat.ranged.attack }}⚔</button>
+          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95" title="Defense">{{ activeStanceStat.ranged.defense }}🛡</button>
         </div>
         <!-- Melee row -->
         <div v-if="activeStanceStat.melee && activeStanceStat.melee.attack !== null" class="flex items-center gap-1.5">
           <span class="text-[8px] font-bold uppercase tracking-wider text-zinc-600 w-9 shrink-0">Melee</span>
-          <button class="flex-1 rounded-lg border border-amber-900/40 bg-zinc-800 py-2 text-xs font-bold text-zinc-300 active:scale-95" title="Attack">{{ activeStanceStat.melee.attack }}⚔</button>
-          <button class="flex-1 rounded-lg border border-amber-900/40 bg-zinc-800 py-2 text-xs font-bold text-zinc-300 active:scale-95" title="Defense">{{ activeStanceStat.melee.defense }}🛡</button>
+          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-amber-900/40 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95" title="Attack">{{ activeStanceStat.melee.attack }}⚔</button>
+          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-amber-900/40 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95" title="Defense">{{ activeStanceStat.melee.defense }}🛡</button>
         </div>
       </div>
     </div>
