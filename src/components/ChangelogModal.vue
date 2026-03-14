@@ -4,6 +4,16 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.0.1',
+    date: '2026-03-14',
+    changes: [
+      'Build — Premiere format checkbox adds Squad 3 & 4 for competitive 4-squad lists',
+      'Build — Premiere lists show ★ Premiere badge; all 4 squads save, load, share, and print',
+      'Play — Importing a Premiere build shows a 2-of-4 squad picker before adding units',
+      'Fix — Play view multiplayer now works correctly (socket event handlers restored)',
+    ],
+  },
+  {
     version: '2.0.0',
     date: '2026-03-14',
     changes: [
