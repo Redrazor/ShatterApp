@@ -134,6 +134,29 @@ export interface CompactBuild {
 }
 
 
+export interface TrackerSnapshot {
+  mode: 'standard' | 'ko' | 'legendary'
+  // standard + ko
+  strugglePosition?: number
+  p1Momentum?: number
+  p2Momentum?: number
+  p1Wins?: number
+  p2Wins?: number
+  selectedMissionId?: number | null
+  // legendary
+  victoryPosition?: number
+  cadre1Force?: number
+  cadre2Force?: number
+  legendForce?: number
+}
+
+export interface DiceRollResult {
+  atkPool: import('../utils/dice').DieState[]
+  defPool: import('../utils/dice').DieState[]
+  hits: number
+  timestamp: number
+}
+
 export function hasStrikeForceConflict(squads: [Squad, Squad]): boolean {
   const units: Character[] = []
   for (const squad of squads) {

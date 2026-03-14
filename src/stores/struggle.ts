@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Mission } from '../types/index.ts'
+import type { Mission, TrackerSnapshot } from '../types/index.ts'
+import { useDiceRoom } from '../composables/useDiceRoom.ts'
+import { useRollSessionStore } from './rollSession.ts'
 
 export const useStruggleStore = defineStore(
   'struggle',
@@ -44,14 +46,33 @@ export const useStruggleStore = defineStore(
       selectedMission.value ? Math.min(3, p1Wins.value + p2Wins.value + 1) : 0,
     )
 
+    function _buildSnapshot(): TrackerSnapshot {
+      return {
+        mode: 'standard',
+        strugglePosition: strugglePosition.value,
+        p1Momentum: p1Momentum.value,
+        p2Momentum: p2Momentum.value,
+        p1Wins: p1Wins.value,
+        p2Wins: p2Wins.value,
+        selectedMissionId: selectedMission.value?.id ?? null,
+      }
+    }
+
+    function _syncTracker() {
+      const session = useRollSessionStore()
+      if (session.isConnected) useDiceRoom().sendTrackerState(_buildSnapshot())
+    }
+
     function addMomentum(player: 1 | 2) {
       if (player === 1 && p1Momentum.value < 8) p1Momentum.value++
       if (player === 2 && p2Momentum.value < 8) p2Momentum.value++
+      _syncTracker()
     }
 
     function removeMomentum(player: 1 | 2) {
       if (player === 1 && p1Momentum.value > 0) p1Momentum.value--
       if (player === 2 && p2Momentum.value > 0) p2Momentum.value--
+      _syncTracker()
     }
 
     // Click a track cell to set momentum directly.
@@ -66,10 +87,12 @@ export const useStruggleStore = defineStore(
       } else {
         p2Momentum.value = level === p2Momentum.value ? level - 1 : level
       }
+      _syncTracker()
     }
 
     function moveStruggle(delta: number) {
       strugglePosition.value = Math.max(-8, Math.min(8, strugglePosition.value + delta))
+      _syncTracker()
     }
 
     function claimStruggle(player: 1 | 2) {
@@ -79,6 +102,7 @@ export const useStruggleStore = defineStore(
       strugglePosition.value = 0
       p1Momentum.value = 1
       p2Momentum.value = 1
+      _syncTracker()
     }
 
     function confirmMission(mission: Mission): void {
@@ -91,6 +115,7 @@ export const useStruggleStore = defineStore(
         pick(s.struggle2 ?? []),
         pick(s.struggle3 ?? []),
       ]
+      _syncTracker()
     }
 
     function resetGame() {
@@ -124,6 +149,7 @@ export const useStruggleStore = defineStore(
       claimStruggle,
       confirmMission,
       resetGame,
+      buildSnapshot: _buildSnapshot,
     }
   },
   { persist: true },

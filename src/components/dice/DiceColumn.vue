@@ -4,7 +4,14 @@ import DieFace from './DieFace.vue'
 import { rollAttack, rollDefense, ATTACK_FACES, DEFENSE_FACES } from '../../utils/dice.ts'
 import type { DieState, AttackFace, DefenseFace } from '../../utils/dice.ts'
 
-const props = defineProps<{ type: 'attack' | 'defense' }>()
+// DieState import needed for props type (re-export)
+export type { DieState }
+
+const props = defineProps<{
+  type: 'attack' | 'defense'
+  readonly?: boolean
+  externalPool?: DieState[]
+}>()
 const emit = defineEmits<{
   (e: 'update:summary', val: Record<string, number>): void
   (e: 'rolled'): void
@@ -110,16 +117,27 @@ function clear() {
 const selectedDie = computed(() => pool.value.find(d => d.id === selectedId.value) ?? null)
 const hasPool     = computed(() => pool.value.length > 0)
 
+const displayPool = computed(() => props.externalPool ?? pool.value)
+
 watch(pool, () => {
+  if (props.readonly) return
   const out: Record<string, number> = {}
   for (const f of faces) out[f] = pool.value.filter(d => d.face === f).length
   emit('update:summary', out)
 }, { deep: true, immediate: true })
 
+// When external pool changes, emit summary too
+watch(() => props.externalPool, (ext) => {
+  if (!ext) return
+  const out: Record<string, number> = {}
+  for (const f of faces) out[f] = ext.filter(d => d.face === f).length
+  emit('update:summary', out)
+}, { deep: true })
+
 const summary = computed(() => {
   const out: { face: AttackFace | DefenseFace; count: number }[] = []
   for (const f of faces) {
-    const count = pool.value.filter(d => d.face === f).length
+    const count = displayPool.value.filter(d => d.face === f).length
     if (count > 0) out.push({ face: f, count })
   }
   return out
@@ -144,8 +162,8 @@ const faceChipClass = (face: string) => {
     <!-- Header -->
     <h2 :class="['text-lg font-bold', accentClass]">{{ label }}</h2>
 
-    <!-- Number buttons 1–12 -->
-    <div class="grid grid-cols-6 gap-1">
+    <!-- Number buttons 1–12 (hidden in readonly) -->
+    <div v-if="!readonly" class="grid grid-cols-6 gap-1">
       <button
         v-for="n in 12" :key="n"
         :class="[btnBase,
@@ -159,18 +177,19 @@ const faceChipClass = (face: string) => {
     </div>
 
     <!-- Dice pool -->
-    <div v-if="hasPool" class="flex flex-wrap gap-2">
+    <div v-if="displayPool.length > 0" class="flex flex-wrap gap-2">
       <div
-        v-for="die in pool" :key="die.id"
+        v-for="die in displayPool" :key="die.id"
         :class="[
-          'relative cursor-pointer select-none rounded-lg transition-all',
-          selectedId === die.id
+          'relative rounded-lg transition-all',
+          !readonly ? 'cursor-pointer select-none' : '',
+          !readonly && selectedId === die.id
             ? 'ring-2 ring-sw-gold ring-offset-2 ring-offset-sw-bg'
-            : rerollMode && rerollSel.has(die.id)
+            : !readonly && rerollMode && rerollSel.has(die.id)
               ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-sw-bg'
               : 'opacity-90 hover:opacity-100',
         ]"
-        @click="selectDie(die)"
+        @click="!readonly && selectDie(die)"
       >
         <div :class="rolling || rerollingIds.has(die.id) ? 'die-rolling' : ''">
           <DieFace :type="type" :face="die.face" :size="60" />
@@ -180,8 +199,8 @@ const faceChipClass = (face: string) => {
       </div>
     </div>
 
-    <!-- Per-die action panel -->
-    <div v-if="selectedDie && !rerollMode" class="rounded-xl border border-sw-gold/30 bg-sw-card p-3 space-y-3">
+    <!-- Per-die action panel (hidden in readonly) -->
+    <div v-if="!readonly && selectedDie && !rerollMode" class="rounded-xl border border-sw-gold/30 bg-sw-card p-3 space-y-3">
       <div class="flex items-center justify-between gap-2">
         <p class="text-[10px] font-semibold uppercase tracking-wider text-sw-text/50">Change face</p>
         <div class="flex gap-1.5">
@@ -202,8 +221,8 @@ const faceChipClass = (face: string) => {
       </div>
     </div>
 
-    <!-- Reroll mode bar -->
-    <div v-if="rerollMode" class="flex items-center gap-2 rounded-xl border border-blue-400/30 bg-blue-500/5 px-3 py-2">
+    <!-- Reroll mode bar (hidden in readonly) -->
+    <div v-if="!readonly && rerollMode" class="flex items-center gap-2 rounded-xl border border-blue-400/30 bg-blue-500/5 px-3 py-2">
       <p class="flex-1 text-xs text-sw-text/60">
         {{ rerollSel.size === 0 ? 'Tap dice to select.' : `${rerollSel.size} selected.` }}
       </p>
@@ -213,8 +232,8 @@ const faceChipClass = (face: string) => {
       <button class="text-xs text-sw-text/30 hover:text-sw-text" @click="toggleRerollMode">Cancel</button>
     </div>
 
-    <!-- Action buttons -->
-    <div v-if="hasPool" class="flex flex-wrap gap-1.5">
+    <!-- Action buttons (hidden in readonly) -->
+    <div v-if="!readonly && hasPool" class="flex flex-wrap gap-1.5">
       <button
         :class="['rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors',
           rerollMode ? 'border-blue-400/60 bg-blue-500/10 text-blue-400' : 'border-sw-gold/30 text-sw-text/60 hover:border-sw-gold hover:text-sw-text']"
@@ -226,8 +245,8 @@ const faceChipClass = (face: string) => {
       <button class="ml-auto rounded-lg px-2.5 py-1 text-xs text-sw-text/30 hover:text-sw-text" @click="clear">Clear</button>
     </div>
 
-    <!-- Add die face picker -->
-    <div v-if="addOpen" class="rounded-xl border border-sw-gold/20 bg-sw-card p-3">
+    <!-- Add die face picker (hidden in readonly) -->
+    <div v-if="!readonly && addOpen" class="rounded-xl border border-sw-gold/20 bg-sw-card p-3">
       <p class="mb-2 text-[10px] text-sw-text/50">Pick face to add:</p>
       <div class="flex flex-wrap gap-2">
         <div v-for="face in faces" :key="face"
@@ -240,7 +259,7 @@ const faceChipClass = (face: string) => {
     </div>
 
     <!-- Results summary -->
-    <div v-if="hasPool" class="rounded-xl border border-white/8 bg-black/20 p-3">
+    <div v-if="displayPool.length > 0" class="rounded-xl border border-white/8 bg-black/20 p-3">
       <p class="mb-2 text-[10px] uppercase tracking-widest text-sw-text/40">Results</p>
       <div class="flex flex-wrap gap-1.5">
         <div v-for="item in summary" :key="item.face"

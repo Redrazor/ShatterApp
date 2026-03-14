@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Character, PlayUnit, ConditionKey } from '../types/index.ts'
+import { useDiceRoom } from '../composables/useDiceRoom.ts'
+import { useRollSessionStore } from './rollSession.ts'
 
 export const usePlayUnitsStore = defineStore(
   'playUnits',
@@ -32,15 +34,22 @@ export const usePlayUnitsStore = defineStore(
       }
     }
 
+    function _syncUnits() {
+      const session = useRollSessionStore()
+      if (session.isConnected) useDiceRoom().sendUnits(units.value)
+    }
+
     function addUnit(character: Character) {
       if (locked.value) return
       if (units.value.some(u => u.id === character.id)) return
       units.value.push(_toPlayUnit(character))
+      _syncUnits()
     }
 
     function removeUnit(id: number) {
       if (locked.value) return
       units.value = units.value.filter(u => u.id !== id)
+      _syncUnits()
     }
 
     function importFromBuild(characters: Character[], complete: boolean) {
@@ -51,6 +60,7 @@ export const usePlayUnitsStore = defineStore(
         }
       }
       if (complete) rosterComplete.value = true
+      _syncUnits()
     }
 
     function lock() {
@@ -72,12 +82,14 @@ export const usePlayUnitsStore = defineStore(
         unit.damage = 0
         unit.wounds++
       }
+      _syncUnits()
     }
 
     function adjustWounds(id: number, delta: number) {
       const unit = units.value.find(u => u.id === id)
       if (!unit) return
       unit.wounds = Math.max(0, unit.wounds + delta)
+      _syncUnits()
     }
 
     function toggleCondition(id: number, condition: ConditionKey) {
@@ -86,12 +98,14 @@ export const usePlayUnitsStore = defineStore(
       const idx = unit.conditions.indexOf(condition)
       if (idx === -1) unit.conditions.push(condition)
       else unit.conditions.splice(idx, 1)
+      _syncUnits()
     }
 
     function setStance(id: number, stance: 1 | 2) {
       const unit = units.value.find(u => u.id === id)
       if (!unit) return
       unit.activeStance = stance
+      _syncUnits()
     }
 
     function isRemoved(unit: PlayUnit): boolean {
@@ -101,6 +115,7 @@ export const usePlayUnitsStore = defineStore(
     function toggleForceToken(index: number) {
       while (spentTokens.value.length <= index) spentTokens.value.push(false)
       spentTokens.value[index] = !spentTokens.value[index]
+      _syncUnits()
     }
 
     function refreshForcePool() {

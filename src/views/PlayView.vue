@@ -10,6 +10,8 @@ import { useGalacticLegendsStore } from '../stores/galacticLegends.ts'
 import { usePlayUnitsStore } from '../stores/playUnits.ts'
 import { useCharactersStore } from '../stores/characters.ts'
 import { useStrikeForceStore } from '../stores/strikeForce.ts'
+import { useRollSessionStore } from '../stores/rollSession.ts'
+import { useDiceRoom } from '../composables/useDiceRoom.ts'
 import { imageUrl } from '../utils/imageUrl.ts'
 import KoStageCards from '../components/play/KoStageCards.vue'
 import KoMissionInteraction from '../components/play/KoMissionInteraction.vue'
@@ -18,6 +20,9 @@ import LegendaryForcePools from '../components/play/legendary/LegendaryForcePool
 import LegendaryTurnOrder from '../components/play/legendary/LegendaryTurnOrder.vue'
 import UnitsTab from '../components/play/units/UnitsTab.vue'
 import LegendaryMissionInteraction from '../components/play/legendary/LegendaryMissionInteraction.vue'
+import MultiplayerPanel from '../components/play/multiplayer/MultiplayerPanel.vue'
+import SessionBanner from '../components/play/multiplayer/SessionBanner.vue'
+import DicePanel from '../components/play/DicePanel.vue'
 
 const store = useStruggleStore()
 const missionsStore = useMissionsStore()
@@ -30,7 +35,17 @@ const playUnitsStore = usePlayUnitsStore()
 const charactersStore = useCharactersStore()
 const strikeForceStore = useStrikeForceStore()
 
-const playTab = ref<'tracker' | 'units'>('tracker')
+const playTab = ref<'tracker' | 'units' | 'dice'>('tracker')
+const multiplayerMode = ref(false)
+const rollSession = useRollSessionStore()
+const diceRoom = useDiceRoom()
+
+// Wire up multiplayer callbacks
+diceRoom.onOpponentUnits((units) => rollSession.setOpponentUnits(units))
+diceRoom.onTrackerUpdate((_snapshot) => { /* last-write-wins — future: apply snapshot */ })
+diceRoom.onOpponentDice((roll) => rollSession.setLastDice(roll))
+diceRoom.onPlayerJoined(() => rollSession.setOpponentOnline(true))
+diceRoom.onPlayerLeft(() => rollSession.setOpponentOnline(false))
 
 
 const MODES: { value: GameMode; label: string; disabled?: boolean }[] = [
@@ -438,19 +453,37 @@ const ROMAN = ['I', 'II', 'III']
     </Transition>
 
     <!-- ── Header ── -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between gap-2">
       <h1 class="text-xl font-bold tracking-wide text-amber-400">⚔ Play</h1>
-      <button
-        v-if="inGame"
-        class="rounded-lg border border-zinc-700 bg-zinc-800/60 px-3 py-1.5 text-xs font-medium text-zinc-400
-               shadow-[0_2px_0_0_rgba(0,0,0,0.4)] transition-all
-               hover:border-zinc-500 hover:text-zinc-200
-               active:shadow-none active:translate-y-0.5"
-        @click="handleReset()"
-      >
-        Reset
-      </button>
+      <div class="flex items-center gap-2">
+        <!-- Multiplayer toggle -->
+        <button
+          :class="[
+            'rounded-lg border px-3 py-1.5 text-xs font-medium transition-all',
+            multiplayerMode
+              ? 'border-amber-500/60 bg-amber-500/10 text-amber-400'
+              : 'border-zinc-700 bg-zinc-800/60 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200',
+          ]"
+          @click="multiplayerMode = !multiplayerMode"
+        >🔗 Multi</button>
+        <button
+          v-if="inGame"
+          class="rounded-lg border border-zinc-700 bg-zinc-800/60 px-3 py-1.5 text-xs font-medium text-zinc-400
+                 shadow-[0_2px_0_0_rgba(0,0,0,0.4)] transition-all
+                 hover:border-zinc-500 hover:text-zinc-200
+                 active:shadow-none active:translate-y-0.5"
+          @click="handleReset()"
+        >
+          Reset
+        </button>
+      </div>
     </div>
+
+    <!-- ── Multiplayer panel / session banner ── -->
+    <template v-if="multiplayerMode">
+      <SessionBanner v-if="rollSession.isConnected" />
+      <MultiplayerPanel v-else @connected="multiplayerMode = true" />
+    </template>
 
     <!-- ── Mode selector ── -->
     <div class="flex gap-1 rounded-lg border border-zinc-700/60 bg-zinc-900/60 p-1">
@@ -491,6 +524,14 @@ const ROMAN = ['I', 'II', 'III']
         <span v-if="playUnitsStore.locked" class="text-amber-500 text-[9px]">🔒</span>
         <span v-else-if="playUnitsStore.hasUnits" class="rounded-full bg-zinc-600 px-1 text-[9px] text-zinc-300">{{ playUnitsStore.units.length }}</span>
       </button>
+      <button
+        v-if="multiplayerMode"
+        class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
+        :class="playTab === 'dice'
+          ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
+          : 'text-zinc-500 hover:text-zinc-300'"
+        @click="playTab = 'dice'"
+      >Dice</button>
     </div>
 
     <!-- ── Units tab ── -->
@@ -500,7 +541,11 @@ const ROMAN = ['I', 'II', 'III']
       :saved-lists="strikeForceStore.savedLists"
       :squad0-valid="strikeForceStore.isSquad0Valid"
       :locked="playUnitsStore.locked"
+      :opponent-units="rollSession.isConnected ? rollSession.opponentUnits : undefined"
     />
+
+    <!-- ── Dice tab (multiplayer) ── -->
+    <DicePanel v-if="playTab === 'dice' && multiplayerMode" />
 
     <!-- ══════════════════════════════════════════
          TRACKER TAB CONTENT
