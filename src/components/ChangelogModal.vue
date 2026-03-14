@@ -4,6 +4,20 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.0.2',
+    date: '2026-03-14',
+    changes: [
+      'Reference — Keyword Reference tab lists all rule keywords (Immunity, Impact, Protection, Scale, Sharpshooter, Steadfast) with definitions and search',
+      'Reference — Icon descriptions always visible on desktop; toggle retained on mobile',
+      'Multiplayer — Player name field pre-filled with a random SW name; shown in session banner and opponent roster heading',
+      'Multiplayer — Opponent roster now shows force pool, stance names, and full condition labels',
+      'Multiplayer — Struggle tracker cards now sync correctly between both players (fix regression)',
+      'Dice — Role picker shows "— opponent\'s role" instead of "(taken)"',
+      'Build — Clear mission ✕ button on the mission selector',
+      'Build — List names with only spaces now save as "Unnamed"',
+    ],
+  },
+  {
     version: '2.0.1',
     date: '2026-03-14',
     changes: [
