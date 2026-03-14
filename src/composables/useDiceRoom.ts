@@ -26,8 +26,9 @@ let _onRoleTaken: Callback<{ role: 'attacker' | 'defender' }> | null = null
 
 function getSocket(): Socket {
   if (!socket) {
-    const url = (import.meta as { env?: Record<string, string> }).env?.VITE_WS_URL ?? ''
-    socket = io(url || window.location.origin, { path: '/socket.io', autoConnect: false })
+    const env = (import.meta as { env?: Record<string, string> }).env ?? {}
+    const url = env.VITE_WS_URL || env.VITE_API_BASE || window.location.origin
+    socket = io(url, { path: '/socket.io', autoConnect: false })
 
     socket.on('opponent-units', ({ units, forcePool }: { units: PlayUnit[]; forcePool?: ForcePoolPayload }) => {
       _onOpponentUnits?.(units, forcePool)
