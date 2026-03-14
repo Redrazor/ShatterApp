@@ -146,17 +146,17 @@ export const useStrikeForceStore = defineStore(
 
     function setUnit(squadIdx: 0 | 1 | 2 | 3, role: keyof Squad, unit: Character | null) {
       if (squadIdx < 2) {
-        squads.value[squadIdx][role] = unit
+        squads.value[squadIdx as 0 | 1][role] = unit
       } else {
-        extraSquads.value[squadIdx - 2][role] = unit
+        extraSquads.value[(squadIdx - 2) as 0 | 1][role] = unit
       }
     }
 
     function clearUnit(squadIdx: 0 | 1 | 2 | 3, role: keyof Squad) {
       if (squadIdx < 2) {
-        squads.value[squadIdx][role] = null
+        squads.value[squadIdx as 0 | 1][role] = null
       } else {
-        extraSquads.value[squadIdx - 2][role] = null
+        extraSquads.value[(squadIdx - 2) as 0 | 1][role] = null
       }
     }
 

@@ -38,7 +38,7 @@ const CONDITION_LABELS: Record<ConditionKey, string> = {
     >
       <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mr-1">Force</span>
       <div
-        v-for="(spent, i) in Array.from({ length: session.opponentForcePool.total })"
+        v-for="(_, i) in Array.from({ length: session.opponentForcePool.total })"
         :key="i"
         class="flex h-5 w-5 items-center justify-center rounded-full border transition-all"
         :class="session.opponentForcePool.spentTokens[i]
