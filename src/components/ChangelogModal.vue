@@ -4,6 +4,18 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.0.0',
+    date: '2026-03-14',
+    changes: [
+      'Play — Real-time multiplayer via Socket.io: create or join a room by code',
+      'Play — Role picker (Attacker / Defender) with server-authoritative deduplication',
+      'Play — Live dice pool sync: opponent rolls appear in real time',
+      'Play — Duel history with live Active row and committed past duels',
+      'Play — Opponent roster shows units, force pool, and mission in real time',
+      'Play — Session banner shows both player names; struggle cards synced from host',
+    ],
+  },
+  {
     version: '1.12.0',
     date: '2026-03-13',
     changes: [
