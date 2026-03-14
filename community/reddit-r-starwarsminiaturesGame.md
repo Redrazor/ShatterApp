@@ -17,7 +17,7 @@ What it covers:
 
 - **Unit browser** with card art, full stats, filtering by faction/era/type, and a side-by-side comparison tool
 - **Strike Force builder** — pick your three units per squad, assign a mission, get live validation on points, and share the list via link
-- **Struggle tracker** — tracks struggle progress during play so you're not trying to remember or scratch it out on paper
+- **Play view** — full in-game companion: struggle tracker (Standard, Key Ops, Legendary), per-unit damage/wound/condition tracking, ability text with rule keyword tooltips, and real-time multiplayer (share a room code to sync unit state with your opponent)
 - **Collection tracker** — mark which packs you own, see your completion by era
 
 Installable as a PWA if you want it on your home screen.

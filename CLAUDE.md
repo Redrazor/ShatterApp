@@ -30,7 +30,7 @@ Never start work on `main` or a stale branch.
 Build the feature as approved. Follow all project patterns (see MEMORY.md).
 
 ### Step 4 — List acceptance criteria
-When implementation is complete, present a clear numbered list of acceptance criteria for the user to manually validate in the browser. Wait for the user to confirm all criteria pass.
+When implementation is complete, present acceptance criteria as a numbered list using the format **AC1, AC2, AC3…** for the user to manually validate in the browser. Always use this format — never plain bullets or prose. Wait for the user to confirm all criteria pass.
 
 ### Step 5 — Run tests until green
 ```bash

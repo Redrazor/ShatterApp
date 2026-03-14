@@ -24,7 +24,7 @@ It runs in the browser, no account or installation required. It's also installab
 
 *Build* — a Strike Force builder for both squads. It validates points in real time, lets you assign a mission, toggle Premiere format, name your list, and share it via a URL that recipients can import directly.
 
-*Play* — a struggle tracker intended for use during the game. Beats trying to keep a mental count or scribbling on a notepad.
+*Play* — a full in-game companion. Struggle tracker for Standard, Key Operations (all 6 missions), and Legendary Encounters. Unit roster with per-unit damage tracks, wounds, and conditions. Full ability text with rule keyword tooltips. Real-time multiplayer via a 4-character room code — both players see each other's unit state live. Supports Premiere 2-of-4 squad selection on import.
 
 *Collection* — a simple pack ownership tracker with per-era progress indicators.
 

@@ -13,7 +13,7 @@ function buildToCompact(
   extraSquads: [Squad, Squad],
 ): CompactBuild {
   const compact: CompactBuild = {
-    name: name || 'Unnamed',
+    name: name.trim() || 'Unnamed',
     mid: mission?.id ?? null,
     pre: premiere,
     s: [

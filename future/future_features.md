@@ -396,7 +396,7 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 
 **Context:** At the table, both players want to roll simultaneously and see a shared Duel Result without passing a phone back and forth. A WebSocket-backed room allows each player to control only their side while both see the live result.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — v2.0.0. Socket.io on existing Express server. Room creation/join with 4-char code, host/guest roles, sync-units relay, opponent-left on disconnect. Also extends Play view unit roster sync (opponent team read-only).
 
 > **Note:** Once multiplayer is built, extend #13 (Unit Roster) to support a second opponent team. The local player edits their own roster; the opponent's roster syncs read-only over the WebSocket room.
 

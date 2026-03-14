@@ -2,12 +2,14 @@
 import { useRollSessionStore } from '../../../stores/rollSession.ts'
 import { useDiceRoom } from '../../../composables/useDiceRoom.ts'
 
+const emit = defineEmits<{ (e: 'left'): void }>()
 const session = useRollSessionStore()
 const diceRoom = useDiceRoom()
 
 function leave() {
   diceRoom.leaveRoom()
   session.reset()
+  emit('left')
 }
 </script>
 
@@ -16,15 +18,18 @@ function leave() {
     <!-- Room code -->
     <span class="font-mono text-sm font-bold text-amber-400">{{ session.roomCode }}</span>
 
-    <!-- Opponent status -->
-    <div class="flex flex-1 items-center gap-1.5">
+    <!-- Player names -->
+    <div class="flex flex-1 items-center gap-1.5 min-w-0">
+      <span class="text-[11px] font-semibold text-zinc-300 truncate">{{ session.playerName ?? '…' }}</span>
+      <span class="text-[10px] text-zinc-600">vs</span>
+      <span class="text-[11px] font-semibold truncate"
+        :class="session.opponentOnline ? 'text-zinc-300' : 'text-zinc-600'">
+        {{ session.opponentName ?? (session.opponentOnline ? '…' : 'Waiting…') }}
+      </span>
       <span
-        class="inline-block h-2 w-2 rounded-full transition-colors"
+        class="inline-block h-2 w-2 rounded-full shrink-0 transition-colors"
         :class="session.opponentOnline ? 'bg-green-400 animate-pulse' : 'bg-zinc-600'"
       />
-      <span class="text-[11px] text-zinc-400">
-        {{ session.opponentOnline ? 'Opponent connected' : 'Waiting for opponent…' }}
-      </span>
     </div>
 
     <!-- Leave button -->

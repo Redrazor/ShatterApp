@@ -55,6 +55,7 @@ export const useStruggleStore = defineStore(
         p1Wins: p1Wins.value,
         p2Wins: p2Wins.value,
         selectedMissionId: selectedMission.value?.id ?? null,
+        struggleCards: struggleCards.value,
       }
     }
 
@@ -118,6 +119,31 @@ export const useStruggleStore = defineStore(
       _syncTracker()
     }
 
+    function applySnapshot(snap: TrackerSnapshot, missions: Mission[]): void {
+      if (snap.mode !== 'standard') return
+      strugglePosition.value = snap.strugglePosition ?? 0
+      p1Momentum.value = snap.p1Momentum ?? 1
+      p2Momentum.value = snap.p2Momentum ?? 1
+      p1Wins.value = snap.p1Wins ?? 0
+      p2Wins.value = snap.p2Wins ?? 0
+      if (snap.selectedMissionId != null && selectedMission.value?.id !== snap.selectedMissionId) {
+        const m = missions.find(m => m.id === snap.selectedMissionId) ?? null
+        selectedMission.value = m
+        if (m) {
+          if (snap.struggleCards) {
+            struggleCards.value = snap.struggleCards
+          } else {
+            const pick = (arr: string[]) => arr.length ? arr[Math.floor(Math.random() * arr.length)] : ''
+            const s = m.struggles
+            struggleCards.value = [pick(s.struggle1 ?? []), pick(s.struggle2 ?? []), pick(s.struggle3 ?? [])]
+          }
+        }
+      } else if (snap.selectedMissionId == null) {
+        selectedMission.value = null
+        struggleCards.value = null
+      }
+    }
+
     function resetGame() {
       strugglePosition.value = 0
       p1Momentum.value = 1
@@ -148,6 +174,7 @@ export const useStruggleStore = defineStore(
       moveStruggle,
       claimStruggle,
       confirmMission,
+      applySnapshot,
       resetGame,
       buildSnapshot: _buildSnapshot,
     }

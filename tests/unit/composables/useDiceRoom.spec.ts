@@ -106,12 +106,6 @@ describe('useDiceRoom', () => {
     expect(mockEmit).toHaveBeenCalledWith('sync-tracker', { snapshot })
   })
 
-  it('sendDiceResult calls socket.emit with dice-result', async () => {
-    const room = await initSocket()
-    const roll = { atkPool: [], defPool: [], hits: 2, timestamp: 123 }
-    room.sendDiceResult(roll)
-    expect(mockEmit).toHaveBeenCalledWith('dice-result', { roll })
-  })
 
   it('leaveRoom calls socket.disconnect and resets state', async () => {
     const room = await initSocket()

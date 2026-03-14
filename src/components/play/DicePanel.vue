@@ -133,14 +133,14 @@ function resetDuel() {
             ? 'rounded-xl border border-zinc-700/40 bg-zinc-900/30 px-4 py-3 font-bold text-zinc-600 cursor-not-allowed'
             : 'rounded-xl border border-amber-500/40 bg-amber-950/30 px-4 py-3 font-bold text-amber-400 transition-all hover:bg-amber-900/40 hover:border-amber-500/70 active:scale-95'"
           @click="claimRole('attacker')"
-        >⚔ Attacker{{ session.roleTaken === 'attacker' ? ' (taken)' : '' }}</button>
+        >⚔ Attacker{{ session.roleTaken === 'attacker' ? ' — opponent\'s role' : '' }}</button>
         <button
           :disabled="session.roleTaken === 'defender'"
           :class="session.roleTaken === 'defender'
             ? 'rounded-xl border border-zinc-700/40 bg-zinc-900/30 px-4 py-3 font-bold text-zinc-600 cursor-not-allowed'
             : 'rounded-xl border border-blue-500/40 bg-blue-950/30 px-4 py-3 font-bold text-blue-400 transition-all hover:bg-blue-900/40 hover:border-blue-500/70 active:scale-95'"
           @click="claimRole('defender')"
-        >🛡 Defender{{ session.roleTaken === 'defender' ? ' (taken)' : '' }}</button>
+        >🛡 Defender{{ session.roleTaken === 'defender' ? ' — opponent\'s role' : '' }}</button>
       </div>
     </div>
 
