@@ -88,9 +88,9 @@ function toggle(name: string) {
             :key="icon.name"
             class="rounded-lg border border-sw-gold/10 bg-sw-card/40 overflow-hidden"
           >
-            <!-- Row (always visible) -->
+            <!-- Row — collapsible on mobile, always expanded on md+ -->
             <button
-              class="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-sw-gold/5 transition-colors"
+              class="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-sw-gold/5 transition-colors md:cursor-default"
               @click="toggle(icon.name)"
             >
               <img
@@ -99,8 +99,9 @@ function toggle(name: string) {
                 class="h-8 w-8 object-contain flex-shrink-0"
               />
               <span class="text-sm font-semibold text-sw-gold">{{ icon.name }}</span>
+              <!-- Chevron: only visible on mobile -->
               <svg
-                class="ml-auto flex-shrink-0 w-4 h-4 text-sw-gold/60 transition-transform"
+                class="ml-auto flex-shrink-0 w-4 h-4 text-sw-gold/60 transition-transform md:hidden"
                 :class="collapsed.has(icon.name) ? '' : 'rotate-180'"
                 viewBox="0 0 16 16" fill="currentColor"
               >
@@ -108,8 +109,11 @@ function toggle(name: string) {
               </svg>
             </button>
 
-            <!-- Expanded description -->
-            <div v-if="!collapsed.has(icon.name) && icon.description" class="px-3 pb-3 pt-0">
+            <!-- Description: always visible on md+, toggleable on mobile -->
+            <div
+              v-if="icon.description"
+              :class="['px-3 pb-3 pt-0', collapsed.has(icon.name) ? 'hidden md:block' : 'block']"
+            >
               <p class="text-xs text-sw-text/70 leading-relaxed border-t border-sw-gold/10 pt-2">
                 {{ icon.description }}
               </p>

@@ -14,6 +14,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{
   (e: 'update:summary', val: Record<string, number>): void
+  (e: 'update:pool', val: DieState[]): void
   (e: 'rolled'): void
 }>()
 
@@ -124,7 +125,8 @@ watch(pool, () => {
   const out: Record<string, number> = {}
   for (const f of faces) out[f] = pool.value.filter(d => d.face === f).length
   emit('update:summary', out)
-}, { deep: true, immediate: true })
+  emit('update:pool', [...pool.value])
+}, { deep: true, immediate: true, flush: 'sync' })
 
 // When external pool changes, emit summary too
 watch(() => props.externalPool, (ext) => {

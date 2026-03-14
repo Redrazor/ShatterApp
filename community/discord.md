@@ -17,10 +17,12 @@ Hey all — I've been working on a free web companion for Shatterpoint and figur
 
 It covers the main stuff I found myself wanting at the table:
 → Browse all units with filters, card art, stat comparisons, and balance history
-→ Build and share Strike Force lists with a link
+→ Build and share Strike Force lists with a link — supports Premiere 4-squad format
 → Track struggles during a game — Standard, Key Operations, and Legendary Encounters modes
 → Key Operations missions 1–6 with interactive trackers
 → Legendary Encounters — Victory Tracker, GL Order Deck, Force Pools, and mission dashboards
+→ Unit roster in Play — track damage, wounds, and conditions per unit; full ability text with rule keyword tooltips
+→ Real-time multiplayer — share a room code, see your opponent's units synced live
 → Shatterpoint dice roller with Expertise spending and Duel Result
 → Mark off which packs you own
 

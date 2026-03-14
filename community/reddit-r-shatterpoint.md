@@ -60,6 +60,12 @@ Hey everyone — a while back I posted about ShatterApp, the free companion web 
 
 **Unit profiles improved** — errata and balance history is now shown inline on unit cards so you can see what changed and when without leaving the app.
 
+**Real-time multiplayer** — create a room, share a 4-character code with your opponent, and track your units + force pool in sync during a game. Opponent's team appears read-only on your screen. Completely free, no accounts.
+
+**Premiere format** — building for competitive play? The Strike Force builder now supports 4-squad Premiere lists. When you load a Premiere build in Play, you pick 2 of your 4 squads to actually use that game.
+
+**Unit ability text in Play** — unit cards in the Play view now show full ability descriptions with rule keyword tooltips. Tap any keyword (like Protection or Steadfast) to see the rule definition inline.
+
 ---
 
 Still actively building. What's missing for you?

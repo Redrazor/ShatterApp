@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import IconGrid from '../components/reference/IconGrid.vue'
+import KeywordReference from '../components/reference/KeywordReference.vue'
 import RulebookViewer from '../components/reference/RulebookViewer.vue'
 
-type Tab = 'icons' | 'rulebook'
+type Tab = 'icons' | 'keywords' | 'rulebook'
 const activeTab = ref<Tab>('icons')
 </script>
 
@@ -14,7 +15,7 @@ const activeTab = ref<Tab>('icons')
     <!-- Tab bar -->
     <div class="flex gap-1 border-b border-sw-gold/20 pb-0">
       <button
-        v-for="tab in [{ id: 'icons', label: 'Icon Reference' }, { id: 'rulebook', label: 'Rulebook' }]"
+        v-for="tab in [{ id: 'icons', label: 'Icon Reference' }, { id: 'keywords', label: 'Keyword Reference' }, { id: 'rulebook', label: 'Rulebook' }]"
         :key="tab.id"
         :class="[
           'rounded-t-lg px-4 py-2 text-sm font-medium transition-colors',
@@ -30,6 +31,7 @@ const activeTab = ref<Tab>('icons')
 
     <!-- Tab content -->
     <IconGrid v-if="activeTab === 'icons'" />
+    <KeywordReference v-else-if="activeTab === 'keywords'" />
     <RulebookViewer v-else-if="activeTab === 'rulebook'" />
   </div>
 </template>

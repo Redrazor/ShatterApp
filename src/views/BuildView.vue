@@ -287,6 +287,7 @@ function importSharedBuild() {
       @update:name="sfStore.setName"
       @update:premiere="sfStore.setPremiere"
       @pick-mission="missionPickerOpen = true"
+      @clear-mission="sfStore.setMission(null)"
       @reset="sfStore.resetStrikeForce"
       @save="handleSave"
       @share="handleShare"

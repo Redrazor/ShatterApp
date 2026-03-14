@@ -27,11 +27,23 @@ ShatterApp lets you browse units, plan your Strike Force, and track your collect
 - **Favorites** — heart icon on each card persists your favourites across sessions; filter the grid to favourites-only with one tap
 
 ### Build
-- **Strike Force builder** — assemble two squads, each with a Primary, Secondary, and Support unit
+- **Strike Force builder** — assemble two squads (or four in Premiere format), each with a Primary, Secondary, and Support unit
 - **Live validation** — squads show green/red validity with a plain-English reason (points exceeded or incompatible eras)
 - **Mission picker** — search and assign a mission to your Strike Force
-- **Premiere mode toggle** — mark a Strike Force as Premiere format
+- **Premiere format** — toggle to build a 4-squad competitive list; share URL encodes all 12 unit IDs
+- **Save multiple lists** — save, load, rename, and delete multiple Strike Force builds
 - **Unit search in picker** — the unit picker drawer has its own search bar scoped to the correct unit type
+- **Share / print** — share a build via URL or print a clean squad sheet
+
+### Play
+- **Game modes** — Standard, Key Operations (all 6 missions), and Legendary Encounters (3-player asymmetric)
+- **Unit roster** — import your Strike Force or add units manually; track damage, wounds, and conditions per unit
+- **Ability descriptions** — inline per-unit ability text with rule keyword tooltips (tap any bold keyword for its definition)
+- **Active tag highlight** — tapping a unit tag highlights matching tags and keywords across all units
+- **Force pool tracker** — shared force pool with tap-to-spend tokens
+- **Struggle tracker** — per-mission interactive dashboards for Key Operations and Legendary Encounters
+- **Multiplayer** — real-time two-player sessions via Socket.io; share a 4-character room code, see opponent's unit roster and force pool synced live
+- **Premiere 2-of-4 picker** — when importing a Premiere build, choose 2 of your 4 squads to play
 
 ### Collection
 - **Pack tracking** — tap any product card to mark it as owned; state persists across sessions
@@ -75,7 +87,7 @@ npm run seed
 npm run dev:all
 ```
 
-The frontend runs on **http://localhost:5179** and the API on **http://localhost:3001**.
+The frontend runs on **http://localhost:5173** and the API on **http://localhost:3001**.
 
 ## Testing
 

@@ -2,12 +2,14 @@
 import { ref } from 'vue'
 import { useDiceRoom } from '../../../composables/useDiceRoom.ts'
 import { useRollSessionStore } from '../../../stores/rollSession.ts'
+import { randomSwName } from '../../../utils/starWarsNames.ts'
 
 const emit = defineEmits<{ (e: 'connected'): void }>()
 
 const diceRoom = useDiceRoom()
 const session = useRollSessionStore()
 
+const playerName = ref(randomSwName())
 const joinCode = ref('')
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -16,7 +18,9 @@ async function handleCreate() {
   loading.value = true
   error.value = null
   try {
-    const code = await diceRoom.createRoom()
+    const name = playerName.value.trim() || randomSwName()
+    session.setPlayerName(name)
+    const code = await diceRoom.createRoom(name)
     session.setRoom(code, true)
     emit('connected')
   } catch (e) {
@@ -35,9 +39,12 @@ async function handleJoin() {
   loading.value = true
   error.value = null
   try {
-    const result = await diceRoom.joinRoom(code)
+    const name = playerName.value.trim() || randomSwName()
+    session.setPlayerName(name)
+    const result = await diceRoom.joinRoom(code, name)
     if (result.success) {
       session.setRoom(code, false)
+      if (result.opponentName) session.setOpponentName(result.opponentName)
       emit('connected')
     } else {
       error.value = result.error ?? 'Failed to join room'
@@ -56,6 +63,19 @@ async function handleJoin() {
       <div class="text-2xl">🔗</div>
       <div class="text-sm font-bold text-zinc-200">Multiplayer</div>
       <div class="text-xs text-zinc-600">Play with a friend at the same table or remotely</div>
+    </div>
+
+    <!-- Player name -->
+    <div>
+      <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-zinc-500">Your name</label>
+      <input
+        v-model="playerName"
+        type="text"
+        maxlength="20"
+        placeholder="Enter your name…"
+        class="w-full rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-100
+               placeholder:text-zinc-600 focus:border-amber-500/60 focus:outline-none"
+      />
     </div>
 
     <div v-if="error" class="rounded-lg border border-red-500/30 bg-red-900/20 px-3 py-2 text-xs text-red-400">

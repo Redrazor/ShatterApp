@@ -44,7 +44,7 @@ describe('StrikeForcePanel', () => {
 
   it('emits pick-mission when mission button clicked', async () => {
     const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
-    await wrapper.find('button.w-full').trigger('click')
+    await wrapper.find('button.flex-1').trigger('click')
     expect(wrapper.emitted('pick-mission')).toBeTruthy()
   })
 

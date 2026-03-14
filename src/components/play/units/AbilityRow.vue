@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import type { Ability } from '../../../composables/useAbilities.ts'
 import { imageUrl } from '../../../utils/imageUrl.ts'
+import { RULE_KEYWORDS } from '../../../utils/ruleKeywords.ts'
 
 const props = defineProps<{
   ability: Ability
@@ -23,14 +24,6 @@ const TYPE_DESCRIPTIONS: Record<string, { label: string; description: string }> 
   identity: { label: 'Identity',  description: 'A unique ability that defines this character. Spend Force (⊕) as indicated — these abilities reflect the unit\'s signature role.' },
 }
 
-const RULE_KEYWORDS: Record<string, { label: string; description: string }> = {
-  'Immunity':     { label: 'Immunity [X]',     description: 'This Unit can\'t suffer the listed condition. If a Unit has a condition and gains Immunity to it, the Unit removes the condition.' },
-  'Impact':       { label: 'Impact [X]',       description: 'When this character makes a focus action it adds X additional dice to its next Melee attack in addition to the 1 attack die added by the focus action.' },
-  'Protection':   { label: 'Protection',       description: 'When this character is defending, before applying the Damage Pool, remove 1 damage from the Damage Pool.' },
-  'Scale':        { label: 'Scale',            description: 'When this character would advance or dash it may climb instead.' },
-  'Sharpshooter': { label: 'Sharpshooter [X]', description: 'When this character makes a focus action it adds X additional dice to its next Ranged attack in addition to the 1 attack die added by the focus action.' },
-  'Steadfast':    { label: 'Steadfast',        description: 'When this character is defending, it is not moved by the first Shove effect from the attacking character\'s chosen Combat Tree Options.' },
-}
 
 const typeInfo = computed(() => TYPE_DESCRIPTIONS[props.ability.type] ?? { label: props.ability.type, description: '' })
 const activeRuleKwInfo = computed(() => activeRuleKw.value ? RULE_KEYWORDS[activeRuleKw.value] : null)

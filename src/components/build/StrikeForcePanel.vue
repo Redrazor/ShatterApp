@@ -12,6 +12,7 @@ defineEmits<{
   (e: 'update:name', val: string): void
   (e: 'update:premiere', val: boolean): void
   (e: 'pick-mission'): void
+  (e: 'clear-mission'): void
   (e: 'reset'): void
   (e: 'save'): void
   (e: 'share'): void
@@ -72,13 +73,21 @@ defineEmits<{
     <!-- Mission -->
     <div>
       <label class="mb-1 block text-xs text-sw-text/50">Mission</label>
-      <button
-        class="w-full rounded-lg border border-sw-gold/30 bg-sw-dark px-3 py-2 text-left transition-colors hover:border-sw-gold"
-        @click="$emit('pick-mission')"
-      >
-        <span v-if="mission" class="text-sw-text">{{ mission.name }}</span>
-        <span v-else class="text-sw-text/40">Select mission…</span>
-      </button>
+      <div class="flex gap-2 items-stretch">
+        <button
+          class="flex-1 rounded-lg border border-sw-gold/30 bg-sw-dark px-3 py-2 text-left transition-colors hover:border-sw-gold"
+          @click="$emit('pick-mission')"
+        >
+          <span v-if="mission" class="text-sw-text">{{ mission.name }}</span>
+          <span v-else class="text-sw-text/40">Select mission…</span>
+        </button>
+        <button
+          v-if="mission"
+          class="rounded-lg border border-sw-gold/20 bg-sw-dark px-2.5 text-sw-text/40 hover:text-sw-text/80 hover:border-sw-gold/40 transition-colors"
+          title="Clear mission"
+          @click="$emit('clear-mission')"
+        >✕</button>
+      </div>
     </div>
 
     <!-- Premiere -->
