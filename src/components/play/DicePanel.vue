@@ -20,11 +20,9 @@ const session = useRollSessionStore()
 const diceRoom = useDiceRoom()
 const playUnits = usePlayUnitsStore()
 
-// Wire up role-related socket events
-diceRoom.onRoleTaken(({ role }) => session.setRoleTaken(role))
-diceRoom.onRoleAssigned(({ myRole }) => session.claimRole(myRole))
+// onRolesReset: commit active duel to history before clearing
+// (PlayView handles onRoleTaken + onRoleAssigned — registering here would overwrite them)
 diceRoom.onRolesReset(() => {
-  // Opponent triggered reset — commit active duel to history before clearing
   _commitActiveDuel()
   session.resetDuel()
 })

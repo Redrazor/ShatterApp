@@ -111,8 +111,14 @@ function clear() {
 }
 
 // ── Auto-roll on initialCount ──────────────────────────────────
+// onMounted handles initial render; watch handles subsequent triggers
+// when DicePanel stays mounted (v-show) and a new stat is clicked
 onMounted(() => {
   if (props.initialCount && props.initialCount > 0) roll(props.initialCount)
+})
+
+watch(() => props.initialCount, (n) => {
+  if (n && n > 0) roll(n)
 })
 
 // ── Computed ──────────────────────────────────────────────────

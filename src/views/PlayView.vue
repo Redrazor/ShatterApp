@@ -68,7 +68,6 @@ diceRoom.onRoleAssigned(({ myRole }) => rollSession.claimRole(myRole))
 diceRoom.onOpponentPoolUpdate(({ pool }) => {
   rollSession.setOpponentPool(pool)
 })
-diceRoom.onRolesReset(() => rollSession.resetDuel())
 diceRoom.onRoleTaken(({ role, unitId }) => {
   rollSession.setRoleTaken(role)
   rollSession.setOppUnit(unitId)
@@ -589,7 +588,7 @@ const ROMAN = ['I', 'II', 'III']
     />
 
     <!-- ── Dice tab ── -->
-    <DicePanel v-if="playTab === 'dice'" :pending-roll="pendingRoll" @consumed="pendingRoll = null" />
+    <DicePanel v-show="playTab === 'dice'" :pending-roll="pendingRoll" @consumed="pendingRoll = null" />
 
     <!-- ══════════════════════════════════════════
          TRACKER TAB CONTENT
