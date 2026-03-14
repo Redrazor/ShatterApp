@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.0.3',
+    date: '2026-03-14',
+    changes: [
+      'Chore — removed dev/QA screenshots from repository; moved docs to /docs folder',
+    ],
+  },
+  {
     version: '2.0.2',
     date: '2026-03-14',
     changes: [
