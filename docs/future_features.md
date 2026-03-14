@@ -433,9 +433,11 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 
 **Context:** Rather than manually counting dice, players should be able to tap "Attack" or "Defend" on a unit's profile in the Play view and be taken directly to the roller with the correct number of dice pre-rolled based on that unit's stats and active stance.
 
-**Status:** `[ ]`
+**Status:** `[~] In progress`
 
-> **Note:** Build this as part of the Play view unit-tracking update (#13). Logic is tied to active units in a current game — not a standalone browse feature. Must be completed **before** multiplayer (#11), as conditions (#13) and profile-linked rolls feed directly into the multiplayer dice sharing flow.
+> **Implementation scope:** Clicking an attack (⚔) or defense (🛡) stat button on a unit card in Play > Units navigates to the Dice tab, pre-rolls the correct dice, and expands the Dice panel to show the unit's stance card + conditions above the dice column. Works in solo and multiplayer mode. In multiplayer, also syncs the triggering unit's ID to the opponent via socket so both players see each other's stance card and conditions. "Add 1 die" now auto-rolls a random face immediately (no picker). Dice tab is always visible (not only in multiplayer).
+
+> **Original note:** Build this as part of the Play view unit-tracking update (#13). Logic is tied to active units in a current game — not a standalone browse feature. Must be completed **before** multiplayer (#11), as conditions (#13) and profile-linked rolls feed directly into the multiplayer dice sharing flow.
 
 ### Feature Breakdown
 

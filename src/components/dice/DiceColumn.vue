@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import DieFace from './DieFace.vue'
 import { rollAttack, rollDefense, ATTACK_FACES, DEFENSE_FACES } from '../../utils/dice.ts'
 import type { DieState, AttackFace, DefenseFace } from '../../utils/dice.ts'
@@ -11,6 +11,7 @@ const props = defineProps<{
   type: 'attack' | 'defense'
   readonly?: boolean
   externalPool?: DieState[]
+  initialCount?: number
 }>()
 const emit = defineEmits<{
   (e: 'update:summary', val: Record<string, number>): void
@@ -23,7 +24,6 @@ const pool         = ref<DieState[]>([])
 const rolling      = ref(false)
 const lastCount    = ref<number | null>(null)
 const selectedId   = ref<number | null>(null)
-const addOpen      = ref(false)
 const rerollMode   = ref(false)
 const rerollSel    = ref(new Set<number>())
 const rerollingIds = ref(new Set<number>())
@@ -41,7 +41,6 @@ function roll(n: number) {
   rolling.value = true
   lastCount.value = n
   selectedId.value = null
-  addOpen.value = false
   rerollMode.value = false
   rerollSel.value = new Set()
 
@@ -62,7 +61,6 @@ function selectDie(die: DieState) {
     rerollSel.value = s
     return
   }
-  addOpen.value = false
   selectedId.value = selectedId.value === die.id ? null : die.id
 }
 
@@ -86,7 +84,6 @@ function removeDie(id: number) {
 // ── Add die ───────────────────────────────────────────────────
 function addDie(face: AttackFace | DefenseFace) {
   pool.value.push({ id: nextId++, type: props.type, face, locked: false, isBonus: true })
-  addOpen.value = false
 }
 
 // ── Reroll mode ───────────────────────────────────────────────
@@ -94,7 +91,6 @@ function toggleRerollMode() {
   rerollMode.value = !rerollMode.value
   rerollSel.value = new Set()
   selectedId.value = null
-  addOpen.value = false
 }
 
 function confirmReroll() {
@@ -109,10 +105,15 @@ function confirmReroll() {
 
 // ── Clear ─────────────────────────────────────────────────────
 function clear() {
-  pool.value = []; selectedId.value = null; addOpen.value = false
+  pool.value = []; selectedId.value = null
   rerollMode.value = false; rerollSel.value = new Set()
   rerollingIds.value = new Set(); rolling.value = false; lastCount.value = null
 }
+
+// ── Auto-roll on initialCount ──────────────────────────────────
+onMounted(() => {
+  if (props.initialCount && props.initialCount > 0) roll(props.initialCount)
+})
 
 // ── Computed ──────────────────────────────────────────────────
 const selectedDie = computed(() => pool.value.find(d => d.id === selectedId.value) ?? null)
@@ -241,23 +242,9 @@ const faceChipClass = (face: string) => {
           rerollMode ? 'border-blue-400/60 bg-blue-500/10 text-blue-400' : 'border-sw-gold/30 text-sw-text/60 hover:border-sw-gold hover:text-sw-text']"
         @click="toggleRerollMode">↺ Reroll dice</button>
       <button
-        :class="['rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors',
-          addOpen ? 'border-sw-gold bg-sw-gold/10 text-sw-gold' : 'border-sw-gold/30 text-sw-text/60 hover:border-sw-gold hover:text-sw-text']"
-        @click="addOpen = !addOpen; rerollMode = false; selectedId = null">+ Add die</button>
+        class="rounded-lg border border-sw-gold/30 px-2.5 py-1 text-xs font-medium text-sw-text/60 transition-colors hover:border-sw-gold hover:text-sw-text"
+        @click="addDie(rollFn()); rerollMode = false; selectedId = null">+ Add die</button>
       <button class="ml-auto rounded-lg px-2.5 py-1 text-xs text-sw-text/30 hover:text-sw-text" @click="clear">Clear</button>
-    </div>
-
-    <!-- Add die face picker (hidden in readonly) -->
-    <div v-if="!readonly && addOpen" class="rounded-xl border border-sw-gold/20 bg-sw-card p-3">
-      <p class="mb-2 text-[10px] text-sw-text/50">Pick face to add:</p>
-      <div class="flex flex-wrap gap-2">
-        <div v-for="face in faces" :key="face"
-          class="flex cursor-pointer flex-col items-center gap-1 opacity-70 transition-opacity hover:opacity-100"
-          @click="addDie(face)">
-          <DieFace :type="type" :face="face" :size="40" />
-          <span class="text-[8px] capitalize text-sw-text/50">{{ face }}</span>
-        </div>
-      </div>
     </div>
 
     <!-- Results summary -->

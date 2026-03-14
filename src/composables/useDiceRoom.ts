@@ -22,7 +22,7 @@ let _onOpponentName: Callback<string> | null = null
 let _onRoleAssigned: Callback<{ myRole: DiceRole }> | null = null
 let _onOpponentPoolUpdate: Callback<{ pool: DieState[]; role: 'attacker' | 'defender'; playerName: string; type: 'roll' | 'change' }> | null = null
 let _onRolesReset: Callback | null = null
-let _onRoleTaken: Callback<{ role: 'attacker' | 'defender' }> | null = null
+let _onRoleTaken: Callback<{ role: 'attacker' | 'defender'; unitId: number | null }> | null = null
 
 function getSocket(): Socket {
   if (!socket) {
@@ -50,7 +50,7 @@ function getSocket(): Socket {
       _onOpponentPoolUpdate?.(payload)
     })
     socket.on('roles-reset', () => { _onRolesReset?.() })
-    socket.on('role-taken', (payload: { role: 'attacker' | 'defender' }) => { _onRoleTaken?.(payload) })
+    socket.on('role-taken', (payload: { role: 'attacker' | 'defender'; unitId: number | null }) => { _onRoleTaken?.(payload) })
     socket.on('connect', () => { connected.value = true })
     socket.on('disconnect', () => { connected.value = false })
   }
@@ -130,8 +130,8 @@ export function useDiceRoom() {
     socket?.emit('set-player-name', { name })
   }
 
-  function claimRole(role: 'attacker' | 'defender'): void {
-    socket?.emit('claim-role', { role })
+  function claimRole(role: 'attacker' | 'defender', unitId?: number | null): void {
+    socket?.emit('claim-role', { role, unitId: unitId ?? null })
   }
 
   function sendPoolUpdate(role: 'attacker' | 'defender', pool: DieState[], playerName: string, type: 'roll' | 'change'): void {
@@ -161,7 +161,7 @@ export function useDiceRoom() {
   function onRoleAssigned(cb: Callback<{ myRole: DiceRole }>): void { _onRoleAssigned = cb }
   function onOpponentPoolUpdate(cb: Callback<{ pool: DieState[]; role: 'attacker' | 'defender'; playerName: string; type: 'roll' | 'change' }>): void { _onOpponentPoolUpdate = cb }
   function onRolesReset(cb: Callback): void { _onRolesReset = cb }
-  function onRoleTaken(cb: Callback<{ role: 'attacker' | 'defender' }>): void { _onRoleTaken = cb }
+  function onRoleTaken(cb: Callback<{ role: 'attacker' | 'defender'; unitId: number | null }>): void { _onRoleTaken = cb }
 
   return {
     roomCode,

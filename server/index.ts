@@ -127,13 +127,13 @@ io.on('connection', (socket) => {
     if (opponentId) io.to(opponentId).emit('opponent-name', { name })
   })
 
-  socket.on('claim-role', ({ role }: { role: 'attacker' | 'defender' }) => {
+  socket.on('claim-role', ({ role, unitId }: { role: 'attacker' | 'defender'; unitId?: number | null }) => {
     const room = getRoomBySocket(socket.id)
     if (!room) return
     // Reject if the role is already taken
     if (!claimDuelRole(room.code, role)) return
-    // Broadcast to whole room so both players know the role is taken
-    io.to(room.code).emit('role-taken', { role })
+    // Broadcast to whole room so both players know the role is taken (including unitId for stance display)
+    io.to(room.code).emit('role-taken', { role, unitId: unitId ?? null })
     // Confirm role back to claimer
     socket.emit('role-assigned', { role })
     // Auto-assign opposite role to opponent
