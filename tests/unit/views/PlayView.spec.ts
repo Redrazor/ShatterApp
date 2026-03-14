@@ -48,6 +48,14 @@ describe('PlayView', () => {
     })
   }
 
+  // Mount without mission but with Tracker tab active (for picker content tests)
+  async function mountViewOnTracker() {
+    const wrapper = mountView()
+    const trackerBtn = wrapper.findAll('button').find(b => b.text() === 'Tracker')
+    if (trackerBtn) await trackerBtn.trigger('click')
+    return wrapper
+  }
+
   // Mount with mission already confirmed (State B — game UI)
   function mountViewWithMission() {
     const store = useStruggleStore()
@@ -67,8 +75,8 @@ describe('PlayView', () => {
   // ── State A: Mission Picker ─────────────────────────────────────────────
 
   describe('mission picker (State A — no mission selected)', () => {
-    it('shows Choose Mission label when no mission selected', () => {
-      const wrapper = mountView()
+    it('shows Choose Mission label when no mission selected', async () => {
+      const wrapper = await mountViewOnTracker()
       expect(wrapper.text()).toContain('Choose Mission')
     })
 
@@ -87,7 +95,7 @@ describe('PlayView', () => {
     it('shows mission name and prev/next buttons when missions are loaded', async () => {
       const missionsStore = useMissionsStore()
       missionsStore.missions = [mockMission]
-      const wrapper = mountView()
+      const wrapper = await mountViewOnTracker()
       await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('Test Mission')
       // Nav buttons use SVG icons — verify two nav buttons exist
@@ -99,7 +107,7 @@ describe('PlayView', () => {
       const missionsStore = useMissionsStore()
       const mission2: Mission = { ...mockMission, id: 2, name: 'Second Mission' }
       missionsStore.missions = [mockMission, mission2]
-      const wrapper = mountView()
+      const wrapper = await mountViewOnTracker()
       await wrapper.vm.$nextTick()
       // Next button is the second SVG nav button (first is prev/disabled)
       const nextBtn = wrapper.findAll('button').filter(b => b.find('svg').exists())[1]
@@ -112,7 +120,7 @@ describe('PlayView', () => {
       const store = useStruggleStore()
       const missionsStore = useMissionsStore()
       missionsStore.missions = [mockMission]
-      const wrapper = mountView()
+      const wrapper = await mountViewOnTracker()
       await wrapper.vm.$nextTick()
       const playBtn = wrapper.findAll('button').find(b => b.text().includes('Play this Mission'))
       expect(playBtn).toBeDefined()
@@ -121,8 +129,11 @@ describe('PlayView', () => {
       expect(store.struggleCards).not.toBeNull()
     })
 
-    it('shows No missions available when missions array is empty', () => {
-      const wrapper = mountView()
+    it('shows No missions available when missions array is empty', async () => {
+      const missionsStore = useMissionsStore()
+      const wrapper = await mountViewOnTracker()
+      missionsStore.loading = false
+      await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('No missions available')
     })
   })
@@ -434,7 +445,8 @@ describe('PlayView', () => {
       const koMissionsStore = useKoMissionsStore()
       koStore.mode = 'key-operations'
       koMissionsStore.missions = [mockKoMission]
-      const wrapper = mountView()
+      const wrapper = await mountViewOnTracker()
+      koMissionsStore.loading = false
       await wrapper.vm.$nextTick()
       const img = wrapper.find('img[alt="mission card"]')
       expect(img.exists()).toBe(true)

@@ -7,12 +7,14 @@ import UnitSearchPicker from './UnitSearchPicker.vue'
 import PlayUnitStanceModal from './PlayUnitStanceModal.vue'
 import BuildListPicker from './BuildListPicker.vue'
 import ForcePool from './ForcePool.vue'
+import OpponentRoster from '../multiplayer/OpponentRoster.vue'
 
 const props = defineProps<{
   characters: Character[]
   savedLists: CompactBuild[]
   squad0Valid: boolean   // active draft squad 0 valid (used only to decide whether to show import button)
   locked: boolean
+  opponentUnits?: PlayUnit[]
 }>()
 
 const store = usePlayUnitsStore()
@@ -170,5 +172,11 @@ function openProfile(unitId: number) {
       :show="showProfile"
       @close="showProfile = false"
     />
+
+    <!-- Opponent roster (multiplayer) -->
+    <div v-if="opponentUnits !== undefined" class="mt-2">
+      <div class="h-px bg-zinc-700/40 my-3" />
+      <OpponentRoster :units="opponentUnits" />
+    </div>
   </div>
 </template>
