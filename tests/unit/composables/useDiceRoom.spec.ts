@@ -7,6 +7,7 @@ const mockDisconnect = vi.fn()
 const mockConnect = vi.fn()
 const mockOn = vi.fn()
 const mockOnce = vi.fn()
+const mockOff = vi.fn()
 
 const mockSocket = {
   connected: false,
@@ -15,6 +16,7 @@ const mockSocket = {
   emit: mockEmit,
   on: mockOn,
   once: mockOnce,
+  off: mockOff,
 }
 
 vi.mock('socket.io-client', () => ({
@@ -31,8 +33,10 @@ beforeEach(() => {
 
 // Helper: initialize socket by simulating a createRoom call
 async function initSocket() {
+  // _connectAndRun registers once('connect', ...) and once('connect_error', ...)
+  // We simulate immediate connection by firing all 'connect' once-handlers
   mockSocket.once.mockImplementation((event: string, cb: () => void) => {
-    if (event === 'connect') cb()
+    if (event === 'connect') setTimeout(() => cb(), 0)
   })
   mockSocket.connect.mockImplementation(() => { mockSocket.connected = true })
   mockEmit.mockImplementation((_ev: string, _d: unknown, ack?: (r: { code: string }) => void) => {
@@ -44,6 +48,7 @@ async function initSocket() {
   mockEmit.mockReset()
   mockConnect.mockReset()
   mockDisconnect.mockReset()
+  mockOff.mockReset()
   return room
 }
 

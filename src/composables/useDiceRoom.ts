@@ -40,33 +40,50 @@ function getSocket(): Socket {
   return socket
 }
 
+function _connectAndRun(fn: (s: Socket) => void): Promise<void> {
+    return new Promise((_, reject) => {
+      const s = getSocket()
+      if (s.connected) {
+        fn(s)
+        return
+      }
+      const onError = (err: Error) => {
+        s.off('connect', onConnect)
+        reject(new Error(`Cannot reach server: ${err.message}`))
+      }
+      const onConnect = () => {
+        s.off('connect_error', onError)
+        fn(s)
+      }
+      s.once('connect', onConnect)
+      s.once('connect_error', onError)
+      // 8-second timeout
+      const timer = setTimeout(() => {
+        s.off('connect', onConnect)
+        s.off('connect_error', onError)
+        reject(new Error('Connection timed out — is the server running?'))
+      }, 8_000)
+      s.once('connect', () => clearTimeout(timer))
+      s.connect()
+    })
+  }
+
 export function useDiceRoom() {
   function createRoom(): Promise<string> {
-    return new Promise((resolve) => {
-      const s = getSocket()
-      s.connect()
-      s.once('connect', () => {
+    return new Promise((resolve, reject) => {
+      _connectAndRun((s) => {
         s.emit('create-room', null, (ack: { code: string }) => {
           roomCode.value = ack.code
           isHost.value = true
           resolve(ack.code)
         })
-      })
-      // If already connected, emit immediately
-      if (s.connected) {
-        s.emit('create-room', null, (ack: { code: string }) => {
-          roomCode.value = ack.code
-          isHost.value = true
-          resolve(ack.code)
-        })
-      }
+      }).catch(reject)
     })
   }
 
   function joinRoom(code: string): Promise<{ success: boolean; error?: string }> {
-    return new Promise((resolve) => {
-      const s = getSocket()
-      const doJoin = () => {
+    return new Promise((resolve, reject) => {
+      _connectAndRun((s) => {
         s.emit('join-room', { code }, (ack: { role: string | null; error?: string }) => {
           if (ack.role) {
             roomCode.value = code.toUpperCase()
@@ -76,13 +93,7 @@ export function useDiceRoom() {
             resolve({ success: false, error: ack.error })
           }
         })
-      }
-      if (s.connected) {
-        doJoin()
-      } else {
-        s.connect()
-        s.once('connect', doJoin)
-      }
+      }).catch(reject)
     })
   }
 
