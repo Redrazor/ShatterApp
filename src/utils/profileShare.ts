@@ -16,8 +16,10 @@ export function encodeBuild(
   mid: number | null,
   pre: boolean,
   s: [[number, number, number], [number, number, number]],
+  ex?: [[number, number, number], [number, number, number]],
 ): string {
   const build: CompactBuild = { name, mid, pre, s }
+  if (pre && ex) build.ex = ex
   return toBase64url(JSON.stringify(build))
 }
 
@@ -29,6 +31,11 @@ export function decodeBuild(str: string): CompactBuild | null {
     if (!Array.isArray(obj.s) || obj.s.length !== 2) return null
     if (!Array.isArray(obj.s[0]) || obj.s[0].length !== 3) return null
     if (!Array.isArray(obj.s[1]) || obj.s[1].length !== 3) return null
+    if (obj.ex !== undefined) {
+      if (!Array.isArray(obj.ex) || obj.ex.length !== 2) return null
+      if (!Array.isArray(obj.ex[0]) || obj.ex[0].length !== 3) return null
+      if (!Array.isArray(obj.ex[1]) || obj.ex[1].length !== 3) return null
+    }
     return obj as CompactBuild
   } catch {
     return null

@@ -8,12 +8,14 @@ const emptySquad = (): Squad => ({ primary: null, secondary: null, support: null
 function buildToCompact(
   name: string,
   mission: Mission | null,
+  premiere: boolean,
   squads: [Squad, Squad],
+  extraSquads: [Squad, Squad],
 ): CompactBuild {
-  return {
+  const compact: CompactBuild = {
     name: name || 'Unnamed',
     mid: mission?.id ?? null,
-    pre: false,
+    pre: premiere,
     s: [
       [
         squads[0].primary?.id ?? 0,
@@ -27,6 +29,21 @@ function buildToCompact(
       ],
     ],
   }
+  if (premiere) {
+    compact.ex = [
+      [
+        extraSquads[0].primary?.id ?? 0,
+        extraSquads[0].secondary?.id ?? 0,
+        extraSquads[0].support?.id ?? 0,
+      ],
+      [
+        extraSquads[1].primary?.id ?? 0,
+        extraSquads[1].secondary?.id ?? 0,
+        extraSquads[1].support?.id ?? 0,
+      ],
+    ]
+  }
+  return compact
 }
 
 export function migrateStrikeForceState(s: any): void {
@@ -64,6 +81,8 @@ export const useStrikeForceStore = defineStore(
     const name = ref<string>('')
     const mission = ref<Mission | null>(null)
     const squads = ref<[Squad, Squad]>([emptySquad(), emptySquad()])
+    const premiere = ref<boolean>(false)
+    const extraSquads = ref<[Squad, Squad]>([emptySquad(), emptySquad()])
 
     // Multi-list
     const savedLists = ref<CompactBuild[]>([])
@@ -71,17 +90,45 @@ export const useStrikeForceStore = defineStore(
 
     const squad0Result = computed(() => isSquadValid(squads.value[0]))
     const squad1Result = computed(() => isSquadValid(squads.value[1]))
+    const squad2Result = computed(() => isSquadValid(extraSquads.value[0]))
+    const squad3Result = computed(() => isSquadValid(extraSquads.value[1]))
     const isSquad0Valid = computed(() => squad0Result.value.valid)
     const isSquad1Valid = computed(() => squad1Result.value.valid)
+    const isSquad2Valid = computed(() => squad2Result.value.valid)
+    const isSquad3Valid = computed(() => squad3Result.value.valid)
     const hasUniqueConflict = computed(() => hasStrikeForceConflict(squads.value))
 
     const isStrikeForceComplete = computed(() => {
       const s0 = squads.value[0]
       const s1 = squads.value[1]
-      const allFilled =
+      const baseFilled =
         s0.primary && s0.secondary && s0.support &&
         s1.primary && s1.secondary && s1.support
-      return !!(allFilled && isSquad0Valid.value && isSquad1Valid.value && !hasUniqueConflict.value)
+      if (!baseFilled || !isSquad0Valid.value || !isSquad1Valid.value) return false
+
+      if (premiere.value) {
+        const e0 = extraSquads.value[0]
+        const e1 = extraSquads.value[1]
+        const extraFilled =
+          e0.primary && e0.secondary && e0.support &&
+          e1.primary && e1.secondary && e1.support
+        if (!extraFilled || !isSquad2Valid.value || !isSquad3Valid.value) return false
+        // Check uniqueness across all 4 squads
+        const allUnits: Character[] = []
+        for (const sq of [...squads.value, ...extraSquads.value]) {
+          for (const role of ['primary', 'secondary', 'support'] as const) {
+            const u = sq[role]
+            if (u) allUnits.push(u)
+          }
+        }
+        const names = allUnits.map(u => u.name)
+        if (new Set(names).size < names.length) return false
+        const charTypes = allUnits.map(u => u.characterType).filter(Boolean)
+        if (new Set(charTypes).size < charTypes.length) return false
+        return true
+      }
+
+      return !hasUniqueConflict.value
     })
 
     function setName(n: string) {
@@ -92,22 +139,37 @@ export const useStrikeForceStore = defineStore(
       mission.value = m
     }
 
-    function setUnit(squadIdx: 0 | 1, role: keyof Squad, unit: Character | null) {
-      squads.value[squadIdx][role] = unit
+    function setPremiere(val: boolean) {
+      premiere.value = val
+      if (!val) extraSquads.value = [emptySquad(), emptySquad()]
     }
 
-    function clearUnit(squadIdx: 0 | 1, role: keyof Squad) {
-      squads.value[squadIdx][role] = null
+    function setUnit(squadIdx: 0 | 1 | 2 | 3, role: keyof Squad, unit: Character | null) {
+      if (squadIdx < 2) {
+        squads.value[squadIdx][role] = unit
+      } else {
+        extraSquads.value[squadIdx - 2][role] = unit
+      }
+    }
+
+    function clearUnit(squadIdx: 0 | 1 | 2 | 3, role: keyof Squad) {
+      if (squadIdx < 2) {
+        squads.value[squadIdx][role] = null
+      } else {
+        extraSquads.value[squadIdx - 2][role] = null
+      }
     }
 
     function resetStrikeForce() {
       name.value = ''
       mission.value = null
       squads.value = [emptySquad(), emptySquad()]
+      premiere.value = false
+      extraSquads.value = [emptySquad(), emptySquad()]
     }
 
     function saveCurrentList() {
-      const compact = buildToCompact(name.value, mission.value, squads.value)
+      const compact = buildToCompact(name.value, mission.value, premiere.value, squads.value, extraSquads.value)
       if (activeIndex.value === -1) {
         savedLists.value.push(compact)
         activeIndex.value = savedLists.value.length - 1
@@ -135,6 +197,23 @@ export const useStrikeForceStore = defineStore(
           support: build.s[1][2] ? (characters.find(c => c.id === build.s[1][2]) ?? null) : null,
         },
       ]
+      premiere.value = build.pre
+      if (build.ex) {
+        extraSquads.value = [
+          {
+            primary: build.ex[0][0] ? (characters.find(c => c.id === build.ex![0][0]) ?? null) : null,
+            secondary: build.ex[0][1] ? (characters.find(c => c.id === build.ex![0][1]) ?? null) : null,
+            support: build.ex[0][2] ? (characters.find(c => c.id === build.ex![0][2]) ?? null) : null,
+          },
+          {
+            primary: build.ex[1][0] ? (characters.find(c => c.id === build.ex![1][0]) ?? null) : null,
+            secondary: build.ex[1][1] ? (characters.find(c => c.id === build.ex![1][1]) ?? null) : null,
+            support: build.ex[1][2] ? (characters.find(c => c.id === build.ex![1][2]) ?? null) : null,
+          },
+        ]
+      } else {
+        extraSquads.value = [emptySquad(), emptySquad()]
+      }
       activeIndex.value = i
     }
 
@@ -169,17 +248,24 @@ export const useStrikeForceStore = defineStore(
       name,
       mission,
       squads,
+      premiere,
+      extraSquads,
       savedLists,
       activeIndex,
       strikeForce,
       squad0Result,
       squad1Result,
+      squad2Result,
+      squad3Result,
       isSquad0Valid,
       isSquad1Valid,
+      isSquad2Valid,
+      isSquad3Valid,
       hasUniqueConflict,
       isStrikeForceComplete,
       setName,
       setMission,
+      setPremiere,
       setUnit,
       clearUnit,
       resetStrikeForce,

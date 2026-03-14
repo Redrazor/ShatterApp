@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { io, Socket } from 'socket.io-client'
-import type { PlayUnit, TrackerSnapshot, DiceRollResult } from '../types/index.ts'
+import type { PlayUnit, TrackerSnapshot, DiceRollResult, ForcePoolPayload } from '../types/index.ts'
+import type { DieState } from '../utils/dice.ts'
 
 // Module-level singleton
 let socket: Socket | null = null
@@ -12,18 +13,26 @@ const opponentOnline = ref(false)
 
 type Callback<T = void> = (arg: T) => void
 
-let _onOpponentUnits: Callback<PlayUnit[]> | null = null
+let _onOpponentUnits: ((units: PlayUnit[], forcePool?: ForcePoolPayload) => void) | null = null
 let _onTrackerUpdate: Callback<TrackerSnapshot> | null = null
 let _onOpponentDice: Callback<DiceRollResult> | null = null
 let _onPlayerJoined: Callback | null = null
 let _onPlayerLeft: Callback | null = null
+let _onSessionEnded: Callback | null = null
+let _onOpponentName: Callback<string> | null = null
+let _onRoleAssigned: Callback<{ myRole: 'attacker' | 'defender' }> | null = null
+let _onOpponentPoolUpdate: Callback<{ pool: DieState[] }> | null = null
+let _onRolesReset: Callback | null = null
+let _onRoleTaken: Callback<{ role: 'attacker' | 'defender' }> | null = null
 
 function getSocket(): Socket {
   if (!socket) {
     const url = (import.meta as { env?: Record<string, string> }).env?.VITE_WS_URL ?? ''
     socket = io(url || window.location.origin, { path: '/socket.io', autoConnect: false })
 
-    socket.on('opponent-units', (data: PlayUnit[]) => { _onOpponentUnits?.(data) })
+    socket.on('opponent-units', (data: { units: PlayUnit[]; forcePool?: ForcePoolPayload }) => {
+      _onOpponentUnits?.(data.units, data.forcePool)
+    })
     socket.on('tracker-update', (data: TrackerSnapshot) => { _onTrackerUpdate?.(data) })
     socket.on('opponent-dice', (data: DiceRollResult) => { _onOpponentDice?.(data) })
     socket.on('player-joined', () => {
@@ -34,6 +43,14 @@ function getSocket(): Socket {
       opponentOnline.value = false
       _onPlayerLeft?.()
     })
+    socket.on('session-ended', () => { _onSessionEnded?.() })
+    socket.on('opponent-name', ({ name }: { name: string }) => { _onOpponentName?.(name) })
+    socket.on('role-assigned', ({ role }: { role: 'attacker' | 'defender' }) => {
+      _onRoleAssigned?.({ myRole: role })
+    })
+    socket.on('opponent-pool-update', (payload: { pool: DieState[] }) => { _onOpponentPoolUpdate?.(payload) })
+    socket.on('roles-reset', () => { _onRolesReset?.() })
+    socket.on('role-taken', (payload: { role: 'attacker' | 'defender' }) => { _onRoleTaken?.(payload) })
     socket.on('connect', () => { connected.value = true })
     socket.on('disconnect', () => { connected.value = false })
   }
@@ -97,8 +114,8 @@ export function useDiceRoom() {
     })
   }
 
-  function sendUnits(units: PlayUnit[]): void {
-    socket?.emit('sync-units', { units })
+  function sendUnits(units: PlayUnit[], forcePool?: ForcePoolPayload): void {
+    socket?.emit('sync-units', { units, forcePool })
   }
 
   function sendTrackerState(snapshot: TrackerSnapshot): void {
@@ -118,11 +135,17 @@ export function useDiceRoom() {
     opponentOnline.value = false
   }
 
-  function onOpponentUnits(cb: Callback<PlayUnit[]>): void { _onOpponentUnits = cb }
+  function onOpponentUnits(cb: (units: PlayUnit[], forcePool?: ForcePoolPayload) => void): void { _onOpponentUnits = cb }
   function onTrackerUpdate(cb: Callback<TrackerSnapshot>): void { _onTrackerUpdate = cb }
   function onOpponentDice(cb: Callback<DiceRollResult>): void { _onOpponentDice = cb }
   function onPlayerJoined(cb: Callback): void { _onPlayerJoined = cb }
   function onPlayerLeft(cb: Callback): void { _onPlayerLeft = cb }
+  function onSessionEnded(cb: Callback): void { _onSessionEnded = cb }
+  function onOpponentName(cb: Callback<string>): void { _onOpponentName = cb }
+  function onRoleAssigned(cb: Callback<{ myRole: 'attacker' | 'defender' }>): void { _onRoleAssigned = cb }
+  function onOpponentPoolUpdate(cb: Callback<{ pool: DieState[] }>): void { _onOpponentPoolUpdate = cb }
+  function onRolesReset(cb: Callback): void { _onRolesReset = cb }
+  function onRoleTaken(cb: Callback<{ role: 'attacker' | 'defender' }>): void { _onRoleTaken = cb }
 
   return {
     roomCode,
@@ -140,5 +163,11 @@ export function useDiceRoom() {
     onOpponentDice,
     onPlayerJoined,
     onPlayerLeft,
+    onSessionEnded,
+    onOpponentName,
+    onRoleAssigned,
+    onOpponentPoolUpdate,
+    onRolesReset,
+    onRoleTaken,
   }
 }

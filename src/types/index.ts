@@ -131,6 +131,7 @@ export interface CompactBuild {
   mid: number | null
   pre: boolean
   s: [[number, number, number], [number, number, number]]
+  ex?: [[number, number, number], [number, number, number]]
 }
 
 
