@@ -60,5 +60,56 @@ describe('encodeBuild / decodeBuild', () => {
   it('returns null for empty string', () => {
     expect(decodeBuild('')).toBeNull()
   })
+
+  // ---------- premiere / ex field ----------
+
+  it('roundtrip with ex field (premiere build)', () => {
+    const encoded = encodeBuild('Premiere Build', 1, true, [[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]])
+    const decoded = decodeBuild(encoded)
+    expect(decoded).not.toBeNull()
+    expect(decoded!.pre).toBe(true)
+    expect(decoded!.ex).toEqual([[7, 8, 9], [10, 11, 12]])
+    expect(decoded!.s).toEqual([[1, 2, 3], [4, 5, 6]])
+  })
+
+  it('ex is not included when pre is false', () => {
+    const encoded = encodeBuild('Normal', null, false, [[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]])
+    const decoded = decodeBuild(encoded)
+    expect(decoded).not.toBeNull()
+    expect(decoded!.ex).toBeUndefined()
+  })
+
+  it('ex is not included when pre is true but no ex provided', () => {
+    const encoded = encodeBuild('Premiere No Ex', null, true, [[1, 2, 3], [4, 5, 6]])
+    const decoded = decodeBuild(encoded)
+    expect(decoded).not.toBeNull()
+    expect(decoded!.ex).toBeUndefined()
+  })
+
+  it('old builds without ex decode fine (backwards compat)', () => {
+    const legacyBuild: CompactBuild = { name: 'Legacy', mid: null, pre: true, s: [[1, 2, 3], [4, 5, 6]] }
+    const encoded = btoa(JSON.stringify(legacyBuild)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+    const decoded = decodeBuild(encoded)
+    expect(decoded).not.toBeNull()
+    expect(decoded!.ex).toBeUndefined()
+  })
+
+  it('returns null when ex has wrong length', () => {
+    const bad = btoa(JSON.stringify({
+      name: 'x', mid: null, pre: true,
+      s: [[1, 2, 3], [4, 5, 6]],
+      ex: [[1, 2, 3]],
+    }))
+    expect(decodeBuild(bad)).toBeNull()
+  })
+
+  it('returns null when ex[0] has wrong length', () => {
+    const bad = btoa(JSON.stringify({
+      name: 'x', mid: null, pre: true,
+      s: [[1, 2, 3], [4, 5, 6]],
+      ex: [[1, 2], [3, 4, 5]],
+    }))
+    expect(decodeBuild(bad)).toBeNull()
+  })
 })
 

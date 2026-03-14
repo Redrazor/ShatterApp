@@ -5,10 +5,12 @@ defineProps<{
   name: string
   mission: Mission | null
   isComplete: boolean
+  premiere: boolean
 }>()
 
 defineEmits<{
   (e: 'update:name', val: string): void
+  (e: 'update:premiere', val: boolean): void
   (e: 'pick-mission'): void
   (e: 'reset'): void
   (e: 'save'): void
@@ -78,6 +80,20 @@ defineEmits<{
         <span v-else class="text-sw-text/40">Select mission…</span>
       </button>
     </div>
+
+    <!-- Premiere -->
+    <label class="no-print flex items-center gap-2 cursor-pointer select-none">
+      <input
+        type="checkbox"
+        :checked="premiere"
+        class="h-4 w-4 rounded accent-amber-400"
+        @change="$emit('update:premiere', ($event.target as HTMLInputElement).checked)"
+      />
+      <span class="text-sm text-sw-text/70">
+        Premiere format
+        <span class="text-sw-text/40">— adds 2 extra squads (4 total)</span>
+      </span>
+    </label>
 
   </div>
 </template>

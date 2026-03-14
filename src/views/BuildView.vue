@@ -32,7 +32,7 @@ onMounted(() => {
 
 // Picker state
 const pickerOpen = ref(false)
-const activeSquadIdx = ref<0 | 1>(0)
+const activeSquadIdx = ref<0 | 1 | 2 | 3>(0)
 const activeRole = ref<keyof Squad | null>(null)
 
 // Mission picker state
@@ -48,10 +48,11 @@ const saveFeedback = ref('')
 const pickerExclusions = computed(() => {
   const names = new Set<string>()
   const characterTypes = new Set<string>()
-  for (let si = 0; si < 2; si++) {
+  const squadCount = sfStore.premiere ? 4 : 2
+  for (let si = 0; si < squadCount; si++) {
     for (const role of ['primary', 'secondary', 'support'] as const) {
       if (si === activeSquadIdx.value && role === activeRole.value) continue
-      const u = sfStore.squads[si][role]
+      const u = si < 2 ? sfStore.squads[si][role] : sfStore.extraSquads[si - 2][role]
       if (u) {
         names.add(u.name)
         if (u.characterType) characterTypes.add(u.characterType)
@@ -75,12 +76,41 @@ const savedListLegality = computed(() =>
     if (!r0.valid) return r0
     const r1 = isSquadValid(squads[1])
     if (!r1.valid) return r1
-    if (hasStrikeForceConflict(squads)) return { valid: false, reason: 'Duplicate units' }
+
+    if (build.pre) {
+      if (!build.ex) return { valid: false, reason: 'Incomplete' }
+      const extraSquads: [Squad, Squad] = [
+        { primary: resolve(build.ex[0][0]), secondary: resolve(build.ex[0][1]), support: resolve(build.ex[0][2]) },
+        { primary: resolve(build.ex[1][0]), secondary: resolve(build.ex[1][1]), support: resolve(build.ex[1][2]) },
+      ]
+      if (!extraSquads.every(sq => sq.primary && sq.secondary && sq.support)) {
+        return { valid: false, reason: 'Incomplete' }
+      }
+      const r2 = isSquadValid(extraSquads[0])
+      if (!r2.valid) return r2
+      const r3 = isSquadValid(extraSquads[1])
+      if (!r3.valid) return r3
+      // Check uniqueness across all 4 squads
+      const allUnits: Character[] = []
+      for (const sq of [...squads, ...extraSquads]) {
+        for (const role of ['primary', 'secondary', 'support'] as const) {
+          const u = sq[role]
+          if (u) allUnits.push(u)
+        }
+      }
+      const names = allUnits.map(u => u.name)
+      if (new Set(names).size < names.length) return { valid: false, reason: 'Duplicate units' }
+      const charTypes = allUnits.map(u => u.characterType).filter(Boolean)
+      if (new Set(charTypes).size < charTypes.length) return { valid: false, reason: 'Duplicate units' }
+    } else {
+      if (hasStrikeForceConflict(squads)) return { valid: false, reason: 'Duplicate units' }
+    }
+
     return { valid: true, reason: '' }
   })
 )
 
-function openPicker(squadIdx: 0 | 1, role: keyof Squad) {
+function openPicker(squadIdx: 0 | 1 | 2 | 3, role: keyof Squad) {
   activeSquadIdx.value = squadIdx
   activeRole.value = role
   pickerOpen.value = true
@@ -93,7 +123,7 @@ function selectUnit(char: Character) {
   pickerOpen.value = false
 }
 
-function clearUnit(squadIdx: 0 | 1, role: keyof Squad) {
+function clearUnit(squadIdx: 0 | 1 | 2 | 3, role: keyof Squad) {
   sfStore.clearUnit(squadIdx, role)
 }
 
@@ -121,14 +151,19 @@ function handlePrint() {
 function handleShare() {
   const s0 = sfStore.squads[0]
   const s1 = sfStore.squads[1]
+  const ex = sfStore.premiere ? sfStore.extraSquads : undefined
   const encoded = encodeBuild(
     sfStore.name,
     sfStore.mission?.id ?? null,
-    false,
+    sfStore.premiere,
     [
       [s0.primary?.id ?? 0, s0.secondary?.id ?? 0, s0.support?.id ?? 0],
       [s1.primary?.id ?? 0, s1.secondary?.id ?? 0, s1.support?.id ?? 0],
     ],
+    ex ? [
+      [ex[0].primary?.id ?? 0, ex[0].secondary?.id ?? 0, ex[0].support?.id ?? 0],
+      [ex[1].primary?.id ?? 0, ex[1].secondary?.id ?? 0, ex[1].support?.id ?? 0],
+    ] : undefined,
   )
   const url = `${window.location.origin}/build?sf=${encoded}`
   navigator.clipboard.writeText(url)
@@ -202,6 +237,12 @@ function importSharedBuild() {
             {{ list.name }}
           </span>
           <span
+            v-if="list.pre"
+            class="shrink-0 rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400"
+          >
+            ★ Premiere
+          </span>
+          <span
             v-if="charStore.characters.length > 0"
             class="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium"
             :class="savedListLegality[i].valid
@@ -242,7 +283,9 @@ function importSharedBuild() {
       :name="sfStore.name"
       :mission="sfStore.mission"
       :is-complete="sfStore.isStrikeForceComplete"
+      :premiere="sfStore.premiere"
       @update:name="sfStore.setName"
+      @update:premiere="sfStore.setPremiere"
       @pick-mission="missionPickerOpen = true"
       @reset="sfStore.resetStrikeForce"
       @save="handleSave"
@@ -257,9 +300,19 @@ function importSharedBuild() {
         :key="idx"
         :squad="squad"
         :squad-index="idx"
-        @pick="(role) => openPicker(idx as 0 | 1, role)"
-        @clear="(role) => clearUnit(idx as 0 | 1, role)"
+        @pick="(role) => openPicker(idx as 0 | 1 | 2 | 3, role)"
+        @clear="(role) => clearUnit(idx as 0 | 1 | 2 | 3, role)"
       />
+      <template v-if="sfStore.premiere">
+        <SquadSlot
+          v-for="(squad, idx) in sfStore.extraSquads"
+          :key="idx + 2"
+          :squad="squad"
+          :squad-index="idx + 2"
+          @pick="(role) => openPicker((idx + 2) as 0 | 1 | 2 | 3, role)"
+          @clear="(role) => clearUnit((idx + 2) as 0 | 1 | 2 | 3, role)"
+        />
+      </template>
     </div>
   </div>
 

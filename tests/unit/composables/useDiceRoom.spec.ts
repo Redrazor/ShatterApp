@@ -131,7 +131,7 @@ describe('useDiceRoom', () => {
     const call = mockOn.mock.calls.find(([event]: [string]) => event === 'opponent-units')
     expect(call).toBeDefined()
     const handler = call![1] as (data: unknown) => void
-    handler([{ id: 99 }])
-    expect(cb).toHaveBeenCalledWith([{ id: 99 }])
+    handler({ units: [{ id: 99 }] })
+    expect(cb).toHaveBeenCalledWith([{ id: 99 }], undefined)
   })
 })

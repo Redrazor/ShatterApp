@@ -517,6 +517,183 @@ describe('useStrikeForceStore', () => {
     expect(store.savedLists[1].name).toBe('Imported')
   })
 
+  // ---------- premiere ----------
+
+  it('premiere starts false and extraSquads are empty', () => {
+    const store = useStrikeForceStore()
+    expect(store.premiere).toBe(false)
+    expect(store.extraSquads[0].primary).toBeNull()
+    expect(store.extraSquads[1].primary).toBeNull()
+  })
+
+  it('setPremiere true enables premiere', () => {
+    const store = useStrikeForceStore()
+    store.setPremiere(true)
+    expect(store.premiere).toBe(true)
+  })
+
+  it('setPremiere false resets extraSquads', () => {
+    const store = useStrikeForceStore()
+    store.setPremiere(true)
+    store.setUnit(2, 'primary', makeChar({ id: 10 }))
+    store.setPremiere(false)
+    expect(store.premiere).toBe(false)
+    expect(store.extraSquads[0].primary).toBeNull()
+  })
+
+  it('setUnit routes index 2 to extraSquads[0]', () => {
+    const store = useStrikeForceStore()
+    const char = makeChar({ id: 20, name: 'Extra A' })
+    store.setUnit(2, 'primary', char)
+    expect(store.extraSquads[0].primary?.name).toBe('Extra A')
+    expect(store.squads[0].primary).toBeNull()
+  })
+
+  it('setUnit routes index 3 to extraSquads[1]', () => {
+    const store = useStrikeForceStore()
+    const char = makeChar({ id: 30, name: 'Extra B' })
+    store.setUnit(3, 'secondary', char)
+    expect(store.extraSquads[1].secondary?.name).toBe('Extra B')
+  })
+
+  it('clearUnit routes index 2 and 3 to extraSquads', () => {
+    const store = useStrikeForceStore()
+    store.setUnit(2, 'primary', makeChar({ id: 20 }))
+    store.setUnit(3, 'primary', makeChar({ id: 30 }))
+    store.clearUnit(2, 'primary')
+    store.clearUnit(3, 'primary')
+    expect(store.extraSquads[0].primary).toBeNull()
+    expect(store.extraSquads[1].primary).toBeNull()
+  })
+
+  it('isSquad2Valid and isSquad3Valid are computed from extraSquads', () => {
+    const store = useStrikeForceStore()
+    expect(store.isSquad2Valid).toBe(false) // empty
+    store.setUnit(2, 'primary', makeChar({ id: 1, unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(2, 'secondary', makeChar({ id: 2, unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(2, 'support', makeChar({ id: 3, unitType: 'Support', sp: null, pc: 2 }))
+    expect(store.isSquad2Valid).toBe(true)
+    expect(store.isSquad3Valid).toBe(false) // squad 3 still empty
+  })
+
+  it('saveCurrentList includes ex when premiere is true', () => {
+    const store = useStrikeForceStore()
+    store.setPremiere(true)
+    store.setName('Premiere Build')
+    store.setUnit(2, 'primary', makeChar({ id: 20 }))
+    store.setUnit(2, 'secondary', makeChar({ id: 21 }))
+    store.setUnit(2, 'support', makeChar({ id: 22 }))
+    store.setUnit(3, 'primary', makeChar({ id: 30 }))
+    store.setUnit(3, 'secondary', makeChar({ id: 31 }))
+    store.setUnit(3, 'support', makeChar({ id: 32 }))
+    store.saveCurrentList()
+    expect(store.savedLists[0].pre).toBe(true)
+    expect(store.savedLists[0].ex).toEqual([[20, 21, 22], [30, 31, 32]])
+  })
+
+  it('saveCurrentList excludes ex when premiere is false', () => {
+    const store = useStrikeForceStore()
+    store.setPremiere(false)
+    store.setName('Normal Build')
+    store.saveCurrentList()
+    expect(store.savedLists[0].pre).toBe(false)
+    expect(store.savedLists[0].ex).toBeUndefined()
+  })
+
+  it('loadList restores premiere and extraSquads from saved build', () => {
+    const store = useStrikeForceStore()
+    const char20 = makeChar({ id: 20, name: 'Extra Primary' })
+    const char21 = makeChar({ id: 21, name: 'Extra Secondary', unitType: 'Secondary', pc: 2 })
+    const char22 = makeChar({ id: 22, name: 'Extra Support', unitType: 'Support', pc: 2 })
+    store.setPremiere(true)
+    store.setName('Premiere Load')
+    store.setUnit(2, 'primary', char20)
+    store.setUnit(2, 'secondary', char21)
+    store.setUnit(2, 'support', char22)
+    store.saveCurrentList()
+    store.newList()
+    expect(store.premiere).toBe(false)
+    store.loadList(0, [char20, char21, char22], [])
+    expect(store.premiere).toBe(true)
+    expect(store.extraSquads[0].primary?.name).toBe('Extra Primary')
+    expect(store.extraSquads[0].secondary?.name).toBe('Extra Secondary')
+    expect(store.extraSquads[0].support?.name).toBe('Extra Support')
+  })
+
+  it('loadList resets extraSquads when build has no ex', () => {
+    const store = useStrikeForceStore()
+    // Import a premiere build without ex (simulates old format or partial save)
+    store.importLists([{ name: 'Old Premiere', mid: null, pre: true, s: [[0, 0, 0], [0, 0, 0]] }])
+    // Set some extra squad units first so we can verify they get cleared
+    store.setPremiere(true)
+    store.setUnit(2, 'primary', makeChar({ id: 99 }))
+    store.loadList(0, [], [])
+    // premiere from build.pre (true), but extraSquads reset to empty since no ex
+    expect(store.premiere).toBe(true)
+    expect(store.extraSquads[0].primary).toBeNull()
+    expect(store.extraSquads[1].primary).toBeNull()
+  })
+
+  it('resetStrikeForce clears premiere and extraSquads', () => {
+    const store = useStrikeForceStore()
+    store.setPremiere(true)
+    store.setUnit(2, 'primary', makeChar({ id: 20 }))
+    store.resetStrikeForce()
+    expect(store.premiere).toBe(false)
+    expect(store.extraSquads[0].primary).toBeNull()
+    expect(store.extraSquads[1].primary).toBeNull()
+  })
+
+  it('isStrikeForceComplete is false in premiere mode when extra squads are empty', () => {
+    const store = useStrikeForceStore()
+    store.setPremiere(true)
+    // Fill squads 0 and 1
+    store.setUnit(0, 'primary', makeChar({ id: 1, name: 'A', characterType: 'Alpha', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(0, 'secondary', makeChar({ id: 2, name: 'B', characterType: 'Beta', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(0, 'support', makeChar({ id: 3, name: 'C', characterType: 'Gamma', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(1, 'primary', makeChar({ id: 4, name: 'D', characterType: 'Delta', unitType: 'Primary', sp: 6, pc: null }))
+    store.setUnit(1, 'secondary', makeChar({ id: 5, name: 'E', characterType: 'Epsilon', unitType: 'Secondary', sp: null, pc: 3 }))
+    store.setUnit(1, 'support', makeChar({ id: 6, name: 'F', characterType: 'Zeta', unitType: 'Support', sp: null, pc: 2 }))
+    expect(store.isStrikeForceComplete).toBe(false)
+  })
+
+  it('isStrikeForceComplete is true in premiere mode when all 4 squads are valid and unique', () => {
+    const store = useStrikeForceStore()
+    store.setPremiere(true)
+    store.setUnit(0, 'primary', makeChar({ id: 1, name: 'A', characterType: 'Alpha', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(0, 'secondary', makeChar({ id: 2, name: 'B', characterType: 'Beta', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(0, 'support', makeChar({ id: 3, name: 'C', characterType: 'Gamma', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(1, 'primary', makeChar({ id: 4, name: 'D', characterType: 'Delta', unitType: 'Primary', sp: 6, pc: null }))
+    store.setUnit(1, 'secondary', makeChar({ id: 5, name: 'E', characterType: 'Epsilon', unitType: 'Secondary', sp: null, pc: 3 }))
+    store.setUnit(1, 'support', makeChar({ id: 6, name: 'F', characterType: 'Zeta', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(2, 'primary', makeChar({ id: 7, name: 'G', characterType: 'Eta', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(2, 'secondary', makeChar({ id: 8, name: 'H', characterType: 'Theta', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(2, 'support', makeChar({ id: 9, name: 'I', characterType: 'Iota', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(3, 'primary', makeChar({ id: 10, name: 'J', characterType: 'Kappa', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(3, 'secondary', makeChar({ id: 11, name: 'K', characterType: 'Lambda', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(3, 'support', makeChar({ id: 12, name: 'L', characterType: 'Mu', unitType: 'Support', sp: null, pc: 2 }))
+    expect(store.isStrikeForceComplete).toBe(true)
+  })
+
+  it('isStrikeForceComplete is false in premiere mode when a unit appears in squad 3 and squad 1', () => {
+    const store = useStrikeForceStore()
+    store.setPremiere(true)
+    store.setUnit(0, 'primary', makeChar({ id: 1, name: 'Vader', characterType: 'Alpha', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(0, 'secondary', makeChar({ id: 2, name: 'B', characterType: 'Beta', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(0, 'support', makeChar({ id: 3, name: 'C', characterType: 'Gamma', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(1, 'primary', makeChar({ id: 4, name: 'D', characterType: 'Delta', unitType: 'Primary', sp: 6, pc: null }))
+    store.setUnit(1, 'secondary', makeChar({ id: 5, name: 'E', characterType: 'Epsilon', unitType: 'Secondary', sp: null, pc: 3 }))
+    store.setUnit(1, 'support', makeChar({ id: 6, name: 'F', characterType: 'Zeta', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(2, 'primary', makeChar({ id: 7, name: 'G', characterType: 'Eta', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(2, 'secondary', makeChar({ id: 8, name: 'H', characterType: 'Theta', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(2, 'support', makeChar({ id: 9, name: 'I', characterType: 'Iota', unitType: 'Support', sp: null, pc: 2 }))
+    // Squad 3 reuses 'Vader' — conflict across all 4 squads
+    store.setUnit(3, 'primary', makeChar({ id: 10, name: 'Vader', characterType: 'Kappa', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(3, 'secondary', makeChar({ id: 11, name: 'K', characterType: 'Lambda', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(3, 'support', makeChar({ id: 12, name: 'L', characterType: 'Mu', unitType: 'Support', sp: null, pc: 2 }))
+    expect(store.isStrikeForceComplete).toBe(false)
+  })
+
   // ---------- multiple saved lists ----------
 
   it('can save and retrieve three distinct lists', () => {
