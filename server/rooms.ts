@@ -1,5 +1,6 @@
 interface RoomPlayer {
   socketId: string
+  name?: string
   disconnectedAt?: number
 }
 
@@ -8,6 +9,7 @@ interface Room {
   host: RoomPlayer
   guest?: RoomPlayer
   gracePeriod?: ReturnType<typeof setTimeout>
+  duelRole: 'attacker' | 'defender' | null
 }
 
 const rooms = new Map<string, Room>()
@@ -23,21 +25,48 @@ export function generateCode(): string {
   return code
 }
 
-export function createRoom(socketId: string): string {
+export function createRoom(socketId: string, name?: string): string {
   const code = generateCode()
-  rooms.set(code, { code, host: { socketId } })
+  rooms.set(code, { code, host: { socketId, name }, duelRole: null })
   socketToRoom.set(socketId, code)
   return code
 }
 
-export function joinRoom(code: string, socketId: string): 'host' | 'guest' | 'full' | 'not-found' {
+export function claimDuelRole(code: string, role: 'attacker' | 'defender'): boolean {
+  const room = rooms.get(code.toUpperCase())
+  if (!room) return false
+  if (room.duelRole !== null) return false
+  room.duelRole = role
+  return true
+}
+
+export function clearDuelRole(code: string): void {
+  const room = rooms.get(code.toUpperCase())
+  if (room) room.duelRole = null
+}
+
+export function joinRoom(code: string, socketId: string, name?: string): 'host' | 'guest' | 'full' | 'not-found' {
   const room = rooms.get(code.toUpperCase())
   if (!room) return 'not-found'
   if (room.guest && !room.guest.disconnectedAt) return 'full'
-  // Allow joining as guest (or rejoining as guest)
-  room.guest = { socketId }
+  room.guest = { socketId, name }
   socketToRoom.set(socketId, code.toUpperCase())
   return 'guest'
+}
+
+export function setPlayerName(socketId: string, name: string): void {
+  const code = socketToRoom.get(socketId)
+  if (!code) return
+  const room = rooms.get(code)
+  if (!room) return
+  if (room.host.socketId === socketId) room.host.name = name
+  else if (room.guest?.socketId === socketId) room.guest.name = name
+}
+
+export function getOpponentName(room: Room, mySocketId: string): string | undefined {
+  if (room.host.socketId === mySocketId) return room.guest?.name
+  if (room.guest?.socketId === mySocketId) return room.host.name
+  return undefined
 }
 
 export function rejoinRoom(code: string, socketId: string): 'host' | 'guest' | null {
@@ -99,6 +128,15 @@ export function removePlayer(socketId: string): { code: string; role: 'host' | '
   }, 30_000)
 
   return { code, role, room }
+}
+
+export function deleteRoom(code: string): void {
+  const room = rooms.get(code.toUpperCase())
+  if (!room) return
+  if (room.gracePeriod) clearTimeout(room.gracePeriod)
+  if (room.host.socketId) socketToRoom.delete(room.host.socketId)
+  if (room.guest?.socketId) socketToRoom.delete(room.guest.socketId)
+  rooms.delete(code.toUpperCase())
 }
 
 export function getRoomBySocket(socketId: string): Room | null {

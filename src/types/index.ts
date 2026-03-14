@@ -143,6 +143,8 @@ export interface TrackerSnapshot {
   p1Wins?: number
   p2Wins?: number
   selectedMissionId?: number | null
+  struggleCards?: [string, string, string] | null
+  missionOwner?: 'host' | 'guest' | null
   // legendary
   victoryPosition?: number
   cadre1Force?: number
@@ -155,6 +157,22 @@ export interface DiceRollResult {
   defPool: import('../utils/dice').DieState[]
   hits: number
   timestamp: number
+}
+
+export type DiceRole = 'attacker' | 'defender' | null
+
+export interface DuelRow {
+  atkPool: import('../utils/dice').DieState[]
+  defPool: import('../utils/dice').DieState[]
+  atkName: string
+  defName: string
+  netHits: number
+  timestamp: number
+}
+
+export interface ForcePoolPayload {
+  spentTokens: boolean[]
+  total: number
 }
 
 export function hasStrikeForceConflict(squads: [Squad, Squad]): boolean {

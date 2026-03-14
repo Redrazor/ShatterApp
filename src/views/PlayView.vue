@@ -35,17 +35,41 @@ const playUnitsStore = usePlayUnitsStore()
 const charactersStore = useCharactersStore()
 const strikeForceStore = useStrikeForceStore()
 
-const playTab = ref<'tracker' | 'units' | 'dice'>('tracker')
+const playTab = ref<'tracker' | 'units' | 'dice'>(
+  (store.selectedMission || koStore.selectedKoMission || (legendaryStore.selectedMission && legendaryStore.selectedGalacticLegend))
+    ? 'tracker' : 'units'
+)
 const multiplayerMode = ref(false)
 const rollSession = useRollSessionStore()
 const diceRoom = useDiceRoom()
 
 // Wire up multiplayer callbacks
-diceRoom.onOpponentUnits((units) => rollSession.setOpponentUnits(units))
-diceRoom.onTrackerUpdate((_snapshot) => { /* last-write-wins — future: apply snapshot */ })
-diceRoom.onOpponentDice((roll) => rollSession.setLastDice(roll))
-diceRoom.onPlayerJoined(() => rollSession.setOpponentOnline(true))
+diceRoom.onOpponentUnits((units, forcePool) => {
+  rollSession.setOpponentUnits(units)
+  if (forcePool) rollSession.setOpponentForcePool(forcePool)
+})
+diceRoom.onTrackerUpdate((snapshot) => {
+  console.log('[onTrackerUpdate] received snapshot:', JSON.stringify(snapshot), 'missions loaded:', missionsStore.missions.length)
+  store.applySnapshot(snapshot, missionsStore.missions)
+  if (snapshot.selectedMissionId != null) playUnitsStore.lock()
+})
+diceRoom.onPlayerJoined(() => {
+  rollSession.setOpponentOnline(true)
+  playUnitsStore.syncNow()
+})
 diceRoom.onPlayerLeft(() => rollSession.setOpponentOnline(false))
+diceRoom.onSessionEnded(() => {
+  diceRoom.leaveRoom()
+  rollSession.reset()
+  multiplayerMode.value = false
+})
+diceRoom.onOpponentName((name) => rollSession.setOpponentName(name))
+diceRoom.onRoleAssigned(({ myRole }) => rollSession.claimRole(myRole))
+diceRoom.onOpponentPoolUpdate(({ pool }) => {
+  rollSession.setOpponentPool(pool)
+})
+diceRoom.onRolesReset(() => rollSession.resetDuel())
+diceRoom.onRoleTaken(({ role }) => rollSession.setRoleTaken(role))
 
 
 const MODES: { value: GameMode; label: string; disabled?: boolean }[] = [
@@ -113,6 +137,7 @@ function selectMode(m: GameMode) {
   store.resetGame()
   legendaryStore.resetLegendary()
   pickerIndex.value = 0
+  playTab.value = 'tracker'
 }
 
 function playSelectedMission() {
@@ -122,6 +147,7 @@ function playSelectedMission() {
     const gl = galacticLegendsStore.legends[0]
     if (gl) legendaryStore.selectGalacticLegend(gl)
     playUnitsStore.lock()
+    playTab.value = 'tracker'
   } else if (isKO.value) {
     selectKoMission(m as import('../types/index.ts').KoMission)
   } else {
@@ -148,6 +174,7 @@ function selectKoMission(m: import('../types/index.ts').KoMission) {
   store.p1Momentum = 0
   store.p2Momentum = 0
   playUnitsStore.lock()
+  playTab.value = 'tracker'
 }
 
 function newCampaign() {
@@ -164,7 +191,8 @@ function handleReset() {
     store.resetGame()
   }
   playUnitsStore.reset()
-  playTab.value = 'tracker'
+  playTab.value = 'units'
+  if (rollSession.isConnected) rollSession.clearHistory()
 }
 
 function confirmMission(mission: import('../types/index.ts').Mission) {
@@ -174,6 +202,7 @@ function confirmMission(mission: import('../types/index.ts').Mission) {
     store.p2Momentum = 0
   }
   playUnitsStore.lock()
+  playTab.value = 'tracker'
 }
 
 function handleClaimStruggle(player: 1 | 2) {
@@ -344,6 +373,7 @@ const gameWinner = computed(() => {
 })
 
 const ROMAN = ['I', 'II', 'III']
+
 </script>
 
 <template>
@@ -481,8 +511,8 @@ const ROMAN = ['I', 'II', 'III']
 
     <!-- ── Multiplayer panel / session banner ── -->
     <template v-if="multiplayerMode">
-      <SessionBanner v-if="rollSession.isConnected" />
-      <MultiplayerPanel v-else @connected="multiplayerMode = true" />
+      <SessionBanner v-if="rollSession.isConnected" @left="multiplayerMode = false" />
+      <MultiplayerPanel v-else @connected="() => { multiplayerMode = true; playUnitsStore.syncNow() }" />
     </template>
 
     <!-- ── Mode selector ── -->
@@ -507,13 +537,6 @@ const ROMAN = ['I', 'II', 'III']
     <!-- ── Play tab bar ── -->
     <div class="flex gap-1 rounded-lg border border-zinc-700/40 bg-zinc-900/40 p-1">
       <button
-        class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
-        :class="playTab === 'tracker'
-          ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
-          : 'text-zinc-500 hover:text-zinc-300'"
-        @click="playTab = 'tracker'"
-      >Tracker</button>
-      <button
         class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all flex items-center justify-center gap-1"
         :class="playTab === 'units'
           ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
@@ -524,6 +547,13 @@ const ROMAN = ['I', 'II', 'III']
         <span v-if="playUnitsStore.locked" class="text-amber-500 text-[9px]">🔒</span>
         <span v-else-if="playUnitsStore.hasUnits" class="rounded-full bg-zinc-600 px-1 text-[9px] text-zinc-300">{{ playUnitsStore.units.length }}</span>
       </button>
+      <button
+        class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
+        :class="playTab === 'tracker'
+          ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
+          : 'text-zinc-500 hover:text-zinc-300'"
+        @click="playTab = 'tracker'"
+      >Tracker</button>
       <button
         v-if="multiplayerMode"
         class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"

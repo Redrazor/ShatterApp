@@ -36,7 +36,10 @@ export const usePlayUnitsStore = defineStore(
 
     function _syncUnits() {
       const session = useRollSessionStore()
-      if (session.isConnected) useDiceRoom().sendUnits(units.value)
+      if (session.isConnected) useDiceRoom().sendUnits(units.value, {
+        spentTokens: [...spentTokens.value],
+        total: totalFp.value,
+      })
     }
 
     function addUnit(character: Character) {
@@ -120,6 +123,11 @@ export const usePlayUnitsStore = defineStore(
 
     function refreshForcePool() {
       spentTokens.value = []
+      _syncUnits()
+    }
+
+    function syncNow() {
+      _syncUnits()
     }
 
     function clearRoster() {
@@ -154,6 +162,7 @@ export const usePlayUnitsStore = defineStore(
       setStance,
       isRemoved,
       toggleForceToken,
+      syncNow,
       refreshForcePool,
       clearRoster,
       reset,
