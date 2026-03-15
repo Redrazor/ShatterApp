@@ -12,6 +12,7 @@ const props = defineProps<{
   readonly?: boolean
   externalPool?: DieState[]
   initialCount?: number
+  lockedFaces?: string[]
 }>()
 const emit = defineEmits<{
   (e: 'update:summary', val: Record<string, number>): void
@@ -52,9 +53,15 @@ function roll(n: number) {
   emit('rolled')
 }
 
+// ── Locked face check ─────────────────────────────────────────
+function isLockedDie(die: DieState): boolean {
+  return !!props.lockedFaces?.includes(die.face)
+}
+
 // ── Die interaction ───────────────────────────────────────────
 function selectDie(die: DieState) {
   if (rolling.value) return
+  if (isLockedDie(die)) return
   if (rerollMode.value) {
     const s = new Set(rerollSel.value)
     s.has(die.id) ? s.delete(die.id) : s.add(die.id)
@@ -94,9 +101,14 @@ function toggleRerollMode() {
 }
 
 function confirmReroll() {
-  rerollingIds.value = new Set(rerollSel.value)
+  // Safety: strip any locked dice that may have slipped into selection
+  const eligible = new Set([...rerollSel.value].filter(id => {
+    const die = pool.value.find(d => d.id === id)
+    return die && !isLockedDie(die)
+  }))
+  rerollingIds.value = new Set(eligible)
   for (const die of pool.value) {
-    if (rerollSel.value.has(die.id)) die.face = rollFn()
+    if (eligible.has(die.id)) die.face = rollFn()
   }
   rerollSel.value = new Set()
   rerollMode.value = false
@@ -191,12 +203,13 @@ const faceChipClass = (face: string) => {
         v-for="die in displayPool" :key="die.id"
         :class="[
           'relative rounded-lg transition-all',
-          !readonly ? 'cursor-pointer select-none' : '',
-          !readonly && selectedId === die.id
+          !readonly && !isLockedDie(die) ? 'cursor-pointer select-none' : '',
+          !readonly && isLockedDie(die) ? 'cursor-not-allowed opacity-40' : '',
+          !readonly && !isLockedDie(die) && selectedId === die.id
             ? 'ring-2 ring-sw-gold ring-offset-2 ring-offset-sw-bg'
-            : !readonly && rerollMode && rerollSel.has(die.id)
+            : !readonly && !isLockedDie(die) && rerollMode && rerollSel.has(die.id)
               ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-sw-bg'
-              : 'opacity-90 hover:opacity-100',
+              : !readonly && !isLockedDie(die) ? 'opacity-90 hover:opacity-100' : '',
         ]"
         @click="!readonly && selectDie(die)"
       >
@@ -205,6 +218,8 @@ const faceChipClass = (face: string) => {
         </div>
         <div v-if="die.isBonus"
           class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-sw-gold text-[9px] font-bold text-sw-dark">+</div>
+        <div v-if="!readonly && isLockedDie(die)"
+          class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-700 text-[9px]">🔒</div>
       </div>
     </div>
 
