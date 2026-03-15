@@ -10,7 +10,7 @@ const outFile = path.join(root, 'public', 'sitemap.xml')
 
 const BASE = 'https://shatterapp.com'
 
-interface Character { id: number }
+interface Character { id: number; slug: string }
 
 function loadJson<T>(file: string): T[] {
   const p = path.join(dataDir, file)
@@ -36,7 +36,7 @@ const urlTag = (loc: string, priority: string, changefreq?: string) => `  <url>
 
 const urls = [
   ...staticRoutes.map(r => urlTag(`${BASE}${r.path}`, r.priority, r.changefreq)),
-  ...characters.map(c => urlTag(`${BASE}/browse/${c.id}`, '0.9', 'monthly')),
+  ...characters.map(c => urlTag(`${BASE}/browse/${c.slug}`, '0.9', 'monthly')),
 ]
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>

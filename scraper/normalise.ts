@@ -1,14 +1,17 @@
 import type { Character, Mission, Product } from '../src/types/index.ts'
+import { toSlug } from '../src/utils/slug.ts'
 
 export function normaliseCharacter(raw: Record<string, unknown>): Character {
   const unitType = resolveUnitType(raw.UNIT_TYPE as string | undefined ?? raw.unit_type as string | undefined)
   const tags = parseSemicolonList(raw.TAGS as string | undefined ?? raw.tags as string | undefined)
   const swpFull = String(raw.SWP ?? raw.swp ?? '')
   const swpCode = swpFull.slice(0, 5).toUpperCase()
+  const name = String(raw.NAME ?? raw.name ?? '')
 
   return {
     id: Number(raw.ID ?? raw.id ?? 0),
-    name: String(raw.NAME ?? raw.name ?? ''),
+    slug: toSlug(name),
+    name,
     characterType: String(raw.CHARACTER_TYPE ?? raw.character_type ?? raw.characterType ?? ''),
     unitType,
     unitTypeName: raw.UNIT_TYPE_NAME != null ? String(raw.UNIT_TYPE_NAME) : undefined,

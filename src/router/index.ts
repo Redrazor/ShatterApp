@@ -12,7 +12,7 @@ const router = createRouter({
       path: '/browse',
       component: BrowseView,
       children: [
-        { path: ':id', component: () => import('../components/browse/CharacterProfile.vue') },
+        { path: ':slug', component: () => import('../components/browse/CharacterProfile.vue') },
       ],
     },
     { path: '/build', component: () => import('../views/BuildView.vue') },

@@ -17,9 +17,16 @@ onMounted(() => {
   errataStore.load()
 })
 
-const character = computed(() =>
-  store.characters.find(c => c.id === Number(route.params.id)) ?? null
-)
+const character = computed(() => {
+  const param = route.params.slug as string
+  // Numeric param → backward-compat: redirect to slug URL once characters are loaded
+  if (/^\d+$/.test(param)) {
+    const byId = store.characters.find(c => c.id === Number(param))
+    if (byId) router.replace(`/browse/${byId.slug}`)
+    return byId ?? null
+  }
+  return store.characters.find(c => c.slug === param) ?? null
+})
 
 function close() { router.push('/browse') }
 
@@ -78,7 +85,7 @@ useHead(computed(() => {
   const tags = c.tags.join(', ')
   const era = c.era.split(';').map((e: string) => e.trim()).filter(Boolean).join(', ')
   const desc = `${c.name} is a ${c.unitType} unit from ${era}. ${c.pc} points.${tags ? ` Tags: ${tags}.` : ''}`
-  const url = `https://shatterapp.com/browse/${c.id}`
+  const url = `https://shatterapp.com/browse/${c.slug}`
   return {
     title: `${c.name} — ShatterApp`,
     meta: [
@@ -274,7 +281,7 @@ const errata = computed(() =>
               v-for="rel in related"
               :key="rel.id"
               class="flex-shrink-0 flex flex-col items-center gap-1 rounded-lg border border-sw-gold/20 bg-sw-dark/60 p-2 hover:border-sw-gold transition-colors w-20"
-              @click="router.push(`/browse/${rel.id}`)"
+              @click="router.push(`/browse/${rel.slug}`)"
             >
               <img
                 v-if="rel.thumbnail"

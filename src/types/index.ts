@@ -19,6 +19,7 @@ export interface PlayUnit {
 
 export interface Character {
   id: number
+  slug: string
   name: string
   characterType: string
   unitType: 'Primary' | 'Secondary' | 'Support'
