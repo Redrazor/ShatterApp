@@ -47,17 +47,16 @@ const defInitialCount = computed(() =>
 )
 
 // ── Unit resolution ────────────────────────────────────────────────────────────
-const myUnit = computed<PlayUnit | undefined>(() =>
-  session.myUnitId != null
-    ? playUnits.units.find(u => u.id === session.myUnitId)
-    : undefined
-)
+// Search my roster first, then opponent's synced units (multiplayer)
+function findUnit(id: number | null): PlayUnit | undefined {
+  if (id == null) return undefined
+  return playUnits.units.find(u => u.id === id)
+    ?? session.opponentUnits.find(u => u.id === id)
+}
 
-const oppUnit = computed<PlayUnit | undefined>(() =>
-  session.oppUnitId != null
-    ? session.opponentUnits.find(u => u.id === session.oppUnitId)
-    : undefined
-)
+// Each column has its own linked unit (set independently by clicking stat buttons)
+const atkUnit = computed<PlayUnit | undefined>(() => findUnit(session.atkUnitId))
+const defUnit = computed<PlayUnit | undefined>(() => findUnit(session.defUnitId))
 
 function stanceImageFor(unit: PlayUnit | undefined): string | null {
   if (!unit) return null
@@ -73,11 +72,10 @@ const CONDITION_LABELS: Record<ConditionKey, string> = {
   pinned: '📌 Pinned',
 }
 
-const myStanceImage  = computed(() => stanceImageFor(myUnit.value))
-const oppStanceImage = computed(() => stanceImageFor(oppUnit.value))
-
-const myConditions  = computed(() => myUnit.value?.conditions ?? [])
-const oppConditions = computed(() => oppUnit.value?.conditions ?? [])
+const atkStanceImage = computed(() => stanceImageFor(atkUnit.value))
+const defStanceImage = computed(() => stanceImageFor(defUnit.value))
+const atkConditions  = computed(() => atkUnit.value?.conditions ?? [])
+const defConditions  = computed(() => defUnit.value?.conditions ?? [])
 
 // Summary refs used for hit calculation in solo mode
 const atkSummary = ref<Record<string, number>>({})
@@ -172,7 +170,7 @@ function onDefRolled() {
 function resetDuel() {
   _commitActiveDuel()
   myPool.value = []
-  session.resetDuel()
+  session.resetDuel()  // clears atkUnitId, defUnitId, myRole, opponentPool
   diceRoom.resetDuel()
   localPendingRole.value = null
   localPendingCount.value = 0
@@ -213,38 +211,13 @@ function resetDuel() {
 
         <!-- Attack column -->
         <div class="flex flex-col gap-3">
-          <!-- Stance card (my unit if I'm attacker; opp unit if I'm defender) -->
-          <template v-if="session.isConnected && session.myRole">
-            <template v-if="session.myRole === 'attacker'">
-              <img v-if="myStanceImage" :src="myStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Stance card" />
-              <div v-if="myConditions.length" class="flex flex-wrap gap-1">
-                <span v-for="c in myConditions" :key="c"
-                  class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
-                  {{ CONDITION_LABELS[c] }}
-                </span>
-              </div>
-            </template>
-            <template v-else>
-              <img v-if="oppStanceImage" :src="oppStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Opponent stance card" />
-              <div v-if="oppConditions.length" class="flex flex-wrap gap-1">
-                <span v-for="c in oppConditions" :key="c"
-                  class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
-                  {{ CONDITION_LABELS[c] }}
-                </span>
-              </div>
-            </template>
-          </template>
-          <!-- Solo: show my unit's stance card above attack column when it's linked -->
-          <template v-else-if="myStanceImage || myConditions.length">
-            <img v-if="myStanceImage" :src="myStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Stance card" />
-            <div v-if="myConditions.length" class="flex flex-wrap gap-1">
-              <span v-for="c in myConditions" :key="c"
-                class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
-                {{ CONDITION_LABELS[c] }}
-              </span>
-            </div>
-          </template>
-
+          <img v-if="atkStanceImage" :src="atkStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Attacker stance card" />
+          <div v-if="atkConditions.length" class="flex flex-wrap gap-1">
+            <span v-for="c in atkConditions" :key="c"
+              class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
+              {{ CONDITION_LABELS[c] }}
+            </span>
+          </div>
           <DiceColumn
             type="attack"
             :readonly="session.isConnected && session.myRole === 'defender'"
@@ -258,28 +231,13 @@ function resetDuel() {
 
         <!-- Defense column -->
         <div class="flex flex-col gap-3">
-          <!-- Stance card (my unit if I'm defender; opp unit if I'm attacker) -->
-          <template v-if="session.isConnected && session.myRole">
-            <template v-if="session.myRole === 'defender'">
-              <img v-if="myStanceImage" :src="myStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Stance card" />
-              <div v-if="myConditions.length" class="flex flex-wrap gap-1">
-                <span v-for="c in myConditions" :key="c"
-                  class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
-                  {{ CONDITION_LABELS[c] }}
-                </span>
-              </div>
-            </template>
-            <template v-else>
-              <img v-if="oppStanceImage" :src="oppStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Opponent stance card" />
-              <div v-if="oppConditions.length" class="flex flex-wrap gap-1">
-                <span v-for="c in oppConditions" :key="c"
-                  class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
-                  {{ CONDITION_LABELS[c] }}
-                </span>
-              </div>
-            </template>
-          </template>
-
+          <img v-if="defStanceImage" :src="defStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Defender stance card" />
+          <div v-if="defConditions.length" class="flex flex-wrap gap-1">
+            <span v-for="c in defConditions" :key="c"
+              class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
+              {{ CONDITION_LABELS[c] }}
+            </span>
+          </div>
           <DiceColumn
             type="defense"
             :readonly="session.isConnected && session.myRole === 'attacker'"

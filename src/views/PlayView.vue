@@ -70,14 +70,18 @@ diceRoom.onOpponentPoolUpdate(({ pool }) => {
 })
 diceRoom.onRoleTaken(({ role, unitId }) => {
   rollSession.setRoleTaken(role)
-  rollSession.setOppUnit(unitId)
+  if (unitId !== null) {
+    if (role === 'attacker') rollSession.setAtkUnit(unitId)
+    else rollSession.setDefUnit(unitId)
+  }
 })
 
 
 const pendingRoll = ref<{ role: 'attacker' | 'defender'; count: number } | null>(null)
 
 function onRollStat(payload: { unitId: number; role: 'attacker' | 'defender'; diceCount: number }) {
-  rollSession.setMyUnit(payload.unitId)
+  if (payload.role === 'attacker') rollSession.setAtkUnit(payload.unitId)
+  else rollSession.setDefUnit(payload.unitId)
   pendingRoll.value = { role: payload.role, count: payload.diceCount }
   playTab.value = 'dice'
   if (rollSession.isConnected) {

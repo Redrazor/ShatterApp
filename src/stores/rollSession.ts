@@ -25,12 +25,12 @@ export const useRollSessionStore = defineStore('rollSession', () => {
   )
   const opponentPool = ref<DieState[]>([])
 
-  // Unit IDs linked to active dice roll
-  const myUnitId  = ref<number | null>(null)
-  const oppUnitId = ref<number | null>(null)
+  // Unit IDs linked to each dice column
+  const atkUnitId = ref<number | null>(null)
+  const defUnitId = ref<number | null>(null)
 
-  function setMyUnit(id: number | null)  { myUnitId.value = id }
-  function setOppUnit(id: number | null) { oppUnitId.value = id }
+  function setAtkUnit(id: number | null) { atkUnitId.value = id }
+  function setDefUnit(id: number | null) { defUnitId.value = id }
 
   // Mission ownership (used to sync lock state to opponent)
   const missionOwner = ref<'host' | 'guest' | null>(null)
@@ -67,8 +67,8 @@ export const useRollSessionStore = defineStore('rollSession', () => {
     myRole.value = null
     roleTaken.value = null
     opponentPool.value = []
-    myUnitId.value = null
-    oppUnitId.value = null
+    atkUnitId.value = null
+    defUnitId.value = null
   }
 
   function clearHistory() {
@@ -89,8 +89,8 @@ export const useRollSessionStore = defineStore('rollSession', () => {
     myRole.value = null
     opponentPool.value = []
     duelHistory.value = []
-    myUnitId.value = null
-    oppUnitId.value = null
+    atkUnitId.value = null
+    defUnitId.value = null
   }
 
   return {
@@ -110,10 +110,10 @@ export const useRollSessionStore = defineStore('rollSession', () => {
     opponentRole,
     opponentPool,
     duelHistory,
-    myUnitId,
-    oppUnitId,
-    setMyUnit,
-    setOppUnit,
+    atkUnitId,
+    defUnitId,
+    setAtkUnit,
+    setDefUnit,
     setRoom,
     setPlayerName,
     setOpponentName,
