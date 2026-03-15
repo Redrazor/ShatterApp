@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.1.1',
+    date: '2026-03-15',
+    changes: [
+      'Multiplayer — Rejoining a room now correctly broadcasts the rejoining player\'s name to the remaining player',
+    ],
+  },
+  {
     version: '2.1.0',
     date: '2026-03-15',
     changes: [
