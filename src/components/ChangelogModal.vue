@@ -4,6 +4,19 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.1.0',
+    date: '2026-03-15',
+    changes: [
+      'Play — Clicking an attack (⚔) or defense (🛡) stat button on any unit card navigates to the Dice tab and pre-rolls the correct number of dice',
+      'Play — Dice tab is now always visible (solo and multiplayer)',
+      'Play — Unit stance card and active conditions appear above the corresponding dice column',
+      'Play — Multiplayer: both players\' stance cards display side by side; opponent\'s unit synced via socket',
+      'Play — Disarmed condition locks attacker\'s expertise dice (cannot modify); Exposed locks defender\'s expertise dice',
+      'Dice — "+ Add die" immediately rolls a random face; no face-picker required',
+      'Data — Fixed missing ranged defense stats for General Obi-Wan Kenobi (Form III Soresu: 5), MagnaGuard (Defensive Programs: 5), and Padawan Ahsoka Tano (Jar\'Kai: 5)',
+    ],
+  },
+  {
     version: '2.0.3',
     date: '2026-03-14',
     changes: [
