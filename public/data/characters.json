@@ -29,7 +29,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "chopper-c1-10p-spectre-3"
   },
   {
     "id": 131,
@@ -60,7 +61,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "sev-and-scorch"
   },
   {
     "id": 80,
@@ -92,7 +94,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "zeb-orrelios-spectre-4"
   },
   {
     "id": 61,
@@ -125,7 +128,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "104th-wolfpack-troopers"
   },
   {
     "id": 16,
@@ -158,7 +162,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "212th-clone-troopers"
   },
   {
     "id": 11,
@@ -191,7 +196,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "501st-clone-troopers"
   },
   {
     "id": 92,
@@ -226,7 +232,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "agent-kallus-inside-man"
   },
   {
     "id": 119,
@@ -258,7 +265,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ahsoka-tano-fulcrum"
   },
   {
     "id": 4,
@@ -290,7 +298,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ahsoka-tano-jedi-no-more"
   },
   {
     "id": 134,
@@ -322,7 +331,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "aqua-droids"
   },
   {
     "id": 38,
@@ -355,7 +365,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "arf-clone-troopers"
   },
   {
     "id": 2,
@@ -389,7 +400,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "asajj-ventress-sith-assassin"
   },
   {
     "id": 41,
@@ -421,7 +433,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "aurra-sing"
   },
   {
     "id": 12,
@@ -455,7 +468,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "b1-battle-droids"
   },
   {
     "id": 26,
@@ -489,7 +503,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "b2-battle-droids"
   },
   {
     "id": 22,
@@ -522,12 +537,13 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "barriss-offee-jedi-padawan"
   },
   {
     "id": 128,
-    "name": "Baze Malbus and Chirrut \u00cemwe",
-    "characterType": "Baze Malbus;Chirrut \u00cemwe",
+    "name": "Baze Malbus and Chirrut Îmwe",
+    "characterType": "Baze Malbus;Chirrut Îmwe",
     "unitType": "Support",
     "unitTypeName": "Support",
     "pc": 5,
@@ -554,7 +570,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "baze-malbus-and-chirrut-mwe"
   },
   {
     "id": 8,
@@ -587,7 +604,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "bo-katan-kryze"
   },
   {
     "id": 98,
@@ -620,7 +638,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "boba-fett-on-contract"
   },
   {
     "id": 127,
@@ -652,7 +671,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "bodhi-rook"
   },
   {
     "id": 108,
@@ -684,7 +704,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "bossk-single-minded-slayer"
   },
   {
     "id": 42,
@@ -717,7 +738,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "bounty-hunters"
   },
   {
     "id": 45,
@@ -750,7 +772,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "boushh-leia-organa"
   },
   {
     "id": 51,
@@ -782,7 +805,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "c-3po-and-r2-d2"
   },
   {
     "id": 39,
@@ -815,7 +839,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "cad-bane-notorious-hunter"
   },
   {
     "id": 121,
@@ -848,7 +873,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "captain-cassian-andor"
   },
   {
     "id": 15,
@@ -881,7 +907,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "cc-2224-clone-commander-cody"
   },
   {
     "id": 60,
@@ -913,7 +940,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "cc-3636-commander-wolffe"
   },
   {
     "id": 115,
@@ -945,7 +973,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "cc-3714-clone-commander-fil"
   },
   {
     "id": 5,
@@ -977,7 +1006,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "cc-7567-captain-rex"
   },
   {
     "id": 78,
@@ -1009,7 +1039,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "chewie"
   },
   {
     "id": 59,
@@ -1042,7 +1073,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "chief-chirpa"
   },
   {
     "id": 10,
@@ -1075,7 +1107,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "clan-kryze-mandalorians"
   },
   {
     "id": 68,
@@ -1109,7 +1142,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "clone-sergeant-hunter"
   },
   {
     "id": 75,
@@ -1141,7 +1175,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "commander-iden-versio"
   },
   {
     "id": 17,
@@ -1174,7 +1209,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "count-dooku-separatist-leader"
   },
   {
     "id": 97,
@@ -1206,7 +1242,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "covert-mandalorians"
   },
   {
     "id": 72,
@@ -1238,7 +1275,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "crosshair"
   },
   {
     "id": 37,
@@ -1270,7 +1308,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ct-411-commander-ponds"
   },
   {
     "id": 94,
@@ -1302,7 +1341,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ct-9904-elite-squad-leader"
   },
   {
     "id": 67,
@@ -1333,7 +1373,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "dark-troopers"
   },
   {
     "id": 120,
@@ -1366,7 +1407,8 @@
     "characterExclusion": "Anakin Skywalker",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "darth-vader-fallen-master"
   },
   {
     "id": 30,
@@ -1401,7 +1443,8 @@
     "characterExclusion": "Anakin Skywalker",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "darth-vader-jedi-hunter"
   },
   {
     "id": 50,
@@ -1434,7 +1477,8 @@
     "characterExclusion": "Anakin Skywalker",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "darth-vader-the-emperors-servant"
   },
   {
     "id": 66,
@@ -1466,7 +1510,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "death-trooper-escort"
   },
   {
     "id": 124,
@@ -1498,7 +1543,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "death-trooper-specialist"
   },
   {
     "id": 125,
@@ -1531,7 +1577,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "death-troopers"
   },
   {
     "id": 84,
@@ -1562,7 +1609,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "del-meeko-inferno-squad"
   },
   {
     "id": 99,
@@ -1594,7 +1642,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "dengar-the-demolisher"
   },
   {
     "id": 117,
@@ -1626,7 +1675,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "director-krennic"
   },
   {
     "id": 73,
@@ -1659,7 +1709,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "echo-and-tech"
   },
   {
     "id": 104,
@@ -1690,7 +1741,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "elite-squad-troopers"
   },
   {
     "id": 95,
@@ -1720,7 +1772,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "es-04-firebrand"
   },
   {
     "id": 58,
@@ -1752,7 +1805,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ewok-hunters"
   },
   {
     "id": 56,
@@ -1785,7 +1839,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ewok-trappers"
   },
   {
     "id": 86,
@@ -1819,7 +1874,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ezra-bridger-spectre-6"
   },
   {
     "id": 31,
@@ -1851,7 +1907,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "fifth-brother"
   },
   {
     "id": 116,
@@ -1884,7 +1941,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "fils-clones"
   },
   {
     "id": 32,
@@ -1916,7 +1974,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "fourth-sister"
   },
   {
     "id": 6,
@@ -1948,7 +2007,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "gar-saxon-merciless-commander"
   },
   {
     "id": 1,
@@ -1982,7 +2042,8 @@
     "characterExclusion": "Darth Vader",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "general-anakin-skywalker"
   },
   {
     "id": 23,
@@ -2014,7 +2075,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "general-grievous"
   },
   {
     "id": 14,
@@ -2048,7 +2110,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "general-obi-wan-kenobi"
   },
   {
     "id": 77,
@@ -2081,7 +2144,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "general-solo"
   },
   {
     "id": 100,
@@ -2113,7 +2177,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "general-veers-tactical-genius"
   },
   {
     "id": 83,
@@ -2144,7 +2209,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "gideon-hask-inferno-squad"
   },
   {
     "id": 91,
@@ -2177,7 +2243,8 @@
     "characterExclusion": "",
     "extraCards": "SWP28_Trawn_Extra1.png;SWP28_Trawn_Extra2.png;SWP28_Trawn_Extra3.png",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "grand-admiral-thrawn"
   },
   {
     "id": 27,
@@ -2210,7 +2277,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "grand-inquisitor-fallen-jedi"
   },
   {
     "id": 64,
@@ -2241,7 +2309,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "greef-karga"
   },
   {
     "id": 70,
@@ -2273,7 +2342,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "gwarm"
   },
   {
     "id": 90,
@@ -2305,7 +2375,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "han-and-chewie-in-it-for-the-money"
   },
   {
     "id": 87,
@@ -2337,7 +2408,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "hera-syndulla-spectre-2"
   },
   {
     "id": 63,
@@ -2370,7 +2442,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "hondo-honest-businessman"
   },
   {
     "id": 65,
@@ -2403,7 +2476,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ig-11-assassin-droid"
   },
   {
     "id": 109,
@@ -2436,7 +2510,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "ig-88b-created-to-succeed"
   },
   {
     "id": 76,
@@ -2468,7 +2543,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "imperial-special-forces"
   },
   {
     "id": 93,
@@ -2500,7 +2576,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "isb-agents"
   },
   {
     "id": 18,
@@ -2533,7 +2610,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jango-fett-bounty-hunter"
   },
   {
     "id": 52,
@@ -2566,7 +2644,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jedi-knight-luke-skywalker"
   },
   {
     "id": 110,
@@ -2599,7 +2678,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jedi-master-ki-adi-mundi"
   },
   {
     "id": 113,
@@ -2633,7 +2713,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jedi-master-kit-fisto"
   },
   {
     "id": 21,
@@ -2666,7 +2747,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jedi-master-luminara-unduli"
   },
   {
     "id": 35,
@@ -2699,7 +2781,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jedi-master-mace-windu"
   },
   {
     "id": 47,
@@ -2732,7 +2815,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jedi-master-plo-koon"
   },
   {
     "id": 111,
@@ -2764,7 +2848,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jedi-master-shaak-ti"
   },
   {
     "id": 126,
@@ -2797,7 +2882,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "jyn-erso-stardust"
   },
   {
     "id": 122,
@@ -2829,7 +2915,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "k-2so-outspoken-enforcer"
   },
   {
     "id": 7,
@@ -2861,7 +2948,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "kalani-super-tactical-droid"
   },
   {
     "id": 79,
@@ -2896,7 +2984,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "kanan-jarrus-spectre-1"
   },
   {
     "id": 25,
@@ -2928,7 +3017,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "kraken-super-tactical-droid"
   },
   {
     "id": 49,
@@ -2960,7 +3050,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "lando-and-r2-d2-inside-job"
   },
   {
     "id": 102,
@@ -2994,7 +3085,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "lando-calrissian-galactic-entrepeneur"
   },
   {
     "id": 54,
@@ -3028,7 +3120,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "leia-organa-freedom-fighter"
   },
   {
     "id": 103,
@@ -3059,7 +3152,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "lobot-computer-liaison-officer"
   },
   {
     "id": 46,
@@ -3092,7 +3186,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "logray-bright-tree-shaman"
   },
   {
     "id": 3,
@@ -3126,7 +3221,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "lord-maul"
   },
   {
     "id": 89,
@@ -3158,7 +3254,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "luke-skywalker-daring-hero"
   },
   {
     "id": 19,
@@ -3191,7 +3288,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "magnaguard"
   },
   {
     "id": 13,
@@ -3224,7 +3322,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "mandalorian-super-commandos"
   },
   {
     "id": 62,
@@ -3256,7 +3355,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "moff-gideon"
   },
   {
     "id": 33,
@@ -3289,7 +3389,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "mother-talzin"
   },
   {
     "id": 44,
@@ -3321,7 +3422,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "naboo-royal-handmaidens"
   },
   {
     "id": 114,
@@ -3354,7 +3456,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "nahdar-vebb-jedi-knight"
   },
   {
     "id": 34,
@@ -3386,7 +3489,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "nightsister-acolytes"
   },
   {
     "id": 133,
@@ -3416,7 +3520,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "nossor-ri"
   },
   {
     "id": 29,
@@ -3447,7 +3552,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "obi-wan-kenobi-out-of-hiding"
   },
   {
     "id": 20,
@@ -3480,7 +3586,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "padawan-ahsoka-tano"
   },
   {
     "id": 112,
@@ -3513,7 +3620,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "padawan-learners"
   },
   {
     "id": 55,
@@ -3545,7 +3653,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "paploo-curious-creature"
   },
   {
     "id": 96,
@@ -3578,7 +3687,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "paz-vizsla"
   },
   {
     "id": 88,
@@ -3611,7 +3721,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "princess-leia-charming-to-the-last"
   },
   {
     "id": 40,
@@ -3642,7 +3753,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "queen-padme-amidala"
   },
   {
     "id": 129,
@@ -3674,7 +3786,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "rc-1138-boss"
   },
   {
     "id": 130,
@@ -3705,7 +3818,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "rc-1140-fixer"
   },
   {
     "id": 85,
@@ -3737,7 +3851,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "rebel-commandos"
   },
   {
     "id": 123,
@@ -3770,7 +3885,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "rebel-pathfinders"
   },
   {
     "id": 24,
@@ -3803,7 +3919,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "republic-clone-commandos"
   },
   {
     "id": 132,
@@ -3834,7 +3951,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "riff-tamson"
   },
   {
     "id": 43,
@@ -3865,7 +3983,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "sabe-royal-bodyguard"
   },
   {
     "id": 81,
@@ -3898,7 +4017,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "sabine-wren-spectre-5"
   },
   {
     "id": 36,
@@ -3931,7 +4051,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "savage-opress"
   },
   {
     "id": 118,
@@ -3963,7 +4084,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "shoretroopers"
   },
   {
     "id": 101,
@@ -3994,7 +4116,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "snowtrooper-lieutenant"
   },
   {
     "id": 106,
@@ -4026,7 +4149,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "snowtroopers"
   },
   {
     "id": 48,
@@ -4057,7 +4181,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "stormtrooper-sergeant"
   },
   {
     "id": 53,
@@ -4089,7 +4214,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "stormtroopers"
   },
   {
     "id": 105,
@@ -4122,7 +4248,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "the-armorer"
   },
   {
     "id": 74,
@@ -4156,7 +4283,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "the-mandalorian"
   },
   {
     "id": 28,
@@ -4188,7 +4316,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "third-sister"
   },
   {
     "id": 71,
@@ -4221,7 +4350,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "weequay-pirates"
   },
   {
     "id": 57,
@@ -4253,7 +4383,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "wicket-intrepid-warrior"
   },
   {
     "id": 107,
@@ -4285,7 +4416,8 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "wing-guard"
   },
   {
     "id": 69,
@@ -4319,6 +4451,7 @@
     "characterExclusion": "",
     "extraCards": "",
     "stances": [],
-    "releaseDate": ""
+    "releaseDate": "",
+    "slug": "wrecker-and-omega"
   }
 ]

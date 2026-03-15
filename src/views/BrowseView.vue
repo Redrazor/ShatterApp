@@ -55,8 +55,8 @@ const allTags = computed(() => {
 
 const panelOpen = computed(() => !!route.params.id)
 
-function openProfile(char: { id: number }) {
-  router.push(`/browse/${char.id}`)
+function openProfile(char: { id: number; slug: string }) {
+  router.push(`/browse/${char.slug}`)
 }
 
 function closePanel() {

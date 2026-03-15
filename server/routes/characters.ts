@@ -11,6 +11,7 @@ function getTagsForCharacter(sqlite: Sqlite, id: number): string[] {
 export function rowToCharacter(row: Record<string, unknown>, tags: string[]) {
   return {
     id: row.id,
+    slug: row.slug ?? '',
     name: row.name,
     characterType: row.character_type,
     unitType: row.unit_type,
