@@ -48,6 +48,7 @@ io.on('connection', (socket) => {
     const rejoinRole = rejoinRoom(code, socket.id)
     if (rejoinRole) {
       socket.join(code.toUpperCase())
+      if (name) setPlayerName(socket.id, name)
       const room = getRoomBySocket(socket.id)
       const opponentOnline = room
         ? rejoinRole === 'host'
@@ -57,7 +58,7 @@ io.on('connection', (socket) => {
       const opponentName = room ? getOpponentName(room, socket.id) : undefined
       if (typeof ack === 'function') ack({ role: rejoinRole, opponentOnline, opponentName })
       if (opponentOnline) {
-        const myName = room ? (rejoinRole === 'host' ? room.host.name : room.guest?.name) : undefined
+        const myName = name ?? (room ? (rejoinRole === 'host' ? room.host.name : room.guest?.name) : undefined)
         socket.to(code.toUpperCase()).emit('player-joined', { name: myName })
       }
       return
