@@ -4,6 +4,18 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.2.0',
+    date: '2026-03-15',
+    changes: [
+      'SEO — robots.txt and sitemap.xml added; all 133 unit pages indexed with slug URLs',
+      'SEO — Slug-based character URLs: /browse/ahsoka-tano-fulcrum instead of /browse/23; old numeric links auto-redirect',
+      'SEO — Per-route page titles and meta descriptions; Open Graph + Twitter Card tags on every page',
+      'SEO — Character profile pages include og:image (unit card art), canonical URL, and BreadcrumbList JSON-LD',
+      'SEO — OG share image added (shown when sharing shatterapp.com on Discord, iMessage, etc.)',
+      'PWA — manifest icons updated to use real app icons',
+    ],
+  },
+  {
     version: '2.1.1',
     date: '2026-03-15',
     changes: [
