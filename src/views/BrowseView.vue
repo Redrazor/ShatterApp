@@ -53,7 +53,7 @@ const allTags = computed(() => {
   return [...set].sort()
 })
 
-const panelOpen = computed(() => !!route.params.id)
+const panelOpen = computed(() => !!route.params.slug)
 
 function openProfile(char: { id: number; slug: string }) {
   router.push(`/browse/${char.slug}`)
@@ -193,7 +193,7 @@ useHead({
     <!-- Slide-in panel -->
     <RouterView v-slot="{ Component }">
       <Transition name="slide">
-        <component :is="Component" :key="String(route.params.id)" />
+        <component :is="Component" :key="String(route.params.slug)" />
       </Transition>
     </RouterView>
 
