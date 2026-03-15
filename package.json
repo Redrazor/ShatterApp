@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "generate:sitemap": "tsx scripts/generate-sitemap.ts",
+    "build": "npm run generate:sitemap && vue-tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
+    "@vueuse/head": "^2.0.0",
     "better-sqlite3": "^12.6.2",
     "cors": "^2.8.6",
     "drizzle-orm": "^0.45.1",

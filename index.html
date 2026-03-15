@@ -2,12 +2,47 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/icons/pwa-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <title>ShatterApp — Star Wars Shatterpoint Companion</title>
+
+    <!-- Base meta (per-route values override these) -->
+    <title>ShatterApp — Star Wars: Shatterpoint Companion</title>
+    <meta name="description" content="ShatterApp — free fan-made companion for Star Wars: Shatterpoint. Browse all units, build squads, track games, and manage your collection." />
+    <meta name="theme-color" content="#0f1117" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ShatterApp" />
+    <meta property="og:title" content="ShatterApp — Star Wars: Shatterpoint Companion" />
+    <meta property="og:description" content="Free fan-made companion for Star Wars: Shatterpoint. Browse units, build squads, track games, manage your collection." />
+    <meta property="og:url" content="https://shatterapp.com/" />
+    <meta property="og:image" content="https://shatterapp.com/icons/og-image.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ShatterApp — Star Wars: Shatterpoint Companion" />
+    <meta name="twitter:description" content="Free fan-made companion for Star Wars: Shatterpoint. Browse units, build squads, track games." />
+    <meta name="twitter:image" content="https://shatterapp.com/icons/og-image.png" />
+
+    <!-- Canonical (static fallback — overridden per-route) -->
+    <link rel="canonical" href="https://shatterapp.com/" />
+
+    <!-- JSON-LD: WebApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ShatterApp",
+      "url": "https://shatterapp.com",
+      "description": "Fan-made companion app for Star Wars: Shatterpoint tabletop miniatures game.",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
   </head>
   <body>
     <div id="app"></div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useHead } from '@vueuse/head'
 import { useCharactersStore } from '../../stores/characters.ts'
 import { useErrataStore } from '../../stores/errata.ts'
 import KeywordChip from '../ui/KeywordChip.vue'
@@ -63,6 +64,44 @@ const related = computed(() =>
     c => c.swpCode && c.swpCode === character.value?.swpCode && c.id !== character.value?.id
   )
 )
+
+// ── SEO head ──────────────────────────────────────────────
+const ogImage = computed(() => {
+  if (!character.value?.cardFront) return 'https://shatterapp.com/icons/og-image.png'
+  const path = character.value.cardFront.replace(/^\/images\//, '/').replace(/\.(png|jpe?g|gif)$/i, '.webp')
+  return `https://shatterapp-images.web.app${path}`
+})
+
+useHead(computed(() => {
+  if (!character.value) return { title: 'ShatterApp' }
+  const c = character.value
+  const tags = c.tags.join(', ')
+  const era = c.era.split(';').map((e: string) => e.trim()).filter(Boolean).join(', ')
+  const desc = `${c.name} is a ${c.unitType} unit from ${era}. ${c.pc} points.${tags ? ` Tags: ${tags}.` : ''}`
+  const url = `https://shatterapp.com/browse/${c.id}`
+  return {
+    title: `${c.name} — ShatterApp`,
+    meta: [
+      { name: 'description', content: desc },
+      { property: 'og:title', content: c.name },
+      { property: 'og:description', content: desc },
+      { property: 'og:image', content: ogImage.value },
+      { property: 'og:url', content: url },
+    ],
+    link: [{ rel: 'canonical', href: url }],
+    script: [{
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Browse', item: 'https://shatterapp.com/browse' },
+          { '@type': 'ListItem', position: 2, name: c.name, item: url },
+        ],
+      }),
+    }],
+  }
+}))
 
 // ── Era icons ─────────────────────────────────────────────
 const eras = computed(() =>
