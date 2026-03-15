@@ -2,6 +2,7 @@ import { sqliteTable, integer, text, real } from 'drizzle-orm/sqlite-core'
 
 export const characters = sqliteTable('characters', {
   id: integer('id').primaryKey(),
+  slug: text('slug').notNull().default(''),
   name: text('name').notNull(),
   characterType: text('character_type').notNull().default(''),
   unitType: text('unit_type').notNull().default('Primary'),

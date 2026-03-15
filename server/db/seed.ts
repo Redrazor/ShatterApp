@@ -18,6 +18,7 @@ export function createTables(sqlite: Sqlite): void {
   sqlite.exec(`
     CREATE TABLE IF NOT EXISTS characters (
       id INTEGER PRIMARY KEY,
+      slug TEXT NOT NULL DEFAULT '',
       name TEXT NOT NULL DEFAULT '',
       character_type TEXT NOT NULL DEFAULT '',
       unit_type TEXT NOT NULL DEFAULT 'Primary',
@@ -110,14 +111,14 @@ export function dropTables(sqlite: Sqlite): void {
 export function seedCharacters(sqlite: Sqlite, chars: Character[]): void {
   const insertChar = sqlite.prepare(`
     INSERT INTO characters (
-      id, name, character_type, unit_type, unit_type_name,
+      id, slug, name, character_type, unit_type, unit_type_name,
       pc, sp, durability, stamina, fp, era,
       swp, swp_code, spt,
       thumbnail, card_front, card_back,
       order_card, stance1, stance2, model, model_count,
       character_exclusion, extra_cards, release_date
     ) VALUES (
-      @id, @name, @characterType, @unitType, @unitTypeName,
+      @id, @slug, @name, @characterType, @unitType, @unitTypeName,
       @pc, @sp, @durability, @stamina, @fp, @era,
       @swp, @swpCode, @spt,
       @thumbnail, @cardFront, @cardBack,
@@ -134,6 +135,7 @@ export function seedCharacters(sqlite: Sqlite, chars: Character[]): void {
     for (const c of chars) {
       insertChar.run({
         id: c.id,
+        slug: c.slug ?? '',
         name: c.name,
         characterType: c.characterType,
         unitType: c.unitType,
