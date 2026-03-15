@@ -17,6 +17,10 @@ const props = defineProps<{
   opponentUnits?: PlayUnit[]
 }>()
 
+const emit = defineEmits<{
+  (e: 'roll-stat', payload: { unitId: number; role: 'attacker' | 'defender'; diceCount: number }): void
+}>()
+
 const store = usePlayUnitsStore()
 const showPicker = ref(false)
 const showListPicker = ref(false)
@@ -129,6 +133,7 @@ function openProfile(unitId: number) {
         @remove="store.removeUnit(unit.id)"
         @open-profile="openProfile(unit.id)"
         @tag-press="onTagPress"
+        @roll-stat="emit('roll-stat', $event)"
       />
 
       <!-- Add unit button -->

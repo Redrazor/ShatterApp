@@ -9,7 +9,7 @@ interface Room {
   host: RoomPlayer
   guest?: RoomPlayer
   gracePeriod?: ReturnType<typeof setTimeout>
-  duelRole: 'attacker' | 'defender' | null
+  duelRoles: Set<'attacker' | 'defender'>
 }
 
 const rooms = new Map<string, Room>()
@@ -27,7 +27,7 @@ export function generateCode(): string {
 
 export function createRoom(socketId: string, name?: string): string {
   const code = generateCode()
-  rooms.set(code, { code, host: { socketId, name }, duelRole: null })
+  rooms.set(code, { code, host: { socketId, name }, duelRoles: new Set() })
   socketToRoom.set(socketId, code)
   return code
 }
@@ -35,14 +35,14 @@ export function createRoom(socketId: string, name?: string): string {
 export function claimDuelRole(code: string, role: 'attacker' | 'defender'): boolean {
   const room = rooms.get(code.toUpperCase())
   if (!room) return false
-  if (room.duelRole !== null) return false
-  room.duelRole = role
+  if (room.duelRoles.has(role)) return false
+  room.duelRoles.add(role)
   return true
 }
 
 export function clearDuelRole(code: string): void {
   const room = rooms.get(code.toUpperCase())
-  if (room) room.duelRole = null
+  if (room) room.duelRoles.clear()
 }
 
 export function joinRoom(code: string, socketId: string, name?: string): 'host' | 'guest' | 'full' | 'not-found' {

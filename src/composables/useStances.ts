@@ -3,8 +3,8 @@ import { ref } from 'vue'
 export interface StanceStat {
   stanceNumber: number
   stanceName: string
-  ranged: { range: number | null; attack: number | null; defense: number } | null
-  melee: { attack: number | null; defense: number } | null
+  ranged: { range: number | null; attack: number | null; defense: number | null } | null
+  melee: { attack: number | null; defense: number | null } | null
 }
 
 export interface StanceEntry {

@@ -1,22 +1,81 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import DiceColumn from '../dice/DiceColumn.vue'
 import DieFace from '../dice/DieFace.vue'
 import { useDiceRoom } from '../../composables/useDiceRoom.ts'
 import { useRollSessionStore } from '../../stores/rollSession.ts'
+import { usePlayUnitsStore } from '../../stores/playUnits.ts'
+import { imageUrl } from '../../utils/imageUrl.ts'
 import type { DieState } from '../../utils/dice.ts'
+import type { PlayUnit, ConditionKey } from '../../types/index.ts'
+
+const props = defineProps<{
+  pendingRoll?: { role: 'attacker' | 'defender'; count: number } | null
+}>()
+const emit = defineEmits<{
+  (e: 'consumed'): void
+}>()
 
 const session = useRollSessionStore()
 const diceRoom = useDiceRoom()
+const playUnits = usePlayUnitsStore()
 
-// Wire up role-related socket events
-diceRoom.onRoleTaken(({ role }) => session.setRoleTaken(role))
-diceRoom.onRoleAssigned(({ myRole }) => session.claimRole(myRole))
+// onRolesReset: commit active duel to history before clearing
+// (PlayView handles onRoleTaken + onRoleAssigned — registering here would overwrite them)
 diceRoom.onRolesReset(() => {
-  // Opponent triggered reset — commit active duel to history before clearing
   _commitActiveDuel()
   session.resetDuel()
 })
+
+// ── Pending roll (local copy so it survives until DiceColumns mount) ──────────
+const localPendingRole  = ref<'attacker' | 'defender' | null>(null)
+const localPendingCount = ref(0)
+
+watch(() => props.pendingRoll, (v) => {
+  if (v) {
+    localPendingRole.value  = v.role
+    localPendingCount.value = v.count
+    emit('consumed')
+  }
+}, { immediate: true })
+
+const atkInitialCount = computed(() =>
+  localPendingRole.value === 'attacker' ? localPendingCount.value : undefined
+)
+const defInitialCount = computed(() =>
+  localPendingRole.value === 'defender' ? localPendingCount.value : undefined
+)
+
+// ── Unit resolution ────────────────────────────────────────────────────────────
+// Search my roster first, then opponent's synced units (multiplayer)
+function findUnit(id: number | null): PlayUnit | undefined {
+  if (id == null) return undefined
+  return playUnits.units.find(u => u.id === id)
+    ?? session.opponentUnits.find(u => u.id === id)
+}
+
+// Each column has its own linked unit (set independently by clicking stat buttons)
+const atkUnit = computed<PlayUnit | undefined>(() => findUnit(session.atkUnitId))
+const defUnit = computed<PlayUnit | undefined>(() => findUnit(session.defUnitId))
+
+function stanceImageFor(unit: PlayUnit | undefined): string | null {
+  if (!unit) return null
+  const path = unit.activeStance === 2 ? (unit.stance2 ?? unit.stance1 ?? null) : (unit.stance1 ?? null)
+  return path ? imageUrl(path) : null
+}
+
+const CONDITION_LABELS: Record<ConditionKey, string> = {
+  hunker: '🛡 Hunker',
+  disarmed: '⚔ Disarmed',
+  strained: '⚡ Strained',
+  exposed: '👁 Exposed',
+  pinned: '📌 Pinned',
+}
+
+const atkStanceImage = computed(() => stanceImageFor(atkUnit.value))
+const defStanceImage = computed(() => stanceImageFor(defUnit.value))
+const atkConditions  = computed(() => atkUnit.value?.conditions ?? [])
+const defConditions  = computed(() => defUnit.value?.conditions ?? [])
 
 // Summary refs used for hit calculation in solo mode
 const atkSummary = ref<Record<string, number>>({})
@@ -111,8 +170,10 @@ function onDefRolled() {
 function resetDuel() {
   _commitActiveDuel()
   myPool.value = []
-  session.resetDuel()
+  session.resetDuel()  // clears atkUnitId, defUnitId, myRole, opponentPool
   diceRoom.resetDuel()
+  localPendingRole.value = null
+  localPendingCount.value = 0
 }
 </script>
 
@@ -146,25 +207,49 @@ function resetDuel() {
 
     <!-- Dice columns (solo always; multiplayer only when role claimed) -->
     <template v-if="!session.isConnected || session.myRole">
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Attack column: interactive for attacker or solo; readonly for defender -->
-        <DiceColumn
-          type="attack"
-          :readonly="session.isConnected && session.myRole === 'defender'"
-          :external-pool="session.isConnected && session.myRole === 'defender' ? session.opponentPool : undefined"
-          @update:summary="s => { atkSummary = s }"
-          @update:pool="onAtkPoolUpdated"
-          @rolled="onAtkRolled"
-        />
-        <!-- Defense column: interactive for defender or solo; readonly for attacker -->
-        <DiceColumn
-          type="defense"
-          :readonly="session.isConnected && session.myRole === 'attacker'"
-          :external-pool="session.isConnected && session.myRole === 'attacker' ? session.opponentPool : undefined"
-          @update:summary="s => { defSummary = s }"
-          @update:pool="onDefPoolUpdated"
-          @rolled="onDefRolled"
-        />
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <!-- Attack column -->
+        <div class="flex flex-col gap-3">
+          <img v-if="atkStanceImage" :src="atkStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Attacker stance card" />
+          <div v-if="atkConditions.length" class="flex flex-wrap gap-1">
+            <span v-for="c in atkConditions" :key="c"
+              class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
+              {{ CONDITION_LABELS[c] }}
+            </span>
+          </div>
+          <DiceColumn
+            type="attack"
+            :readonly="session.isConnected && session.myRole === 'defender'"
+            :external-pool="session.isConnected && session.myRole === 'defender' ? session.opponentPool : undefined"
+            :initial-count="atkInitialCount"
+            :locked-faces="atkConditions.includes('disarmed') ? ['expertise'] : undefined"
+            @update:summary="s => { atkSummary = s }"
+            @update:pool="onAtkPoolUpdated"
+            @rolled="onAtkRolled"
+          />
+        </div>
+
+        <!-- Defense column -->
+        <div class="flex flex-col gap-3">
+          <img v-if="defStanceImage" :src="defStanceImage" class="w-full max-h-48 sm:max-h-64 rounded-xl shadow-lg object-contain" alt="Defender stance card" />
+          <div v-if="defConditions.length" class="flex flex-wrap gap-1">
+            <span v-for="c in defConditions" :key="c"
+              class="rounded-full border border-zinc-600/50 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
+              {{ CONDITION_LABELS[c] }}
+            </span>
+          </div>
+          <DiceColumn
+            type="defense"
+            :readonly="session.isConnected && session.myRole === 'attacker'"
+            :external-pool="session.isConnected && session.myRole === 'attacker' ? session.opponentPool : undefined"
+            :initial-count="defInitialCount"
+            :locked-faces="defConditions.includes('exposed') ? ['expertise'] : undefined"
+            @update:summary="s => { defSummary = s }"
+            @update:pool="onDefPoolUpdated"
+            @rolled="onDefRolled"
+          />
+        </div>
       </div>
 
       <!-- Net Hits -->
@@ -182,8 +267,7 @@ function resetDuel() {
         <button
           class="rounded-lg border border-zinc-600/60 px-2.5 py-1 text-[10px] font-semibold text-zinc-500
                  transition-all hover:border-zinc-400 hover:text-zinc-300 active:scale-95"
-          @click="resetDuel"
-        >Reset Duel</button>
+          @click="resetDuel">Reset Duel</button>
       </div>
     </template>
 

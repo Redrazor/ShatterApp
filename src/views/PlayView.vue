@@ -68,9 +68,26 @@ diceRoom.onRoleAssigned(({ myRole }) => rollSession.claimRole(myRole))
 diceRoom.onOpponentPoolUpdate(({ pool }) => {
   rollSession.setOpponentPool(pool)
 })
-diceRoom.onRolesReset(() => rollSession.resetDuel())
-diceRoom.onRoleTaken(({ role }) => rollSession.setRoleTaken(role))
+diceRoom.onRoleTaken(({ role, unitId }) => {
+  rollSession.setRoleTaken(role)
+  if (unitId !== null) {
+    if (role === 'attacker') rollSession.setAtkUnit(unitId)
+    else rollSession.setDefUnit(unitId)
+  }
+})
 
+
+const pendingRoll = ref<{ role: 'attacker' | 'defender'; count: number } | null>(null)
+
+function onRollStat(payload: { unitId: number; role: 'attacker' | 'defender'; diceCount: number }) {
+  if (payload.role === 'attacker') rollSession.setAtkUnit(payload.unitId)
+  else rollSession.setDefUnit(payload.unitId)
+  pendingRoll.value = { role: payload.role, count: payload.diceCount }
+  playTab.value = 'dice'
+  if (rollSession.isConnected) {
+    diceRoom.claimRole(payload.role, payload.unitId)
+  }
+}
 
 const MODES: { value: GameMode; label: string; disabled?: boolean }[] = [
   { value: 'standard', label: 'Standard' },
@@ -555,7 +572,6 @@ const ROMAN = ['I', 'II', 'III']
         @click="playTab = 'tracker'"
       >Tracker</button>
       <button
-        v-if="multiplayerMode"
         class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
         :class="playTab === 'dice'
           ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
@@ -572,10 +588,11 @@ const ROMAN = ['I', 'II', 'III']
       :squad0-valid="strikeForceStore.isSquad0Valid"
       :locked="playUnitsStore.locked"
       :opponent-units="rollSession.isConnected ? rollSession.opponentUnits : undefined"
+      @roll-stat="onRollStat"
     />
 
-    <!-- ── Dice tab (multiplayer) ── -->
-    <DicePanel v-if="playTab === 'dice' && multiplayerMode" />
+    <!-- ── Dice tab ── -->
+    <DicePanel v-show="playTab === 'dice'" :pending-roll="pendingRoll" @consumed="pendingRoll = null" />
 
     <!-- ══════════════════════════════════════════
          TRACKER TAB CONTENT

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import DieFace from './DieFace.vue'
 import { rollAttack, rollDefense, ATTACK_FACES, DEFENSE_FACES } from '../../utils/dice.ts'
 import type { DieState, AttackFace, DefenseFace } from '../../utils/dice.ts'
@@ -11,6 +11,8 @@ const props = defineProps<{
   type: 'attack' | 'defense'
   readonly?: boolean
   externalPool?: DieState[]
+  initialCount?: number
+  lockedFaces?: string[]
 }>()
 const emit = defineEmits<{
   (e: 'update:summary', val: Record<string, number>): void
@@ -23,7 +25,6 @@ const pool         = ref<DieState[]>([])
 const rolling      = ref(false)
 const lastCount    = ref<number | null>(null)
 const selectedId   = ref<number | null>(null)
-const addOpen      = ref(false)
 const rerollMode   = ref(false)
 const rerollSel    = ref(new Set<number>())
 const rerollingIds = ref(new Set<number>())
@@ -41,7 +42,6 @@ function roll(n: number) {
   rolling.value = true
   lastCount.value = n
   selectedId.value = null
-  addOpen.value = false
   rerollMode.value = false
   rerollSel.value = new Set()
 
@@ -53,16 +53,21 @@ function roll(n: number) {
   emit('rolled')
 }
 
+// ── Locked face check ─────────────────────────────────────────
+function isLockedDie(die: DieState): boolean {
+  return !!props.lockedFaces?.includes(die.face)
+}
+
 // ── Die interaction ───────────────────────────────────────────
 function selectDie(die: DieState) {
   if (rolling.value) return
+  if (isLockedDie(die)) return
   if (rerollMode.value) {
     const s = new Set(rerollSel.value)
     s.has(die.id) ? s.delete(die.id) : s.add(die.id)
     rerollSel.value = s
     return
   }
-  addOpen.value = false
   selectedId.value = selectedId.value === die.id ? null : die.id
 }
 
@@ -86,7 +91,6 @@ function removeDie(id: number) {
 // ── Add die ───────────────────────────────────────────────────
 function addDie(face: AttackFace | DefenseFace) {
   pool.value.push({ id: nextId++, type: props.type, face, locked: false, isBonus: true })
-  addOpen.value = false
 }
 
 // ── Reroll mode ───────────────────────────────────────────────
@@ -94,13 +98,17 @@ function toggleRerollMode() {
   rerollMode.value = !rerollMode.value
   rerollSel.value = new Set()
   selectedId.value = null
-  addOpen.value = false
 }
 
 function confirmReroll() {
-  rerollingIds.value = new Set(rerollSel.value)
+  // Safety: strip any locked dice that may have slipped into selection
+  const eligible = new Set([...rerollSel.value].filter(id => {
+    const die = pool.value.find(d => d.id === id)
+    return die && !isLockedDie(die)
+  }))
+  rerollingIds.value = new Set(eligible)
   for (const die of pool.value) {
-    if (rerollSel.value.has(die.id)) die.face = rollFn()
+    if (eligible.has(die.id)) die.face = rollFn()
   }
   rerollSel.value = new Set()
   rerollMode.value = false
@@ -109,10 +117,21 @@ function confirmReroll() {
 
 // ── Clear ─────────────────────────────────────────────────────
 function clear() {
-  pool.value = []; selectedId.value = null; addOpen.value = false
+  pool.value = []; selectedId.value = null
   rerollMode.value = false; rerollSel.value = new Set()
   rerollingIds.value = new Set(); rolling.value = false; lastCount.value = null
 }
+
+// ── Auto-roll on initialCount ──────────────────────────────────
+// onMounted handles initial render; watch handles subsequent triggers
+// when DicePanel stays mounted (v-show) and a new stat is clicked
+onMounted(() => {
+  if (props.initialCount && props.initialCount > 0) roll(props.initialCount)
+})
+
+watch(() => props.initialCount, (n) => {
+  if (n && n > 0) roll(n)
+})
 
 // ── Computed ──────────────────────────────────────────────────
 const selectedDie = computed(() => pool.value.find(d => d.id === selectedId.value) ?? null)
@@ -184,12 +203,13 @@ const faceChipClass = (face: string) => {
         v-for="die in displayPool" :key="die.id"
         :class="[
           'relative rounded-lg transition-all',
-          !readonly ? 'cursor-pointer select-none' : '',
-          !readonly && selectedId === die.id
+          !readonly && !isLockedDie(die) ? 'cursor-pointer select-none' : '',
+          !readonly && isLockedDie(die) ? 'cursor-not-allowed opacity-40' : '',
+          !readonly && !isLockedDie(die) && selectedId === die.id
             ? 'ring-2 ring-sw-gold ring-offset-2 ring-offset-sw-bg'
-            : !readonly && rerollMode && rerollSel.has(die.id)
+            : !readonly && !isLockedDie(die) && rerollMode && rerollSel.has(die.id)
               ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-sw-bg'
-              : 'opacity-90 hover:opacity-100',
+              : !readonly && !isLockedDie(die) ? 'opacity-90 hover:opacity-100' : '',
         ]"
         @click="!readonly && selectDie(die)"
       >
@@ -198,6 +218,8 @@ const faceChipClass = (face: string) => {
         </div>
         <div v-if="die.isBonus"
           class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-sw-gold text-[9px] font-bold text-sw-dark">+</div>
+        <div v-if="!readonly && isLockedDie(die)"
+          class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-700 text-[9px]">🔒</div>
       </div>
     </div>
 
@@ -241,23 +263,9 @@ const faceChipClass = (face: string) => {
           rerollMode ? 'border-blue-400/60 bg-blue-500/10 text-blue-400' : 'border-sw-gold/30 text-sw-text/60 hover:border-sw-gold hover:text-sw-text']"
         @click="toggleRerollMode">↺ Reroll dice</button>
       <button
-        :class="['rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors',
-          addOpen ? 'border-sw-gold bg-sw-gold/10 text-sw-gold' : 'border-sw-gold/30 text-sw-text/60 hover:border-sw-gold hover:text-sw-text']"
-        @click="addOpen = !addOpen; rerollMode = false; selectedId = null">+ Add die</button>
+        class="rounded-lg border border-sw-gold/30 px-2.5 py-1 text-xs font-medium text-sw-text/60 transition-colors hover:border-sw-gold hover:text-sw-text"
+        @click="addDie(rollFn()); rerollMode = false; selectedId = null">+ Add die</button>
       <button class="ml-auto rounded-lg px-2.5 py-1 text-xs text-sw-text/30 hover:text-sw-text" @click="clear">Clear</button>
-    </div>
-
-    <!-- Add die face picker (hidden in readonly) -->
-    <div v-if="!readonly && addOpen" class="rounded-xl border border-sw-gold/20 bg-sw-card p-3">
-      <p class="mb-2 text-[10px] text-sw-text/50">Pick face to add:</p>
-      <div class="flex flex-wrap gap-2">
-        <div v-for="face in faces" :key="face"
-          class="flex cursor-pointer flex-col items-center gap-1 opacity-70 transition-opacity hover:opacity-100"
-          @click="addDie(face)">
-          <DieFace :type="type" :face="face" :size="40" />
-          <span class="text-[8px] capitalize text-sw-text/50">{{ face }}</span>
-        </div>
-      </div>
     </div>
 
     <!-- Results summary -->

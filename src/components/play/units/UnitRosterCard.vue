@@ -23,6 +23,7 @@ const emit = defineEmits<{
   (e: 'remove'): void
   (e: 'open-profile'): void
   (e: 'tag-press', tag: string): void
+  (e: 'roll-stat', payload: { unitId: number; role: 'attacker' | 'defender'; diceCount: number }): void
 }>()
 
 const showConditionPicker = ref(false)
@@ -144,18 +145,24 @@ const isDimmed = computed(() =>
 
       <!-- Combat stat buttons — full-width on mobile, compact on desktop -->
       <div class="flex flex-col gap-1.5 px-2 py-2 bg-zinc-900/60">
-        <!-- Ranged row -->
-        <div v-if="activeStanceStat.ranged && activeStanceStat.ranged.attack !== null" class="flex items-center gap-1.5">
+        <!-- Ranged row (show if any ranged stat is non-null) -->
+        <div v-if="activeStanceStat.ranged && (activeStanceStat.ranged.attack !== null || activeStanceStat.ranged.defense !== null)" class="flex items-center gap-1.5">
           <span class="text-[8px] font-bold uppercase tracking-wider text-zinc-600 w-9 shrink-0">Ranged</span>
-          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-400 active:scale-95" title="Range">{{ activeStanceStat.ranged.range ?? '—' }}</button>
-          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95" title="Attack">{{ activeStanceStat.ranged.attack }}⚔</button>
-          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95" title="Defense">{{ activeStanceStat.ranged.defense }}🛡</button>
+          <template v-if="activeStanceStat.ranged.attack !== null">
+            <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-400 active:scale-95" title="Range">{{ activeStanceStat.ranged.range ?? '—' }}</button>
+            <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95 hover:border-amber-500/60 hover:text-amber-300" title="Roll attack dice"
+              @click.stop="emit('roll-stat', { unitId: unit.id, role: 'attacker', diceCount: activeStanceStat.ranged.attack! })">{{ activeStanceStat.ranged.attack }}⚔</button>
+          </template>
+          <button v-if="activeStanceStat.ranged.defense !== null" class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-zinc-700/50 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95 hover:border-blue-500/60 hover:text-blue-300" title="Roll defense dice"
+            @click.stop="emit('roll-stat', { unitId: unit.id, role: 'defender', diceCount: activeStanceStat.ranged.defense! })">{{ activeStanceStat.ranged.defense }}🛡</button>
         </div>
         <!-- Melee row -->
         <div v-if="activeStanceStat.melee && activeStanceStat.melee.attack !== null" class="flex items-center gap-1.5">
           <span class="text-[8px] font-bold uppercase tracking-wider text-zinc-600 w-9 shrink-0">Melee</span>
-          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-amber-900/40 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95" title="Attack">{{ activeStanceStat.melee.attack }}⚔</button>
-          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-amber-900/40 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95" title="Defense">{{ activeStanceStat.melee.defense }}🛡</button>
+          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-amber-900/40 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95 hover:border-amber-500/60 hover:text-amber-300" title="Roll attack dice"
+            @click.stop="emit('roll-stat', { unitId: unit.id, role: 'attacker', diceCount: activeStanceStat.melee.attack! })">{{ activeStanceStat.melee.attack }}⚔</button>
+          <button class="flex-1 sm:flex-none sm:px-3 rounded-lg border border-amber-900/40 bg-zinc-800 py-2 sm:py-1.5 text-xs font-bold text-zinc-300 active:scale-95 hover:border-blue-500/60 hover:text-blue-300" title="Roll defense dice"
+            @click.stop="emit('roll-stat', { unitId: unit.id, role: 'defender', diceCount: activeStanceStat.melee.defense! })">{{ activeStanceStat.melee.defense }}🛡</button>
         </div>
       </div>
     </div>
