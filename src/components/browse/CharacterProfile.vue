@@ -19,13 +19,18 @@ onMounted(() => {
 
 const character = computed(() => {
   const param = route.params.slug as string
-  // Numeric param → backward-compat: redirect to slug URL once characters are loaded
   if (/^\d+$/.test(param)) {
-    const byId = store.characters.find(c => c.id === Number(param))
-    if (byId) router.replace(`/browse/${byId.slug}`)
-    return byId ?? null
+    return store.characters.find(c => c.id === Number(param)) ?? null
   }
   return store.characters.find(c => c.slug === param) ?? null
+})
+
+// Redirect numeric IDs to slug URL once characters are loaded
+watch(character, (c) => {
+  const param = route.params.slug as string
+  if (c && /^\d+$/.test(param)) {
+    router.replace(`/browse/${c.slug}`)
+  }
 })
 
 function close() { router.push('/browse') }
@@ -40,7 +45,7 @@ const activeView   = ref<CardView>('card')
 const isFlipped    = ref(false)
 const isFullscreen = ref(false)
 
-watch(() => route.params.id, () => {
+watch(() => route.params.slug, () => {
   activeView.value   = 'card'
   isFlipped.value    = false
   isFullscreen.value = false
