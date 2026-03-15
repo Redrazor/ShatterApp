@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useHead } from '@vueuse/head'
 import { useCharactersStore } from '../stores/characters.ts'
 import { useCollectionStore } from '../stores/collection.ts'
 import { useFavoritesStore } from '../stores/favorites.ts'
@@ -121,12 +122,23 @@ function updateFilters(newFilters: SearchFilters) {
   if (newFilters.swpFilter) query.swp = newFilters.swpFilter
   router.replace({ query })
 }
+
+useHead({
+  title: 'Browse Units — ShatterApp',
+  meta: [
+    { name: 'description', content: 'Browse all Star Wars: Shatterpoint units. Filter by era, unit type, tags and squad pack.' },
+    { property: 'og:title', content: 'Browse Units — ShatterApp' },
+    { property: 'og:description', content: 'Browse all Star Wars: Shatterpoint units. Filter by era, unit type, tags and squad pack.' },
+    { property: 'og:url', content: 'https://shatterapp.com/browse' },
+  ],
+  link: [{ rel: 'canonical', href: 'https://shatterapp.com/browse' }],
+})
 </script>
 
 <template>
   <div class="space-y-6">
     <div class="flex items-center gap-3">
-      <h1 class="text-2xl font-bold text-sw-gold">Units</h1>
+      <h1 class="text-2xl font-bold text-sw-gold">Star Wars: Shatterpoint Units</h1>
       <span class="text-sm text-sw-text/50">({{ results.length }})</span>
       <div class="flex-1" />
       <button

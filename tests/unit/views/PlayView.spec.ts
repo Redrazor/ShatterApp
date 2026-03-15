@@ -69,7 +69,7 @@ describe('PlayView', () => {
 
   it('renders the Play heading', () => {
     const wrapper = mountView()
-    expect(wrapper.text()).toContain('Play')
+    expect(wrapper.text()).toContain('Game Tracker')
   })
 
   // ── State A: Mission Picker ─────────────────────────────────────────────

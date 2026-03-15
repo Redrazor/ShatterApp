@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
+import { useHead } from '@vueuse/head'
 import { useStruggleStore } from '../stores/struggle.ts'
 import { useMissionsStore } from '../stores/missions.ts'
 import { useKeyopsStore, type GameMode } from '../stores/keyops.ts'
@@ -23,6 +24,17 @@ import LegendaryMissionInteraction from '../components/play/legendary/LegendaryM
 import MultiplayerPanel from '../components/play/multiplayer/MultiplayerPanel.vue'
 import SessionBanner from '../components/play/multiplayer/SessionBanner.vue'
 import DicePanel from '../components/play/DicePanel.vue'
+
+useHead({
+  title: 'Game Tracker — ShatterApp',
+  meta: [
+    { name: 'description', content: 'Track mission struggle, unit health, conditions, and dice rolls during your Shatterpoint game.' },
+    { property: 'og:title', content: 'Game Tracker — ShatterApp' },
+    { property: 'og:description', content: 'Track mission struggle, unit health, conditions, and dice rolls during your Shatterpoint game.' },
+    { property: 'og:url', content: 'https://shatterapp.com/play' },
+  ],
+  link: [{ rel: 'canonical', href: 'https://shatterapp.com/play' }],
+})
 
 const store = useStruggleStore()
 const missionsStore = useMissionsStore()
@@ -501,7 +513,7 @@ const ROMAN = ['I', 'II', 'III']
 
     <!-- ── Header ── -->
     <div class="flex items-center justify-between gap-2">
-      <h1 class="text-xl font-bold tracking-wide text-amber-400">⚔ Play</h1>
+      <h1 class="text-xl font-bold tracking-wide text-amber-400">⚔ Game Tracker</h1>
       <div class="flex items-center gap-2">
         <!-- Multiplayer toggle -->
         <button

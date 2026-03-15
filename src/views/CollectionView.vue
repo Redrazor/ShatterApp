@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useHead } from '@vueuse/head'
 import { useProductsStore } from '../stores/products.ts'
 import { useCollectionStore } from '../stores/collection.ts'
 import { useCharactersStore } from '../stores/characters.ts'
@@ -38,6 +39,17 @@ const totalUnitsOwned = computed(() => {
   return charactersStore.characters.filter(c => ownedSwps.has(c.swpCode ?? '')).length
 })
 
+useHead({
+  title: 'My Collection — ShatterApp',
+  meta: [
+    { name: 'description', content: 'Track which Star Wars: Shatterpoint squad packs you own. View collection statistics by era.' },
+    { property: 'og:title', content: 'My Collection — ShatterApp' },
+    { property: 'og:description', content: 'Track which Star Wars: Shatterpoint squad packs you own. View collection statistics by era.' },
+    { property: 'og:url', content: 'https://shatterapp.com/collection' },
+  ],
+  link: [{ rel: 'canonical', href: 'https://shatterapp.com/collection' }],
+})
+
 const eraStats = computed(() => {
   const map = new Map<string, { total: number; owned: number }>()
   for (const p of productsStore.products) {
@@ -56,7 +68,7 @@ const eraStats = computed(() => {
 
 <template>
   <div class="space-y-6">
-    <h1 class="text-2xl font-bold text-sw-gold">Collection</h1>
+    <h1 class="text-2xl font-bold text-sw-gold">My Collection</h1>
 
     <!-- Stats dashboard -->
     <div v-if="!productsStore.loading" class="rounded-xl border border-sw-gold/20 bg-sw-card/40 p-4 space-y-3">

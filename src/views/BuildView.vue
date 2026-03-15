@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useHead } from '@vueuse/head'
 import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import { useCharactersStore } from '../stores/characters.ts'
 import { useMissionsStore } from '../stores/missions.ts'
@@ -171,6 +172,17 @@ function handleShare() {
   setTimeout(() => { saveFeedback.value = '' }, 2000)
 }
 
+useHead({
+  title: 'Squad Builder — ShatterApp',
+  meta: [
+    { name: 'description', content: 'Build and save Star Wars: Shatterpoint strike forces. Share squads with a link.' },
+    { property: 'og:title', content: 'Squad Builder — ShatterApp' },
+    { property: 'og:description', content: 'Build and save Star Wars: Shatterpoint strike forces. Share squads with a link.' },
+    { property: 'og:url', content: 'https://shatterapp.com/build' },
+  ],
+  link: [{ rel: 'canonical', href: 'https://shatterapp.com/build' }],
+})
+
 function loadList(i: number) {
   sfStore.loadList(i, charStore.characters, missionsStore.missions)
 }
@@ -186,7 +198,7 @@ function importSharedBuild() {
 
 <template>
   <div class="space-y-6">
-    <h1 class="no-print text-2xl font-bold text-sw-gold">Build</h1>
+    <h1 class="no-print text-2xl font-bold text-sw-gold">Strike Force Builder</h1>
 
     <!-- Shared build import banner -->
     <div

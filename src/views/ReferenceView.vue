@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useHead } from '@vueuse/head'
 import IconGrid from '../components/reference/IconGrid.vue'
 import KeywordReference from '../components/reference/KeywordReference.vue'
 import RulebookViewer from '../components/reference/RulebookViewer.vue'
 
 type Tab = 'icons' | 'keywords' | 'rulebook'
 const activeTab = ref<Tab>('icons')
+
+useHead({
+  title: 'Rules Reference — ShatterApp',
+  meta: [
+    { name: 'description', content: 'Quick-reference for Star Wars: Shatterpoint keywords, icons, and game rules.' },
+    { property: 'og:title', content: 'Rules Reference — ShatterApp' },
+    { property: 'og:description', content: 'Quick-reference for Star Wars: Shatterpoint keywords, icons, and game rules.' },
+    { property: 'og:url', content: 'https://shatterapp.com/reference' },
+  ],
+  link: [{ rel: 'canonical', href: 'https://shatterapp.com/reference' }],
+})
 </script>
 
 <template>
