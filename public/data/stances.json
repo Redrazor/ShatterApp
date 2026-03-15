@@ -438,7 +438,7 @@
       {
         "stanceNumber": 1,
         "stanceName": "Form III Soresu",
-        "ranged": { "range": null, "attack": null, "defense": null },
+        "ranged": { "range": null, "attack": null, "defense": 5 },
         "melee": { "attack": 5, "defense": 6 }
       },
       {
@@ -502,7 +502,7 @@
       {
         "stanceNumber": 1,
         "stanceName": "Defensive Programs",
-        "ranged": { "range": null, "attack": null, "defense": null },
+        "ranged": { "range": null, "attack": null, "defense": 5 },
         "melee": { "attack": 6, "defense": 5 }
       }
     ]
@@ -515,7 +515,7 @@
       {
         "stanceNumber": 1,
         "stanceName": "Jar'Kai",
-        "ranged": { "range": null, "attack": null, "defense": null },
+        "ranged": { "range": null, "attack": null, "defense": 5 },
         "melee": { "attack": 7, "defense": 5 }
       }
     ]
