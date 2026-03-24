@@ -87,7 +87,7 @@ function toggleCompare(char: { id: number }) {
   compareIds.value = next
 }
 
-function handleSelect(char: { id: number }) {
+function handleSelect(char: { id: number; slug: string }) {
   if (compareMode.value) {
     toggleCompare(char)
   } else {
