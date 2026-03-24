@@ -90,7 +90,7 @@ onMounted(() => {
         <span>ShatterApp — fan-made companion for Star Wars: Shatterpoint</span>
         <span class="mx-2">·</span>
         <a href="https://ko-fi.com/redrazor" target="_blank" rel="noopener"
-          class="text-sw-gold hover:underline">Support on Ko-fi ☕</a>
+          class="text-sw-gold hover:underline">Buy me a coffee on Ko-fi ☕</a>
         <span class="mx-2">·</span>
         <a href="https://github.com/Redrazor/ShatterApp" target="_blank" rel="noopener"
           class="hover:underline">GitHub</a>
