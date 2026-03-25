@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import type { Ability } from '../../../composables/useAbilities.ts'
 import { imageUrl } from '../../../utils/imageUrl.ts'
 import { RULE_KEYWORDS } from '../../../utils/ruleKeywords.ts'
+import ForceTokenMini from './ForceTokenMini.vue'
 
 const props = defineProps<{
   ability: Ability
@@ -128,7 +129,10 @@ function onDescriptionClick(e: MouseEvent) {
     </div>
 
     <div class="flex-1 min-w-0">
-      <span class="font-bold text-zinc-200 text-sm">{{ ability.name }}</span>
+      <div class="flex items-center gap-1">
+        <span class="font-bold text-zinc-200 text-sm">{{ ability.name }}</span>
+        <ForceTokenMini v-for="n in (ability.cost ?? 0)" :key="n" size="h-3.5 w-3.5" />
+      </div>
       <p
         class="text-zinc-400 text-xs leading-relaxed mt-0.5"
         v-html="renderedDescription"

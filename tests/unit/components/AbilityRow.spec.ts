@@ -5,6 +5,7 @@ import AbilityRow from '../../../src/components/play/units/AbilityRow.vue'
 const baseAbility = {
   name: 'Chosen One',
   type: 'innate',
+  cost: null as number | null,
   description: 'This unit ignores Strained.',
 }
 
@@ -144,7 +145,7 @@ describe('AbilityRow', () => {
   it('renders correctly for active ability type', () => {
     const wrapper = mount(AbilityRow, {
       props: {
-        ability: { name: 'Force Push', type: 'active', description: 'Push a model back 2.' },
+        ability: { name: 'Force Push', type: 'active', cost: 1, description: 'Push a model back 2.' },
         unitTags: [],
         keywords,
       },
@@ -156,7 +157,7 @@ describe('AbilityRow', () => {
   it('renders correctly for reactive ability type', () => {
     const wrapper = mount(AbilityRow, {
       props: {
-        ability: { name: 'Deflect', type: 'reactive', description: 'Deflect an incoming attack.' },
+        ability: { name: 'Deflect', type: 'reactive', cost: 1, description: 'Deflect an incoming attack.' },
         unitTags: [],
         keywords,
       },
@@ -259,5 +260,41 @@ describe('AbilityRow', () => {
     expect(html).toContain('icons/force.png')
     expect(html).toContain('data-rule-kw="Sharpshooter"')
     expect(html).toContain('Sharpshooter [2]')
+  })
+
+  it('renders force cost tokens when cost is a number', () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, type: 'active', cost: 2, description: 'Push a model.' },
+        unitTags: [],
+        keywords,
+      },
+    })
+    const tokens = wrapper.findAll('svg[aria-label="Force cost"]')
+    expect(tokens).toHaveLength(2)
+  })
+
+  it('renders no force tokens when cost is null', () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, cost: null },
+        unitTags: [],
+        keywords,
+      },
+    })
+    const tokens = wrapper.findAll('svg[aria-label="Force cost"]')
+    expect(tokens).toHaveLength(0)
+  })
+
+  it('renders no force tokens when cost is 0', () => {
+    const wrapper = mount(AbilityRow, {
+      props: {
+        ability: { ...baseAbility, cost: 0 },
+        unitTags: [],
+        keywords,
+      },
+    })
+    const tokens = wrapper.findAll('svg[aria-label="Force cost"]')
+    expect(tokens).toHaveLength(0)
   })
 })
