@@ -1,4 +1,4 @@
-import type { CompactBuild } from '../types/index.ts'
+import type { CompactBuild, BuildMode } from '../types/index.ts'
 
 function toBase64url(str: string): string {
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
@@ -14,12 +14,12 @@ function fromBase64url(str: string): string {
 export function encodeBuild(
   name: string,
   mid: number | null,
-  pre: boolean,
+  mode: BuildMode,
   s: [[number, number, number], [number, number, number]],
   ex?: [[number, number, number], [number, number, number]],
 ): string {
-  const build: CompactBuild = { name, mid, pre, s }
-  if (pre && ex) build.ex = ex
+  const build: CompactBuild = { name, mid, mode, s }
+  if (mode !== 'standard' && ex) build.ex = ex
   return toBase64url(JSON.stringify(build))
 }
 
@@ -35,6 +35,15 @@ export function decodeBuild(str: string): CompactBuild | null {
       if (!Array.isArray(obj.ex) || obj.ex.length !== 2) return null
       if (!Array.isArray(obj.ex[0]) || obj.ex[0].length !== 3) return null
       if (!Array.isArray(obj.ex[1]) || obj.ex[1].length !== 3) return null
+    }
+    // Backward compat: old format used `pre: boolean`
+    if (!obj.mode && typeof obj.pre === 'boolean') {
+      obj.mode = obj.pre ? 'premiere' : 'standard'
+    }
+    delete obj.pre
+    // Validate mode
+    if (!['standard', 'threemiere', 'premiere'].includes(obj.mode)) {
+      obj.mode = 'standard'
     }
     return obj as CompactBuild
   } catch {

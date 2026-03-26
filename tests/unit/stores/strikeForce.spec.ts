@@ -318,7 +318,7 @@ describe('useStrikeForceStore', () => {
     store.setMission(makeMission())
     store.saveCurrentList()
     expect(store.savedLists[0].mid).toBe(1)
-    expect(store.savedLists[0].pre).toBe(false)
+    expect(store.savedLists[0].mode).toBe('standard')
   })
 
   it('saveCurrentList stores unit IDs in compact format', () => {
@@ -498,8 +498,8 @@ describe('useStrikeForceStore', () => {
   it('importLists appends compact builds', () => {
     const store = useStrikeForceStore()
     store.importLists([
-      { name: 'Imported A', mid: null, pre: false, s: [[0, 0, 0], [0, 0, 0]] },
-      { name: 'Imported B', mid: 5, pre: true, s: [[1, 2, 3], [4, 5, 6]] },
+      { name: 'Imported A', mid: null, mode: 'standard', s: [[0, 0, 0], [0, 0, 0]] },
+      { name: 'Imported B', mid: 5, mode: 'premiere', s: [[1, 2, 3], [4, 5, 6]] },
     ])
     expect(store.savedLists).toHaveLength(2)
     expect(store.savedLists[0].name).toBe('Imported A')
@@ -511,10 +511,19 @@ describe('useStrikeForceStore', () => {
     store.setName('Existing')
     store.saveCurrentList()
     store.importLists([
-      { name: 'Imported', mid: null, pre: false, s: [[0, 0, 0], [0, 0, 0]] },
+      { name: 'Imported', mid: null, mode: 'standard', s: [[0, 0, 0], [0, 0, 0]] },
     ])
     expect(store.savedLists).toHaveLength(2)
     expect(store.savedLists[1].name).toBe('Imported')
+  })
+
+  it('importLists normalizes old pre:boolean to mode', () => {
+    const store = useStrikeForceStore()
+    store.importLists([
+      { name: 'Legacy', mid: null, pre: true, s: [[0, 0, 0], [0, 0, 0]] } as any,
+    ])
+    expect(store.savedLists[0].mode).toBe('premiere')
+    expect(store.savedLists[0].pre).toBeUndefined()
   })
 
   // ---------- premiere ----------
@@ -576,9 +585,9 @@ describe('useStrikeForceStore', () => {
     expect(store.isSquad3Valid).toBe(false) // squad 3 still empty
   })
 
-  it('saveCurrentList includes ex when premiere is true', () => {
+  it('saveCurrentList includes ex when mode is premiere', () => {
     const store = useStrikeForceStore()
-    store.setPremiere(true)
+    store.setBuildMode('premiere')
     store.setName('Premiere Build')
     store.setUnit(2, 'primary', makeChar({ id: 20 }))
     store.setUnit(2, 'secondary', makeChar({ id: 21 }))
@@ -587,34 +596,46 @@ describe('useStrikeForceStore', () => {
     store.setUnit(3, 'secondary', makeChar({ id: 31 }))
     store.setUnit(3, 'support', makeChar({ id: 32 }))
     store.saveCurrentList()
-    expect(store.savedLists[0].pre).toBe(true)
+    expect(store.savedLists[0].mode).toBe('premiere')
     expect(store.savedLists[0].ex).toEqual([[20, 21, 22], [30, 31, 32]])
   })
 
-  it('saveCurrentList excludes ex when premiere is false', () => {
+  it('saveCurrentList includes ex with zeroed squad 4 when mode is threemiere', () => {
     const store = useStrikeForceStore()
-    store.setPremiere(false)
+    store.setBuildMode('threemiere')
+    store.setName('Threemiere Build')
+    store.setUnit(2, 'primary', makeChar({ id: 20 }))
+    store.setUnit(2, 'secondary', makeChar({ id: 21 }))
+    store.setUnit(2, 'support', makeChar({ id: 22 }))
+    store.saveCurrentList()
+    expect(store.savedLists[0].mode).toBe('threemiere')
+    expect(store.savedLists[0].ex).toEqual([[20, 21, 22], [0, 0, 0]])
+  })
+
+  it('saveCurrentList excludes ex when mode is standard', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('standard')
     store.setName('Normal Build')
     store.saveCurrentList()
-    expect(store.savedLists[0].pre).toBe(false)
+    expect(store.savedLists[0].mode).toBe('standard')
     expect(store.savedLists[0].ex).toBeUndefined()
   })
 
-  it('loadList restores premiere and extraSquads from saved build', () => {
+  it('loadList restores buildMode and extraSquads from saved build', () => {
     const store = useStrikeForceStore()
     const char20 = makeChar({ id: 20, name: 'Extra Primary' })
     const char21 = makeChar({ id: 21, name: 'Extra Secondary', unitType: 'Secondary', pc: 2 })
     const char22 = makeChar({ id: 22, name: 'Extra Support', unitType: 'Support', pc: 2 })
-    store.setPremiere(true)
+    store.setBuildMode('premiere')
     store.setName('Premiere Load')
     store.setUnit(2, 'primary', char20)
     store.setUnit(2, 'secondary', char21)
     store.setUnit(2, 'support', char22)
     store.saveCurrentList()
     store.newList()
-    expect(store.premiere).toBe(false)
+    expect(store.buildMode).toBe('standard')
     store.loadList(0, [char20, char21, char22], [])
-    expect(store.premiere).toBe(true)
+    expect(store.buildMode).toBe('premiere')
     expect(store.extraSquads[0].primary?.name).toBe('Extra Primary')
     expect(store.extraSquads[0].secondary?.name).toBe('Extra Secondary')
     expect(store.extraSquads[0].support?.name).toBe('Extra Support')
@@ -622,31 +643,88 @@ describe('useStrikeForceStore', () => {
 
   it('loadList resets extraSquads when build has no ex', () => {
     const store = useStrikeForceStore()
-    // Import a premiere build without ex (simulates old format or partial save)
-    store.importLists([{ name: 'Old Premiere', mid: null, pre: true, s: [[0, 0, 0], [0, 0, 0]] }])
-    // Set some extra squad units first so we can verify they get cleared
-    store.setPremiere(true)
+    store.importLists([{ name: 'Old Premiere', mid: null, mode: 'premiere', s: [[0, 0, 0], [0, 0, 0]] }])
+    store.setBuildMode('premiere')
     store.setUnit(2, 'primary', makeChar({ id: 99 }))
     store.loadList(0, [], [])
-    // premiere from build.pre (true), but extraSquads reset to empty since no ex
-    expect(store.premiere).toBe(true)
+    expect(store.buildMode).toBe('premiere')
     expect(store.extraSquads[0].primary).toBeNull()
     expect(store.extraSquads[1].primary).toBeNull()
   })
 
-  it('resetStrikeForce clears premiere and extraSquads', () => {
+  it('loadList restores threemiere build correctly', () => {
     const store = useStrikeForceStore()
-    store.setPremiere(true)
+    const char20 = makeChar({ id: 20, name: 'Extra Primary' })
+    store.setBuildMode('threemiere')
+    store.setName('Threemiere Load')
+    store.setUnit(2, 'primary', char20)
+    store.saveCurrentList()
+    store.newList()
+    store.loadList(0, [char20], [])
+    expect(store.buildMode).toBe('threemiere')
+    expect(store.extraSquads[0].primary?.name).toBe('Extra Primary')
+  })
+
+  it('resetStrikeForce clears buildMode and extraSquads', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('premiere')
     store.setUnit(2, 'primary', makeChar({ id: 20 }))
     store.resetStrikeForce()
-    expect(store.premiere).toBe(false)
+    expect(store.buildMode).toBe('standard')
     expect(store.extraSquads[0].primary).toBeNull()
     expect(store.extraSquads[1].primary).toBeNull()
+  })
+
+  // ---------- buildMode / setBuildMode ----------
+
+  it('setBuildMode sets mode to threemiere', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('threemiere')
+    expect(store.buildMode).toBe('threemiere')
+    expect(store.activeSquadCount).toBe(3)
+  })
+
+  it('setBuildMode standard clears extraSquads', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('premiere')
+    store.setUnit(2, 'primary', makeChar({ id: 20 }))
+    store.setUnit(3, 'primary', makeChar({ id: 30 }))
+    store.setBuildMode('standard')
+    expect(store.extraSquads[0].primary).toBeNull()
+    expect(store.extraSquads[1].primary).toBeNull()
+  })
+
+  it('setBuildMode threemiere clears only extraSquads[1]', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('premiere')
+    store.setUnit(2, 'primary', makeChar({ id: 20 }))
+    store.setUnit(3, 'primary', makeChar({ id: 30 }))
+    store.setBuildMode('threemiere')
+    expect(store.extraSquads[0].primary?.id).toBe(20)
+    expect(store.extraSquads[1].primary).toBeNull()
+  })
+
+  it('activeSquadCount returns correct values for each mode', () => {
+    const store = useStrikeForceStore()
+    expect(store.activeSquadCount).toBe(2)
+    store.setBuildMode('threemiere')
+    expect(store.activeSquadCount).toBe(3)
+    store.setBuildMode('premiere')
+    expect(store.activeSquadCount).toBe(4)
+  })
+
+  it('premiere computed returns true only for premiere mode', () => {
+    const store = useStrikeForceStore()
+    expect(store.premiere).toBe(false)
+    store.setBuildMode('threemiere')
+    expect(store.premiere).toBe(false)
+    store.setBuildMode('premiere')
+    expect(store.premiere).toBe(true)
   })
 
   it('isStrikeForceComplete is false in premiere mode when extra squads are empty', () => {
     const store = useStrikeForceStore()
-    store.setPremiere(true)
+    store.setBuildMode('premiere')
     // Fill squads 0 and 1
     store.setUnit(0, 'primary', makeChar({ id: 1, name: 'A', characterType: 'Alpha', unitType: 'Primary', sp: 5, pc: null }))
     store.setUnit(0, 'secondary', makeChar({ id: 2, name: 'B', characterType: 'Beta', unitType: 'Secondary', sp: null, pc: 2 }))
@@ -659,7 +737,7 @@ describe('useStrikeForceStore', () => {
 
   it('isStrikeForceComplete is true in premiere mode when all 4 squads are valid and unique', () => {
     const store = useStrikeForceStore()
-    store.setPremiere(true)
+    store.setBuildMode('premiere')
     store.setUnit(0, 'primary', makeChar({ id: 1, name: 'A', characterType: 'Alpha', unitType: 'Primary', sp: 5, pc: null }))
     store.setUnit(0, 'secondary', makeChar({ id: 2, name: 'B', characterType: 'Beta', unitType: 'Secondary', sp: null, pc: 2 }))
     store.setUnit(0, 'support', makeChar({ id: 3, name: 'C', characterType: 'Gamma', unitType: 'Support', sp: null, pc: 2 }))
@@ -675,9 +753,37 @@ describe('useStrikeForceStore', () => {
     expect(store.isStrikeForceComplete).toBe(true)
   })
 
+  it('isStrikeForceComplete is true in threemiere mode when 3 squads are valid and unique', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('threemiere')
+    store.setUnit(0, 'primary', makeChar({ id: 1, name: 'A', characterType: 'Alpha', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(0, 'secondary', makeChar({ id: 2, name: 'B', characterType: 'Beta', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(0, 'support', makeChar({ id: 3, name: 'C', characterType: 'Gamma', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(1, 'primary', makeChar({ id: 4, name: 'D', characterType: 'Delta', unitType: 'Primary', sp: 6, pc: null }))
+    store.setUnit(1, 'secondary', makeChar({ id: 5, name: 'E', characterType: 'Epsilon', unitType: 'Secondary', sp: null, pc: 3 }))
+    store.setUnit(1, 'support', makeChar({ id: 6, name: 'F', characterType: 'Zeta', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(2, 'primary', makeChar({ id: 7, name: 'G', characterType: 'Eta', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(2, 'secondary', makeChar({ id: 8, name: 'H', characterType: 'Theta', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(2, 'support', makeChar({ id: 9, name: 'I', characterType: 'Iota', unitType: 'Support', sp: null, pc: 2 }))
+    expect(store.isStrikeForceComplete).toBe(true)
+  })
+
+  it('isStrikeForceComplete is false in threemiere mode when squad 3 is empty', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('threemiere')
+    store.setUnit(0, 'primary', makeChar({ id: 1, name: 'A', characterType: 'Alpha', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(0, 'secondary', makeChar({ id: 2, name: 'B', characterType: 'Beta', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(0, 'support', makeChar({ id: 3, name: 'C', characterType: 'Gamma', unitType: 'Support', sp: null, pc: 2 }))
+    store.setUnit(1, 'primary', makeChar({ id: 4, name: 'D', characterType: 'Delta', unitType: 'Primary', sp: 6, pc: null }))
+    store.setUnit(1, 'secondary', makeChar({ id: 5, name: 'E', characterType: 'Epsilon', unitType: 'Secondary', sp: null, pc: 3 }))
+    store.setUnit(1, 'support', makeChar({ id: 6, name: 'F', characterType: 'Zeta', unitType: 'Support', sp: null, pc: 2 }))
+    // Squad 3 (extraSquads[0]) is empty
+    expect(store.isStrikeForceComplete).toBe(false)
+  })
+
   it('isStrikeForceComplete is false in premiere mode when a unit appears in squad 3 and squad 1', () => {
     const store = useStrikeForceStore()
-    store.setPremiere(true)
+    store.setBuildMode('premiere')
     store.setUnit(0, 'primary', makeChar({ id: 1, name: 'Vader', characterType: 'Alpha', unitType: 'Primary', sp: 5, pc: null }))
     store.setUnit(0, 'secondary', makeChar({ id: 2, name: 'B', characterType: 'Beta', unitType: 'Secondary', sp: null, pc: 2 }))
     store.setUnit(0, 'support', makeChar({ id: 3, name: 'C', characterType: 'Gamma', unitType: 'Support', sp: null, pc: 2 }))
@@ -714,7 +820,7 @@ describe('useStrikeForceStore', () => {
 })
 
 describe('migrateStrikeForceState', () => {
-  it('migrates old flat format to savedLists', () => {
+  it('migrates old flat format to savedLists with mode', () => {
     const state: any = {
       name: 'Old Build',
       mission: { id: 1 },
@@ -730,16 +836,50 @@ describe('migrateStrikeForceState', () => {
     expect(state.savedLists).toHaveLength(1)
     expect(state.savedLists[0].name).toBe('Old Build')
     expect(state.savedLists[0].mid).toBe(1)
-    expect(state.savedLists[0].pre).toBe(true) // preserved from old state during migration
+    expect(state.savedLists[0].mode).toBe('premiere')
+    expect(state.savedLists[0].pre).toBeUndefined()
     expect(state.savedLists[0].s[0]).toEqual([10, 11, 12])
     expect(state.savedLists[0].s[1]).toEqual([20, 21, 22])
     expect(state.activeIndex).toBe(0)
   })
 
+  it('migrates old flat format with premiere:false to standard mode', () => {
+    const state: any = {
+      name: 'Standard Build',
+      mission: null,
+      premiere: false,
+      squads: [
+        { primary: { id: 1 }, secondary: { id: 2 }, support: { id: 3 } },
+        { primary: { id: 4 }, secondary: { id: 5 }, support: { id: 6 } },
+      ],
+      savedLists: [],
+      activeIndex: -1,
+    }
+    migrateStrikeForceState(state)
+    expect(state.savedLists[0].mode).toBe('standard')
+    expect(state.buildMode).toBe('standard')
+    expect(state.premiere).toBeUndefined()
+  })
+
+  it('normalizes pre:boolean to mode in existing saved lists', () => {
+    const state: any = {
+      savedLists: [
+        { name: 'A', mid: null, pre: true, s: [[0, 0, 0], [0, 0, 0]] },
+        { name: 'B', mid: null, pre: false, s: [[0, 0, 0], [0, 0, 0]] },
+      ],
+      activeIndex: 0,
+    }
+    migrateStrikeForceState(state)
+    expect(state.savedLists[0].mode).toBe('premiere')
+    expect(state.savedLists[0].pre).toBeUndefined()
+    expect(state.savedLists[1].mode).toBe('standard')
+    expect(state.savedLists[1].pre).toBeUndefined()
+  })
+
   it('does not migrate when savedLists is not empty', () => {
     const state: any = {
       name: 'Old Build',
-      savedLists: [{ name: 'Existing', mid: null, pre: false, s: [[0, 0, 0], [0, 0, 0]] }],
+      savedLists: [{ name: 'Existing', mid: null, mode: 'standard', s: [[0, 0, 0], [0, 0, 0]] }],
       activeIndex: 0,
     }
     migrateStrikeForceState(state)
@@ -755,5 +895,17 @@ describe('migrateStrikeForceState', () => {
     }
     migrateStrikeForceState(state)
     expect(state.savedLists).toHaveLength(0)
+  })
+
+  it('migrates draft premiere → buildMode', () => {
+    const state: any = {
+      name: '',
+      savedLists: [],
+      activeIndex: -1,
+      premiere: true,
+    }
+    migrateStrikeForceState(state)
+    expect(state.buildMode).toBe('premiere')
+    expect(state.premiere).toBeUndefined()
   })
 })

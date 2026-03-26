@@ -5,7 +5,7 @@ import { useHead } from '@vueuse/head'
 import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import { useCharactersStore } from '../stores/characters.ts'
 import { useMissionsStore } from '../stores/missions.ts'
-import type { Squad, Character, Mission } from '../types/index.ts'
+import type { Squad, Character, Mission, BuildMode } from '../types/index.ts'
 import type { CompactBuild } from '../types/index.ts'
 import { isSquadValid, hasStrikeForceConflict } from '../types/index.ts'
 import StrikeForcePanel from '../components/build/StrikeForcePanel.vue'
@@ -49,7 +49,7 @@ const saveFeedback = ref('')
 const pickerExclusions = computed(() => {
   const names = new Set<string>()
   const characterTypes = new Set<string>()
-  const squadCount = sfStore.premiere ? 4 : 2
+  const squadCount = sfStore.activeSquadCount
   for (let si = 0; si < squadCount; si++) {
     for (const role of ['primary', 'secondary', 'support'] as const) {
       if (si === activeSquadIdx.value && role === activeRole.value) continue
@@ -78,22 +78,26 @@ const savedListLegality = computed(() =>
     const r1 = isSquadValid(squads[1])
     if (!r1.valid) return r1
 
-    if (build.pre) {
+    const mode: BuildMode = build.mode ?? (build.pre ? 'premiere' : 'standard')
+    if (mode !== 'standard') {
       if (!build.ex) return { valid: false, reason: 'Incomplete' }
       const extraSquads: [Squad, Squad] = [
         { primary: resolve(build.ex[0][0]), secondary: resolve(build.ex[0][1]), support: resolve(build.ex[0][2]) },
         { primary: resolve(build.ex[1][0]), secondary: resolve(build.ex[1][1]), support: resolve(build.ex[1][2]) },
       ]
-      if (!extraSquads.every(sq => sq.primary && sq.secondary && sq.support)) {
-        return { valid: false, reason: 'Incomplete' }
-      }
       const r2 = isSquadValid(extraSquads[0])
       if (!r2.valid) return r2
-      const r3 = isSquadValid(extraSquads[1])
-      if (!r3.valid) return r3
-      // Check uniqueness across all 4 squads
+      if (mode === 'premiere') {
+        if (!extraSquads[1].primary || !extraSquads[1].secondary || !extraSquads[1].support) {
+          return { valid: false, reason: 'Incomplete' }
+        }
+        const r3 = isSquadValid(extraSquads[1])
+        if (!r3.valid) return r3
+      }
+      // Check uniqueness across all active squads
+      const activeExtra = mode === 'premiere' ? [...extraSquads] : [extraSquads[0]]
       const allUnits: Character[] = []
-      for (const sq of [...squads, ...extraSquads]) {
+      for (const sq of [...squads, ...activeExtra]) {
         for (const role of ['primary', 'secondary', 'support'] as const) {
           const u = sq[role]
           if (u) allUnits.push(u)
@@ -152,11 +156,11 @@ function handlePrint() {
 function handleShare() {
   const s0 = sfStore.squads[0]
   const s1 = sfStore.squads[1]
-  const ex = sfStore.premiere ? sfStore.extraSquads : undefined
+  const ex = sfStore.buildMode !== 'standard' ? sfStore.extraSquads : undefined
   const encoded = encodeBuild(
     sfStore.name,
     sfStore.mission?.id ?? null,
-    sfStore.premiere,
+    sfStore.buildMode,
     [
       [s0.primary?.id ?? 0, s0.secondary?.id ?? 0, s0.support?.id ?? 0],
       [s1.primary?.id ?? 0, s1.secondary?.id ?? 0, s1.support?.id ?? 0],
@@ -249,10 +253,16 @@ function importSharedBuild() {
             {{ list.name }}
           </span>
           <span
-            v-if="list.pre"
+            v-if="list.mode === 'premiere'"
             class="shrink-0 rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400"
           >
             ★ Premiere
+          </span>
+          <span
+            v-else-if="list.mode === 'threemiere'"
+            class="shrink-0 rounded-full bg-cyan-500/20 px-2 py-0.5 text-xs font-medium text-cyan-400"
+          >
+            ★ Threemiere
           </span>
           <span
             v-if="charStore.characters.length > 0"
@@ -295,9 +305,9 @@ function importSharedBuild() {
       :name="sfStore.name"
       :mission="sfStore.mission"
       :is-complete="sfStore.isStrikeForceComplete"
-      :premiere="sfStore.premiere"
+      :build-mode="sfStore.buildMode"
       @update:name="sfStore.setName"
-      @update:premiere="sfStore.setPremiere"
+      @update:build-mode="sfStore.setBuildMode"
       @pick-mission="missionPickerOpen = true"
       @clear-mission="sfStore.setMission(null)"
       @reset="sfStore.resetStrikeForce"
@@ -316,14 +326,19 @@ function importSharedBuild() {
         @pick="(role) => openPicker(idx as 0 | 1 | 2 | 3, role)"
         @clear="(role) => clearUnit(idx as 0 | 1 | 2 | 3, role)"
       />
-      <template v-if="sfStore.premiere">
+      <template v-if="sfStore.buildMode !== 'standard'">
         <SquadSlot
-          v-for="(squad, idx) in sfStore.extraSquads"
-          :key="idx + 2"
-          :squad="squad"
-          :squad-index="idx + 2"
-          @pick="(role) => openPicker((idx + 2) as 0 | 1 | 2 | 3, role)"
-          @clear="(role) => clearUnit((idx + 2) as 0 | 1 | 2 | 3, role)"
+          :squad="sfStore.extraSquads[0]"
+          :squad-index="2"
+          @pick="(role) => openPicker(2, role)"
+          @clear="(role) => clearUnit(2, role)"
+        />
+        <SquadSlot
+          v-if="sfStore.buildMode === 'premiere'"
+          :squad="sfStore.extraSquads[1]"
+          :squad-index="3"
+          @pick="(role) => openPicker(3, role)"
+          @clear="(role) => clearUnit(3, role)"
         />
       </template>
     </div>

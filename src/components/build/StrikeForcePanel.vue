@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { Mission } from '../../types/index.ts'
+import type { Mission, BuildMode } from '../../types/index.ts'
 
 defineProps<{
   name: string
   mission: Mission | null
   isComplete: boolean
-  premiere: boolean
+  buildMode: BuildMode
 }>()
 
 defineEmits<{
   (e: 'update:name', val: string): void
-  (e: 'update:premiere', val: boolean): void
+  (e: 'update:buildMode', val: BuildMode): void
   (e: 'pick-mission'): void
   (e: 'clear-mission'): void
   (e: 'reset'): void
@@ -18,6 +18,12 @@ defineEmits<{
   (e: 'share'): void
   (e: 'print'): void
 }>()
+
+const modes: { value: BuildMode; label: string; squads: number }[] = [
+  { value: 'standard', label: 'Standard', squads: 2 },
+  { value: 'threemiere', label: 'Threemiere', squads: 3 },
+  { value: 'premiere', label: 'Premiere', squads: 4 },
+]
 </script>
 
 <template>
@@ -90,19 +96,24 @@ defineEmits<{
       </div>
     </div>
 
-    <!-- Premiere -->
-    <label class="no-print flex items-center gap-2 cursor-pointer select-none">
-      <input
-        type="checkbox"
-        :checked="premiere"
-        class="h-4 w-4 rounded accent-amber-400"
-        @change="$emit('update:premiere', ($event.target as HTMLInputElement).checked)"
-      />
-      <span class="text-sm text-sw-text/70">
-        Premiere format
-        <span class="text-sw-text/40">— adds 2 extra squads (4 total)</span>
-      </span>
-    </label>
+    <!-- Build Mode Selector -->
+    <div class="no-print">
+      <label class="mb-1.5 block text-xs text-sw-text/50">Format</label>
+      <div class="flex rounded-lg border border-sw-gold/20 overflow-hidden">
+        <button
+          v-for="m in modes"
+          :key="m.value"
+          class="flex-1 px-3 py-1.5 text-xs font-medium transition-colors text-center"
+          :class="buildMode === m.value
+            ? 'bg-sw-gold/20 text-sw-gold'
+            : 'text-zinc-500 hover:text-sw-text/70 hover:bg-sw-card'"
+          @click="$emit('update:buildMode', m.value)"
+        >
+          {{ m.label }}
+          <span class="text-[10px] opacity-60 ml-0.5">({{ m.squads }})</span>
+        </button>
+      </div>
+    </div>
 
   </div>
 </template>
