@@ -4,6 +4,7 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { writeFileSync, copyFileSync, mkdirSync, existsSync } from 'fs'
 import { sqlite } from './db/index.ts'
 import { runSeed } from './db/seed.ts'
 import { createCharactersRouter } from './routes/characters.ts'
@@ -21,7 +22,7 @@ const httpServer = createServer(app)
 const io = new Server(httpServer, { cors: { origin: '*' } })
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json({ limit: '5mb' }))
 
 // Serve images from public/images/
 app.use('/images', express.static(join(__dirname, '..', 'public', 'images')))
@@ -33,6 +34,22 @@ app.use('/api/products', createProductsRouter(sqlite))
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' })
+})
+
+// ── Audit tool: save abilities.json with backup ─────────────────
+app.put('/api/abilities', (req, res) => {
+  try {
+    const abilitiesPath = join(__dirname, '..', 'public', 'data', 'abilities.json')
+    const backupDir = join(__dirname, '..', 'public', 'data', 'backups')
+    if (!existsSync(backupDir)) mkdirSync(backupDir, { recursive: true })
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+    copyFileSync(abilitiesPath, join(backupDir, `abilities-${timestamp}.json`))
+    writeFileSync(abilitiesPath, JSON.stringify(req.body, null, 2) + '\n')
+    res.json({ ok: true, backup: `abilities-${timestamp}.json` })
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e)
+    res.status(500).json({ ok: false, error: msg })
+  }
 })
 
 // ── Socket.io handlers ──────────────────────────────────────────
