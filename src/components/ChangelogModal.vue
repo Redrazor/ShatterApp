@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.3.1',
+    date: '2026-03-26',
+    changes: [
+      'Play — Force cost starburst tokens now display before ability names, matching the card art',
+      'Data — Ability data corrected for 18+ units (cost values, descriptions, icon tokens)',
+    ],
+  },
+  {
     version: '2.3.0',
     date: '2026-03-26',
     changes: [
