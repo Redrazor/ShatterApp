@@ -127,10 +127,13 @@ export interface StrikeForce {
   squads: [Squad, Squad]
 }
 
+export type BuildMode = 'standard' | 'threemiere' | 'premiere'
+
 export interface CompactBuild {
   name: string
   mid: number | null
-  pre: boolean
+  mode: BuildMode
+  pre?: boolean  // backward compat for old persisted data
   s: [[number, number, number], [number, number, number]]
   ex?: [[number, number, number], [number, number, number]]
 }

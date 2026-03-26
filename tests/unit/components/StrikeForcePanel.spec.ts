@@ -8,7 +8,7 @@ function makeMission(): Mission {
 }
 
 function defaultProps(overrides = {}) {
-  return { name: '', mission: null, isComplete: false, premiere: false, ...overrides }
+  return { name: '', mission: null, isComplete: false, buildMode: 'standard' as const, ...overrides }
 }
 
 describe('StrikeForcePanel', () => {
@@ -81,37 +81,58 @@ describe('StrikeForcePanel', () => {
     expect(wrapper.emitted('share')).toBeTruthy()
   })
 
-  // ---------- premiere ----------
+  // ---------- build mode selector ----------
 
-  it('renders premiere checkbox', () => {
+  it('renders three format buttons (Standard, Threemiere, Premiere)', () => {
     const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    expect(checkbox.exists()).toBe(true)
+    expect(wrapper.text()).toContain('Standard')
+    expect(wrapper.text()).toContain('Threemiere')
+    expect(wrapper.text()).toContain('Premiere')
   })
 
-  it('premiere checkbox is unchecked when premiere is false', () => {
-    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ premiere: false }) })
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    expect((checkbox.element as HTMLInputElement).checked).toBe(false)
+  it('highlights the active build mode button', () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ buildMode: 'threemiere' }) })
+    const buttons = wrapper.findAll('button').filter(b => ['Standard', 'Threemiere', 'Premiere'].some(label => b.text().includes(label)))
+    const threemiereBtn = buttons.find(b => b.text().includes('Threemiere'))!
+    expect(threemiereBtn.classes()).toContain('bg-sw-gold/20')
   })
 
-  it('premiere checkbox is checked when premiere is true', () => {
-    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ premiere: true }) })
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    expect((checkbox.element as HTMLInputElement).checked).toBe(true)
-  })
-
-  it('emits update:premiere with true when checkbox is checked', async () => {
-    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ premiere: false }) })
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    await checkbox.setValue(true)
-    const emitted = wrapper.emitted('update:premiere')
+  it('emits update:buildMode with "premiere" when Premiere button clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ buildMode: 'standard' }) })
+    const premiereBtn = wrapper.findAll('button').find(b => b.text().includes('Premiere'))!
+    await premiereBtn.trigger('click')
+    const emitted = wrapper.emitted('update:buildMode')
     expect(emitted).toBeTruthy()
-    expect(emitted![0][0]).toBe(true)
+    expect(emitted![0][0]).toBe('premiere')
   })
 
-  it('shows premiere format label text', () => {
+  it('emits update:buildMode with "threemiere" when Threemiere button clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ buildMode: 'standard' }) })
+    const threemiereBtn = wrapper.findAll('button').find(b => b.text().includes('Threemiere'))!
+    await threemiereBtn.trigger('click')
+    const emitted = wrapper.emitted('update:buildMode')
+    expect(emitted).toBeTruthy()
+    expect(emitted![0][0]).toBe('threemiere')
+  })
+
+  it('emits update:buildMode with "standard" when Standard button clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ buildMode: 'premiere' }) })
+    const standardBtn = wrapper.findAll('button').find(b => b.text().includes('Standard'))!
+    await standardBtn.trigger('click')
+    const emitted = wrapper.emitted('update:buildMode')
+    expect(emitted).toBeTruthy()
+    expect(emitted![0][0]).toBe('standard')
+  })
+
+  it('shows squad count labels for each mode', () => {
     const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
-    expect(wrapper.text()).toContain('Premiere format')
+    expect(wrapper.text()).toContain('(2)')
+    expect(wrapper.text()).toContain('(3)')
+    expect(wrapper.text()).toContain('(4)')
+  })
+
+  it('shows Format label', () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
+    expect(wrapper.text()).toContain('Format')
   })
 })
