@@ -4,6 +4,16 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.3.0',
+    date: '2026-03-26',
+    changes: [
+      'Build — Threemiere format: 3-squad build mode sitting between Standard (2) and Premiere (4)',
+      'Build — Format selector replaces the old Premiere checkbox with Standard / Threemiere / Premiere toggle',
+      'Build — Saved list badges show cyan "Threemiere" or amber "Premiere" labels',
+      'Build — Old saved builds auto-migrate to the new format seamlessly',
+    ],
+  },
+  {
     version: '2.2.0',
     date: '2026-03-15',
     changes: [

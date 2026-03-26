@@ -3,6 +3,7 @@ import { ref } from 'vue'
 export interface Ability {
   name: string
   type: string
+  cost: number | null
   description: string
 }
 
