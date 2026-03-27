@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { CompactBuild, Character } from '../../../types/index.ts'
+import type { CompactBuild, Character, BuildMode } from '../../../types/index.ts'
 import { imageUrl } from '../../../utils/imageUrl.ts'
 
 const props = defineProps<{ savedLists: CompactBuild[]; characters: Character[] }>()
@@ -11,7 +11,7 @@ const emit = defineEmits<{
 
 interface ResolvedBuild {
   name: string
-  pre: boolean
+  mode: BuildMode
   squad0: (Character | null)[]
   squad1: (Character | null)[]
   squad2: (Character | null)[]
@@ -34,7 +34,7 @@ const resolved = computed<ResolvedBuild[]>(() =>
     const sq3 = b.ex ? b.ex[1].map(resolve) : []
     return {
       name: b.name,
-      pre: b.pre,
+      mode: b.mode ?? (b.pre ? 'premiere' : 'standard'),
       squad0: sq0,
       squad1: sq1,
       squad2: sq2,
@@ -85,7 +85,7 @@ function confirmPremiere() {
 
 function select(build: ResolvedBuild) {
   if (!build.squad0Complete) return
-  if (build.pre) {
+  if (build.mode !== 'standard') {
     const idx = resolved.value.indexOf(build)
     openPremierePicker(idx)
     return
@@ -215,10 +215,16 @@ function select(build: ResolvedBuild) {
                 <span class="text-sm font-bold text-zinc-200 truncate">{{ build.name }}</span>
                 <div class="flex items-center gap-1 flex-shrink-0 ml-2">
                   <span
-                    v-if="build.pre"
+                    v-if="build.mode === 'premiere'"
                     class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide bg-amber-500/20 text-amber-400 border border-amber-500/30"
                   >
                     ★ Premiere
+                  </span>
+                  <span
+                    v-else-if="build.mode === 'threemiere'"
+                    class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+                  >
+                    ★ Threemiere
                   </span>
                   <span
                     v-else
@@ -266,7 +272,7 @@ function select(build: ResolvedBuild) {
 
                 <!-- Squad 1 thumbnails (non-premiere) -->
                 <div
-                  v-if="!build.pre && build.squad1.some(c => c !== null)"
+                  v-if="build.mode === 'standard' && build.squad1.some(c => c !== null)"
                   class="flex items-center gap-1.5"
                 >
                   <span class="text-[9px] font-bold uppercase tracking-wide text-zinc-600 w-12 flex-shrink-0">Squad 2</span>
@@ -297,7 +303,7 @@ function select(build: ResolvedBuild) {
                 </div>
 
                 <!-- Squads 1-3 (premiere preview) -->
-                <template v-if="build.pre">
+                <template v-if="build.mode !== 'standard'">
                   <div
                     v-for="(squadChars, si) in [build.squad1, build.squad2, build.squad3]"
                     :key="si"
