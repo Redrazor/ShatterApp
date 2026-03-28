@@ -269,7 +269,24 @@ def extract_stances(page_img: Image.Image) -> tuple[Image.Image | None, Image.Im
     return stance1, stance2
 
 
-if __name__ == "__main__":
+def match_to_character(unit_name: str, characters: list[dict]) -> dict | None:
+    """Find matching character in characters.json by name (case-insensitive)."""
+    name_lower = unit_name.lower()
+    for c in characters:
+        if c["name"].lower() == name_lower:
+            return c
+    return None
+
+
+def copy_and_compress(
+    src: Image.Image, dest_png: str, dest_webp: str
+) -> None:
+    """Save PNG and generate WebP compressed version."""
+    src.save(dest_png)
+    src.convert("RGB").save(dest_webp, "WEBP", quality=85)
+
+
+def main():
     if len(sys.argv) < 3:
         print("Usage: python3 extract-errata-cards.py <pdf_path> <output_dir>")
         sys.exit(1)
@@ -278,8 +295,123 @@ if __name__ == "__main__":
     output_dir = sys.argv[2]
     os.makedirs(output_dir, exist_ok=True)
 
+    project_root = Path(__file__).resolve().parent.parent
+    images_dir = project_root / "public" / "images"
+    compressed_dir = project_root / "public" / "images-compressed"
+
+    # Load characters
+    with open(project_root / "public" / "data" / "characters.json") as f:
+        characters = json.load(f)
+
+    # Step 1: Build page map
     print("Building page map...")
     page_map = build_page_map(pdf_path)
-    print(f"Found {len(page_map)} units in PDF")
-    for name, pages in sorted(page_map.items()):
-        print(f"  {name}: pages {pages}")
+    print(f"Found {len(page_map)} units\n")
+
+    # Get PDF page count to avoid requesting out-of-bounds pages
+    info = subprocess.run(
+        ["pdfinfo", pdf_path], capture_output=True, text=True, check=True
+    )
+    pdf_page_count = int(next(
+        line.split(":")[1].strip()
+        for line in info.stdout.splitlines()
+        if line.startswith("Pages:")
+    ))
+
+    # Step 2: Collect all pages to render (skip pages beyond PDF length)
+    all_pages = []
+    for pages in page_map.values():
+        all_pages.extend(p for p in pages if p <= pdf_page_count)
+
+    print(f"Rendering {len(set(all_pages))} unique pages at {DPI} DPI...")
+    rendered = render_pages(pdf_path, output_dir, all_pages)
+    print(f"Rendered {len(rendered)} pages\n")
+
+    # Step 3: Process each unit
+    results = {"success": [], "failed": [], "skipped": []}
+
+    for unit_name, pages in sorted(page_map.items()):
+        type_a_page, type_b_page = pages[0], pages[1]
+        char = match_to_character(unit_name, characters)
+
+        if char is None:
+            print(f"  SKIP {unit_name} — no match in characters.json")
+            results["skipped"].append(unit_name)
+            continue
+
+        print(f"Processing: {unit_name} (ID: {char['id']}, {char['swpCode']})")
+
+        try:
+            # Extract from Type A page
+            if type_a_page in rendered:
+                page_a = Image.open(rendered[type_a_page])
+                ability_card = extract_ability_card(page_a)
+                unit_front = extract_unit_front(page_a)
+            else:
+                ability_card = unit_front = None
+
+            # Extract from Type B page
+            if type_b_page in rendered:
+                page_b = Image.open(rendered[type_b_page])
+                stance1, stance2 = extract_stances(page_b)
+            else:
+                stance1 = stance2 = None
+
+            # Copy to project directories
+            replaced = []
+
+            if ability_card and char.get("cardBack"):
+                fname = Path(char["cardBack"]).name.replace(".png", "")
+                copy_and_compress(
+                    ability_card,
+                    str(images_dir / f"{fname}.png"),
+                    str(compressed_dir / f"{fname}.webp"),
+                )
+                replaced.append("cardBack")
+
+            if unit_front and char.get("cardFront"):
+                fname = Path(char["cardFront"]).name.replace(".png", "")
+                copy_and_compress(
+                    unit_front,
+                    str(images_dir / f"{fname}.png"),
+                    str(compressed_dir / f"{fname}.webp"),
+                )
+                replaced.append("cardFront")
+
+            if stance1 and char.get("stance1"):
+                fname = Path(char["stance1"]).name.replace(".png", "")
+                copy_and_compress(
+                    stance1,
+                    str(images_dir / f"{fname}.png"),
+                    str(compressed_dir / f"{fname}.webp"),
+                )
+                replaced.append("stance1")
+
+            if stance2 and char.get("stance2"):
+                fname = Path(char["stance2"]).name.replace(".png", "")
+                copy_and_compress(
+                    stance2,
+                    str(images_dir / f"{fname}.png"),
+                    str(compressed_dir / f"{fname}.webp"),
+                )
+                replaced.append("stance2")
+
+            print(f"  ✓ Replaced: {', '.join(replaced)}")
+            results["success"].append((unit_name, replaced))
+
+        except Exception as e:
+            print(f"  ✗ FAILED: {e}")
+            results["failed"].append((unit_name, str(e)))
+
+    # Summary
+    print(f"\n{'='*60}")
+    print(f"SUMMARY: {len(results['success'])} succeeded, "
+          f"{len(results['failed'])} failed, {len(results['skipped'])} skipped")
+    if results["failed"]:
+        print("\nFailed units:")
+        for name, err in results["failed"]:
+            print(f"  {name}: {err}")
+
+
+if __name__ == "__main__":
+    main()
