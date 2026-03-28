@@ -122,10 +122,16 @@
         "description": "After a [ranged] attack targeting a character in this Unit is resolved, this Unit may use this ability. If the attack roll contained one or more [fail] results, the attacking Unit suffers [damage][damage]."
       },
       {
+        "name": "You'll Find I Have Many Qualities For You to Dislike",
+        "type": "innate",
+        "cost": null,
+        "description": "While this Unit is not Wounded, characters in this Unit and allied characters within range 2 add expertise to their defense rolls."
+      },
+      {
         "name": "Fierce Protector",
         "type": "identity",
         "cost": null,
-        "description": "When an enemy character Wounds another allied Unit, after the effect is resolved, one character in this Unit may [advance] Toward the enemy character that caused the effect. Then, the character that moved may [heal][heal][heal] or, if that character is Engaged with the enemy character, it may make a 5 dice [melee] attack targeting that enemy character."
+        "description": "When another allied Unit is Wounded by an enemy attack, after the effect is resolved, choose a character in this Unit. The chosen character may [heal][heal][heal]. Then the chosen character may [advance] or [jump] and then may make a [melee] attack targeting the enemy character that caused the effect."
       }
     ]
   },

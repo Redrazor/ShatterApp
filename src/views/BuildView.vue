@@ -115,6 +115,17 @@ const savedListLegality = computed(() =>
   })
 )
 
+const pickerBudget = computed(() => {
+  if (!activeRole.value || activeRole.value === 'primary') return null
+  const squad = activeSquadIdx.value < 2
+    ? sfStore.squads[activeSquadIdx.value]
+    : sfStore.extraSquads[activeSquadIdx.value - 2]
+  if (!squad.primary?.sp) return null
+  const otherRole = activeRole.value === 'secondary' ? 'support' : 'secondary'
+  const otherPc = squad[otherRole]?.pc ?? 0
+  return squad.primary.sp - otherPc
+})
+
 function openPicker(squadIdx: 0 | 1 | 2 | 3, role: keyof Squad) {
   activeSquadIdx.value = squadIdx
   activeRole.value = role
@@ -351,6 +362,7 @@ function importSharedBuild() {
     :role="activeRole"
     :excluded-names="pickerExclusions.names"
     :excluded-character-types="pickerExclusions.characterTypes"
+    :remaining-budget="pickerBudget"
     @select="selectUnit"
     @close="pickerOpen = false"
   />
