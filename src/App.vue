@@ -112,9 +112,12 @@ onMounted(() => {
   <!-- Landscape blocker -->
   <div class="landscape-block">
     <div class="flex flex-col items-center gap-4 text-center px-8">
-      <span class="text-5xl">📱</span>
-      <p class="text-lg font-semibold text-white">Please rotate your device</p>
-      <p class="text-sm text-white/60">ShatterApp works in portrait mode only</p>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-sw-gold animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
+      </svg>
+      <p class="text-xl font-bold text-sw-gold">Rotate Your Device</p>
+      <p class="text-sm text-white/70">ShatterApp is designed for portrait mode.</p>
+      <p class="text-xs text-white/40">Turn your phone upright to continue</p>
     </div>
   </div>
 </template>
@@ -125,7 +128,9 @@ onMounted(() => {
 @media screen and (orientation: landscape) and (pointer: coarse) {
   .landscape-block {
     display: flex; position: fixed; inset: 0; z-index: 9999;
-    background: #0f1117; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d2e 100%);
+    align-items: center; justify-content: center;
+    border: 2px solid rgba(196, 167, 75, 0.3);
   }
 }
 

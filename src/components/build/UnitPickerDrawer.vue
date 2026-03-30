@@ -12,6 +12,7 @@ const props = defineProps<{
   role: keyof Squad | null
   excludedNames?: Set<string>
   excludedCharacterTypes?: Set<string>
+  remainingBudget?: number | null
 }>()
 
 const emit = defineEmits<{
@@ -21,6 +22,7 @@ const emit = defineEmits<{
 
 const query = ref('')
 const ownedOnly = ref(false)
+const budgetFilter = ref(true)
 
 const collectionStore = useCollectionStore()
 
@@ -47,6 +49,15 @@ function isConflicting(char: Character): boolean {
   if (props.excludedNames?.has(char.name)) return true
   if (char.characterType && props.excludedCharacterTypes?.has(char.characterType)) return true
   return false
+}
+
+function isOverBudget(char: Character): boolean {
+  if (props.remainingBudget == null) return false
+  return (char.pc ?? 0) > props.remainingBudget
+}
+
+function isDisabled(char: Character): boolean {
+  return isConflicting(char) || (budgetFilter.value && isOverBudget(char))
 }
 
 function select(char: Character) {
@@ -77,10 +88,17 @@ function select(char: Character) {
           <!-- Search -->
           <div class="p-3 border-b border-sw-gold/10 space-y-2">
             <SearchBar v-model="query" />
-            <label class="flex cursor-pointer items-center gap-2 text-xs text-sw-text/60">
-              <input type="checkbox" v-model="ownedOnly" class="accent-sw-gold" />
-              Owned only
-            </label>
+            <div class="flex items-center gap-4">
+              <label class="flex cursor-pointer items-center gap-2 text-xs text-sw-text/60">
+                <input type="checkbox" v-model="ownedOnly" class="accent-sw-gold" />
+                Owned only
+              </label>
+              <label v-if="remainingBudget != null" class="flex cursor-pointer items-center gap-2 text-xs text-sw-text/60">
+                <input type="checkbox" v-model="budgetFilter" class="accent-sw-gold" />
+                Budget filter
+                <span class="text-sw-gold/70">({{ remainingBudget }} left)</span>
+              </label>
+            </div>
           </div>
 
           <!-- Unit list -->
@@ -91,9 +109,9 @@ function select(char: Character) {
             <button
               v-for="char in filtered"
               :key="char.id"
-              :disabled="isConflicting(char)"
+              :disabled="isDisabled(char)"
               class="flex w-full items-center gap-3 border-b border-sw-gold/10 px-4 py-3 text-left transition-colors"
-              :class="isConflicting(char) ? 'opacity-40 cursor-not-allowed' : 'hover:bg-sw-gold/10'"
+              :class="isDisabled(char) ? 'opacity-40 cursor-not-allowed' : 'hover:bg-sw-gold/10'"
               @click="select(char)"
             >
               <img
@@ -107,6 +125,7 @@ function select(char: Character) {
                 <p class="text-xs text-sw-text/50">{{ char.unitType }} · {{ char.era }}</p>
               </div>
               <span v-if="isConflicting(char)" class="shrink-0 text-xs text-sw-text/40">In team</span>
+              <span v-else-if="budgetFilter && isOverBudget(char)" class="shrink-0 text-xs text-red-400/70">Over budget</span>
               <span v-else class="shrink-0 text-sm font-bold text-sw-gold">
                 {{ char.unitType === 'Primary' ? `SP ${char.sp}` : `PC ${char.pc}` }}
               </span>
