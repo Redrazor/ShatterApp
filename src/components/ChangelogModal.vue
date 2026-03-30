@@ -4,6 +4,19 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.5.0',
+    date: '2026-03-31',
+    changes: [
+      'Settings — New settings panel accessible from the nav (gear icon on desktop, "Settings" on mobile)',
+      'Collection — Auto-mark all units owned/un-owned when toggling a pack',
+      'Collection — Mark Painted and Mark Based toggles with per-unit indicators and stats (count + %)',
+      'Play — Toggle Units, Tracker, and Dice tabs on/off individually',
+      'Roll — General Roll tab enabled by default',
+      'Play — Multiplayer button renamed to "Enable Multiplayer"',
+      'Data — Backup format v2: includes painted, based, and settings data',
+    ],
+  },
+  {
     version: '2.4.0',
     date: '2026-03-30',
     changes: [
