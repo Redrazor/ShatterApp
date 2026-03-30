@@ -136,4 +136,124 @@ describe('useCollectionStore', () => {
       expect(store.ownedCharacterSet.has(5)).toBe(false)
     })
   })
+
+  describe('auto-mark character ids via toggleOwned', () => {
+    it('toggleOwned with characterIds marks them owned when adding', () => {
+      const store = useCollectionStore()
+      store.toggleOwned('SWP01', [1, 2, 3])
+      expect(store.ownedCharacterIds).toEqual([1, 2, 3])
+    })
+
+    it('toggleOwned with characterIds removes them when removing pack', () => {
+      const store = useCollectionStore()
+      store.toggleOwned('SWP01', [1, 2, 3])
+      store.toggleOwned('SWP01', [1, 2, 3])
+      expect(store.ownedCharacterIds).toEqual([])
+    })
+
+    it('toggleOwned without characterIds does not affect ownedCharacterIds', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(99)
+      store.toggleOwned('SWP01')
+      expect(store.ownedCharacterIds).toContain(99)
+    })
+
+    it('toggleOwned does not duplicate already-owned character ids', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterOwned(1)
+      store.toggleOwned('SWP01', [1, 2])
+      expect(store.ownedCharacterIds.filter(id => id === 1)).toHaveLength(1)
+    })
+  })
+
+  describe('painted character tracking', () => {
+    it('starts with empty paintedCharacterIds', () => {
+      const store = useCollectionStore()
+      expect(store.paintedCharacterIds).toEqual([])
+    })
+
+    it('toggleCharacterPainted adds a character id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterPainted(10)
+      expect(store.paintedCharacterIds).toContain(10)
+    })
+
+    it('toggleCharacterPainted removes an already-painted id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterPainted(10)
+      store.toggleCharacterPainted(10)
+      expect(store.paintedCharacterIds).not.toContain(10)
+    })
+
+    it('isPainted returns true for painted id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterPainted(5)
+      expect(store.isPainted(5)).toBe(true)
+    })
+
+    it('isPainted returns false for non-painted id', () => {
+      const store = useCollectionStore()
+      expect(store.isPainted(999)).toBe(false)
+    })
+
+    it('paintedCharacterSet reflects current state', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterPainted(1)
+      store.toggleCharacterPainted(2)
+      expect(store.paintedCharacterSet.has(1)).toBe(true)
+      expect(store.paintedCharacterSet.has(3)).toBe(false)
+    })
+
+    it('importPainted replaces paintedCharacterIds', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterPainted(1)
+      store.importPainted([10, 20])
+      expect(store.paintedCharacterIds).toEqual([10, 20])
+    })
+  })
+
+  describe('based character tracking', () => {
+    it('starts with empty basedCharacterIds', () => {
+      const store = useCollectionStore()
+      expect(store.basedCharacterIds).toEqual([])
+    })
+
+    it('toggleCharacterBased adds a character id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterBased(7)
+      expect(store.basedCharacterIds).toContain(7)
+    })
+
+    it('toggleCharacterBased removes an already-based id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterBased(7)
+      store.toggleCharacterBased(7)
+      expect(store.basedCharacterIds).not.toContain(7)
+    })
+
+    it('isBased returns true for based id', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterBased(3)
+      expect(store.isBased(3)).toBe(true)
+    })
+
+    it('isBased returns false for non-based id', () => {
+      const store = useCollectionStore()
+      expect(store.isBased(999)).toBe(false)
+    })
+
+    it('basedCharacterSet reflects current state', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterBased(4)
+      expect(store.basedCharacterSet.has(4)).toBe(true)
+      expect(store.basedCharacterSet.has(5)).toBe(false)
+    })
+
+    it('importBased replaces basedCharacterIds', () => {
+      const store = useCollectionStore()
+      store.toggleCharacterBased(1)
+      store.importBased([30, 40])
+      expect(store.basedCharacterIds).toEqual([30, 40])
+    })
+  })
 })

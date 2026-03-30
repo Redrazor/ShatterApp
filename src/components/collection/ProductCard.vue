@@ -8,11 +8,17 @@ defineProps<{
   owned: boolean
   chars: Character[]
   ownedCharacterIds: Set<number>
+  showPainted?: boolean
+  showBased?: boolean
+  paintedCharacterIds?: Set<number>
+  basedCharacterIds?: Set<number>
 }>()
 
 defineEmits<{
   (e: 'toggle'): void
   (e: 'toggleCharacter', id: number): void
+  (e: 'togglePainted', id: number): void
+  (e: 'toggleBased', id: number): void
 }>()
 
 const expanded = ref(false)
@@ -82,20 +88,55 @@ const expanded = ref(false)
         <div
           v-for="char in chars"
           :key="char.id"
-          class="flex items-center justify-between gap-2"
+          class="space-y-0.5"
         >
-          <span class="text-xs text-sw-text/70 truncate">{{ char.name }}</span>
-          <button
-            :class="[
-              'shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors',
-              ownedCharacterIds.has(char.id)
-                ? 'bg-sw-gold/20 text-sw-gold'
-                : 'border border-sw-gold/20 text-sw-text/40 hover:border-sw-gold/50',
-            ]"
-            @click="$emit('toggleCharacter', char.id)"
-          >
-            {{ ownedCharacterIds.has(char.id) ? '✓' : '+' }}
-          </button>
+          <!-- Owned row -->
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs text-sw-text/70 truncate">{{ char.name }}</span>
+            <button
+              :class="[
+                'shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors',
+                ownedCharacterIds.has(char.id)
+                  ? 'bg-sw-gold/20 text-sw-gold'
+                  : 'border border-sw-gold/20 text-sw-text/40 hover:border-sw-gold/50',
+              ]"
+              @click="$emit('toggleCharacter', char.id)"
+            >
+              {{ ownedCharacterIds.has(char.id) ? '✓' : '+' }}
+            </button>
+          </div>
+
+          <!-- Painted row -->
+          <div v-if="showPainted" class="flex items-center justify-between gap-2 pl-2">
+            <span class="text-[10px] text-cyan-400/60">Painted</span>
+            <button
+              :class="[
+                'shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors',
+                paintedCharacterIds?.has(char.id)
+                  ? 'bg-cyan-500/20 text-cyan-400'
+                  : 'border border-cyan-500/20 text-sw-text/30 hover:border-cyan-500/40',
+              ]"
+              @click="$emit('togglePainted', char.id)"
+            >
+              {{ paintedCharacterIds?.has(char.id) ? '✓' : '+' }}
+            </button>
+          </div>
+
+          <!-- Based row -->
+          <div v-if="showBased" class="flex items-center justify-between gap-2 pl-2">
+            <span class="text-[10px] text-emerald-400/60">Based</span>
+            <button
+              :class="[
+                'shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors',
+                basedCharacterIds?.has(char.id)
+                  ? 'bg-emerald-500/20 text-emerald-400'
+                  : 'border border-emerald-500/20 text-sw-text/30 hover:border-emerald-500/40',
+              ]"
+              @click="$emit('toggleBased', char.id)"
+            >
+              {{ basedCharacterIds?.has(char.id) ? '✓' : '+' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

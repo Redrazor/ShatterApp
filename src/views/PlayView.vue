@@ -13,6 +13,7 @@ import { useCharactersStore } from '../stores/characters.ts'
 import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import { useRollSessionStore } from '../stores/rollSession.ts'
 import { useDiceRoom } from '../composables/useDiceRoom.ts'
+import { useSettingsStore } from '../stores/settings.ts'
 import { imageUrl } from '../utils/imageUrl.ts'
 import KoStageCards from '../components/play/KoStageCards.vue'
 import KoMissionInteraction from '../components/play/KoMissionInteraction.vue'
@@ -46,6 +47,8 @@ const galacticLegendsStore = useGalacticLegendsStore()
 const playUnitsStore = usePlayUnitsStore()
 const charactersStore = useCharactersStore()
 const strikeForceStore = useStrikeForceStore()
+
+const settingsStore = useSettingsStore()
 
 const playTab = ref<'tracker' | 'units' | 'dice'>(
   (store.selectedMission || koStore.selectedKoMission || (legendaryStore.selectedMission && legendaryStore.selectedGalacticLegend))
@@ -524,7 +527,7 @@ const ROMAN = ['I', 'II', 'III']
               : 'border-zinc-700 bg-zinc-800/60 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200',
           ]"
           @click="multiplayerMode = !multiplayerMode"
-        >🔗 Multi</button>
+        >🔗 Enable Multiplayer</button>
         <button
           v-if="inGame"
           class="rounded-lg border border-zinc-700 bg-zinc-800/60 px-3 py-1.5 text-xs font-medium text-zinc-400
@@ -566,6 +569,7 @@ const ROMAN = ['I', 'II', 'III']
     <!-- ── Play tab bar ── -->
     <div class="flex gap-1 rounded-lg border border-zinc-700/40 bg-zinc-900/40 p-1">
       <button
+        v-if="settingsStore.playShowRoster"
         class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all flex items-center justify-center gap-1"
         :class="playTab === 'units'
           ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
@@ -577,6 +581,7 @@ const ROMAN = ['I', 'II', 'III']
         <span v-else-if="playUnitsStore.hasUnits" class="rounded-full bg-zinc-600 px-1 text-[9px] text-zinc-300">{{ playUnitsStore.units.length }}</span>
       </button>
       <button
+        v-if="settingsStore.playShowTracker"
         class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
         :class="playTab === 'tracker'
           ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
@@ -584,6 +589,7 @@ const ROMAN = ['I', 'II', 'III']
         @click="playTab = 'tracker'"
       >Tracker</button>
       <button
+        v-if="settingsStore.playShowDice"
         class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
         :class="playTab === 'dice'
           ? 'bg-zinc-700 text-zinc-100 shadow-[0_1px_0_rgba(0,0,0,0.3)]'
@@ -594,7 +600,7 @@ const ROMAN = ['I', 'II', 'III']
 
     <!-- ── Units tab ── -->
     <UnitsTab
-      v-if="playTab === 'units'"
+      v-if="settingsStore.playShowRoster && playTab === 'units'"
       :characters="charactersStore.characters"
       :saved-lists="strikeForceStore.savedLists"
       :squad0-valid="strikeForceStore.isSquad0Valid"
@@ -604,12 +610,12 @@ const ROMAN = ['I', 'II', 'III']
     />
 
     <!-- ── Dice tab ── -->
-    <DicePanel v-show="playTab === 'dice'" :pending-roll="pendingRoll" @consumed="pendingRoll = null" />
+    <DicePanel v-show="settingsStore.playShowDice && playTab === 'dice'" :pending-roll="pendingRoll" @consumed="pendingRoll = null" />
 
     <!-- ══════════════════════════════════════════
          TRACKER TAB CONTENT
          ══════════════════════════════════════════ -->
-    <template v-if="playTab === 'tracker'">
+    <template v-if="settingsStore.playShowTracker && playTab === 'tracker'">
 
     <!-- ══════════════════════════════════════════
          STATE A: Mission Picker
