@@ -62,8 +62,8 @@ describe('useDataBackup', () => {
     expect(importError.value).toBe("Could not read backup — make sure it's a valid ShatterApp file.")
   })
 
-  it('importData sets importError when backup schema is wrong', () => {
-    const bad = JSON.stringify({ version: 2, collection: [], savedLists: [] })
+  it('importData sets importError when version field is missing', () => {
+    const bad = JSON.stringify({ collection: [], savedLists: [] })
     vi.stubGlobal('FileReader', mockFileReader(bad))
     const { importData, importError } = useDataBackup()
     importData(new File([''], 'backup.json'))

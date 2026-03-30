@@ -4,15 +4,19 @@ import { useHead } from '@vueuse/head'
 import { useProductsStore } from '../stores/products.ts'
 import { useCollectionStore } from '../stores/collection.ts'
 import { useCharactersStore } from '../stores/characters.ts'
+import { useSettingsStore } from '../stores/settings.ts'
 import ProductCard from '../components/collection/ProductCard.vue'
+
 import { useDataBackup } from '../composables/useDataBackup.ts'
 
 const productsStore = useProductsStore()
 const collectionStore = useCollectionStore()
 const charactersStore = useCharactersStore()
+const settingsStore = useSettingsStore()
 const { exportData, importData, importError, importSuccess, exportSuccess } = useDataBackup()
 
 const fileInput = ref<HTMLInputElement | null>(null)
+
 
 onMounted(() => {
   productsStore.load()
@@ -26,8 +30,13 @@ function triggerImport() {
 function onFileChange(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (file) importData(file)
-  // reset so the same file can be re-imported if needed
   ;(e.target as HTMLInputElement).value = ''
+}
+
+function handleToggleOwned(swp: string) {
+  const chars = charactersStore.charactersBySwp(swp)
+  const charIds = settingsStore.autoMarkUnitsOwned ? chars.map(c => c.id) : undefined
+  collectionStore.toggleOwned(swp, charIds)
 }
 
 const ownedCount = computed(() => productsStore.products.filter(
@@ -38,6 +47,13 @@ const totalUnitsOwned = computed(() => {
   const ownedSwps = collectionStore.ownedSwpSet
   return charactersStore.characters.filter(c => ownedSwps.has(c.swpCode ?? '')).length
 })
+
+const paintedCount = computed(() => collectionStore.paintedCharacterIds.length)
+const basedCount = computed(() => collectionStore.basedCharacterIds.length)
+const paintedPct = computed(() => totalUnitsOwned.value
+  ? Math.round((paintedCount.value / totalUnitsOwned.value) * 100) : 0)
+const basedPct = computed(() => totalUnitsOwned.value
+  ? Math.round((basedCount.value / totalUnitsOwned.value) * 100) : 0)
 
 useHead({
   title: 'My Collection — ShatterApp',
@@ -63,11 +79,11 @@ const eraStats = computed(() => {
   }
   return [...map.entries()].map(([era, { total, owned }]) => ({ era, total, owned })).sort((a, b) => a.era.localeCompare(b.era))
 })
-
 </script>
 
 <template>
   <div class="space-y-6">
+    <!-- Header -->
     <h1 class="text-2xl font-bold text-sw-gold">My Collection</h1>
 
     <!-- Stats dashboard -->
@@ -81,6 +97,14 @@ const eraStats = computed(() => {
           <div class="stat-block">
             <span class="stat-num">{{ totalUnitsOwned }}</span>
             <span class="stat-lbl">Units owned</span>
+          </div>
+          <div v-if="settingsStore.showPaintedToggle" class="stat-block">
+            <span class="stat-num text-cyan-400">{{ paintedCount }}<span class="text-base font-normal">/{{ totalUnitsOwned }}</span></span>
+            <span class="stat-lbl">Painted <span class="text-cyan-400/60">{{ paintedPct }}%</span></span>
+          </div>
+          <div v-if="settingsStore.showBasedToggle" class="stat-block">
+            <span class="stat-num text-emerald-400">{{ basedCount }}<span class="text-base font-normal">/{{ totalUnitsOwned }}</span></span>
+            <span class="stat-lbl">Based <span class="text-emerald-400/60">{{ basedPct }}%</span></span>
           </div>
         </div>
 
@@ -141,11 +165,18 @@ const eraStats = computed(() => {
         :owned="collectionStore.isOwned(product.swp)"
         :chars="charactersStore.charactersBySwp(product.swp)"
         :owned-character-ids="collectionStore.ownedCharacterSet"
-        @toggle="collectionStore.toggleOwned(product.swp)"
+        :show-painted="settingsStore.showPaintedToggle"
+        :show-based="settingsStore.showBasedToggle"
+        :painted-character-ids="collectionStore.paintedCharacterSet"
+        :based-character-ids="collectionStore.basedCharacterSet"
+        @toggle="handleToggleOwned(product.swp)"
         @toggle-character="collectionStore.toggleCharacterOwned($event)"
+        @toggle-painted="collectionStore.toggleCharacterPainted($event)"
+        @toggle-based="collectionStore.toggleCharacterBased($event)"
       />
     </div>
   </div>
+
 </template>
 
 <style scoped>

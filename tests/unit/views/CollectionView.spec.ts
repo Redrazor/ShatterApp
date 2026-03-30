@@ -109,7 +109,7 @@ describe('CollectionView', () => {
     const toggleSpy = vi.spyOn(collectionStore, 'toggleOwned')
     // The stub emits 'toggle' on click, which CollectionView handles with @toggle="collectionStore.toggleOwned(product.swp)"
     await wrapper.find('.product-card').trigger('click')
-    expect(toggleSpy).toHaveBeenCalledWith('SWP01')
+    expect(toggleSpy).toHaveBeenCalledWith('SWP01', undefined)
   })
 
   it('shows correct owned/total packs count in stats', () => {
