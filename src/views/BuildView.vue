@@ -118,8 +118,8 @@ const savedListLegality = computed(() =>
 const pickerBudget = computed(() => {
   if (!activeRole.value || activeRole.value === 'primary') return null
   const squad = activeSquadIdx.value < 2
-    ? sfStore.squads[activeSquadIdx.value]
-    : sfStore.extraSquads[activeSquadIdx.value - 2]
+    ? sfStore.squads[activeSquadIdx.value as 0 | 1]
+    : sfStore.extraSquads[(activeSquadIdx.value - 2) as 0 | 1]
   if (!squad.primary?.sp) return null
   const otherRole = activeRole.value === 'secondary' ? 'support' : 'secondary'
   const otherPc = squad[otherRole]?.pc ?? 0
