@@ -4,6 +4,15 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.4.0',
+    date: '2026-03-30',
+    changes: [
+      'Build — Budget filter in unit picker: hide units above a points threshold',
+      'Data — Ahsoka errata card images updated (May 2025)',
+      'UI — Landscape blocker improvements',
+    ],
+  },
+  {
     version: '2.3.1',
     date: '2026-03-26',
     changes: [
