@@ -15,6 +15,7 @@ export interface PlayUnit {
   wounds: number
   conditions: ConditionKey[]
   tags: string[]
+  orderCard?: string
 }
 
 export interface Character {

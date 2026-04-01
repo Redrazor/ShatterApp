@@ -31,6 +31,7 @@ export const usePlayUnitsStore = defineStore(
         wounds: 0,
         conditions: [],
         tags: c.tags ?? [],
+        orderCard: c.orderCard,
       }
     }
 
@@ -126,6 +127,16 @@ export const usePlayUnitsStore = defineStore(
       _syncUnits()
     }
 
+    function spendOneForce(): boolean {
+      const idx = Array.from({ length: totalFp.value }, (_, i) => i)
+        .find(i => !(spentTokens.value[i] ?? false))
+      if (idx === undefined) return false
+      while (spentTokens.value.length <= idx) spentTokens.value.push(false)
+      spentTokens.value[idx] = true
+      _syncUnits()
+      return true
+    }
+
     function syncNow() {
       _syncUnits()
     }
@@ -164,6 +175,7 @@ export const usePlayUnitsStore = defineStore(
       toggleForceToken,
       syncNow,
       refreshForcePool,
+      spendOneForce,
       clearRoster,
       reset,
     }

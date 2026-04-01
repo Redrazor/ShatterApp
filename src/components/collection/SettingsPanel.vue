@@ -45,6 +45,11 @@ const playToggles = [
     label: 'Show dice',
     desc: 'Shows the Dice tab in the Play screen.',
   },
+  {
+    key: 'playShowOrderDeck' as const,
+    label: 'Show order deck',
+    desc: 'Shows the Order Deck section in the Play screen (Standard/KO modes only).',
+  },
 ]
 </script>
 

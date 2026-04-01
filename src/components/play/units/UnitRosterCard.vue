@@ -13,6 +13,8 @@ const props = defineProps<{
   removed: boolean
   canRemove: boolean
   activeTag: string | null
+  isCurrentActive?: boolean
+  isActivated?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -67,7 +69,8 @@ const isDimmed = computed(() =>
       removed ? 'border-red-900/60 opacity-60' : '',
       isHighlighted ? 'border-amber-400/70 shadow-[0_0_12px_rgba(251,191,36,0.25)] ring-1 ring-amber-400/30' : '',
       isDimmed ? 'opacity-40' : '',
-      !removed && !isHighlighted && !isDimmed ? 'border-zinc-700/50' : '',
+      isCurrentActive && !removed && !isHighlighted ? 'border-emerald-500/60 shadow-[0_0_10px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/20' : '',
+      !removed && !isHighlighted && !isDimmed && !isCurrentActive ? 'border-zinc-700/50' : '',
     ]"
   >
     <!-- Removed overlay -->
@@ -78,6 +81,14 @@ const isDimmed = computed(() =>
       <span class="rounded-full border border-red-500/60 bg-red-950/80 px-4 py-1.5 text-sm font-bold uppercase tracking-widest text-red-400 shadow-lg">
         Removed
       </span>
+    </div>
+
+    <!-- Activated left-side ribbon -->
+    <div
+      v-if="isActivated"
+      class="absolute top-0 left-0 bottom-0 z-10 w-5 flex items-center justify-center rounded-l-2xl bg-zinc-700/60 pointer-events-none overflow-hidden"
+    >
+      <span class="text-[7px] font-bold uppercase tracking-widest text-zinc-400 -rotate-90 whitespace-nowrap">Done</span>
     </div>
 
     <!-- Header row (tappable → open profile) -->
