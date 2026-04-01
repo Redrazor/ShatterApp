@@ -11,7 +11,9 @@ import { isSquadValid, hasStrikeForceConflict } from '../types/index.ts'
 import StrikeForcePanel from '../components/build/StrikeForcePanel.vue'
 import SquadSlot from '../components/build/SquadSlot.vue'
 import UnitPickerDrawer from '../components/build/UnitPickerDrawer.vue'
+import SptExportModal from '../components/build/SptExportModal.vue'
 import { decodeBuild, encodeBuild } from '../utils/profileShare.ts'
+import { encodeSPT } from '../utils/sptExport.ts'
 
 const sfStore = useStrikeForceStore()
 const charStore = useCharactersStore()
@@ -162,6 +164,16 @@ function handleSave() {
 
 function handlePrint() {
   window.print()
+}
+
+const sptExportOpen = ref(false)
+const sptCode = ref('')
+
+function handleExport() {
+  const allSquads = [...sfStore.squads]
+  const extra = sfStore.buildMode !== 'standard' ? [...sfStore.extraSquads] : []
+  sptCode.value = encodeSPT(allSquads, extra, sfStore.mission, charStore.characters)
+  sptExportOpen.value = true
 }
 
 function handleShare() {
@@ -324,6 +336,7 @@ function importSharedBuild() {
       @reset="sfStore.resetStrikeForce"
       @save="handleSave"
       @share="handleShare"
+      @export="handleExport"
       @print="handlePrint"
     />
 
@@ -366,6 +379,17 @@ function importSharedBuild() {
     @select="selectUnit"
     @close="pickerOpen = false"
   />
+
+  <!-- SPT Export Modal -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <SptExportModal
+        v-if="sptExportOpen"
+        :code="sptCode"
+        @close="sptExportOpen = false"
+      />
+    </Transition>
+  </Teleport>
 
   <!-- Mission Picker Modal -->
   <Teleport to="body">
