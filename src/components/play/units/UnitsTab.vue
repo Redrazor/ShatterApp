@@ -2,18 +2,22 @@
 import { ref, computed } from 'vue'
 import type { Character, CompactBuild, PlayUnit } from '../../../types/index.ts'
 import { usePlayUnitsStore } from '../../../stores/playUnits.ts'
+import { useOrderDeckStore } from '../../../stores/orderDeck.ts'
+import { useSettingsStore } from '../../../stores/settings.ts'
 import UnitRosterCard from './UnitRosterCard.vue'
 import UnitSearchPicker from './UnitSearchPicker.vue'
 import PlayUnitStanceModal from './PlayUnitStanceModal.vue'
 import BuildListPicker from './BuildListPicker.vue'
 import ForcePool from './ForcePool.vue'
 import OpponentRoster from '../multiplayer/OpponentRoster.vue'
+import OrderDeckSection from './OrderDeckSection.vue'
 
 const props = defineProps<{
   characters: Character[]
   savedLists: CompactBuild[]
   squad0Valid: boolean   // active draft squad 0 valid (used only to decide whether to show import button)
   locked: boolean
+  isLegendary?: boolean
   opponentUnits?: PlayUnit[]
 }>()
 
@@ -22,12 +26,48 @@ const emit = defineEmits<{
 }>()
 
 const store = usePlayUnitsStore()
+const deckStore = useOrderDeckStore()
+const settingsStore = useSettingsStore()
 const showPicker = ref(false)
 const showListPicker = ref(false)
 const profileUnit = ref<PlayUnit | null>(null)
 const showProfile = ref(false)
 const activeTag = ref<string | null>(null)
 let tagTimer: ReturnType<typeof setTimeout> | null = null
+
+// Sorted units: current active first, previously activated with badge, then unactivated
+const sortedUnits = computed(() => {
+  // Revealed non-Shatterpoint card jumps to top immediately on flip, before End Activation
+  const revealedId = deckStore.revealed && !deckStore.revealed.isShatterpoint
+    ? deckStore.revealed.id
+    : null
+  const activeId = revealedId ?? deckStore.currentActiveId
+  const activatedSet = deckStore.activatedSet
+  return [...store.units].sort((a, b) => {
+    const aIsActive = a.id === activeId ? 0 : activatedSet.has(a.id) ? 1 : 2
+    const bIsActive = b.id === activeId ? 0 : activatedSet.has(b.id) ? 1 : 2
+    return aIsActive - bIsActive
+  })
+})
+
+function isCurrentActive(unitId: number) {
+  const revealedId = deckStore.revealed && !deckStore.revealed.isShatterpoint
+    ? deckStore.revealed.id
+    : null
+  return (revealedId ?? deckStore.currentActiveId) === unitId
+}
+
+function isActivated(unitId: number) {
+  if (!deckStore.activatedIds.includes(unitId)) return false
+  // The unit is only "still active" (no Done ribbon) when it's the current active and
+  // nothing new has been revealed yet. As soon as a new card is revealed or a
+  // Shatterpoint unit is pending, all activatedIds units are done.
+  const revealedId = deckStore.revealed && !deckStore.revealed.isShatterpoint
+    ? deckStore.revealed.id
+    : null
+  const currentActive = revealedId ?? deckStore.currentActiveId
+  return currentActive !== unitId
+}
 
 function onTagPress(tag: string) {
   if (tagTimer) clearTimeout(tagTimer)
@@ -89,6 +129,12 @@ function openProfile(unitId: number) {
 
     <!-- Roster -->
     <template v-else>
+      <!-- Order Deck Section -->
+      <OrderDeckSection
+        v-if="settingsStore.playShowOrderDeck"
+        :is-legendary="!!isLegendary"
+      />
+
       <!-- Force Pool -->
       <ForcePool />
 
@@ -120,12 +166,14 @@ function openProfile(unitId: number) {
 
       <!-- Unit cards -->
       <UnitRosterCard
-        v-for="unit in store.units"
+        v-for="unit in sortedUnits"
         :key="unit.id"
         :unit="unit"
         :removed="store.isRemoved(unit)"
         :can-remove="canAdd"
         :active-tag="activeTag"
+        :is-current-active="isCurrentActive(unit.id)"
+        :is-activated="isActivated(unit.id)"
         @tap-damage="(pos) => store.tapDamage(unit.id, pos)"
         @adjust-wounds="(delta) => store.adjustWounds(unit.id, delta)"
         @toggle-condition="(c) => store.toggleCondition(unit.id, c)"

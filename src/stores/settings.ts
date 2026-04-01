@@ -16,6 +16,7 @@ export const useSettingsStore = defineStore(
     const playShowRoster = ref(true)
     const playShowTracker = ref(true)
     const playShowDice = ref(true)
+    const playShowOrderDeck = ref(true)
 
     return {
       autoMarkUnitsOwned,
@@ -25,6 +26,7 @@ export const useSettingsStore = defineStore(
       playShowRoster,
       playShowTracker,
       playShowDice,
+      playShowOrderDeck,
     }
   },
   { persist: true },

@@ -14,6 +14,7 @@ import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import { useRollSessionStore } from '../stores/rollSession.ts'
 import { useDiceRoom } from '../composables/useDiceRoom.ts'
 import { useSettingsStore } from '../stores/settings.ts'
+import { useOrderDeckStore } from '../stores/orderDeck.ts'
 import { imageUrl } from '../utils/imageUrl.ts'
 import KoStageCards from '../components/play/KoStageCards.vue'
 import KoMissionInteraction from '../components/play/KoMissionInteraction.vue'
@@ -45,6 +46,7 @@ const legendaryStore = useLegendaryStore()
 const legendaryMissionsStore = useLegendaryMissionsStore()
 const galacticLegendsStore = useGalacticLegendsStore()
 const playUnitsStore = usePlayUnitsStore()
+const orderDeckStore = useOrderDeckStore()
 const charactersStore = useCharactersStore()
 const strikeForceStore = useStrikeForceStore()
 
@@ -223,6 +225,7 @@ function handleReset() {
     store.resetGame()
   }
   playUnitsStore.reset()
+  orderDeckStore.reset()
   playTab.value = 'units'
   if (rollSession.isConnected) rollSession.clearHistory()
 }
@@ -605,6 +608,7 @@ const ROMAN = ['I', 'II', 'III']
       :saved-lists="strikeForceStore.savedLists"
       :squad0-valid="strikeForceStore.isSquad0Valid"
       :locked="playUnitsStore.locked"
+      :is-legendary="isLegendary"
       :opponent-units="rollSession.isConnected ? rollSession.opponentUnits : undefined"
       @roll-stat="onRollStat"
     />

@@ -122,19 +122,15 @@ describe('CollectionView', () => {
     expect(wrapper.text()).toContain('1/2')
   })
 
-  it('totalUnitsOwned counts characters by swpCode', () => {
+  it('totalUnitsOwned counts models from owned products', () => {
     const wrapper = mountView(() => {
       const ps = useProductsStore()
-      ps.products = [makeProduct({ swp: 'SWP01' })]
-      const chars = useCharactersStore()
-      chars.characters = [
-        makeChar({ id: 1, swp: 'SWP01: Starter Set', swpCode: 'SWP01' }),
-        makeChar({ id: 2, swp: 'SWP01: Starter Set', swpCode: 'SWP01' }),
-        makeChar({ id: 3, swp: 'SWP02: Other Set', swpCode: 'SWP02' }),
+      ps.products = [
+        makeProduct({ swp: 'SWP01', models: [{ name: 'Unit A', count: 1 }, { name: 'Unit B', count: 1 }] as Product['models'] }),
       ]
       useCollectionStore().toggleOwned('SWP01')
     })
-    // 2 units with swpCode 'SWP01' are owned
+    // product has 2 models, owned → totalUnitsOwned = 2
     expect(wrapper.text()).toContain('2')
   })
 

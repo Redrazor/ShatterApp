@@ -54,6 +54,7 @@ export function useDataBackup() {
         playShowRoster: settingsStore.playShowRoster,
         playShowTracker: settingsStore.playShowTracker,
         playShowDice: settingsStore.playShowDice,
+        playShowOrderDeck: settingsStore.playShowOrderDeck,
       },
     }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -92,6 +93,7 @@ export function useDataBackup() {
           if (typeof s.playShowRoster === 'boolean') settingsStore.playShowRoster = s.playShowRoster
           if (typeof s.playShowTracker === 'boolean') settingsStore.playShowTracker = s.playShowTracker
           if (typeof s.playShowDice === 'boolean') settingsStore.playShowDice = s.playShowDice
+          if (typeof s.playShowOrderDeck === 'boolean') settingsStore.playShowOrderDeck = s.playShowOrderDeck
         }
 
         importSuccess.value = true
