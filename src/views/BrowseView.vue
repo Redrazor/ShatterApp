@@ -31,6 +31,13 @@ const filters = ref<SearchFilters>({
   favoritesOnly: false,
   favoritedSet: new Set(),
   ownedSwpSet: collectionStore.ownedSwpSet,
+  pcMin: null,
+  pcMax: null,
+  forceValues: [],
+  staminaMin: null,
+  staminaMax: null,
+  durabilityMin: null,
+  durabilityMax: null,
 })
 
 const liveFilters = computed<SearchFilters>(() => ({

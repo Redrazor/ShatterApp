@@ -3,6 +3,8 @@ import { ref, computed } from 'vue'
 import type { SearchFilters } from '../../composables/useSearch.ts'
 import KeywordChip from './KeywordChip.vue'
 
+const advancedOpen = ref(false)
+
 const props = defineProps<{
   filters: SearchFilters
   eras: string[]
@@ -37,6 +39,28 @@ function addTag(tag: string) {
     update({ tags: [...props.filters.tags, tag] })
   }
   tagInput.value = ''
+}
+
+function parseNum(val: string): number | null {
+  const n = parseInt(val, 10)
+  return isNaN(n) ? null : n
+}
+
+function toggleForce(v: number) {
+  const current = props.filters.forceValues
+  const next = current.includes(v) ? current.filter(x => x !== v) : [...current, v]
+  update({ forceValues: next })
+}
+
+const hasAdvancedFilters = computed(() =>
+  props.filters.pcMin !== null || props.filters.pcMax !== null ||
+  props.filters.forceValues.length > 0 ||
+  props.filters.staminaMin !== null || props.filters.staminaMax !== null ||
+  props.filters.durabilityMin !== null || props.filters.durabilityMax !== null
+)
+
+function clearAdvanced() {
+  update({ pcMin: null, pcMax: null, forceValues: [], staminaMin: null, staminaMax: null, durabilityMin: null, durabilityMax: null })
 }
 </script>
 
@@ -122,5 +146,121 @@ function addTag(tag: string) {
       @remove="removeTag"
     />
   </div>
+
+  <!-- Advanced filters toggle -->
+  <div>
+    <button
+      class="flex items-center gap-1 text-xs transition-colors"
+      :class="hasAdvancedFilters ? 'text-sw-gold' : 'text-sw-text/40 hover:text-sw-text/70'"
+      @click="advancedOpen = !advancedOpen"
+    >
+      <span>{{ advancedOpen ? '▾' : '▸' }}</span>
+      <span>Advanced filters</span>
+      <span v-if="hasAdvancedFilters" class="ml-1 rounded-full bg-sw-gold/20 px-1.5 py-0.5 text-[10px] text-sw-gold">active</span>
+    </button>
+
+    <div v-if="advancedOpen" class="mt-2 space-y-3 rounded-lg border border-sw-gold/15 bg-sw-dark/50 p-3">
+
+      <!-- PC range -->
+      <div>
+        <label class="mb-1 block text-xs text-sw-text/50">Squad Points (PC)</label>
+        <div class="flex items-center gap-2">
+          <input
+            type="number"
+            min="1" max="20"
+            placeholder="Min"
+            :value="filters.pcMin ?? ''"
+            class="w-20 rounded border border-sw-gold/20 bg-sw-dark px-2 py-1 text-xs text-sw-text placeholder-sw-text/30 focus:border-sw-gold focus:outline-none"
+            @input="update({ pcMin: parseNum(($event.target as HTMLInputElement).value) })"
+          />
+          <span class="text-xs text-sw-text/30">–</span>
+          <input
+            type="number"
+            min="1" max="20"
+            placeholder="Max"
+            :value="filters.pcMax ?? ''"
+            class="w-20 rounded border border-sw-gold/20 bg-sw-dark px-2 py-1 text-xs text-sw-text placeholder-sw-text/30 focus:border-sw-gold focus:outline-none"
+            @input="update({ pcMax: parseNum(($event.target as HTMLInputElement).value) })"
+          />
+        </div>
+      </div>
+
+      <!-- Force value -->
+      <div>
+        <label class="mb-1 block text-xs text-sw-text/50">Force</label>
+        <div class="flex gap-1">
+          <button
+            v-for="v in [0, 1, 2, 3, 4]"
+            :key="v"
+            class="rounded px-2.5 py-1 text-xs font-medium transition-colors"
+            :class="filters.forceValues.includes(v)
+              ? 'bg-sw-blue/30 text-sw-blue border border-sw-blue/50'
+              : 'border border-sw-gold/20 text-sw-text/50 hover:border-sw-gold/40 hover:text-sw-text/80'"
+            @click="toggleForce(v)"
+          >
+            {{ v }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Stamina range -->
+      <div>
+        <label class="mb-1 block text-xs text-sw-text/50">Stamina</label>
+        <div class="flex items-center gap-2">
+          <input
+            type="number"
+            min="1" max="20"
+            placeholder="Min"
+            :value="filters.staminaMin ?? ''"
+            class="w-20 rounded border border-sw-gold/20 bg-sw-dark px-2 py-1 text-xs text-sw-text placeholder-sw-text/30 focus:border-sw-gold focus:outline-none"
+            @input="update({ staminaMin: parseNum(($event.target as HTMLInputElement).value) })"
+          />
+          <span class="text-xs text-sw-text/30">–</span>
+          <input
+            type="number"
+            min="1" max="20"
+            placeholder="Max"
+            :value="filters.staminaMax ?? ''"
+            class="w-20 rounded border border-sw-gold/20 bg-sw-dark px-2 py-1 text-xs text-sw-text placeholder-sw-text/30 focus:border-sw-gold focus:outline-none"
+            @input="update({ staminaMax: parseNum(($event.target as HTMLInputElement).value) })"
+          />
+        </div>
+      </div>
+
+      <!-- Durability range -->
+      <div>
+        <label class="mb-1 block text-xs text-sw-text/50">Durability</label>
+        <div class="flex items-center gap-2">
+          <input
+            type="number"
+            min="1" max="10"
+            placeholder="Min"
+            :value="filters.durabilityMin ?? ''"
+            class="w-20 rounded border border-sw-gold/20 bg-sw-dark px-2 py-1 text-xs text-sw-text placeholder-sw-text/30 focus:border-sw-gold focus:outline-none"
+            @input="update({ durabilityMin: parseNum(($event.target as HTMLInputElement).value) })"
+          />
+          <span class="text-xs text-sw-text/30">–</span>
+          <input
+            type="number"
+            min="1" max="10"
+            placeholder="Max"
+            :value="filters.durabilityMax ?? ''"
+            class="w-20 rounded border border-sw-gold/20 bg-sw-dark px-2 py-1 text-xs text-sw-text placeholder-sw-text/30 focus:border-sw-gold focus:outline-none"
+            @input="update({ durabilityMax: parseNum(($event.target as HTMLInputElement).value) })"
+          />
+        </div>
+      </div>
+
+      <!-- Clear advanced -->
+      <button
+        v-if="hasAdvancedFilters"
+        class="text-xs text-sw-text/40 hover:text-red-400 transition-colors"
+        @click="clearAdvanced"
+      >
+        Clear advanced filters
+      </button>
+    </div>
+  </div>
+
   </div>
 </template>
