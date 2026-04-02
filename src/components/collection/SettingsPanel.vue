@@ -29,26 +29,37 @@ const playToggles = [
     key: 'showRollTab' as const,
     label: 'Enable General Roll',
     desc: 'Shows the Roll tab in the navigation.',
+    dependsOn: null,
+  },
+  {
+    key: 'showProbabilityRoller' as const,
+    label: 'Enable Probability Calculator',
+    desc: 'Shows the Probability tab in the Dice Roller.',
+    dependsOn: 'showRollTab' as const,
   },
   {
     key: 'playShowRoster' as const,
     label: 'Show unit roster',
     desc: 'Shows the Units tab in the Play screen.',
+    dependsOn: null,
   },
   {
     key: 'playShowTracker' as const,
     label: 'Show tracker',
     desc: 'Shows the Tracker tab in the Play screen.',
+    dependsOn: null,
   },
   {
     key: 'playShowDice' as const,
     label: 'Show dice',
     desc: 'Shows the Dice tab in the Play screen.',
+    dependsOn: null,
   },
   {
     key: 'playShowOrderDeck' as const,
     label: 'Show order deck',
     desc: 'Shows the Order Deck section in the Play screen (Standard/KO modes only).',
+    dependsOn: null,
   },
 ]
 </script>
@@ -116,20 +127,29 @@ const playToggles = [
           <div
             v-for="t in playToggles"
             :key="t.key"
-            class="flex items-start justify-between gap-3"
+            :class="[
+              'flex items-start justify-between gap-3',
+              t.dependsOn && !settings[t.dependsOn] ? 'opacity-50' : '',
+            ]"
           >
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-sw-text">{{ t.label }}</p>
               <p class="text-[11px] text-sw-text/40 leading-snug mt-0.5">{{ t.desc }}</p>
+              <p
+                v-if="t.dependsOn && !settings[t.dependsOn]"
+                class="text-[11px] text-amber-400/80 leading-snug mt-0.5"
+              >Requires "Enable General Roll" to be on.</p>
             </div>
             <button
               :class="[
                 'relative mt-0.5 shrink-0 h-5 w-9 rounded-full transition-colors',
                 settings[t.key] ? 'bg-sw-gold' : 'bg-sw-dark border border-sw-gold/20',
+                t.dependsOn && !settings[t.dependsOn] ? 'cursor-not-allowed' : '',
               ]"
               role="switch"
               :aria-checked="settings[t.key]"
-              @click="settings[t.key] = !settings[t.key]"
+              :disabled="!!(t.dependsOn && !settings[t.dependsOn])"
+              @click="!(t.dependsOn && !settings[t.dependsOn]) && (settings[t.key] = !settings[t.key])"
             >
               <span
                 :class="[
