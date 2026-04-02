@@ -5,6 +5,10 @@ import { join } from 'path'
 const chars = JSON.parse(readFileSync(join(process.cwd(), 'public/data/characters.json'), 'utf-8')) as { id: number; name: string }[]
 const charMap = new Map(chars.map(c => [c.id, c.name]))
 
+// Geist font bundled with @vercel/og — embed as base64 so librsvg can render text
+const fontB64 = readFileSync(join(process.cwd(), 'node_modules/@vercel/og/dist/Geist-Regular.ttf')).toString('base64')
+const fontCss = `@font-face { font-family: 'Geist'; src: url('data:font/ttf;base64,${fontB64}') format('truetype'); }`
+
 function fromBase64url(s: string): string {
   try {
     return Buffer.from(s.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf-8')
@@ -41,21 +45,22 @@ function buildSvg(listName: string, sq0: string[], sq1: string[]): string {
   ]
   const cols = squads.map((squad, si) => {
     const x = 64 + si * 560
-    const label = `<text x="${x}" y="318" font-family="sans-serif" font-size="12" font-weight="bold" letter-spacing="2" fill="${DIM}">${esc(squad.label)}</text>`
+    const label = `<text x="${x}" y="318" font-family="Geist" font-size="12" font-weight="bold" letter-spacing="2" fill="${DIM}">${esc(squad.label)}</text>`
     const names = squad.names.map((name, ni) => {
       const y = 354 + ni * 40
       return `<circle cx="${x + 7}" cy="${y - 6}" r="3" fill="${GOLD}aa"/>
-        <text x="${x + 22}" y="${y}" font-family="sans-serif" font-size="26" fill="${NAME}">${esc(name)}</text>`
+        <text x="${x + 22}" y="${y}" font-family="Geist" font-size="26" fill="${NAME}">${esc(name)}</text>`
     }).join('\n')
     return label + '\n' + names
   }).join('\n')
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+  <defs><style>${fontCss}</style></defs>
   <rect width="${W}" height="${H}" fill="${DARK}"/>
-  <text x="64" y="78" font-family="sans-serif" font-size="13" letter-spacing="3" fill="${GOLD}" opacity="0.7">SHATTERAPP</text>
-  <text x="${W - 64}" y="78" font-family="sans-serif" font-size="12" text-anchor="end" fill="${GOLD}" opacity="0.3">Star Wars: Shatterpoint</text>
+  <text x="64" y="78" font-family="Geist" font-size="13" letter-spacing="3" fill="${GOLD}" opacity="0.7">SHATTERAPP</text>
+  <text x="${W - 64}" y="78" font-family="Geist" font-size="12" text-anchor="end" fill="${GOLD}" opacity="0.3">Star Wars: Shatterpoint</text>
   <line x1="64" y1="98" x2="${W - 64}" y2="98" stroke="${GOLD}" stroke-opacity="0.2" stroke-width="1"/>
-  <text x="64" y="220" font-family="sans-serif" font-size="60" font-weight="bold" fill="${GOLD}">${esc(listName)}</text>
+  <text x="64" y="220" font-family="Geist" font-size="60" font-weight="bold" fill="${GOLD}">${esc(listName)}</text>
   ${cols}
 </svg>`
 }
