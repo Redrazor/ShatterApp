@@ -43,10 +43,11 @@ const ownedCount = computed(() => productsStore.products.filter(
   (p) => collectionStore.isOwned(p.swp),
 ).length)
 
-const totalUnitsOwned = computed(() => {
-  const ownedSwps = collectionStore.ownedSwpSet
-  return charactersStore.characters.filter(c => ownedSwps.has(c.swpCode ?? '')).length
-})
+const totalUnitsOwned = computed(() =>
+  productsStore.products
+    .filter(p => collectionStore.isOwned(p.swp))
+    .reduce((sum, p) => sum + p.models.length, 0),
+)
 
 const paintedCount = computed(() => collectionStore.paintedCharacterIds.length)
 const basedCount = computed(() => collectionStore.basedCharacterIds.length)

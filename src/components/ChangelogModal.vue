@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.6.0',
+    date: '2026-04-01',
+    changes: [
+      'Play — Order Deck builder for Standard and Key Operations: build, shuffle, draw, and discard order cards per unit',
+      'Collection — Total units owned now counts models (not characters) for accurate pack totals',
+    ],
+  },
+  {
     version: '2.5.0',
     date: '2026-03-31',
     changes: [

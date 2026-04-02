@@ -16,6 +16,7 @@ defineEmits<{
   (e: 'reset'): void
   (e: 'save'): void
   (e: 'share'): void
+  (e: 'export'): void
   (e: 'print'): void
 }>()
 
@@ -48,6 +49,13 @@ const modes: { value: BuildMode; label: string; squads: number }[] = [
           @click="$emit('share')"
         >
           Share
+        </button>
+        <button
+          class="no-print rounded px-2 py-1 text-xs text-sw-text/50 hover:text-sw-gold"
+          title="Export to Longshanks"
+          @click="$emit('export')"
+        >
+          Export
         </button>
         <button
           class="no-print hidden sm:block rounded px-2 py-1 text-xs text-sw-text/40 hover:text-sw-gold"
