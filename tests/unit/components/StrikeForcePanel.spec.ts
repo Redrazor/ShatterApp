@@ -8,7 +8,7 @@ function makeMission(): Mission {
 }
 
 function defaultProps(overrides = {}) {
-  return { name: '', mission: null, isComplete: false, buildMode: 'standard' as const, ...overrides }
+  return { name: '', mission: null, isComplete: false, buildMode: 'standard' as const, ownedOnly: false, ...overrides }
 }
 
 describe('StrikeForcePanel', () => {

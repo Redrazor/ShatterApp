@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 export const useSettingsStore = defineStore(
   'settings',
@@ -11,6 +11,7 @@ export const useSettingsStore = defineStore(
 
     // Roll tab
     const showRollTab = ref(true)
+    const showProbabilityRoller = ref(false)
 
     // Play view sections
     const playShowRoster = ref(true)
@@ -18,11 +19,16 @@ export const useSettingsStore = defineStore(
     const playShowDice = ref(true)
     const playShowOrderDeck = ref(true)
 
+    watch(showRollTab, (enabled) => {
+      if (!enabled) showProbabilityRoller.value = false
+    })
+
     return {
       autoMarkUnitsOwned,
       showPaintedToggle,
       showBasedToggle,
       showRollTab,
+      showProbabilityRoller,
       playShowRoster,
       playShowTracker,
       playShowDice,
