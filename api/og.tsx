@@ -1,8 +1,6 @@
 /** @jsxImportSource react */
 import { ImageResponse } from '@vercel/og'
 
-export const config = { runtime: 'edge' }
-
 // Minimal character lookup bundled at build time
 import chars from '../public/data/characters.json'
 
