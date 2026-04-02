@@ -5,6 +5,7 @@ import { useHead } from '@vueuse/head'
 import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import { useCharactersStore } from '../stores/characters.ts'
 import { useMissionsStore } from '../stores/missions.ts'
+import { useCollectionStore } from '../stores/collection.ts'
 import type { Squad, Character, Mission, BuildMode } from '../types/index.ts'
 import type { CompactBuild } from '../types/index.ts'
 import { isSquadValid, hasStrikeForceConflict } from '../types/index.ts'
@@ -15,12 +16,36 @@ import SptExportModal from '../components/build/SptExportModal.vue'
 import QrShareModal from '../components/build/QrShareModal.vue'
 import { decodeBuild, encodeBuild } from '../utils/profileShare.ts'
 import { encodeSPT } from '../utils/sptExport.ts'
+import { generateRandomStrikeForce } from '../utils/randomBuild.ts'
 
 const sfStore = useStrikeForceStore()
 const charStore = useCharactersStore()
 const missionsStore = useMissionsStore()
+const collectionStore = useCollectionStore()
 const route = useRoute()
 const router = useRouter()
+
+// Random build
+const ownedOnly = ref(false)
+
+function handleRandom() {
+  const result = generateRandomStrikeForce(
+    charStore.characters,
+    [sfStore.squads[0], sfStore.squads[1]],
+    ownedOnly.value ? { ownedSwpCodes: collectionStore.ownedSwpSet } : {}
+  )
+  if (!result) {
+    saveFeedback.value = ownedOnly.value
+      ? 'No valid build found — try disabling Owned filter'
+      : 'No valid build found'
+    setTimeout(() => { saveFeedback.value = '' }, 2500)
+    return
+  }
+  for (const role of ['primary', 'secondary', 'support'] as const) {
+    if (result[0][role]) sfStore.setUnit(0, role, result[0][role])
+    if (result[1][role]) sfStore.setUnit(1, role, result[1][role])
+  }
+}
 
 onMounted(() => {
   charStore.load()
@@ -354,8 +379,10 @@ function importSharedBuild() {
       :mission="sfStore.mission"
       :is-complete="sfStore.isStrikeForceComplete"
       :build-mode="sfStore.buildMode"
+      :owned-only="ownedOnly"
       @update:name="sfStore.setName"
       @update:build-mode="sfStore.setBuildMode"
+      @update:owned-only="ownedOnly = $event"
       @pick-mission="missionPickerOpen = true"
       @clear-mission="sfStore.setMission(null)"
       @reset="sfStore.resetStrikeForce"
@@ -364,6 +391,7 @@ function importSharedBuild() {
       @qr="handleQr"
       @export="handleExport"
       @print="handlePrint"
+      @random="handleRandom"
     />
 
     <!-- Squads -->

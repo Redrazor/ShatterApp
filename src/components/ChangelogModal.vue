@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.9.0',
+    date: '2026-04-02',
+    changes: [
+      'Build — Share your list as a QR code: tap the QR icon to generate a scannable code anyone can open on their device',
+    ],
+  },
+  {
     version: '2.8.0',
     date: '2026-04-02',
     changes: [

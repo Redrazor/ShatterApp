@@ -6,11 +6,13 @@ defineProps<{
   mission: Mission | null
   isComplete: boolean
   buildMode: BuildMode
+  ownedOnly: boolean
 }>()
 
 defineEmits<{
   (e: 'update:name', val: string): void
   (e: 'update:buildMode', val: BuildMode): void
+  (e: 'update:ownedOnly', val: boolean): void
   (e: 'pick-mission'): void
   (e: 'clear-mission'): void
   (e: 'reset'): void
@@ -19,6 +21,7 @@ defineEmits<{
   (e: 'qr'): void
   (e: 'export'): void
   (e: 'print'): void
+  (e: 'random'): void
 }>()
 
 const modes: { value: BuildMode; label: string; squads: number }[] = [
@@ -71,6 +74,23 @@ const modes: { value: BuildMode; label: string; squads: number }[] = [
         >
           Print
         </button>
+        <div class="no-print flex rounded border border-sw-gold/30 overflow-hidden">
+          <button
+            class="px-2 py-1 text-xs text-sw-gold/80 hover:text-sw-gold hover:bg-sw-gold/10 transition-colors"
+            title="Fill empty slots randomly"
+            @click="$emit('random')"
+          >
+            🎲 Random
+          </button>
+          <button
+            class="border-l border-sw-gold/30 px-2 py-1 text-xs transition-colors"
+            :class="ownedOnly ? 'bg-sw-gold/20 text-sw-gold' : 'text-sw-text/40 hover:text-sw-text/70 hover:bg-sw-gold/5'"
+            title="Only use units you own"
+            @click="$emit('update:ownedOnly', !ownedOnly)"
+          >
+            Owned
+          </button>
+        </div>
         <button
           class="no-print rounded px-2 py-1 text-xs text-sw-text/50 hover:text-red-400"
           @click="$emit('reset')"
