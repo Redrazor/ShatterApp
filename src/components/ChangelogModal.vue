@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.10.0',
+    date: '2026-04-02',
+    changes: [
+      'Build — Random Strike Force generator: fill empty slots instantly with a faction-aware pick; toggle Owned to restrict to your collection',
+    ],
+  },
+  {
     version: '2.9.0',
     date: '2026-04-02',
     changes: [
