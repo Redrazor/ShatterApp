@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { useOrderDeckStore, type OrderCard } from '../../../stores/orderDeck.ts'
+import { useOrderDeckStore } from '../../../stores/orderDeck.ts'
 import { usePlayUnitsStore } from '../../../stores/playUnits.ts'
 import { useCharactersStore } from '../../../stores/characters.ts'
 import { imageUrl } from '../../../utils/imageUrl.ts'
 import type { PlayUnit } from '../../../types/index.ts'
 
-const props = defineProps<{
+defineProps<{
   isLegendary: boolean
-}>()
-
-const emit = defineEmits<{
-  (e: 'shatterpoint-pick', unitId: number): void
 }>()
 
 const deckStore = useOrderDeckStore()

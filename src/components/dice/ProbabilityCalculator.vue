@@ -76,7 +76,7 @@ function rowClass(prob: number): string {
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
-          <tr v-for="(count, i) in result.distribution" v-show="i > 0" :key="i">
+          <tr v-for="(_, i) in result.cumulative" v-show="i > 0" :key="i">
             <td class="px-4 py-2 font-mono font-bold text-sw-text">{{ i }}</td>
             <td :class="['px-4 py-2 text-right font-mono text-xs', rowClass(result!.cumulative[i])]">
               {{ pct(result!.cumulative[i]) }}
