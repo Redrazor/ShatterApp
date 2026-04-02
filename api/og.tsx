@@ -1,5 +1,6 @@
 /** @jsxImportSource react */
 import { ImageResponse } from '@vercel/og'
+import type { IncomingMessage, ServerResponse } from 'http'
 
 // Minimal character lookup bundled at build time
 import chars from '../public/data/characters.json'
@@ -22,12 +23,18 @@ function thumbUrl(path: string): string {
 }
 
 function fromBase64url(s: string): string {
-  return atob(s.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, ''))
+  try {
+    return Buffer.from(s.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf-8')
+  } catch {
+    return ''
+  }
 }
 
 function decodeBuild(sf: string): { name: string; s: [[number, number, number], [number, number, number]] } | null {
   try {
-    return JSON.parse(fromBase64url(sf))
+    const raw = fromBase64url(sf)
+    if (!raw) return null
+    return JSON.parse(raw)
   } catch {
     return null
   }
@@ -37,8 +44,8 @@ const GOLD = '#c9a227'
 const DARK = '#111318'
 const CARD_BG = '#1a1f2e'
 
-export default function handler(req: Request): Response {
-  const url = new URL(req.url)
+export default async function handler(req: IncomingMessage, res: ServerResponse) {
+  const url = new URL(req.url!, `https://${req.headers.host}`)
   const sf = url.searchParams.get('sf')
   const build = sf ? decodeBuild(sf) : null
   const listName = build?.name ?? 'Strike Force'
@@ -54,7 +61,7 @@ export default function handler(req: Request): Response {
     { label: 'Squad 2', units: sq1 },
   ]
 
-  return new ImageResponse(
+  const imageResponse = new ImageResponse(
     <div
       style={{
         background: DARK,
@@ -155,4 +162,9 @@ export default function handler(req: Request): Response {
     </div>,
     { width: 1200, height: 630 }
   )
+
+  const buffer = Buffer.from(await imageResponse.arrayBuffer())
+  res.setHeader('Content-Type', 'image/png')
+  res.setHeader('Cache-Control', 'public, max-age=86400, immutable')
+  res.end(buffer)
 }
