@@ -14,6 +14,7 @@ import SquadSlot from '../components/build/SquadSlot.vue'
 import UnitPickerDrawer from '../components/build/UnitPickerDrawer.vue'
 import SptExportModal from '../components/build/SptExportModal.vue'
 import QrShareModal from '../components/build/QrShareModal.vue'
+import StrikeForceVisualModal from '../components/build/StrikeForceVisualModal.vue'
 import { decodeBuild, encodeBuild } from '../utils/profileShare.ts'
 import { encodeSPT } from '../utils/sptExport.ts'
 import { generateRandomStrikeForce } from '../utils/randomBuild.ts'
@@ -205,6 +206,79 @@ function handleExport() {
 const qrOpen = ref(false)
 const qrUrl = ref('')
 
+// Visualise modal
+const visualOpen = ref(false)
+const visualSquads = ref<[Squad, Squad] | null>(null)
+const visualName = ref('')
+const visualShareUrl = ref('')
+
+// Squad picker (for Premiere / Threemiere lists)
+const squadPickOpen = ref(false)
+const squadPickListIdx = ref(-1)
+const squadPickSelected = ref<Set<number>>(new Set())
+
+interface SquadPickRow {
+  label: string
+  units: (Character | null)[]
+}
+const squadPickRows = ref<SquadPickRow[]>([])
+
+function visualiseList(i: number) {
+  const build = sfStore.savedLists[i]
+  const mode: BuildMode = build.mode ?? (build.pre ? 'premiere' : 'standard')
+
+  if (mode !== 'standard') {
+    // Show squad picker first
+    const resolve = (id: number) => id ? (charStore.characters.find(c => c.id === id) ?? null) : null
+    const allSquadIds = [
+      build.s[0], build.s[1],
+      ...(build.ex ? [build.ex[0], build.ex[1]] : []),
+    ]
+    squadPickRows.value = allSquadIds
+      .filter((_, idx) => mode === 'premiere' ? true : idx < 3)
+      .map((ids, idx) => ({
+        label: `Squad ${idx + 1}`,
+        units: ids.map(resolve),
+      }))
+    squadPickListIdx.value = i
+    squadPickSelected.value = new Set()
+    squadPickOpen.value = true
+    return
+  }
+
+  openVisualModal(i, [0, 1])
+}
+
+function confirmSquadPick() {
+  if (squadPickSelected.value.size !== 2) return
+  const chosen = [...squadPickSelected.value].sort((a, b) => a - b) as [number, number]
+  openVisualModal(squadPickListIdx.value, chosen)
+  squadPickOpen.value = false
+}
+
+function openVisualModal(listIdx: number, squadIndices: [number, number]) {
+  const build = sfStore.savedLists[listIdx]
+  const resolve = (id: number) => id ? (charStore.characters.find(c => c.id === id) ?? null) : null
+
+  const allSquadIds: [number, number, number][] = [
+    build.s[0], build.s[1],
+    ...(build.ex ? [build.ex[0], build.ex[1]] : []),
+  ]
+
+  const makeSquad = (ids: [number, number, number]): Squad => ({
+    primary: resolve(ids[0]),
+    secondary: resolve(ids[1]),
+    support: resolve(ids[2]),
+  })
+
+  visualSquads.value = [makeSquad(allSquadIds[squadIndices[0]]), makeSquad(allSquadIds[squadIndices[1]])]
+  visualName.value = build.name
+
+  const encoded = encodeBuild(build.name, build.mid ?? null, build.mode ?? 'standard', build.s, build.ex)
+  visualShareUrl.value = `${window.location.origin}/build?sf=${encoded}`
+  visualOpen.value = true
+}
+
 function handleQr() {
   const s0 = sfStore.squads[0]
   const s1 = sfStore.squads[1]
@@ -348,6 +422,13 @@ function importSharedBuild() {
             {{ savedListLegality[i].valid ? '✓ Legal' : '✗ Illegal' }}
           </span>
           <button
+            class="rounded px-2 py-0.5 text-xs text-sw-text/50 hover:text-sw-blue"
+            title="Visualise this list"
+            @click="visualiseList(i)"
+          >
+            Visualise
+          </button>
+          <button
             class="rounded px-2 py-0.5 text-xs text-sw-text/50 hover:text-sw-gold"
             @click="loadList(i)"
           >
@@ -452,6 +533,89 @@ function importSharedBuild() {
         v-if="qrOpen"
         :url="qrUrl"
         @close="qrOpen = false"
+      />
+    </Transition>
+  </Teleport>
+
+  <!-- Squad Picker (for Premiere / Threemiere) -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <div
+        v-if="squadPickOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @click.self="squadPickOpen = false"
+      >
+        <div class="absolute inset-0 bg-black/75" @click="squadPickOpen = false" />
+        <div class="relative z-10 w-full max-w-sm rounded-2xl border border-sw-gold/30 bg-sw-card shadow-2xl overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-sw-gold/15">
+            <span class="text-xs font-bold uppercase tracking-widest text-sw-text/60">Pick 2 squads to visualise</span>
+            <button class="text-sw-text/40 hover:text-sw-text/80" @click="squadPickOpen = false">✕</button>
+          </div>
+          <div class="p-3 space-y-2 overflow-y-auto max-h-72">
+            <button
+              v-for="(row, si) in squadPickRows"
+              :key="si"
+              class="w-full rounded-xl border px-3 py-2.5 text-left transition-all flex items-center gap-3"
+              :class="squadPickSelected.has(si)
+                ? 'border-sw-gold/60 bg-sw-gold/10'
+                : 'border-sw-gold/20 bg-sw-card/60 hover:border-sw-gold/40'"
+              @click="squadPickSelected.has(si)
+                ? squadPickSelected.delete(si)
+                : squadPickSelected.size < 2 && squadPickSelected.add(si)"
+            >
+              <div
+                class="h-4 w-4 rounded border flex items-center justify-center flex-shrink-0"
+                :class="squadPickSelected.has(si) ? 'border-sw-gold bg-sw-gold' : 'border-sw-text/30'"
+              >
+                <span v-if="squadPickSelected.has(si)" class="text-[10px] text-sw-dark font-bold leading-none">✓</span>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wide text-sw-text/50 w-12 flex-shrink-0">{{ row.label }}</span>
+              <div class="flex gap-1">
+                <template v-for="(unit, ui) in row.units" :key="ui">
+                  <img
+                    v-if="unit?.thumbnail"
+                    :src="unit.thumbnail"
+                    :alt="unit.name"
+                    class="h-7 w-7 rounded-full border border-sw-gold/30 object-cover"
+                  />
+                  <div v-else class="h-7 w-7 rounded-full border border-sw-gold/20 bg-sw-dark flex items-center justify-center">
+                    <span class="text-[8px] text-sw-text/30">?</span>
+                  </div>
+                </template>
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span v-for="(unit, ui) in row.units" :key="ui" class="text-[10px] text-sw-text/50 leading-tight truncate max-w-[100px]">
+                  {{ unit?.name ?? '—' }}
+                </span>
+              </div>
+            </button>
+          </div>
+          <div class="px-4 py-3 border-t border-sw-gold/15">
+            <button
+              class="w-full rounded-xl py-2 text-sm font-semibold transition-colors"
+              :class="squadPickSelected.size === 2
+                ? 'bg-sw-gold/20 text-sw-gold hover:bg-sw-gold/30 border border-sw-gold/40'
+                : 'bg-sw-card/40 text-sw-text/30 border border-sw-gold/10 cursor-not-allowed'"
+              :disabled="squadPickSelected.size !== 2"
+              @click="confirmSquadPick"
+            >
+              {{ squadPickSelected.size === 2 ? 'Visualise selected squads' : `Select ${2 - squadPickSelected.size} more` }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+
+  <!-- Visualise Modal -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <StrikeForceVisualModal
+        v-if="visualOpen && visualSquads"
+        :squads="visualSquads"
+        :name="visualName"
+        :share-url="visualShareUrl"
+        @close="visualOpen = false"
       />
     </Transition>
   </Teleport>

@@ -433,9 +433,7 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 
 **Context:** Rather than manually counting dice, players should be able to tap "Attack" or "Defend" on a unit's profile in the Play view and be taken directly to the roller with the correct number of dice pre-rolled based on that unit's stats and active stance.
 
-**Status:** `[~] In progress`
-
-> **Implementation scope:** Clicking an attack (⚔) or defense (🛡) stat button on a unit card in Play > Units navigates to the Dice tab, pre-rolls the correct dice, and expands the Dice panel to show the unit's stance card + conditions above the dice column. Works in solo and multiplayer mode. In multiplayer, also syncs the triggering unit's ID to the opponent via socket so both players see each other's stance card and conditions. "Add 1 die" now auto-rolls a random face immediately (no picker). Dice tab is always visible (not only in multiplayer).
+**Status:** `[x]` Done — Clicking an attack (⚔) or defense (🛡) stat button on a unit card in Play > Units navigates to the Dice tab, pre-rolls the correct dice, and expands the Dice panel to show the unit's stance card + conditions above the dice column. Works in solo and multiplayer mode. In multiplayer, also syncs the triggering unit's ID to the opponent via socket so both players see each other's stance card and conditions. "Add 1 die" now auto-rolls a random face immediately (no picker). Dice tab is always visible (not only in multiplayer).
 
 > **Original note:** Build this as part of the Play view unit-tracking update (#13). Logic is tied to active units in a current game — not a standalone browse feature. Must be completed **before** multiplayer (#11), as conditions (#13) and profile-linked rolls feed directly into the multiplayer dice sharing flow.
 
@@ -631,6 +629,14 @@ Stored in `src/stores/homebrew.ts`:
 
 ---
 
+## #20 — Keywords & Icon Glossary
+
+**Status:** `[x]` Done — v2.0.2
+
+**Description:** Searchable keyword reference tab in the Reference view. Lists all rule keywords (Immunity, Impact, Protection, Scale, Sharpshooter, Steadfast) with definitions and search. Icon descriptions always visible on desktop; toggle retained on mobile.
+
+---
+
 ## #15 — Play View: Unit Information Panel
 
 **Status:** `[x]` Done — v1.11.2
@@ -653,3 +659,42 @@ Stored in `src/stores/homebrew.ts`:
 
 ### Graceful degradation
 All four sub-features degrade cleanly when data files are absent or a unit has no entry.
+
+---
+
+## #16 — Build View: Visualise Strike Force
+
+**Status:** `[ ]` Not started
+
+**Description:** Each saved list in the Build view gets a "Visualise" button that generates a visual card-art display of the full strike force, presented as two labelled rows (Squad 1 / Squad 2), each showing the three unit front cards in primary → secondary → support order. The result opens in a modal, can be downloaded as an image, and can be shared via a unique URL that allows any recipient to import and visualise the same strike force.
+
+### Sub-features
+
+1. **Visualise button** — Each saved list row in `StrikeForcePanel` gets a "Visualise" icon button alongside Save/Share. Opens `StrikeForceVisualModal.vue`.
+
+2. **Card-art grid** — Inside the modal: two rows labelled "Squad 1" and "Squad 2" at the top. Each row contains 3 unit front-card images (primary, secondary, support) in a horizontal grid. Uses `cardFront` image paths from `characters.json` via `imageUrl()`. Falls back to a placeholder if a slot is empty.
+
+3. **Download as image** — A "Download" button uses `html2canvas` (or similar) to rasterise the card grid and trigger a PNG download named after the list.
+
+4. **Share via unique URL** — A "Share" button generates a unique short ID (stored server-side or as a base64url-encoded payload in the URL) for the current list. When opened, the app decodes the list, imports it silently, and immediately opens the Visualise modal so the recipient sees the same card layout.
+
+### Options
+
+| Option | Cost | Effort | Notes |
+|---|---|---|---|
+| **html2canvas rasterise** | Free | Low | Renders DOM node to canvas → PNG download. No server needed. |
+| **Canvas drawn manually** | Free | Medium | Draw images programmatically onto a `<canvas>` — more reliable cross-origin than html2canvas. |
+| **Share via base64url param** | Free | Low | Encode full CompactBuild into URL (same approach as existing `sf=` param). No server storage needed. |
+| **Share via server-side short ID** | Infra cost | High | Store build JSON server-side keyed by UUID, return short URL. Requires persistent storage + API changes. |
+
+### Recommended Approach
+
+- Rasterise with **html2canvas** for download (fast, no canvas API boilerplate). Fall back to manual canvas if CORS issues arise with remote images.
+- Share via **base64url-encoded URL param** (extend existing `sf=` pattern or add a new `viz=` param) — zero infra, consistent with current profile/build sharing approach. On load, if `viz=` param present: decode list → import silently → open Visualise modal automatically.
+- Two-column layout: Squad 1 row, Squad 2 row, each with 3 cards (primary | secondary | support). Row header labels in SW gold styling above each row.
+
+### Key files touched (estimated)
+- `src/components/build/StrikeForceVisualModal.vue` — new modal component
+- `src/components/build/StrikeForcePanel.vue` — add Visualise button per list
+- `src/utils/profileShare.ts` — add `encodeVisualize` / `decodeVisualize` helpers
+- `src/views/BuildView.vue` — handle `viz=` query param on mount
