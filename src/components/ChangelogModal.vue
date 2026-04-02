@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.12.0',
+    date: '2026-04-02',
+    changes: [
+      'Roll — New Probability Calculator tab: pick attack and defence dice to see cumulative hit probabilities across 50,000 simulated rolls',
+      'Settings — Probability Calculator toggle; automatically disabled if the Roll tab is turned off',
+    ],
+  },
+  {
     version: '2.11.0',
     date: '2026-04-02',
     changes: [
