@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.11.0',
+    date: '2026-04-02',
+    changes: [
+      'Build — Visualise your saved list as a card-art grid (Squad 1 / Squad 2); download as PNG or share a link with social preview',
+      'Build — Premiere/Threemiere lists show a squad picker before visualising so you can choose which 2 squads to display',
+    ],
+  },
+  {
     version: '2.10.0',
     date: '2026-04-02',
     changes: [
