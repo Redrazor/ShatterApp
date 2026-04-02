@@ -32,6 +32,7 @@ const DARK = '#111318'
 const DIM = '#6b7280'
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
+  try {
   const url = new URL(req.url!, `https://${req.headers.host}`)
   const sf = url.searchParams.get('sf')
   const build = sf ? decodeBuild(sf) : null
@@ -98,4 +99,10 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   res.setHeader('Content-Type', 'image/png')
   res.setHeader('Cache-Control', 'public, max-age=86400, immutable')
   res.end(buffer)
+  } catch (err) {
+    console.error('[og] error:', err)
+    res.statusCode = 500
+    res.setHeader('Content-Type', 'text/plain')
+    res.end('Failed to generate image: ' + String(err))
+  }
 }

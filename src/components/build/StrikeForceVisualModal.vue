@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import html2canvas from 'html2canvas'
+import { toPng } from 'html-to-image'
 import type { Squad } from '../../types/index.ts'
 import { imageUrl } from '../../utils/imageUrl.ts'
 
@@ -24,14 +24,13 @@ async function download() {
   if (!captureRef.value) return
   downloading.value = true
   try {
-    const canvas = await html2canvas(captureRef.value, {
-      useCORS: true,
+    const dataUrl = await toPng(captureRef.value, {
       backgroundColor: '#111318',
-      scale: 2,
+      pixelRatio: 2,
     })
     const link = document.createElement('a')
     link.download = `${props.name || 'strike-force'}.png`
-    link.href = canvas.toDataURL('image/png')
+    link.href = dataUrl
     link.click()
   } finally {
     downloading.value = false
