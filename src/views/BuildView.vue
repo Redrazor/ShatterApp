@@ -12,6 +12,7 @@ import StrikeForcePanel from '../components/build/StrikeForcePanel.vue'
 import SquadSlot from '../components/build/SquadSlot.vue'
 import UnitPickerDrawer from '../components/build/UnitPickerDrawer.vue'
 import SptExportModal from '../components/build/SptExportModal.vue'
+import QrShareModal from '../components/build/QrShareModal.vue'
 import { decodeBuild, encodeBuild } from '../utils/profileShare.ts'
 import { encodeSPT } from '../utils/sptExport.ts'
 
@@ -176,6 +177,30 @@ function handleExport() {
   sptExportOpen.value = true
 }
 
+const qrOpen = ref(false)
+const qrUrl = ref('')
+
+function handleQr() {
+  const s0 = sfStore.squads[0]
+  const s1 = sfStore.squads[1]
+  const ex = sfStore.buildMode !== 'standard' ? sfStore.extraSquads : undefined
+  const encoded = encodeBuild(
+    sfStore.name,
+    sfStore.mission?.id ?? null,
+    sfStore.buildMode,
+    [
+      [s0.primary?.id ?? 0, s0.secondary?.id ?? 0, s0.support?.id ?? 0],
+      [s1.primary?.id ?? 0, s1.secondary?.id ?? 0, s1.support?.id ?? 0],
+    ],
+    ex ? [
+      [ex[0].primary?.id ?? 0, ex[0].secondary?.id ?? 0, ex[0].support?.id ?? 0],
+      [ex[1].primary?.id ?? 0, ex[1].secondary?.id ?? 0, ex[1].support?.id ?? 0],
+    ] : undefined,
+  )
+  qrUrl.value = `${window.location.origin}/build?sf=${encoded}`
+  qrOpen.value = true
+}
+
 function handleShare() {
   const s0 = sfStore.squads[0]
   const s1 = sfStore.squads[1]
@@ -336,6 +361,7 @@ function importSharedBuild() {
       @reset="sfStore.resetStrikeForce"
       @save="handleSave"
       @share="handleShare"
+      @qr="handleQr"
       @export="handleExport"
       @print="handlePrint"
     />
@@ -387,6 +413,17 @@ function importSharedBuild() {
         v-if="sptExportOpen"
         :code="sptCode"
         @close="sptExportOpen = false"
+      />
+    </Transition>
+  </Teleport>
+
+  <!-- QR Share Modal -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <QrShareModal
+        v-if="qrOpen"
+        :url="qrUrl"
+        @close="qrOpen = false"
       />
     </Transition>
   </Teleport>

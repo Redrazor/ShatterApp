@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.8.0',
+    date: '2026-04-02',
+    changes: [
+      'Browse — Advanced filters: filter units by PC range, Force value, Stamina range, and Durability range',
+    ],
+  },
+  {
     version: '2.7.0',
     date: '2026-04-02',
     changes: [
