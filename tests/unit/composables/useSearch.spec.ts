@@ -38,6 +38,13 @@ function defaultFilters(overrides: Partial<SearchFilters> = {}): SearchFilters {
     favoritesOnly: false,
     favoritedSet: new Set(),
     ownedSwpSet: new Set(),
+    pcMin: null,
+    pcMax: null,
+    forceValues: [],
+    staminaMin: null,
+    staminaMax: null,
+    durabilityMin: null,
+    durabilityMax: null,
     ...overrides,
   }
 }
@@ -245,5 +252,91 @@ describe('useSearch', () => {
     expect(results.value).toHaveLength(2)
     filters.value = { ...filters.value, query: 'vader' }
     expect(results.value).toHaveLength(1)
+  })
+
+  // ---------- pcMin / pcMax ----------
+  it('filters by pcMin', () => {
+    const chars = ref([makeChar({ pc: 3 }), makeChar({ id: 2, pc: 6 })])
+    const filters = ref(defaultFilters({ pcMin: 5 }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].pc).toBe(6)
+  })
+
+  it('filters by pcMax', () => {
+    const chars = ref([makeChar({ pc: 3 }), makeChar({ id: 2, pc: 6 })])
+    const filters = ref(defaultFilters({ pcMax: 4 }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].pc).toBe(3)
+  })
+
+  it('excludes null pc when pcMin is set', () => {
+    const chars = ref([makeChar({ pc: null }), makeChar({ id: 2, pc: 6 })])
+    const filters = ref(defaultFilters({ pcMin: 1 }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+  })
+
+  // ---------- forceValues ----------
+  it('filters by forceValues', () => {
+    const chars = ref([makeChar({ fp: 0 }), makeChar({ id: 2, fp: 2 }), makeChar({ id: 3, fp: 4 })])
+    const filters = ref(defaultFilters({ forceValues: [0, 4] }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(2)
+    expect(results.value.map(c => c.fp)).toEqual(expect.arrayContaining([0, 4]))
+  })
+
+  it('returns all when forceValues is empty', () => {
+    const chars = ref([makeChar({ fp: 0 }), makeChar({ id: 2, fp: 3 })])
+    const filters = ref(defaultFilters({ forceValues: [] }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(2)
+  })
+
+  // ---------- staminaMin / staminaMax ----------
+  it('filters by staminaMin', () => {
+    const chars = ref([makeChar({ stamina: 4 }), makeChar({ id: 2, stamina: 8 })])
+    const filters = ref(defaultFilters({ staminaMin: 6 }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].stamina).toBe(8)
+  })
+
+  it('filters by staminaMax', () => {
+    const chars = ref([makeChar({ stamina: 4 }), makeChar({ id: 2, stamina: 8 })])
+    const filters = ref(defaultFilters({ staminaMax: 5 }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].stamina).toBe(4)
+  })
+
+  // ---------- durabilityMin / durabilityMax ----------
+  it('filters by durabilityMin', () => {
+    const chars = ref([makeChar({ durability: 1 }), makeChar({ id: 2, durability: 3 })])
+    const filters = ref(defaultFilters({ durabilityMin: 3 }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].durability).toBe(3)
+  })
+
+  it('filters by durabilityMax', () => {
+    const chars = ref([makeChar({ durability: 1 }), makeChar({ id: 2, durability: 3 })])
+    const filters = ref(defaultFilters({ durabilityMax: 2 }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].durability).toBe(1)
+  })
+
+  it('composes advanced filters with existing filters', () => {
+    const chars = ref([
+      makeChar({ id: 1, unitType: 'Support', pc: 3, fp: 0, stamina: 5, durability: 1 }),
+      makeChar({ id: 2, unitType: 'Support', pc: 7, fp: 2, stamina: 5, durability: 1 }),
+      makeChar({ id: 3, unitType: 'Primary', pc: 3, fp: 0, stamina: 5, durability: 1 }),
+    ])
+    const filters = ref(defaultFilters({ type: 'Support', pcMax: 5, forceValues: [0] }))
+    const { results } = useSearch(chars, filters)
+    expect(results.value).toHaveLength(1)
+    expect(results.value[0].id).toBe(1)
   })
 })

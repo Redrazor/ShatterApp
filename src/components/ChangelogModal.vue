@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.7.0',
+    date: '2026-04-02',
+    changes: [
+      'Build — Export to Longshanks: generates an SPT code for your full list to paste into longshanks.org tournament registration',
+    ],
+  },
+  {
     version: '2.6.0',
     date: '2026-04-01',
     changes: [
