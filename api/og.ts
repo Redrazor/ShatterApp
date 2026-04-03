@@ -61,18 +61,15 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     const cardEl = (unit: Unit | null) =>
       unit
         ? h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flex: 1 } },
-            h('div', {
+            h('img', {
+              src: cardImageUrl(unit.cardFront),
+              width: CARD_W, height: CARD_H,
               style: {
-                width: CARD_W, height: CARD_H, borderRadius: 8,
-                border: `1px solid ${BORDER}`, overflow: 'hidden', display: 'flex',
-              }
-            },
-              h('img', {
-                src: cardImageUrl(unit.cardFront),
-                width: CARD_W, height: CARD_H,
-                style: { objectFit: 'cover' },
-              })
-            ),
+                borderRadius: 8,
+                border: `1px solid ${BORDER}`,
+                objectFit: 'cover',
+              },
+            }),
             h('span', {
               style: { color: NAME, fontSize: 11, textAlign: 'center' as const, lineHeight: 1.3, display: 'flex' },
             }, unit.name.length > 22 ? unit.name.slice(0, 20) + '…' : unit.name)
