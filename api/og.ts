@@ -50,6 +50,22 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     const sq0 = getUnits(build?.s?.[0])
     const sq1 = getUnits(build?.s?.[1])
 
+    // Pre-fetch all card images as base64 data URIs so Satori doesn't
+    // need to make external network calls during rendering.
+    const allUnits = [...sq0, ...sq1].filter((u): u is Unit => u !== null)
+    const fetched = await Promise.all(
+      allUnits.map(async u => {
+        try {
+          const r = await fetch(cardImageUrl(u.cardFront))
+          if (!r.ok) return [u.cardFront, null] as const
+          const buf = await r.arrayBuffer()
+          const b64 = Buffer.from(buf).toString('base64')
+          return [u.cardFront, `data:image/webp;base64,${b64}`] as const
+        } catch { return [u.cardFront, null] as const }
+      })
+    )
+    const imgData = new Map(fetched)
+
     const { ImageResponse } = await import('@vercel/og')
     const { createElement: h } = await import('react')
 
@@ -62,7 +78,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       unit
         ? h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flex: 1 } },
             h('img', {
-              src: cardImageUrl(unit.cardFront),
+              src: imgData.get(unit.cardFront) ?? cardImageUrl(unit.cardFront),
               width: CARD_W, height: CARD_H,
               style: {
                 borderRadius: 8,
