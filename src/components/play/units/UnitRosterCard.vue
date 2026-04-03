@@ -81,7 +81,7 @@ const isDimmed = computed(() =>
       class="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-black/60 backdrop-blur-[2px]"
     >
       <span class="rounded-full border border-red-500/60 bg-red-950/80 px-4 py-1.5 text-sm font-bold uppercase tracking-widest text-red-400 shadow-lg">
-        Removed
+        Defeated
       </span>
     </div>
 
@@ -136,7 +136,7 @@ const isDimmed = computed(() =>
           v-else-if="unit.wounded && unit.wounds >= unit.durability"
           class="rounded-lg border border-red-600/50 bg-red-900/40 px-3 py-2 text-[11px] font-bold text-red-400 transition-all hover:border-red-400 hover:text-red-200 active:scale-95"
           @click="emit('defeat-unit')"
-        >Remove Unit</button>
+        >Defeat Unit</button>
         <button
           v-if="canRemove"
           class="rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-2.5 py-2 text-[11px] font-semibold text-red-600 transition-all hover:border-red-700 hover:text-red-400 active:scale-95"
