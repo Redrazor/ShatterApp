@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import sharp from 'sharp'
 
 const IMAGE_BASE = 'https://shatterapp-images.web.app'
 
@@ -50,8 +51,13 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     const sq0 = getUnits(build?.s?.[0])
     const sq1 = getUnits(build?.s?.[1])
 
+    // Card: 173px wide × 242px tall (≈ 2.5:3.5 ratio)
+    const CARD_W = 173
+    const CARD_H = 242
+
     // Pre-fetch all card images as base64 data URIs so Satori doesn't
     // need to make external network calls during rendering.
+    // Satori doesn't support webp, so convert to PNG via sharp first.
     const allUnits = [...sq0, ...sq1].filter((u): u is Unit => u !== null)
     const fetched = await Promise.all(
       allUnits.map(async u => {
@@ -59,8 +65,9 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
           const r = await fetch(cardImageUrl(u.cardFront))
           if (!r.ok) return [u.cardFront, null] as const
           const buf = await r.arrayBuffer()
-          const b64 = Buffer.from(buf).toString('base64')
-          return [u.cardFront, `data:image/webp;base64,${b64}`] as const
+          const pngBuf = await sharp(Buffer.from(buf)).resize(CARD_W, CARD_H, { fit: 'cover' }).png().toBuffer()
+          const b64 = pngBuf.toString('base64')
+          return [u.cardFront, `data:image/png;base64,${b64}`] as const
         } catch { return [u.cardFront, null] as const }
       })
     )
@@ -68,10 +75,6 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
 
     const { ImageResponse } = await import('@vercel/og')
     const { createElement: h } = await import('react')
-
-    // Card: 173px wide × 242px tall (≈ 2.5:3.5 ratio)
-    const CARD_W = 173
-    const CARD_H = 242
     const BORDER = `${GOLD}33`
 
     const cardEl = (unit: Unit | null) =>
