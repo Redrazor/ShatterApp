@@ -152,7 +152,7 @@ watch(() => deckStore.isShatterpointPicking, (val) => {
   if (!val) confirmUnit.value = null
 })
 
-const ORDER_DECK_BACK = '/images/order-deck-back.png'
+const ORDER_DECK_BACK = imageUrl('/images/order-deck-back.png')
 
 function cardImgError(e: Event) {
   const img = e.target as HTMLImageElement
