@@ -26,6 +26,8 @@ const emit = defineEmits<{
   (e: 'open-profile'): void
   (e: 'tag-press', tag: string): void
   (e: 'roll-stat', payload: { unitId: number; role: 'attacker' | 'defender'; diceCount: number }): void
+  (e: 'flip-wounded'): void
+  (e: 'defeat-unit'): void
 }>()
 
 const showConditionPicker = ref(false)
@@ -83,9 +85,17 @@ const isDimmed = computed(() =>
       </span>
     </div>
 
+    <!-- Wounded ribbon (priority over Done) -->
+    <div
+      v-if="unit.wounded"
+      class="absolute top-0 left-0 bottom-0 z-10 w-5 flex items-center justify-center rounded-l-2xl bg-red-900/60 pointer-events-none overflow-hidden"
+    >
+      <span class="text-[7px] font-bold uppercase tracking-widest text-red-300 -rotate-90 whitespace-nowrap">Wounded</span>
+    </div>
+
     <!-- Activated left-side ribbon -->
     <div
-      v-if="isActivated"
+      v-else-if="isActivated"
       class="absolute top-0 left-0 bottom-0 z-10 w-5 flex items-center justify-center rounded-l-2xl bg-zinc-700/60 pointer-events-none overflow-hidden"
     >
       <span class="text-[7px] font-bold uppercase tracking-widest text-zinc-400 -rotate-90 whitespace-nowrap">Done</span>
@@ -117,6 +127,16 @@ const isDimmed = computed(() =>
           class="rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-3 py-2 text-[11px] font-semibold text-zinc-500 transition-all hover:border-zinc-500 hover:text-zinc-300 active:scale-95"
           @click="showConditionPicker = true"
         >Conditions</button>
+        <button
+          v-if="unit.wounded && unit.wounds < unit.durability"
+          class="rounded-lg border border-red-700/60 bg-red-950/40 px-3 py-2 text-[11px] font-semibold text-red-300 transition-all hover:border-red-500 hover:text-red-200 active:scale-95"
+          @click="emit('flip-wounded')"
+        >Flip Wounded</button>
+        <button
+          v-else-if="unit.wounded && unit.wounds >= unit.durability"
+          class="rounded-lg border border-red-600/50 bg-red-900/40 px-3 py-2 text-[11px] font-bold text-red-400 transition-all hover:border-red-400 hover:text-red-200 active:scale-95"
+          @click="emit('defeat-unit')"
+        >Remove Unit</button>
         <button
           v-if="canRemove"
           class="rounded-lg border border-zinc-700/50 bg-zinc-800/60 px-2.5 py-2 text-[11px] font-semibold text-red-600 transition-all hover:border-red-700 hover:text-red-400 active:scale-95"
@@ -199,23 +219,25 @@ const isDimmed = computed(() =>
         <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-600">Damage</span>
         <span class="text-[10px] text-zinc-600">{{ unit.damage }} / {{ unit.stamina }}</span>
       </div>
-      <div class="flex gap-1.5">
+      <div class="flex gap-1.5" :class="{ 'pointer-events-none': unit.wounded }">
         <button
           v-for="i in unit.stamina"
           :key="i"
           class="flex-1 rounded h-7 transition-all active:scale-95"
           :class="i <= unit.damage
-            ? 'bg-red-500 border border-red-400/40 shadow-[0_0_6px_rgba(239,68,68,0.4)]'
+            ? unit.wounded
+              ? 'bg-red-800/70 border border-red-700/40'
+              : 'bg-red-500 border border-red-400/40 shadow-[0_0_6px_rgba(239,68,68,0.4)]'
             : 'bg-zinc-800 border border-zinc-700/40 hover:border-zinc-500'"
           @click="emit('tap-damage', i)"
         />
       </div>
     </div>
 
-    <!-- Wounds track -->
+    <!-- Injured track -->
     <div class="flex items-center justify-between mb-2.5">
       <div class="flex items-center gap-2">
-        <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-600">Wounds</span>
+        <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-600">Injured</span>
         <div class="flex gap-1">
           <span
             v-for="i in unit.durability"

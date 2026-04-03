@@ -65,7 +65,7 @@ const CONDITION_LABELS: Record<ConditionKey, string> = {
         v-for="unit in units"
         :key="unit.id"
         class="rounded-xl border border-zinc-700/30 bg-zinc-900/60 px-3 py-2.5 space-y-1.5"
-        :class="{ 'opacity-50': unit.wounds >= unit.durability }"
+        :class="{ 'opacity-50': unit.defeated }"
       >
         <!-- Header row: thumbnail + name + OUT badge -->
         <div class="flex items-center gap-3">
@@ -81,12 +81,13 @@ const CONDITION_LABELS: Record<ConditionKey, string> = {
                 DMG
                 <span :class="unit.damage > 0 ? 'text-amber-400 font-bold' : ''">{{ unit.damage }}</span>/{{ unit.stamina }}
               </span>
-              <span v-if="unit.wounds > 0" class="text-red-400">{{ unit.wounds }} wound{{ unit.wounds !== 1 ? 's' : '' }}</span>
+              <span v-if="unit.wounds > 0" class="text-red-400">{{ unit.wounds }} injur{{ unit.wounds !== 1 ? 'ies' : 'y' }}</span>
+              <span v-if="unit.wounded" class="text-red-500 font-bold">WND</span>
               <span v-if="stanceName(unit)" class="text-amber-500/80">{{ stanceName(unit) }}</span>
             </div>
           </div>
           <div
-            v-if="unit.wounds >= unit.durability"
+            v-if="unit.defeated"
             class="rounded-full bg-red-900/60 border border-red-700/40 px-2 py-0.5 text-[9px] font-bold text-red-400 flex-shrink-0"
           >OUT</div>
         </div>

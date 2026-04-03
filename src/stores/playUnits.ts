@@ -29,6 +29,8 @@ export const usePlayUnitsStore = defineStore(
         activeStance: 1,
         damage: 0,
         wounds: 0,
+        wounded: false,
+        defeated: false,
         conditions: [],
         tags: c.tags ?? [],
         orderCard: c.orderCard,
@@ -77,15 +79,31 @@ export const usePlayUnitsStore = defineStore(
 
     function tapDamage(id: number, position: number) {
       const unit = units.value.find(u => u.id === id)
-      if (!unit) return
+      if (!unit || unit.wounded) return
       // Tapping the current damage position undoes it (decrement)
       const next = position === unit.damage ? position - 1 : position
       unit.damage = Math.max(0, next)
-      // Auto-wound when damage fills
+      // Set wounded when damage fills (user must explicitly flip)
       if (unit.damage >= unit.stamina) {
-        unit.damage = 0
-        unit.wounds++
+        unit.wounded = true
       }
+      _syncUnits()
+    }
+
+    function flipWounded(id: number) {
+      const unit = units.value.find(u => u.id === id)
+      if (!unit || !unit.wounded || unit.wounds >= unit.durability) return
+      unit.damage = 0
+      unit.wounded = false
+      unit.wounds++
+      _syncUnits()
+    }
+
+    function defeatUnit(id: number) {
+      const unit = units.value.find(u => u.id === id)
+      if (!unit || !unit.wounded || unit.wounds < unit.durability) return
+      unit.defeated = true
+      unit.wounded = false
       _syncUnits()
     }
 
@@ -113,7 +131,7 @@ export const usePlayUnitsStore = defineStore(
     }
 
     function isRemoved(unit: PlayUnit): boolean {
-      return unit.wounds >= unit.durability
+      return unit.defeated === true
     }
 
     function toggleForceToken(index: number) {
@@ -168,6 +186,8 @@ export const usePlayUnitsStore = defineStore(
       lock,
       unlock,
       tapDamage,
+      flipWounded,
+      defeatUnit,
       adjustWounds,
       toggleCondition,
       setStance,

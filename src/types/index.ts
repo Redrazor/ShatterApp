@@ -13,6 +13,8 @@ export interface PlayUnit {
   activeStance: 1 | 2
   damage: number
   wounds: number
+  wounded: boolean
+  defeated: boolean
   conditions: ConditionKey[]
   tags: string[]
   orderCard?: string

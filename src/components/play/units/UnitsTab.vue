@@ -182,6 +182,8 @@ function openProfile(unitId: number) {
         @open-profile="openProfile(unit.id)"
         @tag-press="onTagPress"
         @roll-stat="emit('roll-stat', $event)"
+        @flip-wounded="store.flipWounded(unit.id)"
+        @defeat-unit="store.defeatUnit(unit.id)"
       />
 
       <!-- Add unit button -->
