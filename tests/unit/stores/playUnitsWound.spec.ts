@@ -109,6 +109,18 @@ describe('playUnitsStore — wound mechanics', () => {
       expect(store.units[0].defeated).toBe(false)
       expect(store.units[0].wounds).toBe(1) // unchanged
     })
+
+    it('keeps wounded=true when flipping the last injury slot', () => {
+      const store = usePlayUnitsStore()
+      store.addUnit(makeCharacter({ stamina: 1, durability: 2 }))
+      store.tapDamage(1, 1) // wounds=0, wounded=true
+      store.flipWounded(1)  // wounds=1, still < durability=2 → wounded=false
+      expect(store.units[0].wounded).toBe(false)
+      store.tapDamage(1, 1) // wounds=1, wounded=true again
+      store.flipWounded(1)  // wounds=2 = durability → wounded stays true
+      expect(store.units[0].wounded).toBe(true)
+      expect(store.units[0].wounds).toBe(2)
+    })
   })
 
   describe('defeatUnit', () => {

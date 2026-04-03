@@ -94,8 +94,11 @@ export const usePlayUnitsStore = defineStore(
       const unit = units.value.find(u => u.id === id)
       if (!unit || !unit.wounded || unit.wounds >= unit.durability) return
       unit.damage = 0
-      unit.wounded = false
       unit.wounds++
+      // Keep wounded=true if injuries just filled durability so Remove Unit button shows immediately
+      if (unit.wounds < unit.durability) {
+        unit.wounded = false
+      }
       _syncUnits()
     }
 
