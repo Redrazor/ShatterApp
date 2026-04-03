@@ -4,6 +4,16 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.12.1',
+    date: '2026-04-03',
+    changes: [
+      'Play — Wound flow is now deliberate: filling the damage track sets a Wounded condition instead of auto-wounding',
+      'Play — Flip Wounded button clears damage and adds an Injured dot; Defeat Unit button appears when the Injured track is full',
+      'Play — Wounds track renamed to Injured throughout',
+      'Play — Order deck card images now load correctly in production',
+    ],
+  },
+  {
     version: '2.12.0',
     date: '2026-04-02',
     changes: [
