@@ -2,8 +2,16 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 
-const chars = JSON.parse(readFileSync(join(process.cwd(), 'public/data/characters.json'), 'utf-8')) as { id: number; name: string }[]
-const charMap = new Map(chars.map(c => [c.id, c.name]))
+const IMAGE_BASE = 'https://shatterapp-images.web.app'
+
+function cardImageUrl(cardFront: string): string {
+  const stripped = cardFront.replace(/^\/images\//, '/')
+  const webp = stripped.replace(/\.(png|jpe?g|gif)$/i, '.webp')
+  return `${IMAGE_BASE}${webp}`
+}
+
+const chars = JSON.parse(readFileSync(join(process.cwd(), 'public/data/characters.json'), 'utf-8')) as { id: number; name: string; cardFront: string }[]
+const charMap = new Map(chars.map(c => [c.id, { name: c.name, cardFront: c.cardFront }]))
 
 function fromBase64url(s: string): string {
   try {
@@ -31,23 +39,56 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     const build = sf ? decodeBuild(sf) : null
     const listName = build?.name ?? 'Strike Force'
 
-    const getNames = (ids?: [number, number, number]): string[] =>
-      (ids ?? []).map(id => charMap.get(id) ?? '').filter(Boolean)
+    type Unit = { name: string; cardFront: string }
 
-    const sq0 = getNames(build?.s?.[0])
-    const sq1 = getNames(build?.s?.[1])
+    const getUnits = (ids?: [number, number, number]): (Unit | null)[] =>
+      [0, 1, 2].map(i => {
+        const id = ids?.[i]
+        return id != null ? (charMap.get(id) ?? null) : null
+      })
+
+    const sq0 = getUnits(build?.s?.[0])
+    const sq1 = getUnits(build?.s?.[1])
 
     const { ImageResponse } = await import('@vercel/og')
     const { createElement: h } = await import('react')
 
-    const squad = (label: string, names: string[]) =>
-      h('div', { style: { display: 'flex', flexDirection: 'column', gap: 10, flex: 1 } },
-        h('div', { style: { color: DIM, fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase' as const, display: 'flex' } }, label),
-        ...names.map(name =>
-          h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
-            h('div', { style: { width: 6, height: 6, borderRadius: 9999, background: GOLD, opacity: 0.7, flexShrink: 0 } }),
-            h('span', { style: { color: NAME, fontSize: 26 } }, name)
+    // Card: 173px wide × 242px tall (≈ 2.5:3.5 ratio)
+    const CARD_W = 173
+    const CARD_H = 242
+    const BORDER = `${GOLD}33`
+
+    const cardEl = (unit: Unit | null) =>
+      unit
+        ? h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flex: 1 } },
+            h('div', {
+              style: {
+                width: CARD_W, height: CARD_H, borderRadius: 8,
+                border: `1px solid ${BORDER}`, overflow: 'hidden', display: 'flex',
+              }
+            },
+              h('img', {
+                src: cardImageUrl(unit.cardFront),
+                width: CARD_W, height: CARD_H,
+                style: { objectFit: 'cover' },
+              })
+            ),
+            h('span', {
+              style: { color: NAME, fontSize: 11, textAlign: 'center' as const, lineHeight: 1.3, display: 'flex' },
+            }, unit.name.length > 22 ? unit.name.slice(0, 20) + '…' : unit.name)
           )
+        : h('div', {
+            style: {
+              flex: 1, width: CARD_W, height: CARD_H, borderRadius: 8,
+              border: `1px solid ${BORDER}`, background: 'rgba(255,255,255,0.03)', display: 'flex',
+            }
+          })
+
+    const squadEl = (label: string, units: (Unit | null)[]) =>
+      h('div', { style: { display: 'flex', flexDirection: 'column', flex: 1, gap: 8 } },
+        h('div', { style: { color: DIM, fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase' as const, display: 'flex' } }, label),
+        h('div', { style: { display: 'flex', flexDirection: 'row', gap: 10 } },
+          cardEl(units[0]), cardEl(units[1]), cardEl(units[2])
         )
       )
 
@@ -56,22 +97,22 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
         style: {
           background: DARK, width: '100%', height: '100%',
           display: 'flex', flexDirection: 'column',
-          padding: '52px 64px', fontFamily: 'sans-serif', boxSizing: 'border-box',
+          padding: '32px 48px', fontFamily: 'sans-serif', boxSizing: 'border-box',
         }
       },
         // Header
-        h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 } },
-          h('span', { style: { color: GOLD, fontSize: 13, letterSpacing: 3, textTransform: 'uppercase' as const, opacity: 0.7, display: 'flex' } }, 'ShatterApp'),
+        h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 } },
+          h('span', { style: { color: GOLD, fontSize: 12, letterSpacing: 3, textTransform: 'uppercase' as const, opacity: 0.7, display: 'flex' } }, 'ShatterApp'),
           h('span', { style: { color: GOLD, fontSize: 11, opacity: 0.3, display: 'flex' } }, 'Star Wars: Shatterpoint'),
         ),
         // Rule
-        h('div', { style: { height: 1, background: `${GOLD}35`, marginBottom: 36, display: 'flex' } }),
+        h('div', { style: { height: 1, background: `${GOLD}35`, marginBottom: 16, display: 'flex' } }),
         // List name
-        h('div', { style: { color: GOLD, fontSize: 52, fontWeight: 700, marginBottom: 48, display: 'flex', lineHeight: 1.1 } }, listName),
+        h('div', { style: { color: GOLD, fontSize: 38, fontWeight: 700, marginBottom: 18, display: 'flex', lineHeight: 1.1 } }, listName),
         // Squads
-        h('div', { style: { display: 'flex', gap: 64 } },
-          squad('Squad 1', sq0),
-          squad('Squad 2', sq1),
+        h('div', { style: { display: 'flex', flexDirection: 'row', gap: 40, flex: 1 } },
+          squadEl('Squad 1', sq0),
+          squadEl('Squad 2', sq1),
         )
       ),
       { width: 1200, height: 630 }
