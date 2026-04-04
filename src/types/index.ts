@@ -211,8 +211,8 @@ export interface FrontCardData {
 }
 
 export interface StatsData {
-  stamina: number       // total stamina boxes, 1–10
-  durability: number    // 0–5
+  stamina: number       // total stamina boxes, 1–13
+  durability: number    // 1–5
   tags: string[]
   imageOffsetX: number  // independent back-card pan/zoom
   imageOffsetY: number

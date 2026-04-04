@@ -3028,8 +3028,8 @@
     "unitTypeName": "Support",
     "pc": 3,
     "sp": null,
-    "durability": 0,
-    "stamina": 0,
+    "durability": 2,
+    "stamina": 7,
     "fp": 0,
     "era": "Civil War",
     "tags": [

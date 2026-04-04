@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export interface Ability {
   name: string
@@ -30,5 +30,7 @@ export function useAbilities() {
     return abilitiesCache.value[String(id)] ?? null
   }
 
-  return { getAbilities }
+  const allEntries = computed(() => Object.values(abilitiesCache.value))
+
+  return { getAbilities, allEntries }
 }

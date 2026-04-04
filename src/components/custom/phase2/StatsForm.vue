@@ -92,7 +92,7 @@ function clamp(v: number, min: number, max: number) {
           <button
             type="button"
             class="w-8 h-8 rounded-lg bg-sw-card border border-sw-gold/20 text-sw-text/70 hover:border-sw-gold/60 transition-colors flex items-center justify-center text-lg font-bold"
-            @click="patch({ stamina: clamp((stats?.stamina ?? 4) - 1, 1, 10) })"
+            @click="patch({ stamina: clamp((stats?.stamina ?? 4) - 1, 1, 13) })"
           >−</button>
           <span class="flex-1 text-center text-2xl font-bold text-sw-gold tabular-nums">
             {{ stats?.stamina ?? 4 }}
@@ -100,7 +100,7 @@ function clamp(v: number, min: number, max: number) {
           <button
             type="button"
             class="w-8 h-8 rounded-lg bg-sw-card border border-sw-gold/20 text-sw-text/70 hover:border-sw-gold/60 transition-colors flex items-center justify-center text-lg font-bold"
-            @click="patch({ stamina: clamp((stats?.stamina ?? 4) + 1, 1, 10) })"
+            @click="patch({ stamina: clamp((stats?.stamina ?? 4) + 1, 1, 13) })"
           >+</button>
         </div>
       </div>
@@ -112,7 +112,7 @@ function clamp(v: number, min: number, max: number) {
           <button
             type="button"
             class="w-8 h-8 rounded-lg bg-sw-card border border-sw-gold/20 text-sw-text/70 hover:border-sw-gold/60 transition-colors flex items-center justify-center text-lg font-bold"
-            @click="patch({ durability: clamp((stats?.durability ?? 3) - 1, 0, 5) })"
+            @click="patch({ durability: clamp((stats?.durability ?? 3) - 1, 1, 5) })"
           >−</button>
           <span class="flex-1 text-center text-2xl font-bold text-sw-gold tabular-nums">
             {{ stats?.durability ?? 3 }}
@@ -120,7 +120,7 @@ function clamp(v: number, min: number, max: number) {
           <button
             type="button"
             class="w-8 h-8 rounded-lg bg-sw-card border border-sw-gold/20 text-sw-text/70 hover:border-sw-gold/60 transition-colors flex items-center justify-center text-lg font-bold"
-            @click="patch({ durability: clamp((stats?.durability ?? 3) + 1, 0, 5) })"
+            @click="patch({ durability: clamp((stats?.durability ?? 3) + 1, 1, 5) })"
           >+</button>
         </div>
       </div>

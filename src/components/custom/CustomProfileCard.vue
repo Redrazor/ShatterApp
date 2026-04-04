@@ -67,14 +67,24 @@ function formatDate(iso: string): string {
         Load
       </button>
       <button
-        class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
-        @click="emit('print')"
+        :disabled="status !== 'complete'"
+        class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+        :class="status === 'complete'
+          ? 'bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20'
+          : 'bg-sw-card text-sw-text/25 cursor-not-allowed'"
+        :title="status !== 'complete' ? 'Complete all phases to unlock' : undefined"
+        @click="status === 'complete' && emit('print')"
       >
         Print
       </button>
       <button
-        class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
-        @click="emit('visualize')"
+        :disabled="status !== 'complete'"
+        class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+        :class="status === 'complete'
+          ? 'bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20'
+          : 'bg-sw-card text-sw-text/25 cursor-not-allowed'"
+        :title="status !== 'complete' ? 'Complete all phases to unlock' : undefined"
+        @click="status === 'complete' && emit('visualize')"
       >
         Visualize
       </button>

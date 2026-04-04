@@ -12,6 +12,11 @@ const customToggles = [
     label: 'Allow Custom Profiles',
     desc: 'Shows the Custom tab in the navigation for creating homebrew unit profiles.',
   },
+  {
+    key: 'showStatsInsights' as const,
+    label: 'Stat Insights Panel',
+    desc: 'Shows a percentile breakdown panel below each Custom Builder phase, comparing your unit\'s stats against all official units.',
+  },
 ]
 
 const collectionToggles = [

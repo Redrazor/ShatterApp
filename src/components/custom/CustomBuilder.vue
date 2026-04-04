@@ -3,15 +3,20 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import type { BuilderPhase, AbilitiesData, StanceData } from '../../types/index.ts'
 import { useHomebrewStore } from '../../stores/homebrew.ts'
 import { useCharactersStore } from '../../stores/characters.ts'
+import { useSettingsStore } from '../../stores/settings.ts'
 import CustomPhaseStepper from './CustomPhaseStepper.vue'
 import FrontCardForm from './phase1/FrontCardForm.vue'
 import FrontCardPreview from './phase1/FrontCardPreview.vue'
+import FrontCardInsightsPanel from './phase1/FrontCardInsightsPanel.vue'
 import StatsForm from './phase2/StatsForm.vue'
 import StatsCardPreview from './phase2/StatsCardPreview.vue'
+import StatsInsightsPanel from './phase2/StatsInsightsPanel.vue'
 import AbilitiesForm from './phase3/AbilitiesForm.vue'
 import AbilitiesCardPreview from './phase3/AbilitiesCardPreview.vue'
+import AbilitiesInsightsPanel from './phase3/AbilitiesInsightsPanel.vue'
 import StancesForm from './phase4/StancesForm.vue'
 import StanceCardPreview from './phase4/StanceCardPreview.vue'
+import StanceInsightsPanel from './phase4/StanceInsightsPanel.vue'
 
 const props = defineProps<{
   profileId: string
@@ -24,6 +29,7 @@ const emit = defineEmits<{
 
 const store = useHomebrewStore()
 const charactersStore = useCharactersStore()
+const settingsStore = useSettingsStore()
 
 onMounted(() => {
   charactersStore.load()
@@ -202,11 +208,19 @@ function handleStartOver() {
       <h2 class="text-xs font-semibold text-sw-text/40 uppercase tracking-wider">Phase 1 — Front Card</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Left: form -->
-        <div class="order-2 md:order-1">
+        <!-- Left: form + insights -->
+        <div class="order-2 md:order-1 space-y-4">
           <FrontCardForm
             :front-card="profile.frontCard"
             @update="handleFrontCardUpdate"
+          />
+          <FrontCardInsightsPanel
+            v-if="settingsStore.showStatsInsights && profile.frontCard"
+            :characters="charactersStore.characters"
+            :unit-type="profile.frontCard.unitType"
+            :cost="profile.frontCard.cost"
+            :fp="profile.frontCard.fp"
+            :era-count="profile.frontCard.era.split(';').filter(Boolean).length"
           />
         </div>
 
@@ -285,6 +299,16 @@ function handleStartOver() {
         />
       </div>
 
+      <!-- Stat Insights Panel -->
+      <div v-if="settingsStore.showStatsInsights && profile.stats" class="max-w-2xl mx-auto">
+        <StatsInsightsPanel
+          :characters="charactersStore.characters"
+          :stamina="profile.stats.stamina"
+          :durability="profile.stats.durability"
+          :tag-count="profile.stats.tags.length"
+        />
+      </div>
+
       <!-- Phase 2 footer -->
       <div class="flex flex-wrap gap-3 pt-2 border-t border-sw-gold/10">
         <!-- Next → only on the last unlocked phase -->
@@ -323,13 +347,19 @@ function handleStartOver() {
         @update="handleAbilitiesUpdate"
       />
 
-      <!-- Bottom: card preview -->
-      <div class="max-w-2xl mx-auto">
+      <!-- Bottom: card preview + insights -->
+      <div class="max-w-2xl mx-auto space-y-4">
         <p class="text-xs text-sw-text/40 mb-2 text-center">Live Preview</p>
         <AbilitiesCardPreview
           :front-card="profile.frontCard"
           :stats="profile.stats"
           :abilities="profile.abilities"
+        />
+        <AbilitiesInsightsPanel
+          v-if="settingsStore.showStatsInsights && profile.abilities"
+          :characters="charactersStore.characters"
+          :abilities="profile.abilities"
+          :unit-type="profile.frontCard?.unitType ?? 'Primary'"
         />
       </div>
 
@@ -368,20 +398,20 @@ function handleStartOver() {
         {{ profile.frontCard?.unitType === 'Primary' ? '2 stances (Primary unit)' : '1 stance (Secondary / Support unit)' }}
       </p>
 
-      <!-- Stance 1 -->
-      <div :class="profile.frontCard?.unitType === 'Primary' ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : 'max-w-2xl mx-auto'">
+      <!-- Stance 1 row: form left, card + insights right -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <StancesForm
+          :stances="profile.stances"
+          :unit-type="profile.frontCard?.unitType ?? 'Primary'"
+          :which="1"
+          :portrait-image-data="profile.frontCard?.imageData ?? null"
+          @update-stance="handleStanceUpdate"
+          @update-portrait="handlePortraitUpdate"
+        />
         <div class="space-y-4">
-          <StancesForm
-            :stances="profile.stances"
-            :unit-type="profile.frontCard?.unitType ?? 'Primary'"
-            :portrait-image-data="profile.frontCard?.imageData ?? null"
-            @update-stance="handleStanceUpdate"
-            @update-portrait="handlePortraitUpdate"
-          />
-        </div>
-
-        <!-- Live previews -->
-        <div class="space-y-4">
+          <p class="text-xs text-sw-text/40 text-center">
+            {{ profile.frontCard?.unitType === 'Primary' ? 'Stance 1 Preview' : 'Stance Preview' }}
+          </p>
           <StanceCardPreview
             :stance-data="profile.stances?.stance1 ?? null"
             :label="profile.frontCard?.unitType === 'Primary' ? 'Stance 1 Preview' : 'Stance Preview'"
@@ -390,14 +420,40 @@ function handleStartOver() {
             :portrait-offset-y="profile.stances?.portraitOffsetY ?? 0"
             :portrait-scale="profile.stances?.portraitScale ?? 1"
           />
+          <StanceInsightsPanel
+            v-if="settingsStore.showStatsInsights && profile.stances?.stance1"
+            :stance-data="profile.stances.stance1"
+            :characters="charactersStore.characters"
+            :unit-type="profile.frontCard?.unitType ?? 'Primary'"
+          />
+        </div>
+      </div>
+
+      <!-- Stance 2 row (Primary only) -->
+      <div v-if="profile.frontCard?.unitType === 'Primary'" class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-sw-gold/10">
+        <StancesForm
+          :stances="profile.stances"
+          :unit-type="profile.frontCard.unitType"
+          :which="2"
+          :portrait-image-data="profile.frontCard?.imageData ?? null"
+          @update-stance="handleStanceUpdate"
+          @update-portrait="handlePortraitUpdate"
+        />
+        <div class="space-y-4">
+          <p class="text-xs text-sw-text/40 text-center">Stance 2 Preview</p>
           <StanceCardPreview
-            v-if="profile.frontCard?.unitType === 'Primary'"
             :stance-data="profile.stances?.stance2 ?? null"
             label="Stance 2 Preview"
             :portrait-image-data="profile.frontCard?.imageData ?? null"
             :portrait-offset-x="profile.stances?.portraitOffsetX ?? 0"
             :portrait-offset-y="profile.stances?.portraitOffsetY ?? 0"
             :portrait-scale="profile.stances?.portraitScale ?? 1"
+          />
+          <StanceInsightsPanel
+            v-if="settingsStore.showStatsInsights && profile.stances?.stance2"
+            :stance-data="profile.stances.stance2"
+            :characters="charactersStore.characters"
+            :unit-type="profile.frontCard.unitType"
           />
         </div>
       </div>

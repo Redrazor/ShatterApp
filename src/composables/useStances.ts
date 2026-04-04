@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export interface StanceStat {
   stanceNumber: number
@@ -30,5 +30,7 @@ export function useStances() {
     return stancesCache.value[String(id)] ?? null
   }
 
-  return { getStances }
+  const allEntries = computed(() => Object.values(stancesCache.value))
+
+  return { getStances, allEntries }
 }

@@ -11,6 +11,7 @@ export const useSettingsStore = defineStore(
 
     // Custom tab
     const showCustomTab = ref(true)
+    const showStatsInsights = ref(true)
 
     // Roll tab
     const showRollTab = ref(true)
@@ -28,6 +29,7 @@ export const useSettingsStore = defineStore(
 
     return {
       showCustomTab,
+      showStatsInsights,
       autoMarkUnitsOwned,
       showPaintedToggle,
       showBasedToggle,

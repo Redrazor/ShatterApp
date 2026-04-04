@@ -62,9 +62,9 @@ describe('CustomProfileCard', () => {
     expect(wrapper.emitted('load')).toHaveLength(1)
   })
 
-  it('emits print when Print button clicked', async () => {
+  it('emits print when Print button clicked on a complete profile', async () => {
     const wrapper = mount(CustomProfileCard, {
-      props: { profile: makeProfile() },
+      props: { profile: makeProfile(), status: 'complete' },
     })
     await wrapper.find('button').trigger('click')
     const buttons = wrapper.findAll('button')
@@ -73,15 +73,37 @@ describe('CustomProfileCard', () => {
     expect(wrapper.emitted('print')).toHaveLength(1)
   })
 
-  it('emits visualize when Visualize button clicked', async () => {
+  it('does not emit print when Print button clicked on a draft profile', async () => {
     const wrapper = mount(CustomProfileCard, {
-      props: { profile: makeProfile() },
+      props: { profile: makeProfile(), status: 'draft' },
+    })
+    await wrapper.find('button').trigger('click')
+    const buttons = wrapper.findAll('button')
+    const printBtn = buttons.find(b => b.text() === 'Print')
+    await printBtn!.trigger('click')
+    expect(wrapper.emitted('print')).toBeFalsy()
+  })
+
+  it('emits visualize when Visualize button clicked on a complete profile', async () => {
+    const wrapper = mount(CustomProfileCard, {
+      props: { profile: makeProfile(), status: 'complete' },
     })
     await wrapper.find('button').trigger('click')
     const buttons = wrapper.findAll('button')
     const vizBtn = buttons.find(b => b.text() === 'Visualize')
     await vizBtn!.trigger('click')
     expect(wrapper.emitted('visualize')).toHaveLength(1)
+  })
+
+  it('does not emit visualize when Visualize button clicked on a draft profile', async () => {
+    const wrapper = mount(CustomProfileCard, {
+      props: { profile: makeProfile(), status: 'draft' },
+    })
+    await wrapper.find('button').trigger('click')
+    const buttons = wrapper.findAll('button')
+    const vizBtn = buttons.find(b => b.text() === 'Visualize')
+    await vizBtn!.trigger('click')
+    expect(wrapper.emitted('visualize')).toBeFalsy()
   })
 
   it('emits delete when Delete button clicked', async () => {
