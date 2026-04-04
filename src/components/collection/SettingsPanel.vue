@@ -6,6 +6,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const settings = useSettingsStore()
 
+const customToggles = [
+  {
+    key: 'showCustomTab' as const,
+    label: 'Allow Custom Profiles',
+    desc: 'Shows the Custom tab in the navigation for creating homebrew unit profiles.',
+  },
+]
+
 const collectionToggles = [
   {
     key: 'autoMarkUnitsOwned' as const,
@@ -90,6 +98,37 @@ const playToggles = [
       </div>
 
       <div class="flex-1 space-y-6 px-4 py-5">
+        <!-- Custom section -->
+        <section class="space-y-3">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-sw-text/40">Custom</p>
+          <div
+            v-for="t in customToggles"
+            :key="t.key"
+            class="flex items-start justify-between gap-3"
+          >
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-sw-text">{{ t.label }}</p>
+              <p class="text-[11px] text-sw-text/40 leading-snug mt-0.5">{{ t.desc }}</p>
+            </div>
+            <button
+              :class="[
+                'relative mt-0.5 shrink-0 h-5 w-9 rounded-full transition-colors',
+                settings[t.key] ? 'bg-sw-gold' : 'bg-sw-dark border border-sw-gold/20',
+              ]"
+              role="switch"
+              :aria-checked="settings[t.key]"
+              @click="settings[t.key] = !settings[t.key]"
+            >
+              <span
+                :class="[
+                  'absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all duration-200',
+                  settings[t.key] ? 'right-0.5' : 'left-0.5',
+                ]"
+              />
+            </button>
+          </div>
+        </section>
+
         <!-- Collection section -->
         <section class="space-y-3">
           <p class="text-[10px] font-bold uppercase tracking-widest text-sw-text/40">Collection</p>

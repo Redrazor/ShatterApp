@@ -658,7 +658,7 @@ All four sub-features degrade cleanly when data files are absent or a unit has n
 
 **Context:** Competitive players register their Strike Force lists on longshanks.org (the community tournament platform) using a standardised SPT code string. Currently ShatterApp has no export path — players must re-enter their list manually on another site. Both Tabletop Admiral and ShatterpointDB already support SPT export.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — `src/utils/sptExport.ts` + `SptExportModal.vue` in BuildView. SPT string generation + copy to clipboard.
 
 ### Feature Breakdown
 
@@ -696,7 +696,7 @@ Clipboard copy with a modal display. Confirm the SPT format first (research spik
 
 **Context:** ShatterApp's Browse filter panel supports basic type/era/faction filtering. ShatterpointDB exposes numeric filters (squad points range, force value, stamina, durability) that help players find units matching specific build criteria. These are especially useful when completing a Strike Force and needing a support within a certain point budget.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — PC, Force, Stamina, Durability numeric filters added to BrowseView filter panel.
 
 ### Feature Breakdown
 
@@ -730,7 +730,7 @@ Range inputs for stamina/durability/PC; chip multi-select for force value (discr
 
 **Context:** Players at a physical game table want to share their Strike Force with an opponent face-to-face without saying a URL aloud. A QR code displayed on screen is the fastest in-person sharing mechanism. The build URL already exists (`/build?sf=<encoded>`); this feature simply wraps it in a QR code.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — `QrShareModal.vue` in Build view. QR generated from share URL, displayed in modal.
 
 ### Feature Breakdown
 
@@ -762,7 +762,7 @@ Range inputs for stamina/durability/PC; chip multi-select for force value (discr
 
 **Context:** The existing dice roller (implemented in #6) lets players roll and view individual results. A separate probability calculator answers a different question: *"If I roll 4 attack vs 3 defense, what are my odds of getting 3+ hits?"* This is a pre-roll planning tool for learning the game and evaluating attacks before committing. Inspired by a similar tool in Jarvis Protocol (Marvel Crisis Protocol).
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — Probability calculator tab in Roll view.
 
 ### Shatterpoint Dice Context
 
@@ -858,7 +858,7 @@ New `glossary.json` file + a simple alphabetised list view. Reuse the existing `
 
 **Context:** Players sometimes want a random valid Strike Force — for practice games, quick pick-up games, or just exploring the unit roster. Inspired by similar features in Jarvis Protocol (Marvel Crisis Protocol). Also useful as a teaching tool for new players who don't know the meta.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — Random generator with tag synergy in Build view.
 
 ### Feature Breakdown
 
@@ -903,7 +903,7 @@ Pure random with an optional "owned only" toggle (reuses collection store). Fact
 
 **Context:** Every Shatterpoint Strike Force has a corresponding Order Deck — a set of order cards, one per unit, plus the Shatterpoint wild card. Players physically build this deck before each game. No existing tool tracks or builds order decks. This is a gap across all Shatterpoint companion apps.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done — `OrderDeckSection.vue` + `src/stores/orderDeck.ts` in Play view Units tab.
 
 ### Data Availability
 

@@ -183,6 +183,53 @@ export interface ForcePoolPayload {
   total: number
 }
 
+export interface AbilityBlock {
+  iconType: string    // icon name prefix, e.g. 'active', 'reactive', 'innate'
+  title: string       // bold ability name shown on card
+  forceCost: number   // 0 = no force icons; 1+ = that many force icons shown before title
+  text: string        // description text with [symbolname] markers e.g. [damage], [advance]
+}
+
+export interface AbilitiesData {
+  blocks: AbilityBlock[]
+}
+
+export type HomebrewUnitType = 'Primary' | 'Secondary' | 'Support'
+export type BuilderPhase = 1 | 2 | 3 | 4
+
+export interface FrontCardData {
+  unitType: HomebrewUnitType
+  name: string
+  title: string                  // unit title — combined with name on the black bar
+  imageData: string | null       // base64 data URL
+  imageOffsetX: number           // normalized pan (-0.5 to 0.5)
+  imageOffsetY: number
+  imageScale: number             // 1.0 = fit, up to 3.0
+  cost: number                   // SP for Primary, PC for Secondary/Support
+  fp: number                     // force points (0 valid)
+  era: string                    // semicolon-delimited, e.g. "Clone Wars;Empire"
+}
+
+export interface StatsData {
+  stamina: number       // total stamina boxes, 1–10
+  durability: number    // 0–5
+  tags: string[]
+  imageOffsetX: number  // independent back-card pan/zoom
+  imageOffsetY: number
+  imageScale: number
+}
+
+export interface HomebrewProfile {
+  id: string
+  name: string                   // display name, synced from frontCard.name
+  createdAt: string              // ISO date
+  updatedAt: string              // ISO date
+  frontCard: FrontCardData | null
+  stats: StatsData | null        // Phase 2
+  abilities: AbilitiesData | null  // Phase 3
+  stances: null                  // Phase 4 — future
+}
+
 export function hasStrikeForceConflict(squads: [Squad, Squad]): boolean {
   const units: Character[] = []
   for (const squad of squads) {
