@@ -219,6 +219,53 @@ export interface StatsData {
   imageScale: number
 }
 
+export interface StanceData {
+  title: string              // displayed white in top-right of the black bar
+  range: number              // 0 = dash '-'; 1+ = number shown in the pistol icon area
+  rangeAttack: number        // shown in the left grey triangle
+  rangeDefense: number       // shown in the left blue square
+  meleeAttack: number        // shown in the right grey triangle
+  meleeDefense: number       // shown in the right blue square
+  rangedWeapon: string       // label shown in the bottom strip after the gun icon
+  meleeWeapon: string        // label shown in the bottom strip after the crossed swords icon
+  defensiveEquipment: string // label shown in the bottom strip after the expertise/diamond icon
+  expertise: ExpertiseTables | null  // Phase 4b — expertise table below the bottom strip
+}
+
+export interface StancesData {
+  stance1: StanceData
+  stance2: StanceData | null  // null for Secondary / Support (only 1 stance)
+  portraitOffsetX: number    // shared portrait crop: -0.5 to 0.5
+  portraitOffsetY: number
+  portraitScale: number      // 1.0 = fill circle, up to 3.0
+}
+
+export type ExpertiseColor = 'blue' | 'red' | 'purple' | 'grey'
+
+export interface ExpertiseIcon {
+  iconFile: string    // filename from abilities_iconography, e.g. "strike_crop.png"
+  label?: string      // optional display label (legacy, not shown in UI)
+}
+
+export interface ExpertiseEntry {
+  from: number           // lower expertise count (≥1)
+  to: number | null      // upper bound; null when isPlus=true
+  isPlus: boolean        // true → display as "N+" (minimum threshold)
+  icons: ExpertiseIcon[] // unlimited; displayed as [img] text, [img] text, …
+}
+
+export interface ExpertiseSection {
+  color: ExpertiseColor     // one color per section; entries shade lighter → darker
+  entries: ExpertiseEntry[] // 1–4 entries, ordered by threshold ascending
+  hidden?: boolean          // true = column suppressed; not drawn on the card
+}
+
+export interface ExpertiseTables {
+  ranged:  ExpertiseSection
+  melee:   ExpertiseSection
+  defense: ExpertiseSection
+}
+
 export interface HomebrewProfile {
   id: string
   name: string                   // display name, synced from frontCard.name
@@ -227,7 +274,7 @@ export interface HomebrewProfile {
   frontCard: FrontCardData | null
   stats: StatsData | null        // Phase 2
   abilities: AbilitiesData | null  // Phase 3
-  stances: null                  // Phase 4 — future
+  stances: StancesData | null    // Phase 4
 }
 
 export function hasStrikeForceConflict(squads: [Squad, Squad]): boolean {

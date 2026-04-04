@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { HomebrewProfile, FrontCardData, StatsData, AbilitiesData, BuilderPhase } from '../types/index.ts'
+import type { HomebrewProfile, FrontCardData, StatsData, AbilitiesData, StancesData, StanceData, BuilderPhase, ExpertiseColor, ExpertiseSection, ExpertiseTables } from '../types/index.ts'
 
 export const useHomebrewStore = defineStore(
   'homebrew',
@@ -92,12 +92,73 @@ export const useHomebrewStore = defineStore(
       return profile.abilities !== null && (profile.abilities?.blocks?.length ?? 0) > 0
     }
 
+    function blankExpertiseSection(color: ExpertiseColor): ExpertiseSection {
+      return {
+        color,
+        entries: [
+          { from: 1, to: 2, isPlus: false, icons: [] },
+          { from: 3, to: 3, isPlus: false, icons: [] },
+          { from: 4, to: null, isPlus: true,  icons: [] },
+        ],
+      }
+    }
+
+    function blankExpertiseTables(): ExpertiseTables {
+      return {
+        ranged:  blankExpertiseSection('blue'),
+        melee:   blankExpertiseSection('red'),
+        defense: blankExpertiseSection('grey'),
+      }
+    }
+
+    const BLANK_STANCE: StanceData = {
+      title: '', range: 0, rangeAttack: 0, rangeDefense: 0, meleeAttack: 0, meleeDefense: 0,
+      rangedWeapon: '', meleeWeapon: '', defensiveEquipment: '',
+      expertise: null,
+    }
+
+    function initStances(id: string): void {
+      const profile = profiles.value.find(p => p.id === id)
+      if (!profile || profile.stances) return
+      const isPrimary = profile.frontCard?.unitType === 'Primary'
+      const expertise = blankExpertiseTables()
+      profile.stances = {
+        stance1: { ...BLANK_STANCE, expertise: JSON.parse(JSON.stringify(expertise)) },
+        stance2: isPrimary ? { ...BLANK_STANCE, expertise: JSON.parse(JSON.stringify(expertise)) } : null,
+        portraitOffsetX: 0,
+        portraitOffsetY: 0,
+        portraitScale: 1.0,
+      }
+      profile.updatedAt = new Date().toISOString()
+    }
+
+    function updateStance(id: string, which: 1 | 2, patch: Partial<StanceData>): void {
+      const profile = profiles.value.find(p => p.id === id)
+      if (!profile?.stances) return
+      const key = which === 1 ? 'stance1' : 'stance2'
+      if (which === 2 && profile.stances.stance2 === null) return
+      profile.stances[key] = { ...(profile.stances[key] ?? BLANK_STANCE), ...patch }
+      profile.updatedAt = new Date().toISOString()
+    }
+
+    function isStancesComplete(profile: HomebrewProfile): boolean {
+      if (!profile.stances) return false
+      const s1 = profile.stances.stance1
+      const s1ok = s1.title.trim().length > 0
+      if (!s1ok) return false
+      if (profile.stances.stance2 !== null) {
+        return profile.stances.stance2.title.trim().length > 0
+      }
+      return true
+    }
+
     function resetPhase(id: string, phase: BuilderPhase): void {
       const profile = profiles.value.find(p => p.id === id)
       if (!profile) return
       if (phase === 1) profile.frontCard = null
       if (phase === 2) profile.stats = null
       if (phase === 3) profile.abilities = null
+      if (phase === 4) profile.stances = null
       profile.updatedAt = new Date().toISOString()
     }
 
@@ -125,6 +186,13 @@ export const useHomebrewStore = defineStore(
       profile.updatedAt = new Date().toISOString()
     }
 
+    function updateStances(id: string, data: Partial<StancesData>): void {
+      const profile = profiles.value.find(p => p.id === id)
+      if (!profile) return
+      profile.stances = { ...(profile.stances ?? { stance1: { ...BLANK_STANCE }, stance2: null, portraitOffsetX: 0, portraitOffsetY: 0, portraitScale: 1.0 }), ...data }
+      profile.updatedAt = new Date().toISOString()
+    }
+
     function setActiveProfile(id: string | null): void {
       activeProfileId.value = id
     }
@@ -144,8 +212,12 @@ export const useHomebrewStore = defineStore(
     function getProfileStatus(profile: HomebrewProfile): 'empty' | 'draft' | 'complete' {
       const hasAnyData = !!profile.frontCard
       if (!hasAnyData) return 'empty'
-      // Complete = all implemented phases done (1, 2, 3)
-      if (isFrontCardComplete(profile) && isStatsComplete(profile) && isAbilitiesComplete(profile)) return 'complete'
+      if (
+        isFrontCardComplete(profile) &&
+        isStatsComplete(profile) &&
+        isAbilitiesComplete(profile) &&
+        isStancesComplete(profile)
+      ) return 'complete'
       return 'draft'
     }
 
@@ -158,12 +230,16 @@ export const useHomebrewStore = defineStore(
       updateFrontCard,
       updateStats,
       updateAbilities,
+      initStances,
+      updateStance,
+      updateStances,
       resetPhase,
       resetAll,
       setActiveProfile,
       isFrontCardComplete,
       isStatsComplete,
       isAbilitiesComplete,
+      isStancesComplete,
       getProfileStatus,
       allTags,
     }

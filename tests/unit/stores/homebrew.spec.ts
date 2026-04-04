@@ -351,12 +351,15 @@ describe('useHomebrewStore', () => {
       expect(store.getProfileStatus(store.profiles[0])).toBe('draft')
     })
 
-    it('returns "complete" when frontCard, stats, and abilities are all complete', () => {
+    it('returns "complete" when all four phases are complete', () => {
       const store = useHomebrewStore()
       const p = store.addProfile('Test')
       store.updateFrontCard(p.id, { name: 'Vader', era: 'Empire', cost: 12, fp: 1 })
       store.updateStats(p.id, { stamina: 4, durability: 3, tags: [] })
       store.updateAbilities(p.id, { blocks: [{ iconType: 'active', title: 'Force Choke', forceCost: 1, text: 'Deal [damage].' }] })
+      store.initStances(p.id)
+      store.updateStance(p.id, 1, { title: 'AGGRESSIVE' })
+      store.updateStance(p.id, 2, { title: 'DEFENSIVE' })
       expect(store.getProfileStatus(store.profiles[0])).toBe('complete')
     })
   })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import type { BuilderPhase, AbilitiesData } from '../../types/index.ts'
+import type { BuilderPhase, AbilitiesData, StanceData } from '../../types/index.ts'
 import { useHomebrewStore } from '../../stores/homebrew.ts'
 import { useCharactersStore } from '../../stores/characters.ts'
 import CustomPhaseStepper from './CustomPhaseStepper.vue'
@@ -10,6 +10,8 @@ import StatsForm from './phase2/StatsForm.vue'
 import StatsCardPreview from './phase2/StatsCardPreview.vue'
 import AbilitiesForm from './phase3/AbilitiesForm.vue'
 import AbilitiesCardPreview from './phase3/AbilitiesCardPreview.vue'
+import StancesForm from './phase4/StancesForm.vue'
+import StanceCardPreview from './phase4/StanceCardPreview.vue'
 
 const props = defineProps<{
   profileId: string
@@ -55,7 +57,7 @@ const completion = computed(() => ({
   front: profile.value ? store.isFrontCardComplete(profile.value) : false,
   stats: profile.value ? store.isStatsComplete(profile.value) : false,
   abilities: profile.value ? store.isAbilitiesComplete(profile.value) : false,
-  stances: false,
+  stances: profile.value ? store.isStancesComplete(profile.value) : false,
 }))
 
 // ── Scroll tracking ──────────────────────────────────────────────────────────
@@ -96,6 +98,9 @@ function unlockPhase(phase: BuilderPhase) {
     if (phase === 3 && profile.value && !profile.value.abilities) {
       store.updateAbilities(props.profileId, { blocks: [] })
     }
+    if (phase === 4) {
+      store.initStances(props.profileId)
+    }
     unlockedPhases.value.push(phase)
   }
   setTimeout(() => scrollToPhase(phase), 50)
@@ -121,6 +126,14 @@ function handleStatsUpdate(patch: Parameters<typeof store.updateStats>[1]) {
 
 function handleAbilitiesUpdate(data: AbilitiesData) {
   store.updateAbilities(props.profileId, data)
+}
+
+function handleStanceUpdate(which: 1 | 2, patch: Partial<StanceData>) {
+  store.updateStance(props.profileId, which, patch)
+}
+
+function handlePortraitUpdate(offsetX: number, offsetY: number, scale: number) {
+  store.updateStances(props.profileId, { portraitOffsetX: offsetX, portraitOffsetY: offsetY, portraitScale: scale })
 }
 
 function handleSave() {
@@ -273,7 +286,7 @@ function handleStartOver() {
       </div>
 
       <!-- Phase 2 footer -->
-      <div class="flex flex-wrap gap-3 pt-2 border-t border-sw-gold/10 max-w-2xl mx-auto w-full">
+      <div class="flex flex-wrap gap-3 pt-2 border-t border-sw-gold/10">
         <!-- Next → only on the last unlocked phase -->
         <button
           v-if="lastUnlockedPhase === 2"
@@ -321,9 +334,78 @@ function handleStartOver() {
       </div>
 
       <!-- Phase 3 footer -->
-      <div class="flex flex-wrap gap-3 pt-2 border-t border-sw-gold/10 max-w-2xl mx-auto w-full">
+      <div class="flex flex-wrap gap-3 pt-2 border-t border-sw-gold/10">
         <button
           v-if="lastUnlockedPhase === 3"
+          type="button"
+          class="rounded-xl px-5 py-2.5 text-sm font-semibold bg-sw-gold text-sw-bg hover:opacity-90 transition-opacity"
+          @click="unlockPhase(4)"
+        >
+          Next →
+        </button>
+        <button
+          type="button"
+          class="rounded-xl px-4 py-2.5 text-sm font-medium bg-sw-card text-sw-text/70 border border-sw-gold/20 hover:border-sw-gold/50 transition-colors"
+          @click="handleResetPhase(3)"
+        >
+          Reset Phase
+        </button>
+      </div>
+    </section>
+
+    <!-- ── Phase 4: Stances ─────────────────────────────────────────────── -->
+    <section
+      v-if="unlockedPhases.includes(4)"
+      id="phase-section-4"
+      class="space-y-4 pt-4 border-t border-sw-gold/20 transition-opacity duration-300"
+      :class="activePhase === 4 ? 'opacity-100' : 'opacity-40'"
+      @click="activateSection(4)"
+      @focusin="activateSection(4)"
+    >
+      <h2 class="text-xs font-semibold text-sw-text/40 uppercase tracking-wider">Phase 4 — Stances</h2>
+
+      <p class="text-[11px] text-sw-text/40">
+        {{ profile.frontCard?.unitType === 'Primary' ? '2 stances (Primary unit)' : '1 stance (Secondary / Support unit)' }}
+      </p>
+
+      <!-- Stance 1 -->
+      <div :class="profile.frontCard?.unitType === 'Primary' ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : 'max-w-2xl mx-auto'">
+        <div class="space-y-4">
+          <StancesForm
+            :stances="profile.stances"
+            :unit-type="profile.frontCard?.unitType ?? 'Primary'"
+            :portrait-image-data="profile.frontCard?.imageData ?? null"
+            @update-stance="handleStanceUpdate"
+            @update-portrait="handlePortraitUpdate"
+          />
+        </div>
+
+        <!-- Live previews -->
+        <div class="space-y-4">
+          <StanceCardPreview
+            :stance-data="profile.stances?.stance1 ?? null"
+            :label="profile.frontCard?.unitType === 'Primary' ? 'Stance 1 Preview' : 'Stance Preview'"
+            :portrait-image-data="profile.frontCard?.imageData ?? null"
+            :portrait-offset-x="profile.stances?.portraitOffsetX ?? 0"
+            :portrait-offset-y="profile.stances?.portraitOffsetY ?? 0"
+            :portrait-scale="profile.stances?.portraitScale ?? 1"
+          />
+          <StanceCardPreview
+            v-if="profile.frontCard?.unitType === 'Primary'"
+            :stance-data="profile.stances?.stance2 ?? null"
+            label="Stance 2 Preview"
+            :portrait-image-data="profile.frontCard?.imageData ?? null"
+            :portrait-offset-x="profile.stances?.portraitOffsetX ?? 0"
+            :portrait-offset-y="profile.stances?.portraitOffsetY ?? 0"
+            :portrait-scale="profile.stances?.portraitScale ?? 1"
+          />
+        </div>
+      </div>
+
+      <!-- Phase 4 footer -->
+      <div class="flex flex-wrap gap-3 pt-2 border-t border-sw-gold/10">
+        <button
+          v-if="lastUnlockedPhase === 4"
           type="button"
           class="rounded-xl px-5 py-2.5 text-sm font-semibold bg-sw-gold text-sw-bg hover:opacity-90 transition-opacity"
           @click="handleSave"
@@ -333,7 +415,7 @@ function handleStartOver() {
         <button
           type="button"
           class="rounded-xl px-4 py-2.5 text-sm font-medium bg-sw-card text-sw-text/70 border border-sw-gold/20 hover:border-sw-gold/50 transition-colors"
-          @click="handleResetPhase(3)"
+          @click="handleResetPhase(4)"
         >
           Reset Phase
         </button>
