@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import { ref, toRef } from 'vue'
-import type { FrontCardData, StatsData, AbilitiesData } from '../../../types/index.ts'
+import { ref, toRef, computed } from 'vue'
+import type { FrontCardData, StatsData, AbilitiesData, HomebrewFaction } from '../../../types/index.ts'
 import { useAbilitiesCanvas, BACK_CANVAS_W, BACK_CANVAS_H } from '../../../composables/useAbilitiesCanvas.ts'
 
 const props = defineProps<{
   frontCard: FrontCardData | null
   stats: StatsData | null
   abilities: AbilitiesData | null
+  faction: HomebrewFaction
 }>()
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
+const factionRef = computed(() => props.faction)
 const { fontReady } = useAbilitiesCanvas(
   canvasRef,
   toRef(props, 'frontCard'),
   toRef(props, 'stats'),
   toRef(props, 'abilities'),
+  factionRef,
 )
 </script>
 

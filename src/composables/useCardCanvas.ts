@@ -1,6 +1,6 @@
 import { ref, watchEffect, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
-import type { FrontCardData } from '../types/index.ts'
+import type { FrontCardData, HomebrewFaction } from '../types/index.ts'
 
 // Internal canvas resolution (2:3 ratio)
 export const CANVAS_W = 600
@@ -20,15 +20,27 @@ function getEraIconPath(eraString: string): string {
   const selected = eraString.split(';').map(e => e.trim()).filter(Boolean)
   const sorted = ERA_ORDER.filter(e => selected.includes(e))
   if (sorted.length === 0) return ''
+  // Single-era Civil War uses a differently named file (civil_war_rebel.png)
+  if (sorted.length === 1 && sorted[0] === 'Civil War') {
+    return '/images/custom_era_icons/civil_war_rebel.png'
+  }
   const key = sorted.map(e => ERA_SLUG[e]).join('_')
   return `/images/custom_era_icons/${key}.png`
 }
 
-const TEMPLATE_PATHS: Record<string, string> = {
-  Primary: '/images/custom_primary_front.png',
-  Secondary: '/images/custom_secundary_front.png',
-  Support: '/images/custom_support_front.png',
+function getTemplatePath(unitType: string, faction: HomebrewFaction): string {
+  const typeMap: Record<string, string> = {
+    Primary: 'custom_primary_front',
+    Secondary: 'custom_secundary_front',
+    Support: 'custom_support_front',
+  }
+  const base = typeMap[unitType] ?? 'custom_primary_front'
+  return `/images/custom_cards/${base}_${faction}.png`
 }
+
+// Preload all faction × unit-type combos for instant switching
+const ALL_FACTIONS: HomebrewFaction[] = ['rebel', 'republic', 'separatist', 'empire', 'other']
+const ALL_UNIT_TYPES = ['Primary', 'Secondary', 'Support']
 
 // Image cache
 const imgCache = new Map<string, HTMLImageElement>()
@@ -54,16 +66,21 @@ async function ensureFontLoaded(): Promise<void> {
 export function useCardCanvas(
   canvasRef: Ref<HTMLCanvasElement | null>,
   frontCard: Ref<FrontCardData | null>,
+  faction: Ref<HomebrewFaction>,
 ) {
   const fontReady = ref(false)
   let rafId: number | null = null
 
-  // Preload all template images and era icons eagerly
+  // Preload all faction × unit-type combos and era icons eagerly
   async function preload() {
     const paths = [
-      ...Object.values(TEMPLATE_PATHS),
-      ...ERA_ORDER.map(e => ERA_SLUG[e]).map(k => `/images/custom_era_icons/${k}.png`),
-      // also preload combo icons we know exist
+      ...ALL_FACTIONS.flatMap(f => ALL_UNIT_TYPES.map(t => getTemplatePath(t, f))),
+      // Single-era icons (Civil War uses civil_war_rebel.png)
+      '/images/custom_era_icons/clone_wars.png',
+      '/images/custom_era_icons/empire.png',
+      '/images/custom_era_icons/civil_war_rebel.png',
+      '/images/custom_era_icons/new_republic.png',
+      // Multi-era combo icons
       '/images/custom_era_icons/clone_wars_empire.png',
       '/images/custom_era_icons/empire_civil_war.png',
       '/images/custom_era_icons/civil_war_new_republic.png',
@@ -95,7 +112,7 @@ export function useCardCanvas(
 
     // 2. Template overlay (drawn first so artwork sits on top inside the art window)
     if (fc?.unitType) {
-      const tmpl = imgCache.get(TEMPLATE_PATHS[fc.unitType])
+      const tmpl = imgCache.get(getTemplatePath(fc.unitType, faction.value))
       if (tmpl) {
         ctx.drawImage(tmpl, 0, 0, CANVAS_W, CANVAS_H)
       }
@@ -131,7 +148,7 @@ export function useCardCanvas(
           return null
         })()
         if (icon) {
-          drawEraIcon(ctx, icon)
+          drawEraIcon(ctx, icon, fc.unitType === 'Support')
         }
       }
     }
@@ -197,20 +214,22 @@ export function useCardCanvas(
       ctx.fillText(barText.toUpperCase(), CANVAS_W / 2, CANVAS_H * 0.882)
       ctx.restore()
 
-      // Subtitle — unit name only, smaller black text in white area
-      ctx.save()
-      ctx.font = `bold 19px Inter, system-ui, sans-serif`
-      ctx.fillStyle = '#111111'
-      ctx.textAlign = 'right'
-      ctx.textBaseline = 'middle'
-      ctx.fillText(fc.name, CANVAS_W / 2 - 25, CANVAS_H * 0.936)
-      ctx.restore()
+      // Subtitle — unit name only, smaller black text in white area (not on Support cards)
+      if (fc.unitType !== 'Support') {
+        ctx.save()
+        ctx.font = `bold 19px Inter, system-ui, sans-serif`
+        ctx.fillStyle = '#111111'
+        ctx.textAlign = 'right'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(fc.name, CANVAS_W / 2 - 25, CANVAS_H * 0.936)
+        ctx.restore()
+      }
     }
   }
 
-  function drawEraIcon(ctx: CanvasRenderingContext2D, icon: HTMLImageElement) {
+  function drawEraIcon(ctx: CanvasRenderingContext2D, icon: HTMLImageElement, isSupport = false) {
     // Era icon circle — top-left area (inside the template circle)
-    const cx = 168
+    const cx = isSupport ? 162 : 168
     const cy = 53
     const r = 40
     ctx.save()
@@ -234,13 +253,13 @@ export function useCardCanvas(
     if (rafId !== null) cancelAnimationFrame(rafId)
   })
 
-  // Re-render whenever frontCard or any nested property changes
+  // Re-render whenever frontCard, faction, or any nested property changes
   watchEffect(() => {
     const fc = frontCard.value
     if (fc) {
-      // Access every property so Vue tracks changes to all of them
       void `${fc.unitType}${fc.name}${fc.title}${fc.cost}${fc.fp}${fc.era}${fc.imageData}${fc.imageScale}${fc.imageOffsetX}${fc.imageOffsetY}`
     }
+    void faction.value
     scheduleRender()
   })
 

@@ -195,6 +195,7 @@ export interface AbilitiesData {
 }
 
 export type HomebrewUnitType = 'Primary' | 'Secondary' | 'Support'
+export type HomebrewFaction = 'rebel' | 'republic' | 'separatist' | 'empire' | 'other'
 export type BuilderPhase = 1 | 2 | 3 | 4
 
 export interface FrontCardData {
@@ -219,6 +220,21 @@ export interface StatsData {
   imageScale: number
 }
 
+export interface CombatTreeConnection {
+  fromRow: number  // 0=top, 1=mid, 2=bot
+  fromCol: number  // 0-5
+  toRow: number
+  toCol: number
+}
+
+export interface CombatTree {
+  startingNodeCount: 1 | 2 | 3  // 1→mid only, 2→top+bot, 3→top+mid+bot
+  // grid[rowIdx][colIdx] = iconFile or null
+  // rowIdx: 0=top, 1=mid, 2=bot  |  colIdx: 0=c1 … 5=c6
+  grid: (string | null)[][]
+  connections: CombatTreeConnection[]  // explicit connections between nodes
+}
+
 export interface StanceData {
   title: string              // displayed white in top-right of the black bar
   range: number              // 0 = dash '-'; 1+ = number shown in the pistol icon area
@@ -230,6 +246,7 @@ export interface StanceData {
   meleeWeapon: string        // label shown in the bottom strip after the crossed swords icon
   defensiveEquipment: string // label shown in the bottom strip after the expertise/diamond icon
   expertise: ExpertiseTables | null  // Phase 4b — expertise table below the bottom strip
+  combatTree: CombatTree | null      // Phase 4c — combat tree
 }
 
 export interface StancesData {
@@ -271,6 +288,7 @@ export interface HomebrewProfile {
   name: string                   // display name, synced from frontCard.name
   createdAt: string              // ISO date
   updatedAt: string              // ISO date
+  faction: HomebrewFaction       // chosen before Phase 1; drives card asset colors (default: 'rebel')
   frontCard: FrontCardData | null
   stats: StatsData | null        // Phase 2
   abilities: AbilitiesData | null  // Phase 3

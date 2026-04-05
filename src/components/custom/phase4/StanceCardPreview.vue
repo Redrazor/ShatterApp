@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import type { StanceData } from '../../../types/index.ts'
+import type { StanceData, HomebrewFaction } from '../../../types/index.ts'
 import { useStanceCanvas, STANCE_CANVAS_W, STANCE_CANVAS_H } from '../../../composables/useStanceCanvas.ts'
 import type { PortraitOptions } from '../../../composables/useStanceCanvas.ts'
 
 const props = defineProps<{
   stanceData: StanceData | null
+  faction: HomebrewFaction
+  unitName?: string
+  unitTitle?: string
   label?: string
   portraitImageData?: string | null
   portraitOffsetX?: number
@@ -15,6 +18,9 @@ const props = defineProps<{
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const stanceRef = computed(() => props.stanceData)
+const factionRef = computed(() => props.faction)
+const unitNameRef = computed(() => props.unitName ?? '')
+const unitTitleRef = computed(() => props.unitTitle ?? '')
 const portraitRef = computed<PortraitOptions | null>(() => ({
   imageData:  props.portraitImageData ?? null,
   offsetX:    props.portraitOffsetX   ?? 0,
@@ -22,7 +28,7 @@ const portraitRef = computed<PortraitOptions | null>(() => ({
   scale:      props.portraitScale     ?? 1.0,
 }))
 
-const { scheduleRender } = useStanceCanvas(canvasRef, stanceRef, portraitRef)
+const { scheduleRender } = useStanceCanvas(canvasRef, stanceRef, factionRef, portraitRef, unitNameRef, unitTitleRef)
 
 // Belt-and-suspenders: force a redraw whenever portrait settings change
 watch(

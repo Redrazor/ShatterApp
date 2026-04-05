@@ -1,6 +1,6 @@
-import { ref, watchEffect, onMounted, onUnmounted } from 'vue'
+import { ref, watch, watchEffect, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
-import type { StanceData, ExpertiseColor, ExpertiseTables } from '../types/index.ts'
+import type { StanceData, ExpertiseColor, ExpertiseTables, CombatTree, HomebrewFaction } from '../types/index.ts'
 
 export interface PortraitOptions {
   imageData: string | null
@@ -18,7 +18,9 @@ const PORTRAIT_R  = 40
 export const STANCE_CANVAS_W = 836
 export const STANCE_CANVAS_H = 481
 
-const TEMPLATE_PATH = '/images/custom_card_stance.png'
+function getTemplatePath(faction: HomebrewFaction): string {
+  return `/images/custom_cards/custom_card_stance_${faction}.png`
+}
 
 // Pixel positions measured from the 836×481 template image
 const POS = {
@@ -87,6 +89,7 @@ const EXP = {
 }
 
 const imgCache = new Map<string, HTMLImageElement>()
+const loadingSet = new Set<string>()
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   if (imgCache.has(src)) return Promise.resolve(imgCache.get(src)!)
@@ -98,6 +101,129 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
+// Lazy-load a combat tree icon — triggers re-render when loaded
+function ensureCombatIcon(src: string, onLoad: () => void) {
+  if (imgCache.has(src)) return
+  if (loadingSet.has(src)) return
+  loadingSet.add(src)
+  const img = new Image()
+  img.onload = () => {
+    imgCache.set(src, img)
+    loadingSet.delete(src)
+    onLoad()
+  }
+  img.onerror = () => loadingSet.delete(src)
+  img.src = src
+}
+
+// Icons whose plain .png has an orange background — use _white_bg.png for c2+ columns
+const CT_USE_WHITE_BG = new Set(['09_DMG_DMG', '22_SHV_DMG_DMG', '43_PIN_SHV', '61_SHV_HEA_HEA_HEA', '70_SHV_DASH'])
+
+function ctDisplayFile(iconFile: string, colIdx: number): string {
+  if (colIdx === 0) return iconFile
+  const base = iconFile.replace('_orange_bg.png', '').replace('_white_bg.png', '').replace('.png', '')
+  return CT_USE_WHITE_BG.has(base) ? `${base}_white_bg.png` : `${base}.png`
+}
+
+// ─── Combat tree layout constants ────────────────────────────────────────────
+const CT = {
+  areaX:  64,    // shifted right
+  areaY:  95,
+  areaH:  215,
+  nodeW:  54,
+  nodeH:  46,
+  colGap: 24,    // horizontal gap between columns (connector zone)
+}
+
+// Fixed vertical center-Y for each row
+// Mid shifted 30px up from original (205→175); top/bot symmetric around mid at ~10px gap
+const ROW_CY = [100, 170, 240]   // top, mid, bot  — 20px up
+function rowCY(rowIdx: number): number { return ROW_CY[rowIdx] }
+
+// Draw two parallel lines from (x1,y1) to (x2,y2) — the "2-bar connector"
+function drawTwoBar(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number) {
+  const dx = x2 - x1, dy = y2 - y1
+  const len = Math.sqrt(dx * dx + dy * dy)
+  if (len < 1) return
+  // Perpendicular unit vector scaled to 4px offset
+  const px = (-dy / len) * 4
+  const py = (dx / len) * 4
+  ctx.lineWidth = 4
+  ctx.lineCap = 'round'
+  ctx.strokeStyle = '#ffffff'
+  ctx.beginPath(); ctx.moveTo(x1 + px, y1 + py); ctx.lineTo(x2 + px, y2 + py); ctx.stroke()
+  ctx.beginPath(); ctx.moveTo(x1 - px, y1 - py); ctx.lineTo(x2 - px, y2 - py); ctx.stroke()
+}
+
+function drawCombatTree(
+  ctx: CanvasRenderingContext2D,
+  tree: CombatTree,
+  _font: string,
+  scheduleRenderFn: () => void,
+) {
+  const { areaX, nodeW, nodeH, colGap } = CT
+  const grid = tree.grid
+  if (!grid) return
+
+  const colStep = nodeW + colGap
+
+  // Find last column with any icon to know how many columns to draw connectors for
+  let maxCol = -1
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 6; c++) if (grid[r]?.[c]) maxCol = Math.max(maxCol, c)
+  if (maxCol < 0) return
+
+  // ── Draw connectors first (behind nodes) — use explicit connections ───────
+  const connections = tree.connections ?? []
+  for (const conn of connections) {
+    // Connect center-to-center; node boxes drawn on top will cover the endpoints
+    const x1 = areaX + conn.fromCol * colStep + nodeW / 2
+    const y1 = rowCY(conn.fromRow)
+    const x2 = areaX + conn.toCol * colStep + nodeW / 2
+    const y2 = rowCY(conn.toRow)
+    drawTwoBar(ctx, x1, y1, x2, y2)
+  }
+
+  // ── Draw nodes on top ─────────────────────────────────────────────────────
+  for (let c = 0; c <= maxCol; c++) {
+    for (let r = 0; r < 3; r++) {
+      const iconFile = grid[r]?.[c]
+      if (!iconFile) continue
+
+      const nx = areaX + c * colStep
+      const cy = rowCY(r)
+      const ny = cy - nodeH / 2
+
+      // Node box — orange for c1, white for c2+
+      ctx.save()
+      ctx.fillStyle   = c === 0 ? 'rgb(200, 90, 20)' : '#ffffff'
+      ctx.strokeStyle = '#000000'
+      ctx.lineWidth   = 2
+      ctx.beginPath()
+      ctx.roundRect(nx, ny, nodeW, nodeH, 5)
+      ctx.fill()
+      ctx.stroke()
+      ctx.restore()
+
+      // Icon centered in box — use correct variant per column
+      const displayFile = ctDisplayFile(iconFile, c)
+      const iconSrc = `/images/combat_tree_icons/crops/${displayFile}`
+      const img = imgCache.get(iconSrc)
+      if (img) {
+        const pad = 4
+        const maxW = nodeW - pad * 2
+        const maxH = nodeH - pad * 2
+        const aspect = img.naturalWidth / img.naturalHeight
+        let iw: number, ih: number
+        if (aspect >= maxW / maxH) { iw = maxW; ih = iw / aspect }
+        else                       { ih = maxH; iw = ih * aspect }
+        ctx.drawImage(img, nx + (nodeW - iw) / 2, ny + (nodeH - ih) / 2, iw, ih)
+      } else {
+        ensureCombatIcon(iconSrc, scheduleRenderFn)
+      }
+    }
+  }
+}
+
 async function ensureFontLoaded(): Promise<void> {
   try {
     await document.fonts.load('bold 32px Oswald')
@@ -107,7 +233,10 @@ async function ensureFontLoaded(): Promise<void> {
 export function useStanceCanvas(
   canvasRef: Ref<HTMLCanvasElement | null>,
   stanceData: Ref<StanceData | null>,
+  faction: Ref<HomebrewFaction>,
   portraitRef?: Ref<PortraitOptions | null>,
+  unitNameRef?: Ref<string>,
+  unitTitleRef?: Ref<string>,
 ) {
   const fontReady = ref(false)
   let rafId: number | null = null
@@ -142,7 +271,7 @@ export function useStanceCanvas(
 
   async function preload() {
     const iconUrls = ICONOGRAPHY_FILES.map(f => `/images/abilities_iconography/${f}`)
-    await Promise.allSettled([loadImage(TEMPLATE_PATH), ...iconUrls.map(loadImage)])
+    await Promise.allSettled([loadImage(getTemplatePath(faction.value)), ...iconUrls.map(loadImage)])
     await ensureFontLoaded()
     fontReady.value = true
   }
@@ -165,7 +294,7 @@ export function useStanceCanvas(
     ctx.fillRect(0, 0, STANCE_CANVAS_W, STANCE_CANVAS_H)
 
     // 2. Template
-    const tmpl = imgCache.get(TEMPLATE_PATH)
+    const tmpl = imgCache.get(getTemplatePath(faction.value))
     if (tmpl) {
       ctx.drawImage(tmpl, 0, 0, STANCE_CANVAS_W, STANCE_CANVAS_H)
     }
@@ -197,6 +326,12 @@ export function useStanceCanvas(
     const data = stanceData.value
     if (data) {
       drawStanceTexts(ctx, data)
+    }
+
+    // 5. Combat tree (drawn over the template, left half of card)
+    if (data?.combatTree) {
+      const font = fontReady.value ? 'Oswald' : 'Impact, Arial Black, sans-serif'
+      drawCombatTree(ctx, data.combatTree, font, scheduleRender)
     }
   }
 
@@ -412,6 +547,20 @@ export function useStanceCanvas(
     if (data.expertise) {
       drawExpertiseTables(ctx, data.expertise, font)
     }
+
+    // Unit name + title — centered in the white rectangle at the bottom (below expertise, above dark footer)
+    const name = unitNameRef?.value ?? ''
+    if (name) {
+      const title = unitTitleRef?.value ?? ''
+      const label = title ? `${name}, ${title}` : name
+      ctx.save()
+      ctx.font = `bold 15px "${font}"`
+      ctx.fillStyle = '#1a1a1a'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(label, STANCE_CANVAS_W / 2, 455)
+      ctx.restore()
+    }
   }
 
   onMounted(async () => {
@@ -423,11 +572,19 @@ export function useStanceCanvas(
     if (rafId !== null) cancelAnimationFrame(rafId)
   })
 
+  watch(faction, async () => {
+    await preload()
+    scheduleRender()
+  })
+
   watchEffect(() => {
     const d = stanceData.value
     if (d) {
-      void `${d.title}${d.range}${d.rangeAttack}${d.rangeDefense}${d.meleeAttack}${d.meleeDefense}${d.rangedWeapon}${d.meleeWeapon}${d.defensiveEquipment}${JSON.stringify(d.expertise)}`
+      void `${d.title}${d.range}${d.rangeAttack}${d.rangeDefense}${d.meleeAttack}${d.meleeDefense}${d.rangedWeapon}${d.meleeWeapon}${d.defensiveEquipment}${JSON.stringify(d.expertise)}${JSON.stringify(d.combatTree)}`
     }
+    void faction.value
+    void unitNameRef?.value
+    void unitTitleRef?.value
     // Read portrait ref unconditionally so Vue always tracks it
     const p = portraitRef ? portraitRef.value : null
     const imageData = p?.imageData ?? null

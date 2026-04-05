@@ -1,13 +1,17 @@
-import { ref, watchEffect, onMounted, onUnmounted } from 'vue'
+import { ref, watch, watchEffect, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
-import type { FrontCardData, StatsData } from '../types/index.ts'
+import type { FrontCardData, StatsData, HomebrewFaction } from '../types/index.ts'
 
 // Landscape canvas — 3:2
 export const BACK_CANVAS_W = 900
 export const BACK_CANVAS_H = 600
 
-const TEMPLATE_PATH = '/images/custom_abilities_back.png'
-const PILLS_OVERLAY_PATH = '/images/custom_abilities_back_pills.png'
+function getTemplatePath(faction: HomebrewFaction): string {
+  return `/images/custom_cards/custom_abilities_back_${faction}.png`
+}
+function getPillsPath(faction: HomebrewFaction): string {
+  return `/images/custom_cards/custom_abilities_back_pills_${faction}.png`
+}
 
 // Image cache shared with front-card composable (same Map is fine)
 const imgCache = new Map<string, HTMLImageElement>()
@@ -32,12 +36,14 @@ export function useStatsCanvas(
   canvasRef: Ref<HTMLCanvasElement | null>,
   frontCard: Ref<FrontCardData | null>,
   stats: Ref<StatsData | null>,
+  faction: Ref<HomebrewFaction>,
 ) {
   const fontReady = ref(false)
   let rafId: number | null = null
 
   async function preload() {
-    await Promise.allSettled([loadImage(TEMPLATE_PATH), loadImage(PILLS_OVERLAY_PATH)])
+    const f = faction.value
+    await Promise.allSettled([loadImage(getTemplatePath(f)), loadImage(getPillsPath(f))])
     await ensureFontLoaded()
     fontReady.value = true
   }
@@ -63,7 +69,8 @@ export function useStatsCanvas(
     ctx.fillRect(0, 0, BACK_CANVAS_W, BACK_CANVAS_H)
 
     // 2. Template
-    const tmpl = imgCache.get(TEMPLATE_PATH)
+    const f = faction.value
+    const tmpl = imgCache.get(getTemplatePath(f))
     if (tmpl) {
       ctx.drawImage(tmpl, 0, 0, BACK_CANVAS_W, BACK_CANVAS_H)
     }
@@ -81,8 +88,8 @@ export function useStatsCanvas(
       }
     }
 
-    // 4. Pills overlay — transparent PNG with just the orange pill graphics, on top of artwork
-    const pills = imgCache.get(PILLS_OVERLAY_PATH)
+    // 4. Pills overlay — faction-colored pill graphics, on top of artwork
+    const pills = imgCache.get(getPillsPath(f))
     if (pills) {
       ctx.drawImage(pills, 0, 0, BACK_CANVAS_W, BACK_CANVAS_H)
     }
@@ -196,11 +203,17 @@ export function useStatsCanvas(
     if (rafId !== null) cancelAnimationFrame(rafId)
   })
 
+  watch(faction, async () => {
+    await preload()
+    scheduleRender()
+  })
+
   watchEffect(() => {
     const fc = frontCard.value
     const st = stats.value
     if (fc) void `${fc.name}${fc.title}${fc.imageData}`
     if (st) void `${st.stamina}${st.durability}${st.tags.join()}${st.imageScale}${st.imageOffsetX}${st.imageOffsetY}`
+    void faction.value
     scheduleRender()
   })
 

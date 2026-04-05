@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { HomebrewProfile, FrontCardData, StatsData, AbilitiesData, StancesData, StanceData, BuilderPhase, ExpertiseColor, ExpertiseSection, ExpertiseTables } from '../types/index.ts'
+import type { HomebrewProfile, HomebrewFaction, FrontCardData, StatsData, AbilitiesData, StancesData, StanceData, BuilderPhase, ExpertiseColor, ExpertiseSection, ExpertiseTables } from '../types/index.ts'
 
 export const useHomebrewStore = defineStore(
   'homebrew',
   () => {
     const profiles = ref<HomebrewProfile[]>([])
     const activeProfileId = ref<string | null>(null)
+    const combatIconUsage = ref<Record<string, number>>({})
 
     const activeProfile = computed(() =>
       profiles.value.find(p => p.id === activeProfileId.value) ?? null,
@@ -19,6 +20,7 @@ export const useHomebrewStore = defineStore(
         name: name || 'New Profile',
         createdAt: now,
         updatedAt: now,
+        faction: 'rebel',
         frontCard: null,
         stats: null,
         abilities: null,
@@ -111,10 +113,15 @@ export const useHomebrewStore = defineStore(
       }
     }
 
+    function trackIconUsage(iconFile: string): void {
+      combatIconUsage.value[iconFile] = (combatIconUsage.value[iconFile] ?? 0) + 1
+    }
+
     const BLANK_STANCE: StanceData = {
       title: '', range: 0, rangeAttack: 0, rangeDefense: 0, meleeAttack: 0, meleeDefense: 0,
       rangedWeapon: '', meleeWeapon: '', defensiveEquipment: '',
       expertise: null,
+      combatTree: null,
     }
 
     function initStances(id: string): void {
@@ -175,9 +182,17 @@ export const useHomebrewStore = defineStore(
       return [...set].sort()
     }
 
+    function setFaction(id: string, faction: HomebrewFaction): void {
+      const profile = profiles.value.find(p => p.id === id)
+      if (!profile) return
+      profile.faction = faction
+      profile.updatedAt = new Date().toISOString()
+    }
+
     function resetAll(id: string): void {
       const profile = profiles.value.find(p => p.id === id)
       if (!profile) return
+      profile.faction = 'rebel'
       profile.frontCard = null
       profile.stats = null
       profile.abilities = null
@@ -197,7 +212,7 @@ export const useHomebrewStore = defineStore(
       activeProfileId.value = id
     }
 
-    function isFrontCardComplete(profile: HomebrewProfile): boolean {
+function isFrontCardComplete(profile: HomebrewProfile): boolean {
       const fc = profile.frontCard
       if (!fc) return false
       return (
@@ -225,8 +240,11 @@ export const useHomebrewStore = defineStore(
       profiles,
       activeProfileId,
       activeProfile,
+      combatIconUsage,
+      trackIconUsage,
       addProfile,
       deleteProfile,
+      setFaction,
       updateFrontCard,
       updateStats,
       updateAbilities,

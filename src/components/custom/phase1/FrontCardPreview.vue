@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, toRef, onMounted, onUnmounted } from 'vue'
-import type { FrontCardData } from '../../../types/index.ts'
+import { ref, toRef, computed, onMounted, onUnmounted } from 'vue'
+import type { FrontCardData, HomebrewFaction } from '../../../types/index.ts'
 import { useCardCanvas, CANVAS_W, CANVAS_H } from '../../../composables/useCardCanvas.ts'
 
 const props = defineProps<{
   frontCard: FrontCardData | null
+  faction: HomebrewFaction
 }>()
 
 const emit = defineEmits<{
@@ -16,7 +17,8 @@ const emit = defineEmits<{
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
-const { fontReady } = useCardCanvas(canvasRef, toRef(props, 'frontCard'))
+const factionRef = computed(() => props.faction)
+const { fontReady } = useCardCanvas(canvasRef, toRef(props, 'frontCard'), factionRef)
 
 let isPanning = false
 let hasMoved = false

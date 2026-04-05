@@ -1,16 +1,24 @@
-import { ref, watchEffect, onMounted, onUnmounted } from 'vue'
+import { ref, watch, watchEffect, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
-import type { FrontCardData, StatsData, AbilitiesData, AbilityBlock } from '../types/index.ts'
+import type { FrontCardData, StatsData, AbilitiesData, AbilityBlock, HomebrewFaction } from '../types/index.ts'
 
 // Landscape canvas — 3:2
 export const BACK_CANVAS_W = 900
 export const BACK_CANVAS_H = 600
 
-const TEMPLATE_PATH = '/images/custom_abilities_back.png'
-const PILLS_OVERLAY_PATH = '/images/custom_abilities_back_pills.png'
+function getTemplatePath(faction: HomebrewFaction): string {
+  return `/images/custom_cards/custom_abilities_back_${faction}.png`
+}
+function getPillsPath(faction: HomebrewFaction): string {
+  return `/images/custom_cards/custom_abilities_back_pills_${faction}.png`
+}
 
-// Ability TYPE icons (orange icons from the Reference screen) — in /images/icons/
+// Ability TYPE icons — all factions have dedicated icons in icons/ability_icons/
 const ABILITY_TYPE_NAMES = ['active', 'reactive', 'innate', 'tactic', 'identity']
+
+function typeIconPath(name: string, faction: HomebrewFaction): string {
+  return `/images/icons/ability_icons/${faction}_${name}.png`
+}
 
 // Inline iconography (used in ability text like [damage], [advance], etc.)
 const INLINE_ICON_NAMES = [
@@ -20,10 +28,6 @@ const INLINE_ICON_NAMES = [
   'melee', 'pinned', 'range', 'ranged', 'reactive', 'reposition', 'shove',
   'strained', 'strike', 'tactic',
 ]
-
-function typeIconPath(name: string): string {
-  return `/images/icons/${name}.png`
-}
 
 function inlineIconPath(name: string): string {
   return `/images/abilities_iconography/${name}_crop.png`
@@ -167,6 +171,7 @@ function drawAbilityBlocks(
   ctx: CanvasRenderingContext2D,
   blocks: AbilityBlock[],
   fontReady: boolean,
+  faction: HomebrewFaction,
 ) {
   const font = fontReady ? 'Oswald' : 'Impact, Arial Black, sans-serif'
   let y = ABILITY_TOP
@@ -176,8 +181,8 @@ function drawAbilityBlocks(
     const block = blocks[i]
     if (y > ABILITY_BOTTOM) break
 
-    // 1. Draw type icon (orange ability type icon from /images/icons/)
-    const typeImg = imgCache.get(typeIconPath(block.iconType))
+    // 1. Draw type icon — faction-specific if available
+    const typeImg = imgCache.get(typeIconPath(block.iconType, faction))
     if (typeImg) {
       ctx.drawImage(typeImg, ABILITY_LEFT, y, TYPE_ICON_SZ, TYPE_ICON_SZ)
     }
@@ -243,6 +248,7 @@ export function useAbilitiesCanvas(
   frontCard: Ref<FrontCardData | null>,
   stats: Ref<StatsData | null>,
   abilities: Ref<AbilitiesData | null>,
+  faction: Ref<HomebrewFaction>,
 ) {
   const fontReady = ref(false)
   let rafId: number | null = null
@@ -250,11 +256,12 @@ export function useAbilitiesCanvas(
   async function preload() {
     // Always evict inline icons from cache to pick up any file changes
     INLINE_ICON_NAMES.forEach(name => imgCache.delete(inlineIconPath(name)))
-    const typeIconPaths = ABILITY_TYPE_NAMES.map(typeIconPath)
+    const f = faction.value
+    const typeIconPaths = ABILITY_TYPE_NAMES.map(n => typeIconPath(n, f))
     const inlinePaths = INLINE_ICON_NAMES.map(inlineIconPath)
     await Promise.allSettled([
-      loadImage(TEMPLATE_PATH),
-      loadImage(PILLS_OVERLAY_PATH),
+      loadImage(getTemplatePath(f)),
+      loadImage(getPillsPath(f)),
       ...typeIconPaths.map(loadImage),
       ...inlinePaths.map(loadImageFresh),
     ])
@@ -280,7 +287,8 @@ export function useAbilitiesCanvas(
     ctx.clearRect(0, 0, BACK_CANVAS_W, BACK_CANVAS_H)
 
     // 2. Template
-    const tmpl = imgCache.get(TEMPLATE_PATH)
+    const f = faction.value
+    const tmpl = imgCache.get(getTemplatePath(f))
     if (tmpl) {
       ctx.drawImage(tmpl, 0, 0, BACK_CANVAS_W, BACK_CANVAS_H)
     }
@@ -298,8 +306,8 @@ export function useAbilitiesCanvas(
       }
     }
 
-    // 4. Pills overlay — transparent PNG with just the orange pill graphics, on top of artwork
-    const pills = imgCache.get(PILLS_OVERLAY_PATH)
+    // 4. Pills overlay — transparent PNG with faction-colored pill graphics, on top of artwork
+    const pills = imgCache.get(getPillsPath(f))
     if (pills) {
       ctx.drawImage(pills, 0, 0, BACK_CANVAS_W, BACK_CANVAS_H)
     }
@@ -321,7 +329,7 @@ export function useAbilitiesCanvas(
 
     // 8. Ability blocks
     if (ab && ab.blocks.length > 0) {
-      drawAbilityBlocks(ctx, ab.blocks, fontReady.value)
+      drawAbilityBlocks(ctx, ab.blocks, fontReady.value, faction.value)
     }
   }
 
@@ -411,12 +419,19 @@ export function useAbilitiesCanvas(
     if (rafId !== null) cancelAnimationFrame(rafId)
   })
 
+  // Reload images when faction changes, then re-render
+  watch(faction, async () => {
+    await preload()
+    scheduleRender()
+  })
+
   watchEffect(() => {
     const fc = frontCard.value
     const st = stats.value
     if (fc) void `${fc.name}${fc.title}${fc.imageData}`
     if (st) void `${st.stamina}${st.durability}${st.tags.join()}${st.imageScale}${st.imageOffsetX}${st.imageOffsetY}`
     void JSON.stringify(abilities.value)
+    void faction.value
     scheduleRender()
   })
 

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import type { BuilderPhase, AbilitiesData, StanceData } from '../../types/index.ts'
+import type { BuilderPhase, AbilitiesData, StanceData, HomebrewFaction } from '../../types/index.ts'
 import { useHomebrewStore } from '../../stores/homebrew.ts'
 import { useCharactersStore } from '../../stores/characters.ts'
 import { useSettingsStore } from '../../stores/settings.ts'
 import CustomPhaseStepper from './CustomPhaseStepper.vue'
+import FactionPicker from './FactionPicker.vue'
 import FrontCardForm from './phase1/FrontCardForm.vue'
 import FrontCardPreview from './phase1/FrontCardPreview.vue'
 import FrontCardInsightsPanel from './phase1/FrontCardInsightsPanel.vue'
@@ -48,6 +49,11 @@ const allKnownTags = computed(() => {
 })
 
 const profile = computed(() => store.profiles.find(p => p.id === props.profileId) ?? null)
+const faction = computed<HomebrewFaction>(() => profile.value?.faction ?? 'rebel')
+
+function handleFactionUpdate(f: HomebrewFaction) {
+  store.setFaction(props.profileId, f)
+}
 
 // Which phases have been unlocked (revealed) in the stacked layout
 const unlockedPhases = ref<BuilderPhase[]>([1])
@@ -197,6 +203,11 @@ function handleStartOver() {
       />
     </div>
 
+    <!-- ── Faction Picker ────────────────────────────────────────────────── -->
+    <div class="rounded-xl bg-sw-card border border-sw-gold/15 px-4 py-3">
+      <FactionPicker :faction="faction" @update="handleFactionUpdate" />
+    </div>
+
     <!-- ── Phase 1: Front Card ───────────────────────────────────────────── -->
     <section
       id="phase-section-1"
@@ -230,6 +241,7 @@ function handleStartOver() {
           <div class="w-3/5 mx-auto">
           <FrontCardPreview
             :front-card="profile.frontCard"
+            :faction="faction"
             @update:image-data="store.updateFrontCard(profileId, { imageData: $event })"
             @update:image-scale="store.updateFrontCard(profileId, { imageScale: $event })"
             @update:image-offset-x="store.updateFrontCard(profileId, { imageOffsetX: $event })"
@@ -284,6 +296,7 @@ function handleStartOver() {
         <StatsCardPreview
           :front-card="profile.frontCard"
           :stats="profile.stats"
+          :faction="faction"
           @update:image-scale="store.updateStats(profileId, { imageScale: $event })"
           @update:image-offset-x="store.updateStats(profileId, { imageOffsetX: $event })"
           @update:image-offset-y="store.updateStats(profileId, { imageOffsetY: $event })"
@@ -354,6 +367,7 @@ function handleStartOver() {
           :front-card="profile.frontCard"
           :stats="profile.stats"
           :abilities="profile.abilities"
+          :faction="faction"
         />
         <AbilitiesInsightsPanel
           v-if="settingsStore.showStatsInsights && profile.abilities"
@@ -414,6 +428,9 @@ function handleStartOver() {
           </p>
           <StanceCardPreview
             :stance-data="profile.stances?.stance1 ?? null"
+            :faction="faction"
+            :unit-name="profile.frontCard?.name ?? ''"
+            :unit-title="profile.frontCard?.title ?? ''"
             :label="profile.frontCard?.unitType === 'Primary' ? 'Stance 1 Preview' : 'Stance Preview'"
             :portrait-image-data="profile.frontCard?.imageData ?? null"
             :portrait-offset-x="profile.stances?.portraitOffsetX ?? 0"
@@ -443,6 +460,9 @@ function handleStartOver() {
           <p class="text-xs text-sw-text/40 text-center">Stance 2 Preview</p>
           <StanceCardPreview
             :stance-data="profile.stances?.stance2 ?? null"
+            :faction="faction"
+            :unit-name="profile.frontCard?.name ?? ''"
+            :unit-title="profile.frontCard?.title ?? ''"
             label="Stance 2 Preview"
             :portrait-image-data="profile.frontCard?.imageData ?? null"
             :portrait-offset-x="profile.stances?.portraitOffsetX ?? 0"

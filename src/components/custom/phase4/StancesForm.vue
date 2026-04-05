@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { StancesData, StanceData, HomebrewUnitType, ExpertiseTables, ExpertiseSection, ExpertiseColor } from '../../../types/index.ts'
+import type { StancesData, StanceData, HomebrewUnitType, ExpertiseTables, ExpertiseSection, ExpertiseColor, CombatTree } from '../../../types/index.ts'
 import ExpertiseSectionEditor from './ExpertiseSectionEditor.vue'
+import CombatTreeEditor from './CombatTreeEditor.vue'
+import { useHomebrewStore } from '../../../stores/homebrew.ts'
 
 defineProps<{
   stances: StancesData | null
@@ -14,6 +16,8 @@ const emit = defineEmits<{
   updateStance:   [which: 1 | 2, patch: Partial<StanceData>]
   updatePortrait: [offsetX: number, offsetY: number, scale: number]
 }>()
+
+const homebrewStore = useHomebrewStore()
 
 // ── Per-instance tab state ─────────────────────────────────────────────────────
 type MainTab = 'stats' | 'combat-tree' | 'expertise'
@@ -119,22 +123,18 @@ function onUpdateExpertise(which: 1 | 2, key: keyof ExpertiseTables, section: Ex
           <button
             v-for="tab in ([
               { key: 'stats',        label: 'Stats' },
-              { key: 'combat-tree',  label: 'Combat Tree', wip: true },
+              { key: 'combat-tree',  label: 'Combat Tree' },
               { key: 'expertise',    label: 'Expertise' },
             ] as const)"
             :key="tab.key"
             type="button"
-            :disabled="'wip' in tab && tab.wip"
             class="px-4 py-2 text-xs font-bold uppercase tracking-widest border-b-2 -mb-px transition-colors"
             :class="currentTab === tab.key
               ? 'border-sw-gold text-sw-gold'
-              : ('wip' in tab && tab.wip)
-                ? 'border-transparent text-sw-text/20 cursor-not-allowed'
-                : 'border-transparent text-sw-text/40 hover:text-sw-text/70'"
-            @click="!('wip' in tab && tab.wip) && (currentTab = tab.key as MainTab)"
+              : 'border-transparent text-sw-text/40 hover:text-sw-text/70'"
+            @click="currentTab = tab.key as MainTab"
           >
             {{ tab.label }}
-            <span v-if="'wip' in tab && tab.wip" class="ml-1 text-[9px] text-sw-text/30 normal-case tracking-normal">(soon)</span>
           </button>
         </div>
       </div>
@@ -232,11 +232,13 @@ function onUpdateExpertise(which: 1 | 2, key: keyof ExpertiseTables, section: Ex
 
         </template>
 
-        <!-- Tab 2: Combat Tree (WIP) -->
+        <!-- Tab 2: Combat Tree -->
         <template v-else-if="currentTab === 'combat-tree'">
-          <div class="flex flex-col items-center justify-center py-12 text-center gap-3">
-            <p class="text-sw-text/30 text-sm">Combat Tree coming soon</p>
-          </div>
+          <CombatTreeEditor
+            :tree="which === 1 ? (stances?.stance1.combatTree ?? null) : (stances?.stance2?.combatTree ?? null)"
+            :icon-usage="homebrewStore.combatIconUsage"
+            @update:tree="emit('updateStance', which, { combatTree: $event as CombatTree })"
+          />
         </template>
 
         <!-- Tab 3: Expertise Tables -->

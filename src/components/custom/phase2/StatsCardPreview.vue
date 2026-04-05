@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, toRef, onMounted, onUnmounted } from 'vue'
-import type { FrontCardData, StatsData } from '../../../types/index.ts'
+import { ref, toRef, computed, onMounted, onUnmounted } from 'vue'
+import type { FrontCardData, StatsData, HomebrewFaction } from '../../../types/index.ts'
 import { useStatsCanvas, BACK_CANVAS_W, BACK_CANVAS_H } from '../../../composables/useStatsCanvas.ts'
 
 const props = defineProps<{
   frontCard: FrontCardData | null
   stats: StatsData | null
+  faction: HomebrewFaction
 }>()
 
 const emit = defineEmits<{
@@ -15,11 +16,13 @@ const emit = defineEmits<{
 }>()
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
+const factionRef = computed(() => props.faction)
 
 const { fontReady } = useStatsCanvas(
   canvasRef,
   toRef(props, 'frontCard'),
   toRef(props, 'stats'),
+  factionRef,
 )
 
 let isPanning = false
