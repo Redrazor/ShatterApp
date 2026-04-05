@@ -6,6 +6,7 @@ import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import { useCharactersStore } from '../stores/characters.ts'
 import { useMissionsStore } from '../stores/missions.ts'
 import { useCollectionStore } from '../stores/collection.ts'
+import { useAllCharacters } from '../composables/useAllCharacters.ts'
 import type { Squad, Character, Mission, BuildMode } from '../types/index.ts'
 import type { CompactBuild } from '../types/index.ts'
 import { isSquadValid, hasStrikeForceConflict } from '../types/index.ts'
@@ -23,6 +24,7 @@ const sfStore = useStrikeForceStore()
 const charStore = useCharactersStore()
 const missionsStore = useMissionsStore()
 const collectionStore = useCollectionStore()
+const { allCharacters } = useAllCharacters()
 const route = useRoute()
 const router = useRouter()
 
@@ -31,7 +33,7 @@ const ownedOnly = ref(false)
 
 function handleRandom() {
   const result = generateRandomStrikeForce(
-    charStore.characters,
+    allCharacters.value,
     [sfStore.squads[0], sfStore.squads[1]],
     ownedOnly.value ? { ownedSwpCodes: collectionStore.ownedSwpSet } : {}
   )
@@ -94,7 +96,7 @@ const pickerExclusions = computed(() => {
 
 const savedListLegality = computed(() =>
   sfStore.savedLists.map(build => {
-    const resolve = (id: number) => id ? (charStore.characters.find(c => c.id === id) ?? null) : null
+    const resolve = (id: number) => id ? (allCharacters.value.find(c => c.id === id) ?? null) : null
     const squads: [Squad, Squad] = [
       { primary: resolve(build.s[0][0]), secondary: resolve(build.s[0][1]), support: resolve(build.s[0][2]) },
       { primary: resolve(build.s[1][0]), secondary: resolve(build.s[1][1]), support: resolve(build.s[1][2]) },
@@ -199,7 +201,7 @@ const sptCode = ref('')
 function handleExport() {
   const allSquads = [...sfStore.squads]
   const extra = sfStore.buildMode !== 'standard' ? [...sfStore.extraSquads] : []
-  sptCode.value = encodeSPT(allSquads, extra, sfStore.mission, charStore.characters)
+  sptCode.value = encodeSPT(allSquads, extra, sfStore.mission, allCharacters.value)
   sptExportOpen.value = true
 }
 
@@ -229,7 +231,7 @@ function visualiseList(i: number) {
 
   if (mode !== 'standard') {
     // Show squad picker first
-    const resolve = (id: number) => id ? (charStore.characters.find(c => c.id === id) ?? null) : null
+    const resolve = (id: number) => id ? (allCharacters.value.find(c => c.id === id) ?? null) : null
     const allSquadIds = [
       build.s[0], build.s[1],
       ...(build.ex ? [build.ex[0], build.ex[1]] : []),
@@ -258,7 +260,7 @@ function confirmSquadPick() {
 
 function openVisualModal(listIdx: number, squadIndices: [number, number]) {
   const build = sfStore.savedLists[listIdx]
-  const resolve = (id: number) => id ? (charStore.characters.find(c => c.id === id) ?? null) : null
+  const resolve = (id: number) => id ? (allCharacters.value.find(c => c.id === id) ?? null) : null
 
   const allSquadIds: [number, number, number][] = [
     build.s[0], build.s[1],
@@ -335,14 +337,14 @@ useHead({
 })
 
 function loadList(i: number) {
-  sfStore.loadList(i, charStore.characters, missionsStore.missions)
+  sfStore.loadList(i, allCharacters.value, missionsStore.missions)
 }
 
 function importSharedBuild() {
   if (!pendingSharedBuild.value) return
   sfStore.importLists([pendingSharedBuild.value])
   const newIdx = sfStore.savedLists.length - 1
-  sfStore.loadList(newIdx, charStore.characters, missionsStore.missions)
+  sfStore.loadList(newIdx, allCharacters.value, missionsStore.missions)
   pendingSharedBuild.value = null
 }
 </script>
@@ -412,7 +414,7 @@ function importSharedBuild() {
             ★ Threemiere
           </span>
           <span
-            v-if="charStore.characters.length > 0"
+            v-if="allCharacters.length > 0"
             class="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium"
             :class="savedListLegality[i].valid
               ? 'bg-green-500/20 text-green-400'
@@ -506,7 +508,7 @@ function importSharedBuild() {
   <!-- Unit Picker Drawer -->
   <UnitPickerDrawer class="no-print"
     :show="pickerOpen"
-    :characters="charStore.characters"
+    :characters="allCharacters"
     :role="activeRole"
     :excluded-names="pickerExclusions.names"
     :excluded-character-types="pickerExclusions.characterTypes"

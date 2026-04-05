@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Era Icon Audit — ShatterApp</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 2rem; }
+  h1 { text-align: center; margin-bottom: .5rem; color: #ffd700; font-size: 1.6rem; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 2rem; font-size: .9rem; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto 3rem; }
+
+  .card {
+    background: #16213e;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .8rem;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: #ffd700; }
+
+  .icon-wrap {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,.4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .icon-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+  .name { font-weight: 700; font-size: 1rem; color: #ffd700; text-align: center; }
+  .era-value { font-size: .8rem; color: #aaa; font-family: monospace; text-align: center; }
+  .count { font-size: .75rem; color: #666; }
+
+  .note { font-size: .75rem; color: #c97; text-align: center; font-style: italic; margin-top: .2rem; }
+
+  /* --- sample cards section --- */
+  h2 { text-align: center; color: #ffd700; margin-bottom: 1rem; font-size: 1.3rem; }
+  .samples { max-width: 1200px; margin: 0 auto 3rem; }
+  .sample-row { margin-bottom: 1.5rem; }
+  .sample-row h3 { color: #ccc; margin-bottom: .5rem; font-size: .95rem; }
+  .sample-row .thumbs { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .sample-row .thumbs img {
+    height: 180px; border-radius: 6px; border: 1px solid #333;
+    transition: transform .2s;
+  }
+  .sample-row .thumbs img:hover { transform: scale(2.5); z-index: 10; position: relative; }
+</style>
+</head>
+<body>
+
+<h1>Era Symbol Icons — Extracted from Front Cards</h1>
+<p class="subtitle">9 unique era symbols found across 133 front cards. Hover over sample cards to zoom.</p>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/clone_wars.png" alt="Clone Wars"></div>
+    <div class="name">Clone Wars</div>
+    <div class="era-value">era: "Clone Wars"</div>
+    <div class="count">50 characters</div>
+  </div>
+
+  <div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/empire.png" alt="Empire"></div>
+    <div class="name">Empire</div>
+    <div class="era-value">era: "Empire"</div>
+    <div class="count">3 characters (Crosshair, Elites, ES-04)</div>
+  </div>
+
+  <div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/civil_war_rebel.png" alt="Civil War"></div>
+    <div class="name">Civil War</div>
+    <div class="era-value">era: "Civil War"</div>
+    <div class="count">48 characters (Rebel bird on all, incl. Imperial-tagged)</div>
+  </div>
+
+<div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/civil_war_new_republic.png" alt="Civil War + New Republic"></div>
+    <div class="name">Civil War + New Republic</div>
+    <div class="era-value">era: "Civil War;New Republic"</div>
+    <div class="count">6 characters (Gideon, Dark Troopers, etc.)</div>
+  </div>
+
+  <div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/clone_wars_empire.png" alt="Clone Wars + Empire"></div>
+    <div class="name">Clone Wars + Empire</div>
+    <div class="era-value">era: "Clone Wars;Empire"</div>
+    <div class="count">3 characters (Bad Batch — Hunter, Tech/Echo, Wrecker)</div>
+  </div>
+
+  <div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/clone_wars_empire_civil_war.png" alt="Clone Wars + Empire + Civil War"></div>
+    <div class="name">Clone Wars + Empire + Civil War</div>
+    <div class="era-value">era: "Clone Wars;Empire;Civil War"</div>
+    <div class="count">9 characters (Inquisitors, Hondo, etc.)</div>
+  </div>
+
+  <div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/clone_wars_empire_civil_war_new_republic.png" alt="All Eras"></div>
+    <div class="name">Clone Wars + Empire + CW + NR</div>
+    <div class="era-value">era: "Clone Wars;Empire;Civil War;New Republic"</div>
+    <div class="count">4 characters (Cad Bane, Bo-Katan, etc.)</div>
+  </div>
+
+  <div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/empire_civil_war.png" alt="Empire + Civil War"></div>
+    <div class="name">Empire + Civil War</div>
+    <div class="era-value">era: "Empire;Civil War"</div>
+    <div class="count">7 characters (Krennic, Cassian, Death Troopers, etc.)</div>
+  </div>
+
+  <div class="card">
+    <div class="icon-wrap"><img src="../public/images/custom_era_icons/new_republic.png" alt="New Republic"></div>
+    <div class="name">New Republic</div>
+    <div class="era-value">era: "New Republic"</div>
+    <div class="count">3 characters (Armorer, Paz, Covert Mandos)</div>
+  </div>
+
+</div>
+
+<h2>Sample Source Cards</h2>
+<div class="samples">
+
+  <div class="sample-row">
+    <h3>Clone Wars (Republic cog — 8 spokes)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP50_Padawan-Learners_Front.png" alt="Padawan Learners">
+      <img src="../public/images/SWP01_Ahsoka_Unit_Front.png" alt="Ahsoka">
+      <img src="../public/images/SWP03_Dooku_Card_Front.png" alt="Dooku">
+      <img src="../public/images/SWP01_B1_Unit_Front.png" alt="B1">
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <h3>Empire (Imperial cog — 6 spokes)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP36_Elites_Front.png" alt="Elite Squad">
+      <img src="../public/images/SWP36_Crosshair_Front.png" alt="Crosshair">
+      <img src="../public/images/SWP36_ES04_Front.png" alt="ES-04">
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <h3>Civil War (Rebel bird)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP22_Luke_Front.png" alt="Luke">
+      <img src="../public/images/SWP28_Kallus_Front.png" alt="Kallus">
+      <img src="../public/images/SWP27_Leia_Front.png" alt="Leia">
+      <img src="../public/images/SWP21_DarthVader_Front.png" alt="Vader SWP21">
+    </div>
+  </div>
+
+<div class="sample-row">
+    <h3>Civil War + New Republic (Rebel bird + stars)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP26_Gideon_Front.png" alt="Gideon">
+      <img src="../public/images/SWP26_DarkTroopers_Front.png" alt="Dark Troopers">
+      <img src="../public/images/SWP24_Mando_Front.png" alt="Mando">
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <h3>Clone Wars + Empire (split Republic / Imperial)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP38_Wrecker_Front.png" alt="Wrecker">
+      <img src="../public/images/SWP38_Hunter_Front.png" alt="Hunter">
+      <img src="../public/images/SWP38_TechEcho_Front.png" alt="Tech & Echo">
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <h3>Clone Wars + Empire + Civil War (split Republic / Rebel)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP10_Hondo_Front.png" alt="Hondo">
+      <img src="../public/images/SWP12_GrandInquisitor_Unit_Front.png" alt="Grand Inquisitor">
+      <img src="../public/images/SWP30_Obiwan_Unit_Front.png" alt="Obi-Wan SWP30">
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <h3>Clone Wars + Empire + Civil War + New Republic (combined all-era)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP09_CadBane_Unit_Front.png" alt="Cad Bane">
+      <img src="../public/images/SWP01_Bo-Katan_Unit_Front.png" alt="Bo-Katan">
+      <img src="../public/images/SWP09_BountyHunters_Unit_Front.png" alt="Bounty Hunters">
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <h3>Empire + Civil War (split Imperial / Rebel)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP51_Director-Krennic_Front.png" alt="Krennic">
+      <img src="../public/images/SWP31_Cassian-Andor_Front.png" alt="Cassian">
+      <img src="../public/images/SWP81_Vader_Front.png" alt="Vader SWP81">
+    </div>
+  </div>
+
+  <div class="sample-row">
+    <h3>New Republic (Rebel bird + star ring)</h3>
+    <div class="thumbs">
+      <img src="../public/images/SWP16_Paz_Front.png" alt="Paz">
+      <img src="../public/images/SWP16_Mandos_Front.png" alt="Covert Mandos">
+      <img src="../public/images/SWP16_Armorer_Front.png" alt="Armorer">
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

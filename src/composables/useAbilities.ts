@@ -1,4 +1,5 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { usePublishedProfilesStore } from '../stores/publishedProfiles.ts'
 
 export interface Ability {
   name: string
@@ -26,9 +27,17 @@ export function useAbilities() {
       .catch(() => {})
   }
 
+  const publishedStore = usePublishedProfilesStore()
+
   function getAbilities(id: number): AbilityEntry | null {
-    return abilitiesCache.value[String(id)] ?? null
+    // Check official abilities first, then custom published abilities
+    return abilitiesCache.value[String(id)] ?? publishedStore.abilities[id] ?? null
   }
 
-  return { getAbilities }
+  const allEntries = computed(() => [
+    ...Object.values(abilitiesCache.value),
+    ...Object.values(publishedStore.abilities),
+  ])
+
+  return { getAbilities, allEntries }
 }
