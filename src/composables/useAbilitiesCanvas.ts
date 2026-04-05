@@ -253,6 +253,9 @@ export function useAbilitiesCanvas(
   const fontReady = ref(false)
   let rafId: number | null = null
 
+  let resolveReady!: () => void
+  const readyPromise = new Promise<void>(res => { resolveReady = res })
+
   async function preload() {
     // Always evict inline icons from cache to pick up any file changes
     INLINE_ICON_NAMES.forEach(name => imgCache.delete(inlineIconPath(name)))
@@ -331,6 +334,8 @@ export function useAbilitiesCanvas(
     if (ab && ab.blocks.length > 0) {
       drawAbilityBlocks(ctx, ab.blocks, fontReady.value, faction.value)
     }
+
+    if (fontReady.value) resolveReady()
   }
 
   // Image occupies the right ~38% of the grey body area
@@ -435,5 +440,9 @@ export function useAbilitiesCanvas(
     scheduleRender()
   })
 
-  return { fontReady }
+  function toDataURL(type = 'image/png'): string {
+    return canvasRef.value?.toDataURL(type) ?? ''
+  }
+
+  return { fontReady, readyPromise, toDataURL }
 }

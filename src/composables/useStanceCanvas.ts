@@ -10,9 +10,9 @@ export interface PortraitOptions {
 }
 
 // Portrait circle measured from template image
-const PORTRAIT_CX = 543
-const PORTRAIT_CY = 48
-const PORTRAIT_R  = 40
+export const PORTRAIT_CX = 543
+export const PORTRAIT_CY = 48
+export const PORTRAIT_R  = 40
 
 // Canvas matches the template image exactly
 export const STANCE_CANVAS_W = 836
@@ -89,7 +89,7 @@ const EXP = {
 }
 
 const imgCache = new Map<string, HTMLImageElement>()
-const loadingSet = new Set<string>()
+const loadingPromises = new Map<string, Promise<HTMLImageElement>>()
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   if (imgCache.has(src)) return Promise.resolve(imgCache.get(src)!)
@@ -101,19 +101,18 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
-// Lazy-load a combat tree icon — triggers re-render when loaded
-function ensureCombatIcon(src: string, onLoad: () => void) {
-  if (imgCache.has(src)) return
-  if (loadingSet.has(src)) return
-  loadingSet.add(src)
-  const img = new Image()
-  img.onload = () => {
-    imgCache.set(src, img)
-    loadingSet.delete(src)
-    onLoad()
-  }
-  img.onerror = () => loadingSet.delete(src)
-  img.src = src
+// Shared promise-based loader for combat tree icons — deduplicates in-flight requests
+function loadCombatIcon(src: string): Promise<HTMLImageElement> {
+  if (imgCache.has(src)) return Promise.resolve(imgCache.get(src)!)
+  if (loadingPromises.has(src)) return loadingPromises.get(src)!
+  const promise = new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => { imgCache.set(src, img); loadingPromises.delete(src); resolve(img) }
+    img.onerror = () => { loadingPromises.delete(src); reject(new Error(`Failed: ${src}`)) }
+    img.src = src
+  })
+  loadingPromises.set(src, promise)
+  return promise
 }
 
 // Icons whose plain .png has an orange background — use _white_bg.png for c2+ columns
@@ -159,7 +158,7 @@ function drawCombatTree(
   ctx: CanvasRenderingContext2D,
   tree: CombatTree,
   _font: string,
-  scheduleRenderFn: () => void,
+  ensureIconFn: (src: string) => void,
 ) {
   const { areaX, nodeW, nodeH, colGap } = CT
   const grid = tree.grid
@@ -218,7 +217,7 @@ function drawCombatTree(
         else                       { ih = maxH; iw = ih * aspect }
         ctx.drawImage(img, nx + (nodeW - iw) / 2, ny + (nodeH - ih) / 2, iw, ih)
       } else {
-        ensureCombatIcon(iconSrc, scheduleRenderFn)
+        ensureIconFn(iconSrc)
       }
     }
   }
@@ -239,7 +238,28 @@ export function useStanceCanvas(
   unitTitleRef?: Ref<string>,
 ) {
   const fontReady = ref(false)
+  let rendered = false
+  let pendingIcons = 0
+  const pendingIconSrcs = new Set<string>()
+
+  let resolveReady!: () => void
+  const readyPromise = new Promise<void>(res => { resolveReady = res })
+
+  function checkReady() {
+    if (fontReady.value && rendered && pendingIcons === 0) resolveReady()
+  }
   let rafId: number | null = null
+
+  // Per-instance icon loader — defers readyPromise resolution until all icons are painted
+  function ensureCombatIconLocal(src: string) {
+    if (imgCache.has(src)) return
+    if (pendingIconSrcs.has(src)) return
+    pendingIconSrcs.add(src)
+    pendingIcons++
+    loadCombatIcon(src)
+      .then(() => { pendingIconSrcs.delete(src); pendingIcons--; scheduleRender() })
+      .catch(() => { pendingIconSrcs.delete(src); pendingIcons--; checkReady() })
+  }
 
   // ── Portrait image (data URL — cached separately from iconography) ────────────
   let portraitImg: HTMLImageElement | null = null
@@ -331,8 +351,11 @@ export function useStanceCanvas(
     // 5. Combat tree (drawn over the template, left half of card)
     if (data?.combatTree) {
       const font = fontReady.value ? 'Oswald' : 'Impact, Arial Black, sans-serif'
-      drawCombatTree(ctx, data.combatTree, font, scheduleRender)
+      drawCombatTree(ctx, data.combatTree, font, ensureCombatIconLocal)
     }
+
+    rendered = true
+    checkReady()
   }
 
   function drawStroked(
@@ -596,5 +619,9 @@ export function useStanceCanvas(
     scheduleRender()
   })
 
-  return { scheduleRender, fontReady }
+  function toDataURL(type = 'image/png'): string {
+    return canvasRef.value?.toDataURL(type) ?? ''
+  }
+
+  return { scheduleRender, fontReady, readyPromise, toDataURL }
 }

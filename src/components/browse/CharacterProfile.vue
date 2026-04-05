@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useHead } from '@vueuse/head'
 import { useCharactersStore } from '../../stores/characters.ts'
+import { usePublishedProfilesStore } from '../../stores/publishedProfiles.ts'
 import { useErrataStore } from '../../stores/errata.ts'
 import KeywordChip from '../ui/KeywordChip.vue'
 import { imageUrl, eraIconMap } from '../../utils/imageUrl.ts'
@@ -10,6 +11,7 @@ import { imageUrl, eraIconMap } from '../../utils/imageUrl.ts'
 const route  = useRoute()
 const router = useRouter()
 const store  = useCharactersStore()
+const publishedStore = usePublishedProfilesStore()
 const errataStore = useErrataStore()
 
 onMounted(() => {
@@ -22,7 +24,11 @@ const character = computed(() => {
   if (/^\d+$/.test(param)) {
     return store.characters.find(c => c.id === Number(param)) ?? null
   }
-  return store.characters.find(c => c.slug === param) ?? null
+  return (
+    store.characters.find(c => c.slug === param) ??
+    publishedStore.visibleProfiles.find(c => c.slug === param) ??
+    null
+  )
 })
 
 // Redirect numeric IDs to slug URL once characters are loaded

@@ -25,9 +25,8 @@ describe('CustomProfileCard', () => {
       props: { profile: makeProfile() },
     })
     expect(wrapper.find('button[data-action]').exists()).toBe(false)
-    expect(wrapper.text()).not.toContain('Load')
-    expect(wrapper.text()).not.toContain('Print')
-    expect(wrapper.text()).not.toContain('Visualize')
+    expect(wrapper.text()).not.toContain('Edit')
+    expect(wrapper.text()).not.toContain('View / Print / PDF')
     expect(wrapper.text()).not.toContain('Delete')
   })
 
@@ -36,9 +35,8 @@ describe('CustomProfileCard', () => {
       props: { profile: makeProfile() },
     })
     await wrapper.find('button').trigger('click')
-    expect(wrapper.text()).toContain('Load')
-    expect(wrapper.text()).toContain('Print')
-    expect(wrapper.text()).toContain('Visualize')
+    expect(wrapper.text()).toContain('Edit')
+    expect(wrapper.text()).toContain('View / Print / PDF')
     expect(wrapper.text()).toContain('Delete')
   })
 
@@ -51,57 +49,35 @@ describe('CustomProfileCard', () => {
     expect(wrapper.text()).not.toContain('Load')
   })
 
-  it('emits load when Load button clicked', async () => {
+  it('emits load when Edit button clicked', async () => {
     const wrapper = mount(CustomProfileCard, {
       props: { profile: makeProfile() },
     })
     await wrapper.find('button').trigger('click')
     const buttons = wrapper.findAll('button')
-    const loadBtn = buttons.find(b => b.text() === 'Load')
+    const loadBtn = buttons.find(b => b.text() === 'Edit')
     await loadBtn!.trigger('click')
     expect(wrapper.emitted('load')).toHaveLength(1)
   })
 
-  it('emits print when Print button clicked on a complete profile', async () => {
+  it('emits visualize when View / Print / PDF button clicked on a complete profile', async () => {
     const wrapper = mount(CustomProfileCard, {
       props: { profile: makeProfile(), status: 'complete' },
     })
     await wrapper.find('button').trigger('click')
     const buttons = wrapper.findAll('button')
-    const printBtn = buttons.find(b => b.text() === 'Print')
-    await printBtn!.trigger('click')
-    expect(wrapper.emitted('print')).toHaveLength(1)
-  })
-
-  it('does not emit print when Print button clicked on a draft profile', async () => {
-    const wrapper = mount(CustomProfileCard, {
-      props: { profile: makeProfile(), status: 'draft' },
-    })
-    await wrapper.find('button').trigger('click')
-    const buttons = wrapper.findAll('button')
-    const printBtn = buttons.find(b => b.text() === 'Print')
-    await printBtn!.trigger('click')
-    expect(wrapper.emitted('print')).toBeFalsy()
-  })
-
-  it('emits visualize when Visualize button clicked on a complete profile', async () => {
-    const wrapper = mount(CustomProfileCard, {
-      props: { profile: makeProfile(), status: 'complete' },
-    })
-    await wrapper.find('button').trigger('click')
-    const buttons = wrapper.findAll('button')
-    const vizBtn = buttons.find(b => b.text() === 'Visualize')
+    const vizBtn = buttons.find(b => b.text() === 'View / Print / PDF')
     await vizBtn!.trigger('click')
     expect(wrapper.emitted('visualize')).toHaveLength(1)
   })
 
-  it('does not emit visualize when Visualize button clicked on a draft profile', async () => {
+  it('does not emit visualize when View / Print / PDF button clicked on a draft profile', async () => {
     const wrapper = mount(CustomProfileCard, {
       props: { profile: makeProfile(), status: 'draft' },
     })
     await wrapper.find('button').trigger('click')
     const buttons = wrapper.findAll('button')
-    const vizBtn = buttons.find(b => b.text() === 'Visualize')
+    const vizBtn = buttons.find(b => b.text() === 'View / Print / PDF')
     await vizBtn!.trigger('click')
     expect(wrapper.emitted('visualize')).toBeFalsy()
   })

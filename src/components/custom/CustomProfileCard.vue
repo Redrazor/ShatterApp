@@ -5,12 +5,15 @@ import type { HomebrewProfile } from '../../types/index.ts'
 const props = defineProps<{
   profile: HomebrewProfile
   status: 'empty' | 'draft' | 'complete'
+  published?: boolean
+  visible?: boolean
 }>()
 
 const emit = defineEmits<{
   load: []
-  print: []
   visualize: []
+  unpublish: []
+  'toggle-visibility': []
   delete: []
 }>()
 
@@ -64,18 +67,7 @@ function formatDate(iso: string): string {
         class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
         @click="emit('load')"
       >
-        Load
-      </button>
-      <button
-        :disabled="status !== 'complete'"
-        class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
-        :class="status === 'complete'
-          ? 'bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20'
-          : 'bg-sw-card text-sw-text/25 cursor-not-allowed'"
-        :title="status !== 'complete' ? 'Complete all phases to unlock' : undefined"
-        @click="status === 'complete' && emit('print')"
-      >
-        Print
+        Edit
       </button>
       <button
         :disabled="status !== 'complete'"
@@ -86,8 +78,35 @@ function formatDate(iso: string): string {
         :title="status !== 'complete' ? 'Complete all phases to unlock' : undefined"
         @click="status === 'complete' && emit('visualize')"
       >
-        Visualize
+        View / Print / PDF
       </button>
+
+      <!-- Published controls -->
+      <template v-if="published">
+        <button
+          class="rounded-lg px-3 py-1.5 text-sm font-medium bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 transition-colors"
+          @click="emit('unpublish')"
+        >
+          Unpublish
+        </button>
+        <button
+          class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          :class="visible
+            ? 'bg-green-600/10 text-green-400 hover:bg-green-600/20 border border-green-500/30'
+            : 'bg-sw-card text-sw-text/40 border border-sw-gold/20 hover:bg-sw-gold/5'"
+          :title="visible ? 'Visible in Browse & Build' : 'Hidden from Browse & Build'"
+          @click="emit('toggle-visibility')"
+        >
+          {{ visible ? '👁 Visible' : '🚫 Hidden' }}
+        </button>
+      </template>
+      <span
+        v-else-if="status === 'complete'"
+        class="text-xs text-sw-text/40 self-center"
+      >
+        Not published — use View / Print / PDF to publish
+      </span>
+
       <button
         class="ml-auto rounded-lg px-3 py-1.5 text-sm font-medium text-red-400 hover:bg-red-400/10 transition-colors"
         @click="emit('delete')"

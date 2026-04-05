@@ -23,6 +23,7 @@ const emit = defineEmits<{
 const query = ref('')
 const ownedOnly = ref(false)
 const budgetFilter = ref(true)
+const hideCustom = ref(false)
 
 const collectionStore = useCollectionStore()
 
@@ -38,6 +39,7 @@ const filtered = computed(() => {
   return props.characters.filter((c) => {
     if (roleFilter.value && c.unitType !== roleFilter.value) return false
     if (ownedOnly.value && !collectionStore.ownedSwpSet.has(c.swpCode ?? '')) return false
+    if (hideCustom.value && c.swpCode === 'CUSTOM') return false
     if (q) {
       return c.name.toLowerCase().includes(q) || c.tags.some((t) => t.toLowerCase().includes(q))
     }
@@ -88,7 +90,7 @@ function select(char: Character) {
           <!-- Search -->
           <div class="p-3 border-b border-sw-gold/10 space-y-2">
             <SearchBar v-model="query" />
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 flex-wrap">
               <label class="flex cursor-pointer items-center gap-2 text-xs text-sw-text/60">
                 <input type="checkbox" v-model="ownedOnly" class="accent-sw-gold" />
                 Owned only
@@ -97,6 +99,10 @@ function select(char: Character) {
                 <input type="checkbox" v-model="budgetFilter" class="accent-sw-gold" />
                 Budget filter
                 <span class="text-sw-gold/70">({{ remainingBudget }} left)</span>
+              </label>
+              <label class="flex cursor-pointer items-center gap-2 text-xs text-sw-text/60">
+                <input type="checkbox" v-model="hideCustom" class="accent-sw-gold" />
+                Hide custom
               </label>
             </div>
           </div>

@@ -22,8 +22,6 @@ const {
   meleeAttackResult,
   meleeDefenseResult,
   rangePoolSize,
-  rangedAttackPoolSize,
-  rangedDefensePoolSize,
   meleePoolSize,
 } = useStanceComparison(
   allEntries,

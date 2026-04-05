@@ -324,12 +324,18 @@ export function isSquadValid(squad: Squad): { valid: boolean; reason: string } {
     }
   }
 
-  const unitEras = [primary, secondary, support].map(u =>
-    new Set(u.era.split(';').map(e => e.trim()).filter(Boolean))
+  // Units with no era set (e.g. custom homebrew) are era-universal — skip era check for them
+  const hasEmptyEra = [primary, secondary, support].some(u =>
+    u.era.split(';').map(e => e.trim()).filter(Boolean).length === 0
   )
-  const commonEras = [...unitEras[0]].filter(e => unitEras[1].has(e) && unitEras[2].has(e))
-  if (commonEras.length === 0) {
-    return { valid: false, reason: 'Units come from incompatible eras' }
+  if (!hasEmptyEra) {
+    const unitEras = [primary, secondary, support].map(u =>
+      new Set(u.era.split(';').map(e => e.trim()).filter(Boolean))
+    )
+    const commonEras = [...unitEras[0]].filter(e => unitEras[1].has(e) && unitEras[2].has(e))
+    if (commonEras.length === 0) {
+      return { valid: false, reason: 'Units come from incompatible eras' }
+    }
   }
 
   return { valid: true, reason: '' }

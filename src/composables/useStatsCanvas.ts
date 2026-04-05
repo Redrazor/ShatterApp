@@ -217,5 +217,9 @@ export function useStatsCanvas(
     scheduleRender()
   })
 
-  return { scheduleRender, fontReady }
+  function toDataURL(type = 'image/png'): string {
+    return canvasRef.value?.toDataURL(type) ?? ''
+  }
+
+  return { scheduleRender, fontReady, toDataURL }
 }

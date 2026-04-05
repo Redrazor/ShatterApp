@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Combat Tree Icons — ShatterApp</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 2rem; }
+
+  /* ── Header ── */
+  h1 { text-align: center; margin-bottom: .4rem; color: #ffd700; font-size: 1.6rem; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 1.5rem; font-size: .9rem; }
+
+  /* ── Access bar ── */
+  #access-bar {
+    display: flex; align-items: center; gap: 1rem; justify-content: center;
+    background: #16213e; border: 1px solid #333; border-radius: 10px;
+    padding: .8rem 1.2rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+  #grant-btn {
+    background: #ffd700; color: #1a1a2e; border: none; border-radius: 8px;
+    padding: .5rem 1.1rem; font-size: .9rem; font-weight: 700; cursor: pointer;
+    transition: opacity .15s;
+  }
+  #grant-btn:hover { opacity: .85; }
+  #access-status { font-size: .85rem; color: #888; }
+  #access-status.ok { color: #4ade80; }
+
+  /* ── Section headings ── */
+  h2 {
+    color: #ffd700; font-size: 1.05rem; text-transform: uppercase;
+    letter-spacing: .1em; margin-bottom: 1.2rem; padding-bottom: .4rem;
+    border-bottom: 1px solid #333; max-width: 1200px; margin-left: auto; margin-right: auto;
+  }
+  h2:not(:first-of-type) { margin-top: 2.5rem; }
+
+  /* ── Grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem; max-width: 1200px; margin: 0 auto 1rem;
+  }
+
+  /* ── Image pair card ── */
+  .pair-card {
+    background: #16213e; border: 1px solid #333; border-radius: 12px;
+    padding: .9rem; display: flex; flex-direction: column; gap: .6rem;
+  }
+  .pair-label {
+    font-size: .78rem; font-weight: 700; color: #ffd700;
+    font-family: monospace; text-align: center;
+  }
+  .pair-row { display: flex; gap: .7rem; }
+
+  /* ── Single image slot ── */
+  .img-slot {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  }
+  .img-slot .slot-label {
+    font-size: .65rem; color: #666; text-transform: uppercase; letter-spacing: .05em;
+  }
+  .img-slot .img-box {
+    width: 100%; aspect-ratio: 1;
+    background: #c8c8c8; border-radius: 8px; overflow: hidden;
+    border: 2px solid transparent; transition: border-color .2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .img-slot .img-box img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .img-slot .img-box.placeholder {
+    background: #0f172a; border: 2px dashed #2a2a4a;
+    color: #3a3a5a; font-size: .75rem; text-align: center; padding: .5rem;
+  }
+
+  /* ── Slot actions ── */
+  .slot-actions { display: flex; gap: .35rem; justify-content: center; }
+  .btn-crop, .btn-del {
+    border: none; border-radius: 6px; padding: .3rem .65rem;
+    font-size: .72rem; font-weight: 600; cursor: pointer; transition: opacity .15s;
+  }
+  .btn-crop { background: #2563eb; color: #fff; }
+  .btn-crop:hover { opacity: .85; }
+  .btn-del  { background: #7f1d1d; color: #fca5a5; }
+  .btn-del:hover  { opacity: .85; }
+  .btn-crop:disabled, .btn-del:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* ── Crop modal ── */
+  #crop-modal {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85);
+    z-index: 100; align-items: center; justify-content: center; flex-direction: column; gap: 1rem;
+  }
+  #crop-modal.open { display: flex; }
+  #crop-modal h3 { color: #ffd700; font-size: 1rem; }
+  #crop-canvas-wrap {
+    position: relative; user-select: none;
+    box-shadow: 0 0 40px rgba(0,0,0,.8);
+    border-radius: 6px; overflow: hidden;
+  }
+  #crop-canvas { display: block; cursor: crosshair; }
+
+  #crop-actions {
+    display: flex; gap: .8rem; align-items: center;
+  }
+  #crop-actions .hint { font-size: .8rem; color: #888; }
+  .btn-accept {
+    background: #16a34a; color: #fff; border: none; border-radius: 8px;
+    padding: .55rem 1.3rem; font-weight: 700; font-size: .9rem; cursor: pointer;
+    opacity: .4; transition: opacity .15s;
+  }
+  .btn-accept.ready { opacity: 1; }
+  .btn-accept.ready:hover { opacity: .85; }
+  .btn-reject {
+    background: transparent; color: #aaa; border: 1px solid #555; border-radius: 8px;
+    padding: .55rem 1.1rem; font-size: .9rem; cursor: pointer; transition: all .15s;
+  }
+  .btn-reject:hover { border-color: #aaa; color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>Combat Tree Icons — ShatterApp</h1>
+<p class="subtitle">Grant access to <code>public/images/combat_tree_icons/</code> to review and crop icons.</p>
+
+<!-- Access bar -->
+<div id="access-bar">
+  <button id="grant-btn">Grant Folder Access</button>
+  <span id="access-status">Select the <code>public/images/combat_tree_icons</code> folder to enable editing</span>
+</div>
+
+<!-- Sections filled by JS -->
+<div id="content"></div>
+
+<!-- Crop modal -->
+<div id="crop-modal">
+  <h3 id="crop-title">Crop Image</h3>
+  <div id="crop-canvas-wrap">
+    <canvas id="crop-canvas"></canvas>
+  </div>
+  <div id="crop-actions">
+    <span class="hint" id="crop-hint">Draw a selection rectangle on the image</span>
+    <button class="btn-accept" id="btn-accept" disabled>✓ Accept &amp; Save</button>
+    <button class="btn-reject" id="btn-reject">✕ Cancel</button>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────────
+let dirHandle = null;
+
+// All file entries: { name, handle, url, isCrop, baseName }
+let entries = [];
+
+// Crop state
+let cropState = {
+  baseName: null,   // base name of file being cropped (without .png)
+  img: null,        // HTMLImageElement
+  sx: 0, sy: 0,    // start canvas coords
+  ex: 0, ey: 0,    // end canvas coords
+  dragging: false,
+  hasSelection: false,
+  scaleX: 1, scaleY: 1,  // canvas-px → image-px
+};
+
+// ── Grant folder access ────────────────────────────────────────────────────────
+document.getElementById('grant-btn').addEventListener('click', async () => {
+  try {
+    dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    document.getElementById('access-status').textContent = `✓ ${dirHandle.name}`;
+    document.getElementById('access-status').className = 'ok';
+    await loadFiles();
+  } catch (e) {
+    if (e.name !== 'AbortError') console.error(e);
+  }
+});
+
+// ── Load files from directory ──────────────────────────────────────────────────
+async function loadFiles() {
+  entries = [];
+  for await (const [name, handle] of dirHandle.entries()) {
+    if (handle.kind !== 'file' || !name.endsWith('.png')) continue;
+    // Skip variant files — only track originals and _crop files
+    if (name.endsWith('_orange_bg.png') || name.endsWith('_white_bg.png')) continue;
+    const file  = await handle.getFile();
+    const url   = URL.createObjectURL(file);
+    const isCrop = name.endsWith('_crop.png');
+    const baseName = name.replace(/_crop\.png$/, '').replace(/\.png$/, '');
+    entries.push({ name, handle, url, isCrop, baseName });
+  }
+  render();
+}
+
+// ── Render grid ────────────────────────────────────────────────────────────────
+function render() {
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  // Collect unique base names for originals, sorted alphabetically
+  const originals = entries.filter(e => !e.isCrop);
+  const baseNames = [...new Set(originals.map(e => e.baseName))].sort();
+
+  const h2 = document.createElement('h2');
+  h2.textContent = 'Combat Tree Icons';
+  content.appendChild(h2);
+
+  if (baseNames.length === 0) {
+    const msg = document.createElement('p');
+    msg.style.cssText = 'text-align:center;color:#555;padding:2rem;';
+    msg.textContent = 'No PNG files found. Grant access to the correct folder.';
+    content.appendChild(msg);
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  content.appendChild(grid);
+
+  for (const baseName of baseNames) {
+    const orig = entries.find(e => !e.isCrop && e.baseName === baseName);
+    const crop = entries.find(e =>  e.isCrop && e.baseName === baseName);
+    grid.appendChild(makePairCard(baseName, orig, crop));
+  }
+}
+
+function makePairCard(baseName, orig, crop) {
+  const card = document.createElement('div');
+  card.className = 'pair-card';
+
+  const label = document.createElement('div');
+  label.className = 'pair-label';
+  label.textContent = baseName;
+  card.appendChild(label);
+
+  const row = document.createElement('div');
+  row.className = 'pair-row';
+  card.appendChild(row);
+
+  row.appendChild(makeSlot('Original', orig, baseName, false));
+  row.appendChild(makeSlot('Cropped',  crop, baseName, true));
+
+  return card;
+}
+
+function makeSlot(label, entry, baseName, isCropSlot) {
+  const slot = document.createElement('div');
+  slot.className = 'img-slot';
+
+  const lbl = document.createElement('div');
+  lbl.className = 'slot-label';
+  lbl.textContent = label;
+  slot.appendChild(lbl);
+
+  const box = document.createElement('div');
+  box.className = 'img-box' + (entry ? '' : ' placeholder');
+  if (entry) {
+    const img = document.createElement('img');
+    img.src = entry.url;
+    img.alt = baseName;
+    box.appendChild(img);
+  } else {
+    box.textContent = isCropSlot ? 'No crop yet' : 'Missing';
+  }
+  slot.appendChild(box);
+
+  const actions = document.createElement('div');
+  actions.className = 'slot-actions';
+  slot.appendChild(actions);
+
+  // Crop button (only on originals; disabled if no folder access)
+  if (!isCropSlot) {
+    const btnCrop = document.createElement('button');
+    btnCrop.className = 'btn-crop';
+    btnCrop.textContent = '✂ Crop';
+    btnCrop.disabled = !dirHandle || !entry;
+    if (entry) btnCrop.addEventListener('click', () => openCropModal(entry, baseName));
+    actions.appendChild(btnCrop);
+  }
+
+  // Delete button
+  const btnDel = document.createElement('button');
+  btnDel.className = 'btn-del';
+  btnDel.textContent = '🗑 Delete';
+  btnDel.disabled = !dirHandle || !entry;
+  if (entry) btnDel.addEventListener('click', () => deleteFile(entry));
+  actions.appendChild(btnDel);
+
+  return slot;
+}
+
+// ── Delete file ────────────────────────────────────────────────────────────────
+async function deleteFile(entry) {
+  if (!confirm(`Delete "${entry.name}" from disk?\n\nThis cannot be undone.`)) return;
+  await dirHandle.removeEntry(entry.name);
+  URL.revokeObjectURL(entry.url);
+  await loadFiles();
+}
+
+// ── Crop modal ─────────────────────────────────────────────────────────────────
+const modal      = document.getElementById('crop-modal');
+const canvas     = document.getElementById('crop-canvas');
+const ctx        = canvas.getContext('2d');
+const btnAccept  = document.getElementById('btn-accept');
+const btnReject  = document.getElementById('btn-reject');
+const cropHint   = document.getElementById('crop-hint');
+const cropTitle  = document.getElementById('crop-title');
+
+const MAX_CANVAS = 700; // max dimension for the canvas display
+
+function openCropModal(entry, baseName) {
+  cropState.baseName    = baseName;
+  cropState.hasSelection = false;
+  cropState.dragging    = false;
+
+  cropTitle.textContent = `Crop — ${baseName.replace(/_/g, ' ')}`;
+  cropHint.textContent  = 'Draw a selection rectangle on the image';
+  btnAccept.disabled    = true;
+  btnAccept.className   = 'btn-accept';
+
+  const img = new Image();
+  img.onload = () => {
+    cropState.img = img;
+
+    // Scale image to fit MAX_CANVAS
+    const scale = Math.min(MAX_CANVAS / img.naturalWidth, MAX_CANVAS / img.naturalHeight, 1);
+    canvas.width  = Math.round(img.naturalWidth  * scale);
+    canvas.height = Math.round(img.naturalHeight * scale);
+
+    cropState.scaleX = img.naturalWidth  / canvas.width;
+    cropState.scaleY = img.naturalHeight / canvas.height;
+
+    drawCanvas();
+    modal.classList.add('open');
+  };
+  img.src = entry.url;
+}
+
+function closeCropModal() {
+  modal.classList.remove('open');
+  cropState.img = null;
+}
+
+function drawCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (cropState.img) ctx.drawImage(cropState.img, 0, 0, canvas.width, canvas.height);
+  if (!cropState.hasSelection && !cropState.dragging) return;
+
+  const x = Math.min(cropState.sx, cropState.ex);
+  const y = Math.min(cropState.sy, cropState.ey);
+  const w = Math.abs(cropState.ex - cropState.sx);
+  const h = Math.abs(cropState.ey - cropState.sy);
+  if (w < 2 || h < 2) return;
+
+  // Dim outside
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, 0, canvas.width, y);
+  ctx.fillRect(0, y + h, canvas.width, canvas.height - y - h);
+  ctx.fillRect(0, y, x, h);
+  ctx.fillRect(x + w, y, canvas.width - x - w, h);
+
+  // Dashed border
+  ctx.setLineDash([6, 3]);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#ffd700';
+  ctx.strokeRect(x, y, w, h);
+
+  // Corner handles
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#ffd700';
+  const hs = 6;
+  [[x,y],[x+w,y],[x,y+h],[x+w,y+h]].forEach(([cx,cy]) =>
+    ctx.fillRect(cx - hs/2, cy - hs/2, hs, hs)
+  );
+  ctx.restore();
+}
+
+// ── Mouse / drag handling ──────────────────────────────────────────────────────
+// mousemove and mouseup are attached to WINDOW so dragging outside the canvas
+// doesn't freeze or lose the event. A flag prevents the modal backdrop click
+// handler from firing immediately after a drag ends outside the canvas.
+let dragJustEnded = false;
+
+function canvasCoords(clientX, clientY) {
+  const r = canvas.getBoundingClientRect();
+  return {
+    x: Math.max(0, Math.min(canvas.width,  clientX - r.left)),
+    y: Math.max(0, Math.min(canvas.height, clientY - r.top)),
+  };
+}
+
+function onDragMove(e) {
+  const { x, y } = canvasCoords(e.clientX, e.clientY);
+  cropState.ex = x;
+  cropState.ey = y;
+  drawCanvas();
+}
+
+function onDragEnd(e) {
+  window.removeEventListener('mousemove', onDragMove);
+  window.removeEventListener('mouseup',   onDragEnd);
+
+  cropState.dragging = false;
+  dragJustEnded = true;           // block the backdrop click that fires right after
+  setTimeout(() => { dragJustEnded = false; }, 50);
+
+  const w = Math.abs(cropState.ex - cropState.sx);
+  const h = Math.abs(cropState.ey - cropState.sy);
+  if (w > 4 && h > 4) {
+    cropState.hasSelection = true;
+    btnAccept.disabled = false;
+    btnAccept.className = 'btn-accept ready';
+    cropHint.textContent = 'Selection ready — accept to save, or drag again to redraw';
+  } else {
+    cropHint.textContent = 'Selection too small — try again';
+  }
+  drawCanvas();
+}
+
+canvas.addEventListener('mousedown', e => {
+  e.preventDefault();
+  const { x, y } = canvasCoords(e.clientX, e.clientY);
+  cropState.sx = cropState.ex = x;
+  cropState.sy = cropState.ey = y;
+  cropState.dragging = true;
+  cropState.hasSelection = false;
+  btnAccept.disabled = true;
+  btnAccept.className = 'btn-accept';
+  cropHint.textContent = 'Drag to draw your selection…';
+  drawCanvas();
+
+  window.addEventListener('mousemove', onDragMove);
+  window.addEventListener('mouseup',   onDragEnd);
+});
+
+// Touch support (mirrors mouse events)
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: t.clientX, clientY: t.clientY }));
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  onDragMove({ clientX: t.clientX, clientY: t.clientY });
+}, { passive: false });
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  onDragEnd({});
+}, { passive: false });
+
+// Accept: crop + save
+btnAccept.addEventListener('click', async () => {
+  if (!cropState.hasSelection || !dirHandle) return;
+
+  const x = Math.round(Math.min(cropState.sx, cropState.ex) * cropState.scaleX);
+  const y = Math.round(Math.min(cropState.sy, cropState.ey) * cropState.scaleY);
+  const w = Math.round(Math.abs(cropState.ex - cropState.sx) * cropState.scaleX);
+  const h = Math.round(Math.abs(cropState.ey - cropState.sy) * cropState.scaleY);
+
+  const offscreen = document.createElement('canvas');
+  offscreen.width  = w;
+  offscreen.height = h;
+  offscreen.getContext('2d').drawImage(cropState.img, x, y, w, h, 0, 0, w, h);
+
+  const blob = await new Promise(res => offscreen.toBlob(res, 'image/png'));
+  const cropName = `${cropState.baseName}_crop.png`;
+
+  const fh = await dirHandle.getFileHandle(cropName, { create: true });
+  const wr = await fh.createWritable();
+  await wr.write(blob);
+  await wr.close();
+
+  closeCropModal();
+  await loadFiles();
+});
+
+// Reject / Cancel
+btnReject.addEventListener('click', closeCropModal);
+modal.addEventListener('click', e => { if (e.target === modal && !dragJustEnded) closeCropModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeCropModal();
+  if ((e.key === 'Enter') && cropState.hasSelection) btnAccept.click();
+});
+</script>
+</body>
+</html>

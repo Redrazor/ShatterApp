@@ -2,12 +2,19 @@
 import { ref } from 'vue'
 import { useHead } from '@vueuse/head'
 import { useHomebrewStore } from '../stores/homebrew.ts'
+import { usePublishedProfilesStore } from '../stores/publishedProfiles.ts'
 import CustomProfileCard from '../components/custom/CustomProfileCard.vue'
 import CustomBuilder from '../components/custom/CustomBuilder.vue'
+import ProfileVisualModal from '../components/custom/ProfileVisualModal.vue'
+import type { HomebrewProfile } from '../types/index.ts'
+import type { CardImages } from '../components/custom/ProfileVisualModal.vue'
+import { generateProfilePdf } from '../utils/generateProfilePdf.ts'
 
 const homebrewStore = useHomebrewStore()
+const publishedStore = usePublishedProfilesStore()
 
 const builderMode = ref(false)
+const visualProfile = ref<HomebrewProfile | null>(null)
 
 function handleCreate() {
   homebrewStore.addProfile()
@@ -19,11 +26,40 @@ function handleLoad(id: string) {
   builderMode.value = true
 }
 
-function handlePrint() {
-  window.print()
+function handleVisualize(profile: HomebrewProfile) {
+  visualProfile.value = profile
+}
+
+async function handlePdf(cards: CardImages) {
+  await generateProfilePdf(visualProfile.value?.name ?? 'custom-profile', cards)
+}
+
+function handlePublish(cards: CardImages) {
+  if (!visualProfile.value) return
+  publishedStore.publish(visualProfile.value, {
+    front: cards.front,
+    abilities: cards.abilities,
+    stance1: cards.stance1,
+    stance2: cards.stance2,
+    orderFront: cards.orderFront,
+    thumbnail: cards.thumbnail,
+  })
+  visualProfile.value = null
+}
+
+function handleUnpublish(homebrewProfileId: string) {
+  publishedStore.unpublishByHomebrewId(homebrewProfileId)
+}
+
+function handleToggleVisibility(homebrewProfileId: string) {
+  const cId = publishedStore.getPublishedId(homebrewProfileId)
+  if (cId === undefined) return
+  const current = publishedStore.visibility[cId] !== false
+  publishedStore.setVisibility(cId, !current)
 }
 
 function handleDelete(id: string) {
+  publishedStore.unpublishByHomebrewId(id)
   homebrewStore.deleteProfile(id)
 }
 
@@ -74,8 +110,12 @@ useHead({
           :key="profile.id"
           :profile="profile"
           :status="homebrewStore.getProfileStatus(profile)"
+          :published="publishedStore.isPublished(profile.id)"
+          :visible="publishedStore.isVisible(profile.id)"
           @load="handleLoad(profile.id)"
-          @print="handlePrint"
+          @visualize="handleVisualize(profile)"
+          @unpublish="handleUnpublish(profile.id)"
+          @toggle-visibility="handleToggleVisibility(profile.id)"
           @delete="handleDelete(profile.id)"
         />
       </section>
@@ -89,6 +129,16 @@ useHead({
         </button>
       </div>
     </template>
+
+    <!-- Visualization modal -->
+    <ProfileVisualModal
+      v-if="visualProfile"
+      :profile="visualProfile"
+      :faction="visualProfile.faction"
+      @close="visualProfile = null"
+      @pdf="handlePdf"
+      @publish="handlePublish"
+    />
 
   </div>
 </template>

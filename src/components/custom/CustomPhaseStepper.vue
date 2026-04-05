@@ -18,18 +18,12 @@ const PHASES: { phase: BuilderPhase; label: string; completionKey: keyof typeof 
   { phase: 4, label: 'Stances', completionKey: 'stances' },
 ]
 
-const COMING_SOON: BuilderPhase[] = [4]
-
 function isComplete(key: keyof typeof props.completion): boolean {
   return props.completion[key]
 }
 
 function isUnlocked(phase: BuilderPhase): boolean {
   return props.unlockedPhases.includes(phase)
-}
-
-function isSoon(phase: BuilderPhase): boolean {
-  return COMING_SOON.includes(phase)
 }
 </script>
 
@@ -40,7 +34,7 @@ function isSoon(phase: BuilderPhase): boolean {
       <div class="flex flex-col items-center gap-1 min-w-0">
         <button
           type="button"
-          :disabled="!isUnlocked(step.phase) || isSoon(step.phase)"
+          :disabled="!isUnlocked(step.phase)"
           class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all"
           :class="[
             step.phase === activePhase
@@ -51,7 +45,7 @@ function isSoon(phase: BuilderPhase): boolean {
               ? 'bg-sw-card border-sw-gold/40 text-sw-text/60 hover:border-sw-gold/80 cursor-pointer'
               : 'bg-sw-card border-sw-text/10 text-sw-text/20 cursor-not-allowed',
           ]"
-          @click="isUnlocked(step.phase) && !isSoon(step.phase) && emit('select', step.phase)"
+          @click="isUnlocked(step.phase) && emit('select', step.phase)"
         >
           <svg
             v-if="isComplete(step.completionKey) && isUnlocked(step.phase)"
@@ -76,7 +70,6 @@ function isSoon(phase: BuilderPhase): boolean {
           "
         >
           {{ step.label }}
-          <span v-if="isSoon(step.phase)" class="text-[9px]">(soon)</span>
         </span>
       </div>
 

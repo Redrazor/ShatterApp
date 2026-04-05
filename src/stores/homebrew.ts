@@ -2,6 +2,14 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { HomebrewProfile, HomebrewFaction, FrontCardData, StatsData, AbilitiesData, StancesData, StanceData, BuilderPhase, ExpertiseColor, ExpertiseSection, ExpertiseTables } from '../types/index.ts'
 
+const FACTION_ERA: Record<string, string> = {
+  republic:   'Clone Wars',
+  separatist: 'Clone Wars',
+  empire:     'Empire',
+  rebel:      'Civil War',
+  other:      '',
+}
+
 export const useHomebrewStore = defineStore(
   'homebrew',
   () => {
@@ -51,7 +59,7 @@ export const useHomebrewStore = defineStore(
           imageScale: 1,
           cost: 0,
           fp: 0,
-          era: '',
+          era: FACTION_ERA[profile.faction] ?? '',
           ...data,
         }
       } else {
@@ -186,6 +194,14 @@ export const useHomebrewStore = defineStore(
       const profile = profiles.value.find(p => p.id === id)
       if (!profile) return
       profile.faction = faction
+      // Sync era on frontCard if it's still the auto-derived value (or empty)
+      if (profile.frontCard) {
+        const currentEra = profile.frontCard.era ?? ''
+        const wasAutoEra = Object.values(FACTION_ERA).includes(currentEra) || currentEra === ''
+        if (wasAutoEra) {
+          profile.frontCard.era = FACTION_ERA[faction] ?? ''
+        }
+      }
       profile.updatedAt = new Date().toISOString()
     }
 

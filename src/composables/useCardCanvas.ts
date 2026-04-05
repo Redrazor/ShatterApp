@@ -71,6 +71,9 @@ export function useCardCanvas(
   const fontReady = ref(false)
   let rafId: number | null = null
 
+  let resolveReady!: () => void
+  const readyPromise = new Promise<void>(res => { resolveReady = res })
+
   // Preload all faction × unit-type combos and era icons eagerly
   async function preload() {
     const paths = [
@@ -152,6 +155,8 @@ export function useCardCanvas(
         }
       }
     }
+
+    if (fontReady.value) resolveReady()
   }
 
   function drawUserImage(ctx: CanvasRenderingContext2D, img: HTMLImageElement, fc: FrontCardData) {
@@ -211,7 +216,7 @@ export function useCardCanvas(
       ctx.fillStyle = '#ffffff'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
-      ctx.fillText(barText.toUpperCase(), CANVAS_W / 2, CANVAS_H * 0.882)
+      ctx.fillText(barText.toUpperCase(), CANVAS_W / 2, CANVAS_H * 0.882 + 4)
       ctx.restore()
 
       // Subtitle — unit name only, smaller black text in white area (not on Support cards)
@@ -263,5 +268,5 @@ export function useCardCanvas(
     scheduleRender()
   })
 
-  return { render: scheduleRender, toDataURL, fontReady }
+  return { render: scheduleRender, toDataURL, fontReady, readyPromise }
 }
