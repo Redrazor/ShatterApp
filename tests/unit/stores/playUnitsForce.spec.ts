@@ -78,3 +78,48 @@ describe('playUnitsStore — spendOneForce', () => {
     expect(store.spentTokens[1]).toBe(true) // second token spent, not first
   })
 })
+
+describe('playUnitsStore — clearRoster / syncNow / setStance / reset', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  it('clearRoster removes all units and resets rosterComplete', () => {
+    const store = usePlayUnitsStore()
+    store.addUnit(makeCharacter({ id: 1 }))
+    store.rosterComplete = true
+    store.clearRoster()
+    expect(store.units).toHaveLength(0)
+    expect(store.rosterComplete).toBe(false)
+  })
+
+  it('clearRoster preserves locked state', () => {
+    const store = usePlayUnitsStore()
+    store.addUnit(makeCharacter({ id: 1 }))
+    store.lock()
+    store.clearRoster()
+    expect(store.locked).toBe(true)
+  })
+
+  it('syncNow does not throw', () => {
+    const store = usePlayUnitsStore()
+    store.addUnit(makeCharacter({ id: 1, fp: 2 }))
+    expect(() => store.syncNow()).not.toThrow()
+  })
+
+  it('setStance updates the unit stance', () => {
+    const store = usePlayUnitsStore()
+    store.addUnit(makeCharacter({ id: 1 }))
+    store.setStance(1, 2)
+    expect(store.units[0].activeStance).toBe(2)
+  })
+
+  it('reset clears all state including locked', () => {
+    const store = usePlayUnitsStore()
+    store.addUnit(makeCharacter({ id: 1 }))
+    store.lock()
+    store.reset()
+    expect(store.units).toHaveLength(0)
+    expect(store.locked).toBe(false)
+  })
+})

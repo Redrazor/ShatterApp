@@ -9,6 +9,7 @@ const IMAGE_BASE = (import.meta.env.VITE_IMAGE_BASE as string) ?? ''
 export function imageUrl(path: string | null | undefined): string {
   if (!path) return ''
   if (path.startsWith('http')) return path
+  if (path.startsWith('data:')) return path
   if (!IMAGE_BASE) return path
 
   // Firebase hosting root = public/images-compressed, so strip /images/ prefix

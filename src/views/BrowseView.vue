@@ -7,6 +7,7 @@ import { useCollectionStore } from '../stores/collection.ts'
 import { useFavoritesStore } from '../stores/favorites.ts'
 import { useSearch } from '../composables/useSearch.ts'
 import type { SearchFilters } from '../composables/useSearch.ts'
+import { useAllCharacters } from '../composables/useAllCharacters.ts'
 import SearchBar from '../components/ui/SearchBar.vue'
 import FilterPanel from '../components/ui/FilterPanel.vue'
 import BrowseGrid from '../components/browse/BrowseGrid.vue'
@@ -18,6 +19,9 @@ const route  = useRoute()
 const characterStore = useCharactersStore()
 const collectionStore = useCollectionStore()
 const favoritesStore = useFavoritesStore()
+const { allCharacters } = useAllCharacters()
+
+const showCustom = ref(true)
 
 onMounted(() => characterStore.load())
 
@@ -46,17 +50,23 @@ const liveFilters = computed<SearchFilters>(() => ({
   favoritedSet: favoritesStore.favoritedSet,
 }))
 
-const { results } = useSearch(computed(() => characterStore.characters), liveFilters)
+const filteredCharacters = computed(() =>
+  showCustom.value
+    ? allCharacters.value
+    : allCharacters.value.filter(c => c.swpCode !== 'CUSTOM'),
+)
+
+const { results } = useSearch(filteredCharacters, liveFilters)
 
 const eras = computed(() => {
   const set = new Set(
-    characterStore.characters.flatMap((c) => c.era.split(';').map((e) => e.trim())).filter(Boolean)
+    allCharacters.value.flatMap((c) => c.era.split(';').map((e) => e.trim())).filter(Boolean)
   )
   return [...set].sort()
 })
 
 const allTags = computed(() => {
-  const set = new Set(characterStore.characters.flatMap((c) => c.tags))
+  const set = new Set(allCharacters.value.flatMap((c) => c.tags))
   return [...set].sort()
 })
 
@@ -103,7 +113,7 @@ function handleSelect(char: { id: number; slug: string }) {
 }
 
 const compareChars = computed(() =>
-  [...compareIds.value].map(id => characterStore.characters.find(c => c.id === id)).filter(Boolean)
+  [...compareIds.value].map(id => allCharacters.value.find(c => c.id === id)).filter(Boolean)
 )
 
 watch(
@@ -148,6 +158,10 @@ useHead({
       <h1 class="text-2xl font-bold text-sw-gold">Star Wars: Shatterpoint Units</h1>
       <span class="text-sm text-sw-text/50">({{ results.length }})</span>
       <div class="flex-1" />
+      <label class="flex items-center gap-1.5 cursor-pointer text-xs text-sw-text/60">
+        <input type="checkbox" v-model="showCustom" class="accent-sw-gold" />
+        Custom
+      </label>
       <button
         :class="['rounded-lg px-3 py-1 text-xs font-semibold transition-colors',
           compareMode

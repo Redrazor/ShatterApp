@@ -128,4 +128,37 @@ describe('rollSession store', () => {
     expect(store.myRole).toBeNull()
     expect(store.missionOwner).toBeNull()
   })
+
+  it('setAtkUnit and setDefUnit update unit ids', () => {
+    const store = useRollSessionStore()
+    store.setAtkUnit(5)
+    store.setDefUnit(9)
+    expect(store.atkUnitId).toBe(5)
+    expect(store.defUnitId).toBe(9)
+    store.setAtkUnit(null)
+    expect(store.atkUnitId).toBeNull()
+  })
+
+  it('setPlayerName and setOpponentName update names', () => {
+    const store = useRollSessionStore()
+    store.setPlayerName('Alice')
+    store.setOpponentName('Bob')
+    expect(store.playerName).toBe('Alice')
+    expect(store.opponentName).toBe('Bob')
+  })
+
+  it('setRoleTaken updates roleTaken', () => {
+    const store = useRollSessionStore()
+    store.setRoleTaken('attacker')
+    expect(store.roleTaken).toBe('attacker')
+    store.setRoleTaken(null)
+    expect(store.roleTaken).toBeNull()
+  })
+
+  it('setOpponentForcePool updates opponentForcePool', () => {
+    const store = useRollSessionStore()
+    const pool = { tokens: [false, true], total: 2 } as never
+    store.setOpponentForcePool(pool)
+    expect(store.opponentForcePool).toEqual(pool)
+  })
 })

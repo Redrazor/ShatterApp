@@ -20,6 +20,7 @@ const allRoutes = [
   { to: '/collection', label: 'Collection', always: true },
   { to: '/reference',  label: 'Reference',  always: true },
   { to: '/roll',       label: 'Roll',       always: false, settingKey: 'showRollTab' as const },
+  { to: '/custom',    label: 'Custom',     always: false, settingKey: 'showCustomTab' as const },
 ]
 
 const routes = computed(() =>

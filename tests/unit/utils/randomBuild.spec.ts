@@ -182,3 +182,14 @@ describe('generateRandomStrikeForce', () => {
     expect(synergyTotal).toBeGreaterThan(fallbackTotal)
   })
 })
+
+// ---- starWarsNames ----
+import { randomSwName, SW_NAMES } from '../../../src/utils/starWarsNames.ts'
+
+describe('randomSwName', () => {
+  it('returns a string from SW_NAMES', () => {
+    const name = randomSwName()
+    expect(typeof name).toBe('string')
+    expect(SW_NAMES).toContain(name)
+  })
+})

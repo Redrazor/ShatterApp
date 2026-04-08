@@ -10,6 +10,7 @@ import { useLegendaryMissionsStore } from '../stores/legendaryMissions.ts'
 import { useGalacticLegendsStore } from '../stores/galacticLegends.ts'
 import { usePlayUnitsStore } from '../stores/playUnits.ts'
 import { useCharactersStore } from '../stores/characters.ts'
+import { useAllCharacters } from '../composables/useAllCharacters.ts'
 import { useStrikeForceStore } from '../stores/strikeForce.ts'
 import { useRollSessionStore } from '../stores/rollSession.ts'
 import { useDiceRoom } from '../composables/useDiceRoom.ts'
@@ -49,6 +50,7 @@ const playUnitsStore = usePlayUnitsStore()
 const orderDeckStore = useOrderDeckStore()
 const charactersStore = useCharactersStore()
 const strikeForceStore = useStrikeForceStore()
+const { allCharacters } = useAllCharacters()
 
 const settingsStore = useSettingsStore()
 
@@ -604,7 +606,7 @@ const ROMAN = ['I', 'II', 'III']
     <!-- ── Units tab ── -->
     <UnitsTab
       v-if="settingsStore.playShowRoster && playTab === 'units'"
-      :characters="charactersStore.characters"
+      :characters="allCharacters"
       :saved-lists="strikeForceStore.savedLists"
       :squad0-valid="strikeForceStore.isSquad0Valid"
       :locked="playUnitsStore.locked"

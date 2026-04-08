@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { setActivePinia, createPinia } from 'pinia'
 
 const mockAbilities = {
   '1': {
@@ -22,6 +23,7 @@ const mockAbilities = {
 
 describe('useAbilities', () => {
   beforeEach(() => {
+    setActivePinia(createPinia())
     vi.resetModules()
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
@@ -96,5 +98,47 @@ describe('useAbilities', () => {
     const { getAbilities } = useAbilities()
     await new Promise(r => setTimeout(r, 0))
     expect(getAbilities(1)).toBeNull()
+  })
+
+  it('getAbilities returns custom published ability when not found in official data', async () => {
+    const { usePublishedProfilesStore } = await import('../../../src/stores/publishedProfiles.ts')
+    const publishedStore = usePublishedProfilesStore()
+    // Directly inject a custom ability entry (negative ID)
+    publishedStore.abilities[-1000] = {
+      characterId: -1000,
+      name: 'Custom Unit',
+      swpCode: 'CUSTOM',
+      abilities: [{ name: 'Custom Ability', type: 'active', cost: 1, description: 'Do custom thing.' }],
+    }
+
+    const { useAbilities } = await import('../../../src/composables/useAbilities.ts')
+    const { getAbilities } = useAbilities()
+    await new Promise(r => setTimeout(r, 0))
+
+    const entry = getAbilities(-1000)
+    expect(entry).not.toBeNull()
+    expect(entry!.name).toBe('Custom Unit')
+    expect(entry!.swpCode).toBe('CUSTOM')
+    expect(entry!.abilities[0].name).toBe('Custom Ability')
+  })
+
+  it('allEntries includes both official and custom abilities', async () => {
+    const { usePublishedProfilesStore } = await import('../../../src/stores/publishedProfiles.ts')
+    const publishedStore = usePublishedProfilesStore()
+    publishedStore.abilities[-1000] = {
+      characterId: -1000,
+      name: 'Custom Unit',
+      swpCode: 'CUSTOM',
+      abilities: [],
+    }
+
+    const { useAbilities } = await import('../../../src/composables/useAbilities.ts')
+    const { allEntries } = useAbilities()
+    await new Promise(r => setTimeout(r, 0))
+
+    // 2 official (from mockAbilities) + 1 custom
+    expect(allEntries.value.length).toBe(3)
+    const customEntry = allEntries.value.find(e => e.swpCode === 'CUSTOM')
+    expect(customEntry).toBeDefined()
   })
 })
