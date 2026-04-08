@@ -4,6 +4,18 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.13.0',
+    date: '2026-04-08',
+    changes: [
+      'Custom — New Custom Profiles page: build and manage homebrew Shatterpoint unit profiles',
+      'Custom — Phase 1: front card editor (unit type, cost, FP, era, faction, portrait upload)',
+      'Custom — Phase 2: stats & abilities editor with insights panel (percentile comparison vs roster)',
+      'Custom — Phase 3: stance editor with ranged/melee dice, expertise tables, and combat tree',
+      'Custom — Phase 4: order card editor; publish profiles to your roster for use in squad building',
+      'Custom — Full card canvas preview: live-rendered front card, abilities card, stance card, and order card',
+    ],
+  },
+  {
     version: '2.12.1',
     date: '2026-04-03',
     changes: [
