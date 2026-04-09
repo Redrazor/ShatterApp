@@ -206,35 +206,35 @@ function handlePublish() {
       <div v-else-if="cardImages" class="p-4 space-y-4">
         <div ref="captureRef" class="bg-[#111318] p-4 rounded-lg space-y-3">
           <!-- Top row: Front + Abilities -->
-          <div class="flex gap-3 justify-center items-start">
+          <div class="flex flex-col sm:flex-row gap-3 justify-center items-center sm:items-start">
             <img
               :src="cardImages.front"
               alt="Front card"
-              class="rounded shadow-lg"
-              :style="{ width: '240px', height: '360px', objectFit: 'cover' }"
+              class="rounded shadow-lg w-full max-w-[240px]"
+              style="aspect-ratio: 2/3; object-fit: cover;"
             />
             <img
               :src="cardImages.abilities"
               alt="Abilities card"
-              class="rounded shadow-lg"
-              :style="{ width: '360px', height: '240px', objectFit: 'cover' }"
+              class="rounded shadow-lg w-full max-w-[360px]"
+              style="aspect-ratio: 3/2; object-fit: cover;"
             />
           </div>
 
           <!-- Bottom row: Stance(s) -->
-          <div class="flex gap-3 justify-center items-start">
+          <div class="flex flex-col sm:flex-row gap-3 justify-center items-center sm:items-start">
             <img
               :src="cardImages.stance1"
               alt="Stance 1"
-              class="rounded shadow-lg"
-              :style="{ width: '360px', height: '207px', objectFit: 'cover' }"
+              class="rounded shadow-lg w-full max-w-[360px]"
+              style="aspect-ratio: 360/207; object-fit: cover;"
             />
             <img
               v-if="cardImages.stance2"
               :src="cardImages.stance2"
               alt="Stance 2"
-              class="rounded shadow-lg"
-              :style="{ width: '360px', height: '207px', objectFit: 'cover' }"
+              class="rounded shadow-lg w-full max-w-[360px]"
+              style="aspect-ratio: 360/207; object-fit: cover;"
             />
           </div>
         </div>
