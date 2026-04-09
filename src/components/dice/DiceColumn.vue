@@ -35,6 +35,7 @@ const label      = props.type === 'attack' ? 'Attack' : 'Defense'
 const accentClass = props.type === 'attack' ? 'text-sw-gold' : 'text-blue-400'
 const btnActive  = props.type === 'attack' ? 'bg-sw-gold text-sw-dark' : 'bg-blue-500 text-white'
 const btnBase    = 'rounded-lg py-1.5 text-sm font-bold transition-colors'
+const maxDice    = props.type === 'attack' ? 30 : 12
 
 // ── Roll N dice ───────────────────────────────────────────────
 function roll(n: number) {
@@ -183,10 +184,10 @@ const faceChipClass = (face: string) => {
     <!-- Header -->
     <h2 :class="['text-lg font-bold', accentClass]">{{ label }}</h2>
 
-    <!-- Number buttons 1–12 (hidden in readonly) -->
+    <!-- Number buttons 1–N (hidden in readonly) -->
     <div v-if="!readonly" class="grid grid-cols-6 gap-1">
       <button
-        v-for="n in 12" :key="n"
+        v-for="n in maxDice" :key="n"
         :class="[btnBase,
           lastCount === n && !rolling
             ? btnActive

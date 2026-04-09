@@ -33,12 +33,12 @@ describe('ProbabilityCalculator', () => {
     expect(minusBtns[0].attributes('disabled')).toBeDefined()
   })
 
-  it('increment button is disabled at max (14 for attack)', async () => {
+  it('increment button is disabled at max (30 for attack)', async () => {
     const wrapper = mount(ProbabilityCalculator)
     await wrapper.vm.$nextTick()
     const plusBtns = wrapper.findAll('button').filter(b => b.text() === '+')
-    // Click up to 14 from default 6
-    for (let i = 0; i < 9; i++) await plusBtns[0].trigger('click')
+    // Click up to 30 from default 6
+    for (let i = 0; i < 24; i++) await plusBtns[0].trigger('click')
     expect(plusBtns[0].attributes('disabled')).toBeDefined()
   })
 

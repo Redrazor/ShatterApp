@@ -36,7 +36,7 @@ function rowClass(prob: number): string {
     <div class="grid grid-cols-2 gap-3">
       <div
         v-for="side in ([
-          { label: 'Attack Dice', model: atkDice, set: (v: number) => (atkDice = v), max: 14 },
+          { label: 'Attack Dice', model: atkDice, set: (v: number) => (atkDice = v), max: 30 },
           { label: 'Defense Dice', model: defDice, set: (v: number) => (defDice = v), max: 12 },
         ] as const)"
         :key="side.label"
