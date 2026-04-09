@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.13.2',
+    date: '2026-04-09',
+    changes: [
+      'Custom Builder — fixed "Rendering cards..." hang caused by cross-origin canvas taint (production only)',
+    ],
+  },
+  {
     version: '2.13.1',
     date: '2026-04-09',
     changes: [
