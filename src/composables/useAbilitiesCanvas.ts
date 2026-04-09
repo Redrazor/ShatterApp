@@ -41,6 +41,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   if (imgCache.has(src)) return Promise.resolve(imgCache.get(src)!)
   return new Promise((resolve, reject) => {
     const img = new Image()
+    img.crossOrigin = 'anonymous'
     img.onload = () => { imgCache.set(src, img); resolve(img) }
     img.onerror = reject
     img.src = src
@@ -54,6 +55,7 @@ async function loadImageFresh(src: string): Promise<HTMLImageElement> {
   const url = URL.createObjectURL(blob)
   return new Promise((resolve, reject) => {
     const img = new Image()
+    // blob: URLs are same-origin; crossOrigin not needed but harmless
     img.onload = () => { imgCache.set(src, img); URL.revokeObjectURL(url); resolve(img) }
     img.onerror = reject
     img.src = url

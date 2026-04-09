@@ -96,6 +96,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   if (imgCache.has(src)) return Promise.resolve(imgCache.get(src)!)
   return new Promise((resolve, reject) => {
     const img = new Image()
+    img.crossOrigin = 'anonymous'
     img.onload = () => { imgCache.set(src, img); resolve(img) }
     img.onerror = reject
     img.src = src
@@ -108,6 +109,7 @@ function loadCombatIcon(src: string): Promise<HTMLImageElement> {
   if (loadingPromises.has(src)) return loadingPromises.get(src)!
   const promise = new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new Image()
+    img.crossOrigin = 'anonymous'
     img.onload = () => { imgCache.set(src, img); loadingPromises.delete(src); resolve(img) }
     img.onerror = () => { loadingPromises.delete(src); reject(new Error(`Failed: ${src}`)) }
     img.src = src

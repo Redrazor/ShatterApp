@@ -67,6 +67,7 @@ const { toDataURL: stance2ToDataURL, readyPromise: stance2Ready } = useStanceCan
 // Captured card images
 const cardImages = ref<CardImages | null>(null)
 const capturing = ref(true)
+const captureError = ref<string | null>(null)
 const downloading = ref(false)
 const captureRef = ref<HTMLElement | null>(null)
 
@@ -97,27 +98,32 @@ function extractPortraitThumbnail(canvas: HTMLCanvasElement | null): string {
 async function captureCards() {
   // Wait for all canvases to complete their first full render (fonts + icons painted)
   await nextTick()
-  await Promise.all([
-    frontReady,
-    abilitiesReady,
-    stance1Ready,
-    isPrimary.value ? stance2Ready : Promise.resolve(),
-  ])
+  try {
+    await Promise.all([
+      frontReady,
+      abilitiesReady,
+      stance1Ready,
+      isPrimary.value ? stance2Ready : Promise.resolve(),
+    ])
 
-  const front = frontToDataURL('image/jpeg')
-  const abilities = abilitiesToDataURL('image/jpeg')
-  const stance1 = stance1ToDataURL('image/jpeg')
-  const stance2 = isPrimary.value ? stance2ToDataURL('image/jpeg') : null
-  const thumbnail = extractPortraitThumbnail(stance1CanvasRef.value)
+    const front = frontToDataURL('image/jpeg')
+    const abilities = abilitiesToDataURL('image/jpeg')
+    const stance1 = stance1ToDataURL('image/jpeg')
+    const stance2 = isPrimary.value ? stance2ToDataURL('image/jpeg') : null
+    const thumbnail = extractPortraitThumbnail(stance1CanvasRef.value)
 
-  const orderFront = await generateOrderCard(
-    props.profile.frontCard?.imageData ?? '',
-    hasTactic.value,
-  )
-  const orderBack = imageUrl('/images/order-deck-back.png')
+    const orderFront = await generateOrderCard(
+      props.profile.frontCard?.imageData ?? '',
+      hasTactic.value,
+    )
+    const orderBack = imageUrl('/images/order-deck-back.png')
 
-  cardImages.value = { front, abilities, stance1, stance2, orderFront, orderBack, thumbnail }
-  capturing.value = false
+    cardImages.value = { front, abilities, stance1, stance2, orderFront, orderBack, thumbnail }
+  } catch (err) {
+    captureError.value = err instanceof Error ? err.message : 'Failed to render cards'
+  } finally {
+    capturing.value = false
+  }
 }
 
 onMounted(() => {
@@ -188,6 +194,12 @@ function handlePublish() {
       <!-- Loading state -->
       <div v-if="capturing" class="flex items-center justify-center py-16">
         <div class="text-sw-text/50 text-sm">Rendering cards...</div>
+      </div>
+
+      <!-- Error state -->
+      <div v-else-if="captureError" class="flex flex-col items-center justify-center py-16 gap-2">
+        <div class="text-red-400 text-sm font-semibold">Failed to render cards</div>
+        <div class="text-sw-text/40 text-xs">{{ captureError }}</div>
       </div>
 
       <!-- Card layout -->
