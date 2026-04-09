@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.13.1',
+    date: '2026-04-09',
+    changes: [
+      'Dice — Attack dice roller and Probability Calculator now support up to 30 dice (was 12/14)',
+    ],
+  },
+  {
     version: '2.13.0',
     date: '2026-04-08',
     changes: [
