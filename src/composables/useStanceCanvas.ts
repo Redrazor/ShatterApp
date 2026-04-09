@@ -1,6 +1,7 @@
 import { ref, watch, watchEffect, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 import type { StanceData, ExpertiseColor, ExpertiseTables, CombatTree, HomebrewFaction } from '../types/index.ts'
+import { imageUrl } from '../utils/imageUrl.ts'
 
 export interface PortraitOptions {
   imageData: string | null
@@ -19,7 +20,7 @@ export const STANCE_CANVAS_W = 836
 export const STANCE_CANVAS_H = 481
 
 function getTemplatePath(faction: HomebrewFaction): string {
-  return `/images/custom_cards/custom_card_stance_${faction}.png`
+  return imageUrl(`/images/custom_cards/custom_card_stance_${faction}.png`)
 }
 
 // Pixel positions measured from the 836×481 template image
@@ -205,7 +206,7 @@ function drawCombatTree(
 
       // Icon centered in box — use correct variant per column
       const displayFile = ctDisplayFile(iconFile, c)
-      const iconSrc = `/images/combat_tree_icons/crops/${displayFile}`
+      const iconSrc = imageUrl(`/images/combat_tree_icons/crops/${displayFile}`)
       const img = imgCache.get(iconSrc)
       if (img) {
         const pad = 4
@@ -290,7 +291,7 @@ export function useStanceCanvas(
   ]
 
   async function preload() {
-    const iconUrls = ICONOGRAPHY_FILES.map(f => `/images/abilities_iconography/${f}`)
+    const iconUrls = ICONOGRAPHY_FILES.map(f => imageUrl(`/images/abilities_iconography/${f}`))
     await Promise.allSettled([loadImage(getTemplatePath(faction.value)), ...iconUrls.map(loadImage)])
     await ensureFontLoaded()
     fontReady.value = true
@@ -482,7 +483,7 @@ export function useStanceCanvas(
         for (const seg of segments) {
           if (drawX >= contentMaxX) break
           if (seg.type === 'img') {
-            const img = imgCache.get(`/images/abilities_iconography/${seg.file}`)
+            const img = imgCache.get(imageUrl(`/images/abilities_iconography/${seg.file}`))
             const drawH = rowH - 6
             const drawW = (img && img.naturalWidth > 0)
               ? Math.round(drawH * (img.naturalWidth / img.naturalHeight))

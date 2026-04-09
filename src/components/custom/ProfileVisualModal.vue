@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { toPng } from 'html-to-image'
 import type { HomebrewProfile, HomebrewFaction } from '../../types/index.ts'
+import { imageUrl } from '../../utils/imageUrl.ts'
 import { useCardCanvas, CANVAS_W, CANVAS_H } from '../../composables/useCardCanvas.ts'
 import { useAbilitiesCanvas } from '../../composables/useAbilitiesCanvas.ts'
 import { useStanceCanvas, STANCE_CANVAS_W, STANCE_CANVAS_H, PORTRAIT_CX, PORTRAIT_CY, PORTRAIT_R } from '../../composables/useStanceCanvas.ts'
@@ -113,7 +114,7 @@ async function captureCards() {
     props.profile.frontCard?.imageData ?? '',
     hasTactic.value,
   )
-  const orderBack = '/images/order-deck-back.png'
+  const orderBack = imageUrl('/images/order-deck-back.png')
 
   cardImages.value = { front, abilities, stance1, stance2, orderFront, orderBack, thumbnail }
   capturing.value = false

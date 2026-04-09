@@ -1,16 +1,17 @@
 import { ref, watch, watchEffect, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 import type { FrontCardData, StatsData, HomebrewFaction } from '../types/index.ts'
+import { imageUrl } from '../utils/imageUrl.ts'
 
 // Landscape canvas — 3:2
 export const BACK_CANVAS_W = 900
 export const BACK_CANVAS_H = 600
 
 function getTemplatePath(faction: HomebrewFaction): string {
-  return `/images/custom_cards/custom_abilities_back_${faction}.png`
+  return imageUrl(`/images/custom_cards/custom_abilities_back_${faction}.png`)
 }
 function getPillsPath(faction: HomebrewFaction): string {
-  return `/images/custom_cards/custom_abilities_back_pills_${faction}.png`
+  return imageUrl(`/images/custom_cards/custom_abilities_back_pills_${faction}.png`)
 }
 
 // Image cache shared with front-card composable (same Map is fine)

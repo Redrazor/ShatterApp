@@ -1,23 +1,24 @@
 import { ref, watch, watchEffect, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 import type { FrontCardData, StatsData, AbilitiesData, AbilityBlock, HomebrewFaction } from '../types/index.ts'
+import { imageUrl } from '../utils/imageUrl.ts'
 
 // Landscape canvas — 3:2
 export const BACK_CANVAS_W = 900
 export const BACK_CANVAS_H = 600
 
 function getTemplatePath(faction: HomebrewFaction): string {
-  return `/images/custom_cards/custom_abilities_back_${faction}.png`
+  return imageUrl(`/images/custom_cards/custom_abilities_back_${faction}.png`)
 }
 function getPillsPath(faction: HomebrewFaction): string {
-  return `/images/custom_cards/custom_abilities_back_pills_${faction}.png`
+  return imageUrl(`/images/custom_cards/custom_abilities_back_pills_${faction}.png`)
 }
 
 // Ability TYPE icons — all factions have dedicated icons in icons/ability_icons/
 const ABILITY_TYPE_NAMES = ['active', 'reactive', 'innate', 'tactic', 'identity']
 
 function typeIconPath(name: string, faction: HomebrewFaction): string {
-  return `/images/icons/ability_icons/${faction}_${name}.png`
+  return imageUrl(`/images/icons/ability_icons/${faction}_${name}.png`)
 }
 
 // Inline iconography (used in ability text like [damage], [advance], etc.)
@@ -30,7 +31,7 @@ const INLINE_ICON_NAMES = [
 ]
 
 function inlineIconPath(name: string): string {
-  return `/images/abilities_iconography/${name}_crop.png`
+  return imageUrl(`/images/abilities_iconography/${name}_crop.png`)
 }
 
 // Image cache shared across composables (same Map is fine)

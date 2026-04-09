@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, nextTick, onBeforeUnmount } from 'vue'
+import { imageUrl } from '../../../utils/imageUrl.ts'
 
 // Icons that have no _orange_bg variant — fall back to plain .png for starting nodes
 const NO_ORANGE_BG = new Set(['22_SHV_DMG_DMG', '43_PIN_SHV'])
@@ -52,7 +53,7 @@ function iconFilename(base: string): string {
 }
 
 function iconPath(base: string): string {
-  return `/images/combat_tree_icons/crops/${iconFilename(base)}`
+  return imageUrl(`/images/combat_tree_icons/crops/${iconFilename(base)}`)
 }
 
 const sortedIcons = computed(() => {
@@ -135,7 +136,7 @@ function selectIcon(base: string) {
     >
       <img
         v-if="modelValue"
-        :src="`/images/combat_tree_icons/crops/${modelValue}`"
+        :src="imageUrl(`/images/combat_tree_icons/crops/${modelValue}`)"
         class="w-10 h-10 object-contain"
         alt=""
       />

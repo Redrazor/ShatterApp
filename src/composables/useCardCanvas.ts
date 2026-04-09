@@ -1,6 +1,7 @@
 import { ref, watchEffect, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 import type { FrontCardData, HomebrewFaction } from '../types/index.ts'
+import { imageUrl } from '../utils/imageUrl.ts'
 
 // Internal canvas resolution (2:3 ratio)
 export const CANVAS_W = 600
@@ -22,10 +23,10 @@ function getEraIconPath(eraString: string): string {
   if (sorted.length === 0) return ''
   // Single-era Civil War uses a differently named file (civil_war_rebel.png)
   if (sorted.length === 1 && sorted[0] === 'Civil War') {
-    return '/images/custom_era_icons/civil_war_rebel.png'
+    return imageUrl('/images/custom_era_icons/civil_war_rebel.png')
   }
   const key = sorted.map(e => ERA_SLUG[e]).join('_')
-  return `/images/custom_era_icons/${key}.png`
+  return imageUrl(`/images/custom_era_icons/${key}.png`)
 }
 
 function getTemplatePath(unitType: string, faction: HomebrewFaction): string {
@@ -35,7 +36,7 @@ function getTemplatePath(unitType: string, faction: HomebrewFaction): string {
     Support: 'custom_support_front',
   }
   const base = typeMap[unitType] ?? 'custom_primary_front'
-  return `/images/custom_cards/${base}_${faction}.png`
+  return imageUrl(`/images/custom_cards/${base}_${faction}.png`)
 }
 
 // Preload all faction × unit-type combos for instant switching
@@ -79,16 +80,16 @@ export function useCardCanvas(
     const paths = [
       ...ALL_FACTIONS.flatMap(f => ALL_UNIT_TYPES.map(t => getTemplatePath(t, f))),
       // Single-era icons (Civil War uses civil_war_rebel.png)
-      '/images/custom_era_icons/clone_wars.png',
-      '/images/custom_era_icons/empire.png',
-      '/images/custom_era_icons/civil_war_rebel.png',
-      '/images/custom_era_icons/new_republic.png',
+      imageUrl('/images/custom_era_icons/clone_wars.png'),
+      imageUrl('/images/custom_era_icons/empire.png'),
+      imageUrl('/images/custom_era_icons/civil_war_rebel.png'),
+      imageUrl('/images/custom_era_icons/new_republic.png'),
       // Multi-era combo icons
-      '/images/custom_era_icons/clone_wars_empire.png',
-      '/images/custom_era_icons/empire_civil_war.png',
-      '/images/custom_era_icons/civil_war_new_republic.png',
-      '/images/custom_era_icons/clone_wars_empire_civil_war.png',
-      '/images/custom_era_icons/clone_wars_empire_civil_war_new_republic.png',
+      imageUrl('/images/custom_era_icons/clone_wars_empire.png'),
+      imageUrl('/images/custom_era_icons/empire_civil_war.png'),
+      imageUrl('/images/custom_era_icons/civil_war_new_republic.png'),
+      imageUrl('/images/custom_era_icons/clone_wars_empire_civil_war.png'),
+      imageUrl('/images/custom_era_icons/clone_wars_empire_civil_war_new_republic.png'),
     ]
     await Promise.allSettled(paths.map(loadImage))
     await ensureFontLoaded()

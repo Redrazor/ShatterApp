@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { CombatTree, CombatTreeConnection } from '../../../types/index.ts'
 import CombatNodePicker from './CombatNodePicker.vue'
 import { useHomebrewStore } from '../../../stores/homebrew.ts'
+import { imageUrl } from '../../../utils/imageUrl.ts'
 
 const ROW_LABELS = ['TOP', 'MID', 'BOT'] as const
 const MAX_COLS = 6
@@ -343,7 +344,7 @@ function deleteConnection(idx: number) {
                     @dragend="onDragEnd"
                   >
                     <img
-                      :src="`/images/combat_tree_icons/crops/${getIcon(rowIdx, colIdx - 1)}`"
+                      :src="imageUrl(`/images/combat_tree_icons/crops/${getIcon(rowIdx, colIdx - 1)}`)"
                       class="w-10 h-10 object-contain pointer-events-none"
                       alt=""
                     />

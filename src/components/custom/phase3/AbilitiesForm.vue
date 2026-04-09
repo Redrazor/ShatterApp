@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, nextTick } from 'vue'
 import type { AbilityBlock, AbilitiesData } from '../../../types/index.ts'
+import { imageUrl } from '../../../utils/imageUrl.ts'
 
 const props = defineProps<{ abilities: AbilitiesData | null }>()
 const emit = defineEmits<{ update: [data: AbilitiesData] }>()
@@ -43,7 +44,7 @@ const SYMBOLS = [
 ]
 
 function symbolPathFor(name: string): string {
-  return `/images/abilities_iconography/${name}_crop.png`
+  return imageUrl(`/images/abilities_iconography/${name}_crop.png`)
 }
 
 const blocks = computed<AbilityBlock[]>(() => props.abilities?.blocks ?? [])
@@ -59,7 +60,7 @@ const textareaRefs = ref<(HTMLTextAreaElement | null)[]>([])
 const cursorMap = ref<Record<number, number>>({})
 
 function iconPathFor(name: string): string {
-  return `/images/icons/${name}.png`
+  return imageUrl(`/images/icons/${name}.png`)
 }
 
 function iconLabelFor(name: string): string {

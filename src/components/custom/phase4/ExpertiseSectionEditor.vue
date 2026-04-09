@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { ExpertiseSection, ExpertiseEntry, ExpertiseColor } from '../../../types/index.ts'
+import { imageUrl } from '../../../utils/imageUrl.ts'
 
 const props = defineProps<{
   section: ExpertiseSection
@@ -63,7 +64,7 @@ const TO_ICONS = [
 ]
 
 function iconPath(file: string): string {
-  return `/images/abilities_iconography/${file}`
+  return imageUrl(`/images/abilities_iconography/${file}`)
 }
 
 function iconLabel(file: string): string {

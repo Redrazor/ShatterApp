@@ -1,3 +1,5 @@
+import { imageUrl } from './imageUrl.ts'
+
 const ORDER_W = 600
 const ORDER_H = Math.round(ORDER_W * 574 / 343) // matches back card aspect ratio (343×574)
 
@@ -38,7 +40,7 @@ export async function generateOrderCard(
   // Draw tactic icon top-left if applicable
   if (hasTactic) {
     try {
-      const tacticImg = await loadImage('/images/tactical_order.png')
+      const tacticImg = await loadImage(imageUrl('/images/tactical_order.png'))
       const padding = 16
       ctx.drawImage(tacticImg, padding, padding + 40, tacticImg.width * 2, tacticImg.height * 2)
     } catch {
