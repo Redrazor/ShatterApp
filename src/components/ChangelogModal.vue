@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.13.3',
+    date: '2026-04-09',
+    changes: [
+      'Custom Builder — fixed canvas taint from era icon missing crossOrigin header (follow-up to v2.13.2)',
+    ],
+  },
+  {
     version: '2.13.2',
     date: '2026-04-09',
     changes: [
