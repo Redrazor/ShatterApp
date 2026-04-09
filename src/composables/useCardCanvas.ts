@@ -147,6 +147,7 @@ export function useCardCanvas(
       if (iconPath) {
         const icon = imgCache.get(iconPath) ?? (() => {
           const img = new Image()
+          img.crossOrigin = 'anonymous'
           img.onload = () => { imgCache.set(iconPath, img); scheduleRender() }
           img.onerror = () => {} // silently ignore missing combo
           img.src = iconPath
