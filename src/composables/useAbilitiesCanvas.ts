@@ -280,11 +280,14 @@ export function useAbilitiesCanvas(
     rafId = requestAnimationFrame(() => { rafId = null; render() })
   }
 
+  let dpr = 1
+
   function render() {
     const canvas = canvasRef.value
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
     const fc = frontCard.value
     const st = stats.value
@@ -419,6 +422,14 @@ export function useAbilitiesCanvas(
   }
 
   onMounted(async () => {
+    const canvas = canvasRef.value
+    if (canvas) {
+      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width  = BACK_CANVAS_W * dpr
+      canvas.height = BACK_CANVAS_H * dpr
+      canvas.style.width  = `${BACK_CANVAS_W}px`
+      canvas.style.height = `${BACK_CANVAS_H}px`
+    }
     await preload()
     scheduleRender()
   })

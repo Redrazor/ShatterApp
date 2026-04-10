@@ -304,11 +304,14 @@ export function useStanceCanvas(
     rafId = requestAnimationFrame(() => { rafId = null; render() })
   }
 
+  let dpr = 1
+
   function render() {
     const canvas = canvasRef.value
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
     ctx.clearRect(0, 0, STANCE_CANVAS_W, STANCE_CANVAS_H)
 
@@ -590,6 +593,14 @@ export function useStanceCanvas(
   }
 
   onMounted(async () => {
+    const canvas = canvasRef.value
+    if (canvas) {
+      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width  = STANCE_CANVAS_W * dpr
+      canvas.height = STANCE_CANVAS_H * dpr
+      canvas.style.width  = `${STANCE_CANVAS_W}px`
+      canvas.style.height = `${STANCE_CANVAS_H}px`
+    }
     await preload()
     scheduleRender()
   })

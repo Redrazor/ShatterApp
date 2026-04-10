@@ -102,11 +102,14 @@ export function useCardCanvas(
     rafId = requestAnimationFrame(() => { rafId = null; render() })
   }
 
+  let dpr = 1
+
   function render() {
     const canvas = canvasRef.value
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
     const fc = frontCard.value
     ctx.clearRect(0, 0, CANVAS_W, CANVAS_H)
@@ -253,6 +256,14 @@ export function useCardCanvas(
   }
 
   onMounted(async () => {
+    const canvas = canvasRef.value
+    if (canvas) {
+      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width  = CANVAS_W * dpr
+      canvas.height = CANVAS_H * dpr
+      canvas.style.width  = `${CANVAS_W}px`
+      canvas.style.height = `${CANVAS_H}px`
+    }
     await preload()
     scheduleRender()
   })
