@@ -161,7 +161,24 @@ function clearCell(rowIdx: number, colIdx: number) {
   emit('update:tree', tree)
 }
 
-// ── Drag-drop ─────────────────────────────────────────────────────────────────
+// ── Shared swap logic ─────────────────────────────────────────────────────────
+function swapCells(srcRow: number, srcCol: number, dstRow: number, dstCol: number) {
+  const tree = cloneTree()
+  const tmp = tree.grid[dstRow][dstCol]
+  tree.grid[dstRow][dstCol] = normalizeIcon(tree.grid[srcRow][srcCol], dstCol)
+  tree.grid[srcRow][srcCol] = normalizeIcon(tmp, srcCol)
+  tree.connections = tree.connections.map(c => {
+    let { fromRow, fromCol, toRow, toCol } = c
+    if (fromRow === srcRow && fromCol === srcCol) { fromRow = dstRow; fromCol = dstCol }
+    else if (fromRow === dstRow && fromCol === dstCol) { fromRow = srcRow; fromCol = srcCol }
+    if (toRow === srcRow && toCol === srcCol) { toRow = dstRow; toCol = dstCol }
+    else if (toRow === dstRow && toCol === dstCol) { toRow = srcRow; toCol = srcCol }
+    return { fromRow, fromCol, toRow, toCol }
+  })
+  emit('update:tree', tree)
+}
+
+// ── Drag-drop (desktop) ───────────────────────────────────────────────────────
 const dragSource = ref<{ rowIdx: number; colIdx: number } | null>(null)
 
 function onDragStart(rowIdx: number, colIdx: number, e: DragEvent) {
@@ -179,21 +196,34 @@ function onDrop(rowIdx: number, colIdx: number, e: DragEvent) {
     dragSource.value = null
     return
   }
-  const tree = cloneTree()
-  const tmp = tree.grid[rowIdx][colIdx]
-  tree.grid[rowIdx][colIdx] = normalizeIcon(tree.grid[src.rowIdx][src.colIdx], colIdx)
-  tree.grid[src.rowIdx][src.colIdx] = normalizeIcon(tmp, src.colIdx)
-  // Connections follow the swapped cells
-  tree.connections = tree.connections.map(c => {
-    let { fromRow, fromCol, toRow, toCol } = c
-    if (fromRow === src.rowIdx && fromCol === src.colIdx) { fromRow = rowIdx; fromCol = colIdx }
-    else if (fromRow === rowIdx && fromCol === colIdx) { fromRow = src.rowIdx; fromCol = src.colIdx }
-    if (toRow === src.rowIdx && toCol === src.colIdx) { toRow = rowIdx; toCol = colIdx }
-    else if (toRow === rowIdx && toCol === colIdx) { toRow = src.rowIdx; toCol = src.colIdx }
-    return { fromRow, fromCol, toRow, toCol }
-  })
+  swapCells(src.rowIdx, src.colIdx, rowIdx, colIdx)
   dragSource.value = null
-  emit('update:tree', tree)
+}
+
+// ── Long-press-to-select (touch) ──────────────────────────────────────────────
+const touchSource = ref<{ rowIdx: number; colIdx: number } | null>(null)
+let longPressTimer: ReturnType<typeof setTimeout> | null = null
+let longPressOrigin: { x: number; y: number } | null = null
+
+function onFilledCellPointerDown(rowIdx: number, colIdx: number, e: PointerEvent) {
+  if (e.pointerType !== 'touch' || connectMode.value) return
+  longPressOrigin = { x: e.clientX, y: e.clientY }
+  longPressTimer = setTimeout(() => {
+    touchSource.value = { rowIdx, colIdx }
+    longPressTimer = null
+  }, 500)
+}
+
+function onFilledCellPointerMove(e: PointerEvent) {
+  if (!longPressTimer || !longPressOrigin) return
+  const dx = e.clientX - longPressOrigin.x
+  const dy = e.clientY - longPressOrigin.y
+  if (Math.sqrt(dx * dx + dy * dy) > 10) cancelLongPress()
+}
+
+function cancelLongPress() {
+  if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null }
+  longPressOrigin = null
 }
 
 // ── Connection mode ────────────────────────────────────────────────────────────
@@ -206,6 +236,18 @@ function toggleConnectMode() {
 }
 
 function onCellClick(rowIdx: number, colIdx: number) {
+  // Touch-move mode: tap to place the long-press-selected cell
+  if (touchSource.value && !connectMode.value) {
+    const src = touchSource.value
+    if (src.rowIdx === rowIdx && src.colIdx === colIdx) {
+      touchSource.value = null
+      return
+    }
+    swapCells(src.rowIdx, src.colIdx, rowIdx, colIdx)
+    touchSource.value = null
+    return
+  }
+
   if (!connectMode.value) return
   if (!getIcon(rowIdx, colIdx)) return
 
@@ -294,7 +336,7 @@ function deleteConnection(idx: number) {
             </g>
           </template>
 
-          <!-- Pending-from highlight ring -->
+          <!-- Pending-from highlight ring (connect mode) -->
           <circle
             v-if="pendingFrom"
             :cx="cellCX(pendingFrom.colIdx)"
@@ -302,6 +344,17 @@ function deleteConnection(idx: number) {
             r="28"
             fill="none"
             stroke="#f59e0b"
+            stroke-width="2"
+            stroke-dasharray="4 2"
+          />
+          <!-- Touch-source highlight ring (long-press move mode) -->
+          <circle
+            v-if="touchSource"
+            :cx="cellCX(touchSource.colIdx)"
+            :cy="cellCY(touchSource.rowIdx)"
+            r="28"
+            fill="none"
+            stroke="#60a5fa"
             stroke-width="2"
             stroke-dasharray="4 2"
           />
@@ -338,10 +391,16 @@ function deleteConnection(idx: number) {
                       connectMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing',
                       pendingFrom?.rowIdx === rowIdx && pendingFrom?.colIdx === colIdx - 1
                         ? 'ring-2 ring-amber-400' : '',
+                      touchSource?.rowIdx === rowIdx && touchSource?.colIdx === colIdx - 1
+                        ? 'ring-2 ring-blue-400' : '',
                     ]"
                     :style="dragSource?.rowIdx === rowIdx && dragSource?.colIdx === colIdx - 1 ? 'opacity:0.4' : ''"
                     @dragstart="onDragStart(rowIdx, colIdx - 1, $event)"
                     @dragend="onDragEnd"
+                    @pointerdown="onFilledCellPointerDown(rowIdx, colIdx - 1, $event)"
+                    @pointermove="onFilledCellPointerMove"
+                    @pointerup="cancelLongPress"
+                    @pointercancel="cancelLongPress"
                   >
                     <img
                       :src="imageUrl(`/images/combat_tree_icons/crops/${getIcon(rowIdx, colIdx - 1)}`)"
@@ -405,7 +464,7 @@ function deleteConnection(idx: number) {
     </div>
 
     <p class="text-[10px] text-sw-text/25">
-      Click + to add nodes. Drag filled nodes to move them. Use "Add Connection" to draw lines between any two nodes.
+      Click + to add nodes. Drag filled nodes to move them (or long-press on touch). Use "Add Connection" to draw lines between any two nodes.
     </p>
   </div>
 </template>
