@@ -235,7 +235,7 @@ function numInput(val: string, min = 1): number {
           :key="opt.key"
           type="button"
           :title="opt.label"
-          class="w-6 h-6 rounded-full transition-all"
+          class="w-9 h-9 rounded-full transition-all touch-manipulation"
           :style="{ background: opt.shades[1] }"
           :class="section.color === opt.key
             ? 'ring-2 ring-sw-gold ring-offset-1 ring-offset-sw-dark scale-110'
@@ -264,14 +264,14 @@ function numInput(val: string, min = 1): number {
           <div class="flex items-center gap-1.5 text-white/80 text-xs">
             <input
               type="number" min="1" :value="entry.from"
-              class="w-12 rounded bg-black/25 border border-white/20 text-center text-xs text-white py-0.5 focus:outline-none focus:border-white/50"
+              class="w-12 rounded bg-black/25 border border-white/20 text-center text-xs text-white py-2 focus:outline-none focus:border-white/50"
               @change="updateEntryField(eIdx, 'from', numInput(($event.target as HTMLInputElement).value))"
             />
             <span v-if="!entry.isPlus" class="select-none">–</span>
             <input
               v-if="!entry.isPlus"
               type="number" :min="entry.from + 1" :value="entry.to ?? entry.from"
-              class="w-12 rounded bg-black/25 border border-white/20 text-center text-xs text-white py-0.5 focus:outline-none focus:border-white/50"
+              class="w-12 rounded bg-black/25 border border-white/20 text-center text-xs text-white py-2 focus:outline-none focus:border-white/50"
               @change="updateEntryField(eIdx, 'to', numInput(($event.target as HTMLInputElement).value, entry.from))"
             />
           </div>

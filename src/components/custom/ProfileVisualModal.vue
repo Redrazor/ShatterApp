@@ -173,12 +173,12 @@ function handlePublish() {
 
 <template>
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 overflow-y-auto"
+    class="fixed inset-0 z-50 flex items-start justify-center bg-black/70 p-4 overflow-y-auto"
     @click.self="emit('close')"
   >
     <div class="w-full max-w-4xl rounded-xl border border-sw-gold/30 bg-sw-card shadow-2xl overflow-hidden">
       <!-- Header -->
-      <div class="flex items-center justify-between px-5 py-3 border-b border-sw-gold/15">
+      <div class="sticky top-0 z-10 flex items-center justify-between px-5 py-3 border-b border-sw-gold/15 bg-sw-card">
         <h3 class="text-base font-bold text-sw-gold">{{ profile.name }} — Full Profile</h3>
         <button class="text-sw-text/40 hover:text-sw-text/80 text-lg leading-none" @click="emit('close')">&#x2715;</button>
       </div>
@@ -242,26 +242,26 @@ function handlePublish() {
         <!-- Actions -->
         <div class="flex flex-wrap gap-2 justify-center pb-2">
           <button
-            class="rounded-lg px-4 py-2 text-sm font-semibold bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
+            class="rounded-lg px-4 py-3 text-sm font-semibold bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
             :disabled="downloading"
             @click="downloadPng"
           >
             {{ downloading ? 'Downloading...' : 'Download PNG' }}
           </button>
           <button
-            class="rounded-lg px-4 py-2 text-sm font-semibold bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
+            class="rounded-lg px-4 py-3 text-sm font-semibold bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
             @click="handlePrint"
           >
             Print
           </button>
           <button
-            class="rounded-lg px-4 py-2 text-sm font-semibold bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
+            class="rounded-lg px-4 py-3 text-sm font-semibold bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
             @click="handlePdf"
           >
             Download PDF
           </button>
           <button
-            class="rounded-lg px-4 py-2 text-sm font-semibold bg-green-600/20 text-green-400 hover:bg-green-600/30 border border-green-500/30 transition-colors"
+            class="rounded-lg px-4 py-3 text-sm font-semibold bg-green-600/20 text-green-400 hover:bg-green-600/30 border border-green-500/30 transition-colors"
             @click="handlePublish"
           >
             Publish to Browse &amp; Build

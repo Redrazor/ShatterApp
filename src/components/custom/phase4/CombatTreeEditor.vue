@@ -304,7 +304,7 @@ function deleteConnection(idx: number) {
     </div>
 
     <!-- Grid + SVG overlay -->
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto w-full">
       <div class="relative" :style="`min-width: ${svgW}px`">
 
         <!-- SVG overlay: connection lines + delete buttons -->
@@ -331,6 +331,7 @@ function deleteConnection(idx: number) {
               style="pointer-events: all; cursor: pointer"
               @click.stop="deleteConnection(i)"
             >
+              <circle r="20" fill="transparent" />
               <circle r="8" fill="#1a1a2e" stroke="rgba(255,100,100,0.5)" stroke-width="1.5" />
               <text y="4.5" text-anchor="middle" fill="rgba(255,100,100,0.9)" font-size="12" font-weight="bold">×</text>
             </g>
@@ -410,7 +411,7 @@ function deleteConnection(idx: number) {
                   </div>
                   <button
                     type="button"
-                    class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-sw-dark border border-white/20 text-sw-text/40 hover:text-red-400 text-[10px] leading-none flex items-center justify-center transition-colors z-10"
+                    class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-sw-dark border border-white/20 text-sw-text/40 hover:text-red-400 text-xs leading-none flex items-center justify-center transition-colors z-10 touch-manipulation"
                     @click.stop="clearCell(rowIdx, colIdx - 1)"
                   >
                     ×
