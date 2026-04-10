@@ -308,29 +308,31 @@ function numInput(val: string, min = 1): number {
               >→</span>
               <div
                 draggable="true"
-                class="relative group flex items-center justify-center rounded-lg bg-sw-card border transition-all cursor-grab active:cursor-grabbing select-none"
+                class="relative flex items-center justify-center rounded-lg bg-sw-card border transition-all cursor-grab active:cursor-grabbing select-none"
                 :class="[
                   dragOverIdx === iIdx && dragFrom?.entry === eIdx && dragFrom?.icon !== iIdx
                     ? 'border-sw-gold/60 scale-105'
                     : 'border-sw-gold/20',
                 ]"
                 style="padding: 4px; width: 36px; height: 36px;"
-                :title="`${iconLabel(icon.iconFile)} — click to remove, drag to reorder`"
+                :title="iconLabel(icon.iconFile)"
                 @dragstart="onDragStart(eIdx, iIdx)"
                 @dragover.prevent="onDragOver(iIdx)"
                 @drop.prevent="onDrop(eIdx, iIdx)"
                 @dragend="onDragEnd"
-                @click="removeIcon(eIdx, iIdx)"
               >
                 <img
                   :src="iconPath(icon.iconFile)"
                   :alt="iconLabel(icon.iconFile)"
                   class="w-full h-full object-contain pointer-events-none"
                 />
-                <!-- Delete overlay on hover -->
-                <div class="absolute inset-0 rounded-lg bg-red-900/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                  <span class="text-white text-xs font-bold">✕</span>
-                </div>
+                <!-- Persistent delete badge (visible on all devices) -->
+                <button
+                  type="button"
+                  class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-sw-dark border border-white/20 text-sw-text/50 hover:text-red-400 hover:border-red-400/50 text-[9px] leading-none flex items-center justify-center transition-colors z-10 touch-manipulation"
+                  :title="`Remove ${iconLabel(icon.iconFile)}`"
+                  @click.stop="removeIcon(eIdx, iIdx)"
+                >×</button>
               </div>
             </template>
 
