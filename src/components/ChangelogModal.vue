@@ -4,6 +4,21 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.14.0',
+    date: '2026-04-15',
+    changes: [
+      'Custom Builder — full mobile UX overhaul: 22 fixes across all phases',
+      'Custom — combat tree now supports long-press + tap to reposition icons on touch devices',
+      'Custom — expertise delete × badge now always visible (no longer hover-only)',
+      'Custom — canvas previews scale correctly on retina displays (2× DPR)',
+      'Custom — ProfileVisualModal cards stack vertically on mobile; PDF export is first action',
+      'Custom — all touch targets raised to 44px minimum across all phases',
+      'Custom — large photo uploads compressed to 1200px max before storage',
+      'Custom — inline confirm UI replaces native confirm() dialog (PWA-safe)',
+      'Custom — dropdowns and pickers clamped to viewport width; virtual keyboard aware',
+    ],
+  },
+  {
     version: '2.13.3',
     date: '2026-04-09',
     changes: [
