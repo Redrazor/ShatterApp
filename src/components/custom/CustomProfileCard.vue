@@ -64,14 +64,14 @@ function formatDate(iso: string): string {
     <!-- Expanded actions -->
     <div v-if="expanded" class="border-t border-sw-gold/10 px-4 py-3 flex flex-wrap gap-2">
       <button
-        class="rounded-lg px-3 py-1.5 text-sm font-medium bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
+        class="rounded-lg px-3 py-2.5 text-sm font-medium bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20 transition-colors"
         @click="emit('load')"
       >
         Edit
       </button>
       <button
         :disabled="status !== 'complete'"
-        class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+        class="rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
         :class="status === 'complete'
           ? 'bg-sw-gold/10 text-sw-gold hover:bg-sw-gold/20'
           : 'bg-sw-card text-sw-text/25 cursor-not-allowed'"
@@ -84,13 +84,13 @@ function formatDate(iso: string): string {
       <!-- Published controls -->
       <template v-if="published">
         <button
-          class="rounded-lg px-3 py-1.5 text-sm font-medium bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 transition-colors"
+          class="rounded-lg px-3 py-2.5 text-sm font-medium bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 transition-colors"
           @click="emit('unpublish')"
         >
           Unpublish
         </button>
         <button
-          class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          class="rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
           :class="visible
             ? 'bg-green-600/10 text-green-400 hover:bg-green-600/20 border border-green-500/30'
             : 'bg-sw-card text-sw-text/40 border border-sw-gold/20 hover:bg-sw-gold/5'"
@@ -108,7 +108,7 @@ function formatDate(iso: string): string {
       </span>
 
       <button
-        class="ml-auto rounded-lg px-3 py-1.5 text-sm font-medium text-red-400 hover:bg-red-400/10 transition-colors"
+        class="ml-auto rounded-lg px-3 py-2.5 text-sm font-medium text-red-400 hover:bg-red-400/10 transition-colors"
         @click="emit('delete')"
       >
         Delete

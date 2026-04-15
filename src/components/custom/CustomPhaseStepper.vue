@@ -35,7 +35,7 @@ function isUnlocked(phase: BuilderPhase): boolean {
         <button
           type="button"
           :disabled="!isUnlocked(step.phase)"
-          class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all"
+          class="w-11 h-11 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all"
           :class="[
             step.phase === activePhase
               ? 'bg-sw-gold border-sw-gold text-sw-bg'

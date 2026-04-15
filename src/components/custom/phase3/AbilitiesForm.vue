@@ -228,7 +228,7 @@ async function insertSymbol(symbolName: string) {
         <!-- Remove button -->
         <button
           type="button"
-          class="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg text-sw-text/30 hover:text-red-400 hover:bg-red-400/10 transition-colors text-sm"
+          class="flex-shrink-0 w-11 h-11 flex items-center justify-center rounded-lg text-sw-text/30 hover:text-red-400 hover:bg-red-400/10 transition-colors text-sm touch-manipulation"
           title="Remove ability"
           @click="removeBlock(i)"
         >

@@ -182,7 +182,7 @@ function handleStartOver() {
     <div class="flex items-center gap-3">
       <button
         type="button"
-        class="flex items-center gap-1 text-sw-text/60 hover:text-sw-gold transition-colors text-sm"
+        class="flex items-center gap-1 text-sw-text/60 hover:text-sw-gold transition-colors text-sm min-h-[44px] pr-3"
         @click="emit('back')"
       >
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

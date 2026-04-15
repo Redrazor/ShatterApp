@@ -52,11 +52,12 @@ function compressImage(dataUrl: string): Promise<string> {
   return new Promise((resolve) => {
     const img = new Image()
     img.onload = () => {
+      const MAX_DIM = 1200
+      const scale = Math.min(1, MAX_DIM / Math.max(img.naturalWidth, img.naturalHeight))
       const canvas = document.createElement('canvas')
-      canvas.width = img.naturalWidth
-      canvas.height = img.naturalHeight
-      const ctx = canvas.getContext('2d')!
-      ctx.drawImage(img, 0, 0)
+      canvas.width  = Math.round(img.naturalWidth  * scale)
+      canvas.height = Math.round(img.naturalHeight * scale)
+      canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height)
       resolve(canvas.toDataURL('image/jpeg', 0.7))
     }
     img.src = dataUrl

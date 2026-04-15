@@ -21,12 +21,12 @@ const FACTIONS: { value: HomebrewFaction; label: string; color: string; border: 
 <template>
   <div class="space-y-2">
     <label class="text-xs font-semibold text-sw-text/50 uppercase tracking-wider">Faction</label>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2 justify-center">
       <button
         v-for="f in FACTIONS"
         :key="f.value"
         type="button"
-        class="px-4 py-2 rounded-xl text-sm font-semibold transition-all border-2"
+        class="px-4 py-3 rounded-xl text-sm font-semibold transition-all border-2"
         :class="[
           faction === f.value
             ? [f.border, f.text, 'scale-105 shadow-lg']

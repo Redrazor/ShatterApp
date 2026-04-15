@@ -86,9 +86,24 @@ async function openDropdown() {
   if (props.disabled) return
   if (triggerRef.value) {
     const rect = triggerRef.value.getBoundingClientRect()
+    const DROPDOWN_W = 288 // w-72
+    const DROPDOWN_H = 320 // estimated max height
+    const vw = window.innerWidth
+    const vh = window.visualViewport?.height ?? window.innerHeight
+
+    // Clamp left so dropdown never overflows right edge
+    const rawLeft = rect.left
+    const left = Math.min(rawLeft, vw - DROPDOWN_W - 8)
+
+    // Flip above trigger if not enough space below
+    const spaceBelow = vh - rect.bottom - 6
+    const top = spaceBelow >= DROPDOWN_H
+      ? rect.bottom + 6
+      : Math.max(8, rect.top - DROPDOWN_H - 6)
+
     dropdownStyle.value = {
-      top: `${rect.bottom + 6}px`,
-      left: `${rect.left}px`,
+      top: `${top}px`,
+      left: `${Math.max(8, left)}px`,
     }
   }
   isOpen.value = true

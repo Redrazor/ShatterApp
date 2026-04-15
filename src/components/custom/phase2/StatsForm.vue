@@ -140,7 +140,7 @@ function clamp(v: number, min: number, max: number) {
           {{ tag }}
           <button
             type="button"
-            class="hover:text-red-400 transition-colors leading-none"
+            class="w-5 h-5 flex items-center justify-center rounded-full hover:text-red-400 hover:bg-red-400/10 transition-colors leading-none touch-manipulation"
             @click="removeTag(tag)"
           >×</button>
         </span>

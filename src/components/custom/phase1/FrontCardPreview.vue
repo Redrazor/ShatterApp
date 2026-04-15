@@ -86,6 +86,7 @@ function onPointerUp(e: PointerEvent) {
 }
 
 function onWheel(e: WheelEvent) {
+  if (!isPanning) return
   e.preventDefault()
   if (!props.frontCard) return
   const delta = e.deltaY > 0 ? -0.1 : 0.1
