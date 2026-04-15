@@ -124,7 +124,7 @@ onMounted(() => {
         <button
           class="text-sw-text/30 hover:text-sw-gold transition-colors"
           @click="showChangelog = true"
-        >v2.14.0</button>
+        >v2.15.0</button>
       </div>
     </footer>
   </div>

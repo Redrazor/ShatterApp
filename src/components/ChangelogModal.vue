@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.15.0',
+    date: '2026-04-15',
+    changes: [
+      'Browse — unit profiles now show a "Last Updated" date instead of the card art status badge',
+      'Data — added Morgan Elsbeth (SWP83: My Loyalty, My Life) — Primary, New Republic era',
+    ],
+  },
+  {
     version: '2.14.0',
     date: '2026-04-15',
     changes: [
