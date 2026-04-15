@@ -51,6 +51,7 @@ export function homebrewToCharacter(
     stance2: images.stance2 ?? undefined,
     stances: stanceNames,
     releaseDate: profile.createdAt,
+    lastUpdated: profile.createdAt,
   }
 }
 
