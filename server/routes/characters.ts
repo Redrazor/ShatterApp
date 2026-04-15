@@ -38,6 +38,7 @@ export function rowToCharacter(row: Record<string, unknown>, tags: string[]) {
     extraCards: row.extra_cards ?? undefined,
     stances: [],
     releaseDate: row.release_date,
+    lastUpdated: row.last_updated ?? '',
   }
 }
 

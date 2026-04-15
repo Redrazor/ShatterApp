@@ -42,7 +42,8 @@ export function createTables(sqlite: Sqlite): void {
       model_count INTEGER,
       character_exclusion TEXT,
       extra_cards TEXT,
-      release_date TEXT NOT NULL DEFAULT ''
+      release_date TEXT NOT NULL DEFAULT '',
+      last_updated TEXT NOT NULL DEFAULT ''
     );
 
     CREATE TABLE IF NOT EXISTS character_tags (
@@ -116,14 +117,14 @@ export function seedCharacters(sqlite: Sqlite, chars: Character[]): void {
       swp, swp_code, spt,
       thumbnail, card_front, card_back,
       order_card, stance1, stance2, model, model_count,
-      character_exclusion, extra_cards, release_date
+      character_exclusion, extra_cards, release_date, last_updated
     ) VALUES (
       @id, @slug, @name, @characterType, @unitType, @unitTypeName,
       @pc, @sp, @durability, @stamina, @fp, @era,
       @swp, @swpCode, @spt,
       @thumbnail, @cardFront, @cardBack,
       @orderCard, @stance1, @stance2, @model, @modelCount,
-      @characterExclusion, @extraCards, @releaseDate
+      @characterExclusion, @extraCards, @releaseDate, @lastUpdated
     )
   `)
 
@@ -160,6 +161,7 @@ export function seedCharacters(sqlite: Sqlite, chars: Character[]): void {
         characterExclusion: c.characterExclusion ?? null,
         extraCards: c.extraCards ?? null,
         releaseDate: c.releaseDate,
+        lastUpdated: c.lastUpdated ?? '',
       })
       for (const tag of c.tags) {
         insertTag.run({ characterId: c.id, tag })
