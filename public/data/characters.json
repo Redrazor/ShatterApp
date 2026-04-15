@@ -4453,5 +4453,39 @@
     "stances": [],
     "releaseDate": "",
     "slug": "wrecker-and-omega"
+  },
+  {
+    "id": 135,
+    "name": "Morgan Elsbeth",
+    "characterType": "Morgan Elsbeth",
+    "unitType": "Primary",
+    "unitTypeName": "Primary",
+    "pc": null,
+    "sp": 8,
+    "durability": 3,
+    "stamina": 10,
+    "fp": 2,
+    "era": "New Republic",
+    "tags": [
+      "Dathomirian",
+      "Galactic Empire",
+      "Nightsister"
+    ],
+    "swp": "SWP83: My Loyalty, My Life",
+    "swpCode": "SWP83",
+    "spt": "00830101",
+    "thumbnail": "/images/SWP83_Morgan_Thumbnail.png",
+    "cardFront": "/images/SWP83_Morgan_Front.png",
+    "cardBack": "/images/SWP83_Morgan_Back.png",
+    "orderCard": "",
+    "stance1": "/images/SWP83_Morgan_Stance1.png",
+    "stance2": "/images/SWP83_Morgan_Stance2.png",
+    "model": "",
+    "modelCount": 1,
+    "characterExclusion": "",
+    "extraCards": "",
+    "stances": [],
+    "releaseDate": "",
+    "slug": "morgan-elsbeth"
   }
 ]
