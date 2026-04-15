@@ -127,9 +127,6 @@ const eras = computed(() =>
 )
 
 // ── Errata ────────────────────────────────────────────────
-const artStatus = computed(() =>
-  character.value ? errataStore.isCardArtCurrent(character.value.id) : true
-)
 const errata = computed(() =>
   character.value ? errataStore.getErrata(character.value.id) : []
 )
@@ -180,10 +177,9 @@ const errata = computed(() =>
           >✕</button>
         </div>
 
-        <!-- Card freshness badge -->
+        <!-- Last updated -->
         <div class="px-3 pb-1">
-          <span v-if="artStatus" class="text-[10px] font-semibold text-green-400">✓ Card Updated</span>
-          <span v-else class="text-[10px] font-semibold text-amber-400">⚠ Card Not Updated</span>
+          <span v-if="character?.lastUpdated" class="text-[10px] font-semibold text-sw-text/50">Last Updated: {{ character.lastUpdated }}</span>
         </div>
 
         <!-- Flip card -->

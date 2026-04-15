@@ -49,6 +49,7 @@ export interface Character {
   extraCards?: string
   stances: string[]
   releaseDate: string
+  lastUpdated: string
 }
 
 export interface Mission {

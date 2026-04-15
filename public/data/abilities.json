@@ -4139,5 +4139,36 @@
         "description": "While a character in this Unit makes a [ranged] attack, the target of that attack reduces its Cover value by 1, to a minimum of 0."
       }
     ]
+  },
+  "135": {
+    "characterId": 135,
+    "name": "Morgan Elsbeth",
+    "swpCode": "SWP83",
+    "abilities": [
+      {
+        "name": "Fate Has Decided Our Next Move",
+        "type": "tactic",
+        "cost": null,
+        "description": "At the start of this Unit's activation, look at the top card of your Order Deck. Then put that card on the top or bottom of your Order Deck. If you chose to put the card on the top of your Order Deck, each character in this Unit may [dash]. Then this Unit immediately makes a focus action. If you chose to put the card on the bottom of your Order Deck, one character in each allied Nightsister and Night Trooper Unit may [heal]. If you have no cards in your Order Deck, choose which effect to resolve."
+      },
+      {
+        "name": "Manipulating Hand",
+        "type": "active",
+        "cost": 2,
+        "description": "Choose an enemy character within 4. The chosen character [dash]. You resolve this move."
+      },
+      {
+        "name": "You Will Die Here, Alone",
+        "type": "innate",
+        "cost": null,
+        "description": "When a character in this Unit makes a [melee] attack as part of a combat action, if there are no other enemy characters within 2 of the defender, add 3 dice to the attack roll."
+      },
+      {
+        "name": "My Loyalty, My Life for the Sisterhood",
+        "type": "identity",
+        "cost": null,
+        "description": "While this Unit is not Wounded, when an allied Unit within 3 would spend [force] to use an ability, this Unit may suffer [damage] equal to the cost of the ability instead. Additionally, when this Unit becomes Wounded, after the effect is resolved, one character in this Unit may [dash] and then may make a 5 dice [melee] attack."
+      }
+    ]
   }
 }

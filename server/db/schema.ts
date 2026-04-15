@@ -27,6 +27,7 @@ export const characters = sqliteTable('characters', {
   characterExclusion: text('character_exclusion'),
   extraCards: text('extra_cards'),
   releaseDate: text('release_date').notNull().default(''),
+  lastUpdated: text('last_updated').notNull().default(''),
 })
 
 export const characterTags = sqliteTable('character_tags', {
