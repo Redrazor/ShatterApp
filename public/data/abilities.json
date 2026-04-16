@@ -4170,5 +4170,36 @@
         "description": "While this Unit is not Wounded, when an allied Unit within 3 would spend [force] to use an ability, this Unit may suffer [damage] equal to the cost of the ability instead. Additionally, when this Unit becomes Wounded, after the effect is resolved, one character in this Unit may [dash] and then may make a 5 dice [melee] attack."
       }
     ]
+  },
+  "136": {
+    "characterId": 136,
+    "name": "Baylan Skoll",
+    "swpCode": "SWP82",
+    "abilities": [
+      {
+        "name": "Power, Such as You've Never Dreamed",
+        "type": "active",
+        "cost": 2,
+        "description": "Choose a character in this Unit and an enemy character within 3 of that character. Pull the chosen enemy character 2 Toward the chosen allied character. Then this Unit gains [hunker]."
+      },
+      {
+        "name": "Force-Enhanced Dexterity",
+        "type": "active",
+        "cost": 1,
+        "description": "Each character in this Unit may [dash]. If any characters [dash], this Unit gains [hunker]. This Unit may use this ability two times during its activation instead of the normal one."
+      },
+      {
+        "name": "Impatience for Victory Will Guarantee Defeat",
+        "type": "innate",
+        "cost": null,
+        "description": "At the start of another allied Unit's activation, while it would remove its [hunker], it may choose not to. If it chooses not to remove its [hunker], at the end of that Unit's activation, it removes all its [hunker]. Additionally, after Setup and each time an opposing player claims a Struggle Card, each allied Unit gains [hunker]."
+      },
+      {
+        "name": "One Must Destroy in Order to Create",
+        "type": "identity",
+        "cost": null,
+        "description": "Allied Units do not lose their [hunker] when characters in them become Engaged and can gain and have [hunker] while they have Engaged characters. When a character in an allied Unit makes an attack, during the Modify Dice Step, it may remove one or more of its [hunker]. If it does, add [expertise] to the attack roll for each [hunker] it removed."
+      }
+    ]
   }
 }
