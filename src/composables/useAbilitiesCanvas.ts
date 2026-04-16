@@ -77,18 +77,56 @@ const ABILITY_RIGHT = 524
 const ABILITY_TOP = 116          // below name bar with breathing room
 const ABILITY_BOTTOM = 490
 
-// Ability rendering constants
-const TYPE_ICON_SZ = 38          // large ability type icon
-const ICON_TEXT_GAP = 12         // gap between type icon and title/body text
-const FORCE_ICON_SZ = 27         // force pip icons (50% bigger than inline)
-const INLINE_ICON_SZ = 24        // inline text icons
-const TITLE_SIZE = 18            // bold title
-const BODY_SIZE = 14             // body text
-const BODY_LINE_H = 19           // body line height
-const BLOCK_GAP = 18             // gap between blocks
+// Ability rendering size config — all constants that scale together per tier
+interface SizeConfig {
+  typeIconSz:   number  // large ability type icon
+  iconTextGap:  number  // gap between type icon and body text column
+  forceIconSz:  number  // force pip icons
+  inlineIconSz: number  // inline text icons
+  titleSize:    number  // bold title font size
+  bodySize:     number  // body text font size
+  bodyLineH:    number  // body line height
+  blockGap:     number  // vertical gap between ability blocks
+}
 
-// Body text / title x start — indented past the type icon
-const BODY_LEFT = ABILITY_LEFT + TYPE_ICON_SZ + ICON_TEXT_GAP
+const SIZE_TIERS: SizeConfig[] = [
+  // T0 — baseline (0–299 stripped chars)
+  { typeIconSz: 38, iconTextGap: 12, forceIconSz: 27, inlineIconSz: 24,
+    titleSize: 18, bodySize: 14, bodyLineH: 19, blockGap: 18 },
+  // T1 — mild reduction (300–419 stripped chars)
+  { typeIconSz: 34, iconTextGap: 10, forceIconSz: 24, inlineIconSz: 21,
+    titleSize: 16, bodySize: 13, bodyLineH: 17, blockGap: 15 },
+  // T2 — moderate reduction (420–649 stripped chars)
+  { typeIconSz: 30, iconTextGap: 9,  forceIconSz: 21, inlineIconSz: 18,
+    titleSize: 14, bodySize: 12, bodyLineH: 16, blockGap: 13 },
+  // T3 — aggressive reduction (650+ stripped chars)
+  { typeIconSz: 26, iconTextGap: 8,  forceIconSz: 19, inlineIconSz: 16,
+    titleSize: 12, bodySize: 11, bodyLineH: 15, blockGap: 11 },
+]
+
+const TIER_THRESHOLDS = [300, 420, 650]
+
+export function computeTotalChars(blocks: AbilityBlock[]): number {
+  let total = 0
+  for (const block of blocks) {
+    total += block.title.length
+    // Each [iconname] token counts as 1 char (renders as a single icon glyph)
+    total += block.text.replace(/\[[^\]]+\]/g, 'X').length
+  }
+  return total
+}
+
+export function getTierIndexForBlocks(blocks: AbilityBlock[]): number {
+  const chars = computeTotalChars(blocks)
+  if (chars < TIER_THRESHOLDS[0]) return 0
+  if (chars < TIER_THRESHOLDS[1]) return 1
+  if (chars < TIER_THRESHOLDS[2]) return 2
+  return 3
+}
+
+function selectSizeTier(blocks: AbilityBlock[]): SizeConfig {
+  return SIZE_TIERS[getTierIndexForBlocks(blocks)]
+}
 
 // drawRichText: renders text with [symbolname] markers inline, returns top-y of last rendered line
 function drawRichText(
@@ -99,6 +137,7 @@ function drawRichText(
   maxW: number,
   lineH: number,
   iconSz: number,
+  bodySize: number,
 ): number {
   ctx.textBaseline = 'top'
   ctx.fillStyle = '#333333'
@@ -161,7 +200,7 @@ function drawRichText(
           cy += lineH
           cx = x0
         }
-        ctx.drawImage(img, cx, cy + BODY_SIZE / 2 - iconSz / 2, iconSz, iconSz)
+        ctx.drawImage(img, cx, cy + bodySize / 2 - iconSz / 2, iconSz, iconSz)
         cx += iconSz + 2
       }
     }
@@ -176,6 +215,8 @@ function drawAbilityBlocks(
   fontReady: boolean,
   faction: HomebrewFaction,
 ) {
+  const sz = selectSizeTier(blocks)
+  const BODY_LEFT = ABILITY_LEFT + sz.typeIconSz + sz.iconTextGap
   const font = fontReady ? 'Oswald' : 'Impact, Arial Black, sans-serif'
   let y = ABILITY_TOP
   const bodyMaxW = ABILITY_RIGHT - BODY_LEFT
@@ -187,15 +228,15 @@ function drawAbilityBlocks(
     // 1. Draw type icon — faction-specific if available
     const typeImg = imgCache.get(typeIconPath(block.iconType, faction))
     if (typeImg) {
-      ctx.drawImage(typeImg, ABILITY_LEFT, y, TYPE_ICON_SZ, TYPE_ICON_SZ)
+      ctx.drawImage(typeImg, ABILITY_LEFT, y, sz.typeIconSz, sz.typeIconSz)
     }
 
     // 2. Draw title first (bold, vertically centered with type icon)
-    const titleCenterY = y + TYPE_ICON_SZ / 2
+    const titleCenterY = y + sz.typeIconSz / 2
     let forceX = BODY_LEFT
     if (block.title) {
       ctx.save()
-      ctx.font = `bold ${TITLE_SIZE}px "${font}"`
+      ctx.font = `bold ${sz.titleSize}px "${font}"`
       ctx.fillStyle = '#111111'
       ctx.textAlign = 'left'
       ctx.textBaseline = 'middle'
@@ -208,27 +249,27 @@ function drawAbilityBlocks(
     if (block.forceCost > 0) {
       const forceImg = imgCache.get(inlineIconPath('force'))
       const count = Math.min(block.forceCost, 6)
-      const forceY = Math.round(titleCenterY - FORCE_ICON_SZ / 2) - 4
+      const forceY = Math.round(titleCenterY - sz.forceIconSz / 2) - 4
       for (let f = 0; f < count; f++) {
         if (forceImg) {
-          ctx.drawImage(forceImg, forceX + f * (FORCE_ICON_SZ + 2), forceY, FORCE_ICON_SZ, FORCE_ICON_SZ)
+          ctx.drawImage(forceImg, forceX + f * (sz.forceIconSz + 2), forceY, sz.forceIconSz, sz.forceIconSz)
         }
       }
     }
 
     // 4. Advance y below the icon row, with small gap before body
-    y += TYPE_ICON_SZ - 4
+    y += sz.typeIconSz - 4
 
     // 5. Draw body text — indented to BODY_LEFT, same as title
     if (block.text) {
       ctx.save()
-      ctx.font = `400 ${BODY_SIZE}px "${font}"`
-      const lastLineY = drawRichText(ctx, block.text, BODY_LEFT, y, bodyMaxW, BODY_LINE_H, INLINE_ICON_SZ)
-      y = lastLineY + BODY_LINE_H
+      ctx.font = `400 ${sz.bodySize}px "${font}"`
+      const lastLineY = drawRichText(ctx, block.text, BODY_LEFT, y, bodyMaxW, sz.bodyLineH, sz.inlineIconSz, sz.bodySize)
+      y = lastLineY + sz.bodyLineH
       ctx.restore()
     }
 
-    y += BLOCK_GAP
+    y += sz.blockGap
 
     // 6. Draw separator line between blocks (not after last)
     if (i < blocks.length - 1 && y <= ABILITY_BOTTOM) {
@@ -237,7 +278,7 @@ function drawAbilityBlocks(
       ctx.lineWidth = 0.5
       ctx.setLineDash([4, 3])
       ctx.beginPath()
-      const sepY = y - BLOCK_GAP / 2
+      const sepY = y - sz.blockGap / 2
       ctx.moveTo(ABILITY_LEFT, sepY)
       ctx.lineTo(ABILITY_RIGHT, sepY)
       ctx.stroke()
