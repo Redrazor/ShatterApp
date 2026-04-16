@@ -261,8 +261,6 @@ export function useCardCanvas(
       dpr = Math.min(window.devicePixelRatio || 1, 2)
       canvas.width  = CANVAS_W * dpr
       canvas.height = CANVAS_H * dpr
-      canvas.style.width  = `${CANVAS_W}px`
-      canvas.style.height = `${CANVAS_H}px`
     }
     await preload()
     scheduleRender()
