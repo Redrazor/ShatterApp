@@ -4,6 +4,13 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.15.2',
+    date: '2026-04-16',
+    changes: [
+      'Data — added Baylan Skoll (SWP82: Secure the Future) — Primary, New Republic era',
+    ],
+  },
+  {
     version: '2.15.1',
     date: '2026-04-16',
     changes: [
