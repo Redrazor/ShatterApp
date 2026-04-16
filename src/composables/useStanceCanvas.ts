@@ -598,8 +598,6 @@ export function useStanceCanvas(
       dpr = Math.min(window.devicePixelRatio || 1, 2)
       canvas.width  = STANCE_CANVAS_W * dpr
       canvas.height = STANCE_CANVAS_H * dpr
-      canvas.style.width  = `${STANCE_CANVAS_W}px`
-      canvas.style.height = `${STANCE_CANVAS_H}px`
     }
     await preload()
     scheduleRender()

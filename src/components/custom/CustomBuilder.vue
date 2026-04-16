@@ -236,7 +236,7 @@ function handleStartOver() {
         </div>
 
         <!-- Right: preview -->
-        <div class="order-1 md:order-2 md:sticky md:top-16 self-start">
+        <div class="order-1 md:order-2 self-start">
           <p class="text-xs text-sw-text/40 mb-2 text-center">Live Preview</p>
           <div class="w-3/5 mx-auto">
           <FrontCardPreview
