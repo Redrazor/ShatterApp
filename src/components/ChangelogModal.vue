@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.15.1',
+    date: '2026-04-16',
+    changes: [
+      'Custom Builder — abilities card auto-reduces font size in 4 tiers as text grows, preventing content from clipping off the card',
+      'Custom Builder — fixed card previews overflowing their containers on desktop across all phases',
+    ],
+  },
+  {
     version: '2.15.0',
     date: '2026-04-15',
     changes: [
