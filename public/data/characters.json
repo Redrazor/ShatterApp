@@ -558,8 +558,8 @@
   },
   {
     "id": 128,
-    "name": "Baze Malbus and Chirrut Îmwe",
-    "characterType": "Baze Malbus;Chirrut Îmwe",
+    "name": "Baze Malbus and Chirrut \u00cemwe",
+    "characterType": "Baze Malbus;Chirrut \u00cemwe",
     "unitType": "Support",
     "unitTypeName": "Support",
     "pc": 5,
@@ -4621,5 +4621,40 @@
     "releaseDate": "",
     "slug": "morgan-elsbeth",
     "lastUpdated": "15/04/2026"
+  },
+  {
+    "id": 136,
+    "name": "Baylan Skoll",
+    "characterType": "Baylan Skoll",
+    "unitType": "Primary",
+    "unitTypeName": "Primary",
+    "pc": null,
+    "sp": 7,
+    "durability": 3,
+    "stamina": 10,
+    "fp": 3,
+    "era": "New Republic",
+    "tags": [
+      "Force User",
+      "Mercenary",
+      "Scoundrel"
+    ],
+    "swp": "SWP82: Secure the Future",
+    "swpCode": "SWP82",
+    "spt": "00820101",
+    "thumbnail": "/images/SWP82_Baylan_Thumbnail.png",
+    "cardFront": "/images/SWP82_Baylan_Front.png",
+    "cardBack": "/images/SWP82_Baylan_Back.png",
+    "orderCard": "",
+    "stance1": "/images/SWP82_Baylan_Stance1.png",
+    "stance2": "/images/SWP82_Baylan_Stance2.png",
+    "model": "",
+    "modelCount": 1,
+    "characterExclusion": "",
+    "extraCards": "",
+    "stances": [],
+    "releaseDate": "",
+    "slug": "baylan-skoll",
+    "lastUpdated": "16/04/2026"
   }
 ]
