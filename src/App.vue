@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
 import AppInstallBanner from './components/AppInstallBanner.vue'
 import ChangelogModal from './components/ChangelogModal.vue'
 import SettingsPanel from './components/collection/SettingsPanel.vue'
 import { useSettingsStore } from './stores/settings.ts'
+import { useLandscapeAllowed } from './composables/useLandscapeAllowed.ts'
 
 const menuOpen = ref(false)
 const showChangelog = ref(false)
 const settingsOpen = ref(false)
 const router = useRouter()
 const settingsStore = useSettingsStore()
+const allowLandscapeMode = useLandscapeAllowed()
 
 const allRoutes = [
   { to: '/browse',     label: 'Browse',     always: true },
@@ -32,8 +34,23 @@ function closeMenu() { menuOpen.value = false }
 // Close menu on route change
 router.afterEach(closeMenu)
 
+type OrientationApi = { lock?: (o: string) => Promise<void>; unlock?: () => void }
+
+function lockPortrait() {
+  ;(screen.orientation as unknown as OrientationApi)?.lock?.('portrait-primary')?.catch(() => {})
+}
+
+function unlockOrientation() {
+  ;(screen.orientation as unknown as OrientationApi)?.unlock?.()
+}
+
 onMounted(() => {
-  ;(screen.orientation as unknown as { lock?: (o: string) => Promise<void> })?.lock?.('portrait-primary')?.catch(() => {})
+  if (!allowLandscapeMode.value) lockPortrait()
+})
+
+watch(allowLandscapeMode, (allowed) => {
+  if (allowed) unlockOrientation()
+  else lockPortrait()
 })
 </script>
 
@@ -134,14 +151,27 @@ onMounted(() => {
   <SettingsPanel :open="settingsOpen" @close="settingsOpen = false" />
 
   <!-- Landscape blocker -->
-  <div class="landscape-block">
-    <div class="flex flex-col items-center gap-4 text-center px-8">
+  <div
+    v-if="!allowLandscapeMode"
+    class="landscape-block"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Portrait orientation required"
+  >
+    <div class="flex flex-col items-center gap-4 text-center px-8 max-w-sm">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-sw-gold animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
       </svg>
       <p class="text-xl font-bold text-sw-gold">Rotate Your Device</p>
-      <p class="text-sm text-white/70">ShatterApp is designed for portrait mode.</p>
-      <p class="text-xs text-white/40">Turn your phone upright to continue</p>
+      <p class="text-sm text-white/70">ShatterApp's mobile layout is portrait-first.</p>
+      <p class="text-xs text-white/50">
+        Want to use landscape anyway? Open Settings → toggle <span class="text-sw-gold font-medium">"Allow landscape mode"</span>.
+      </p>
+      <button
+        type="button"
+        class="mt-2 rounded-lg bg-sw-gold/15 hover:bg-sw-gold/25 border border-sw-gold/40 text-sw-gold text-sm font-medium px-4 py-3 transition-colors"
+        @click="settingsOpen = true"
+      >Open Settings</button>
     </div>
   </div>
 </template>
@@ -149,7 +179,7 @@ onMounted(() => {
 <style>
 .landscape-block { display: none; }
 
-@media screen and (orientation: landscape) and (pointer: coarse) {
+@media screen and (orientation: landscape) and (pointer: coarse) and (max-width: 767px) {
   .landscape-block {
     display: flex; position: fixed; inset: 0; z-index: 9999;
     background: linear-gradient(135deg, #0f1117 0%, #1a1d2e 100%);
