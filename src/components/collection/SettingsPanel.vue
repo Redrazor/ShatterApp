@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useSettingsStore } from '../../stores/settings.ts'
+import { useLandscapeAllowed } from '../../composables/useLandscapeAllowed.ts'
 
 defineProps<{ open: boolean }>()
 defineEmits<{ (e: 'close'): void }>()
 
 const settings = useSettingsStore()
+const allowLandscapeMode = useLandscapeAllowed()
 
 const customToggles = [
   {
@@ -82,7 +84,7 @@ const playToggles = [
   <Transition name="fade">
     <div
       v-if="open"
-      class="fixed inset-0 z-40 bg-black/60"
+      class="fixed inset-0 z-[10000] bg-black/60"
       @click="$emit('close')"
     />
   </Transition>
@@ -91,7 +93,7 @@ const playToggles = [
   <Transition name="slide">
     <div
       v-if="open"
-      class="fixed right-0 top-0 z-50 h-full w-80 max-w-[90vw] overflow-y-auto bg-sw-card border-l border-sw-gold/20 shadow-2xl flex flex-col"
+      class="fixed right-0 top-0 z-[10001] h-full w-80 max-w-[90vw] overflow-y-auto bg-sw-card border-l border-sw-gold/20 shadow-2xl flex flex-col"
     >
       <!-- Header -->
       <div class="flex items-center justify-between border-b border-sw-gold/20 px-4 py-4">
@@ -103,6 +105,33 @@ const playToggles = [
       </div>
 
       <div class="flex-1 space-y-6 px-4 py-5">
+        <!-- Display section -->
+        <section class="space-y-3">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-sw-text/40">Display</p>
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-sw-text">Allow landscape mode</p>
+              <p class="text-[11px] text-sw-text/40 leading-snug mt-0.5">Skip the portrait lockout on phones. Some views may not be fully optimised for landscape. Tablets are unaffected.</p>
+            </div>
+            <button
+              :class="[
+                'relative mt-0.5 shrink-0 h-5 w-9 rounded-full transition-colors',
+                allowLandscapeMode ? 'bg-sw-gold' : 'bg-sw-dark border border-sw-gold/20',
+              ]"
+              role="switch"
+              :aria-checked="allowLandscapeMode"
+              @click="allowLandscapeMode = !allowLandscapeMode"
+            >
+              <span
+                :class="[
+                  'absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all duration-200',
+                  allowLandscapeMode ? 'right-0.5' : 'left-0.5',
+                ]"
+              />
+            </button>
+          </div>
+        </section>
+
         <!-- Custom section -->
         <section class="space-y-3">
           <p class="text-[10px] font-bold uppercase tracking-widest text-sw-text/40">Custom</p>
