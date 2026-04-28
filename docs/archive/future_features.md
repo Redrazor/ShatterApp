@@ -433,9 +433,9 @@ The app is already a PWA (Vite PWA plugin with service worker). The main gap is 
 
 **Context:** Rather than manually counting dice, players should be able to tap "Attack" or "Defend" on a unit's profile in the Play view and be taken directly to the roller with the correct number of dice pre-rolled based on that unit's stats and active stance.
 
-**Status:** `[x]` Done — v2.5.0. Play view unit roster (Units tab) has per-unit roll buttons for Attack/Defend. Tapping navigates to `/roll` with `?role=&count=&unitId=` query params and auto-rolls on arrival.
+**Status:** `[x]` Done — Clicking an attack (⚔) or defense (🛡) stat button on a unit card in Play > Units navigates to the Dice tab, pre-rolls the correct dice, and expands the Dice panel to show the unit's stance card + conditions above the dice column. Works in solo and multiplayer mode. In multiplayer, also syncs the triggering unit's ID to the opponent via socket so both players see each other's stance card and conditions. "Add 1 die" now auto-rolls a random face immediately (no picker). Dice tab is always visible (not only in multiplayer).
 
-> **Note:** Build this as part of the Play view unit-tracking update (#13). Logic is tied to active units in a current game — not a standalone browse feature. Must be completed **before** multiplayer (#11), as conditions (#13) and profile-linked rolls feed directly into the multiplayer dice sharing flow.
+> **Original note:** Build this as part of the Play view unit-tracking update (#13). Logic is tied to active units in a current game — not a standalone browse feature. Must be completed **before** multiplayer (#11), as conditions (#13) and profile-linked rolls feed directly into the multiplayer dice sharing flow.
 
 ### Feature Breakdown
 
@@ -578,7 +578,7 @@ interface PlayUnit {
 
 **Context:** Players create custom or unofficial units (fan-made, campaign variants, modified profiles) and want to use the same app infrastructure — Browse, Build, Play — with their own characters alongside official ones.
 
-**Status:** `[ ]`
+**Status:** `[x]` Done
 
 ### Feature Breakdown
 
@@ -629,6 +629,14 @@ Stored in `src/stores/homebrew.ts`:
 
 ---
 
+## #20 — Keywords & Icon Glossary
+
+**Status:** `[x]` Done — v2.0.2
+
+**Description:** Searchable keyword reference tab in the Reference view. Lists all rule keywords (Immunity, Impact, Protection, Scale, Sharpshooter, Steadfast) with definitions and search. Icon descriptions always visible on desktop; toggle retained on mobile.
+
+---
+
 ## #15 — Play View: Unit Information Panel
 
 **Status:** `[x]` Done — v1.11.2
@@ -654,304 +662,39 @@ All four sub-features degrade cleanly when data files are absent or a unit has n
 
 ---
 
-## #16 — SPT / Longshanks Tournament Export
+## #16 — Build View: Visualise Strike Force
 
-**Context:** Competitive players register their Strike Force lists on longshanks.org (the community tournament platform) using a standardised SPT code string. Currently ShatterApp has no export path — players must re-enter their list manually on another site. Both Tabletop Admiral and ShatterpointDB already support SPT export.
+**Status:** `[x]` Done
 
-**Status:** `[x]` Done — `src/utils/sptExport.ts` + `SptExportModal.vue` in BuildView. SPT string generation + copy to clipboard.
+**Description:** Each saved list in the Build view gets a "Visualise" button that generates a visual card-art display of the full strike force, presented as two labelled rows (Squad 1 / Squad 2), each showing the three unit front cards in primary → secondary → support order. The result opens in a modal, can be downloaded as an image, and can be shared via a unique URL that allows any recipient to import and visualise the same strike force.
 
-### Feature Breakdown
+### Sub-features
 
-- **"Export for tournament" button** in StrikeForcePanel (inside the save/share button group)
-- Generates a plain-text SPT code string encoding: primary + secondary + support unit IDs, points total, squad name, mission
-- Button copies the code to clipboard and shows a brief "Copied!" toast
-- Optional: display the code in a modal so the user can also manually copy it
+1. **Visualise button** — Each saved list row in `StrikeForcePanel` gets a "Visualise" icon button alongside Save/Share. Opens `StrikeForceVisualModal.vue`.
 
-### SPT Format Research Needed
+2. **Card-art grid** — Inside the modal: two rows labelled "Squad 1" and "Squad 2" at the top. Each row contains 3 unit front-card images (primary, secondary, support) in a horizontal grid. Uses `cardFront` image paths from `characters.json` via `imageUrl()`. Falls back to a placeholder if a slot is empty.
 
-The exact SPT code format used by longshanks.org must be confirmed before implementation. Options:
-- Reverse-engineer an existing code from Tabletop Admiral/ShatterpointDB
-- Check if longshanks.org publishes a format spec or has a public API
+3. **Download as image** — A "Download" button uses `html2canvas` (or similar) to rasterise the card grid and trigger a PNG download named after the list.
+
+4. **Share via unique URL** — A "Share" button generates a unique short ID (stored server-side or as a base64url-encoded payload in the URL) for the current list. When opened, the app decodes the list, imports it silently, and immediately opens the Visualise modal so the recipient sees the same card layout.
 
 ### Options
 
 | Option | Cost | Effort | Notes |
 |---|---|---|---|
-| **Clipboard copy only** | Free | 2–4 hrs | Simplest; user pastes into longshanks.org registration form |
-| **Direct URL link to longshanks** | Free | 2–4 hrs | If longshanks accepts a query param, generate a direct link |
-| **longshanks API integration** | Free (if available) | 1–2 days | Register the list directly without leaving ShatterApp |
+| **html2canvas rasterise** | Free | Low | Renders DOM node to canvas → PNG download. No server needed. |
+| **Canvas drawn manually** | Free | Medium | Draw images programmatically onto a `<canvas>` — more reliable cross-origin than html2canvas. |
+| **Share via base64url param** | Free | Low | Encode full CompactBuild into URL (same approach as existing `sf=` param). No server storage needed. |
+| **Share via server-side short ID** | Infra cost | High | Store build JSON server-side keyed by UUID, return short URL. Requires persistent storage + API changes. |
 
 ### Recommended Approach
-Clipboard copy with a modal display. Confirm the SPT format first (research spike), then encode from the current `strikeForce` draft.
 
-### Implementation Notes
-- New util `src/utils/sptExport.ts` — `encodeSPT(build: CompactBuild, characters: Character[]): string`
-- Button in `src/components/build/StrikeForcePanel.vue` — alongside existing Save/Share buttons
-- Toast via existing pattern in the app
-- Requires confirming that character `id` or `swpCode` is the correct identifier for SPT encoding
-
----
-
-## #17 — Richer Unit Filters in Browse
-
-**Context:** ShatterApp's Browse filter panel supports basic type/era/faction filtering. ShatterpointDB exposes numeric filters (squad points range, force value, stamina, durability) that help players find units matching specific build criteria. These are especially useful when completing a Strike Force and needing a support within a certain point budget.
-
-**Status:** `[x]` Done — PC, Force, Stamina, Durability numeric filters added to BrowseView filter panel.
-
-### Feature Breakdown
-
-Add to `FilterPanel.vue`:
-- **Squad Points (PC) range** — min/max slider or `[3] to [9]` inputs
-- **Force value** — multi-select chips: 0 / 1 / 2 / 3 / 4
-- **Stamina range** — min/max inputs (e.g. 3–8)
-- **Durability range** — min/max inputs (e.g. 1–4)
-
-All new filters compose with existing filters (AND logic, consistent with `useSearch.ts`).
-
-### Options
-
-| Option | Cost | Effort | Notes |
-|---|---|---|---|
-| **Range inputs (number fields)** | Free | 3–4 hrs | Simple; user types min/max. No extra deps. |
-| **Range sliders** | Free | 4–6 hrs | More visual; requires a small slider component or library |
-| **Chip multi-select (force only)** | Free | 1–2 hrs | Force is discrete (0–4); chips are cleaner than a range |
-
-### Recommended Approach
-Range inputs for stamina/durability/PC; chip multi-select for force value (discrete). No new dependencies.
-
-### Implementation Notes
-- `src/composables/useSearch.ts` — add `pcMin`, `pcMax`, `forceValues: number[]`, `staminaMin`, `staminaMax`, `durabilityMin`, `durabilityMax` to filter state and filter logic
-- `src/components/ui/FilterPanel.vue` — add new filter controls in a collapsible "Advanced filters" section to avoid cluttering the panel
-- `Character` type already has `pc`, `force`, `stamina`, `durability` fields
-
----
-
-## #18 — QR Code Build Sharing
-
-**Context:** Players at a physical game table want to share their Strike Force with an opponent face-to-face without saying a URL aloud. A QR code displayed on screen is the fastest in-person sharing mechanism. The build URL already exists (`/build?sf=<encoded>`); this feature simply wraps it in a QR code.
-
-**Status:** `[x]` Done — `QrShareModal.vue` in Build view. QR generated from share URL, displayed in modal.
-
-### Feature Breakdown
-
-- **"Show QR" button** in StrikeForcePanel share area
-- Opens a modal with a large QR code encoding the existing `encodeBuild()` share URL
-- User holds phone up; opponent scans with any QR scanner (no app required)
-- Also shows the short URL below the QR code as a fallback
-
-### Options
-
-| Option | Cost | Effort | Notes |
-|---|---|---|---|
-| **`qrcode` npm package** | Free | 2–3 hrs | Lightweight, renders to canvas/SVG. `npm install qrcode`. |
-| **`vue-qrcode` component** | Free | 2–3 hrs | Vue wrapper around qrcode.js; slightly easier integration |
-| **Google Charts QR API** | Free | 1 hr | External URL: `chart.googleapis.com/chart?cht=qr&chs=...`. No npm, but external dep. |
-
-### Recommended Approach
-`qrcode` npm package — renders to a canvas element, no external HTTP dependency, tiny bundle size (~15 kB).
-
-### Implementation Notes
-- New component: `src/components/build/QrShareModal.vue` — receives a URL string, renders QR via `qrcode.toCanvas()`
-- Trigger from a small QR icon button next to the existing Share button in `StrikeForcePanel.vue`
-- QR code should encode the full absolute URL (including origin), not just the path
-- Modal includes a "Copy link" button as a fallback alongside the QR image
-
----
-
-## #19 — Dice Probability Calculator
-
-**Context:** The existing dice roller (implemented in #6) lets players roll and view individual results. A separate probability calculator answers a different question: *"If I roll 4 attack vs 3 defense, what are my odds of getting 3+ hits?"* This is a pre-roll planning tool for learning the game and evaluating attacks before committing. Inspired by a similar tool in Jarvis Protocol (Marvel Crisis Protocol).
-
-**Status:** `[x]` Done — Probability calculator tab in Roll view.
-
-### Shatterpoint Dice Context
-
-**Attack die (d8):** Crit / Strike / Expertise / Failure faces (exact distribution from physical dice)
-**Defense die (d6):** Block / Expertise / Failure faces
-
-Net hits = (Crits + Strikes) − Blocks. Expertise provides conditional bonuses per-unit (not modelled in Phase A).
-
-### Feature Breakdown
-
-#### Phase A — Basic probability table
-- Input: attack dice count (1–12), defense dice count (0–12)
-- Output: probability distribution table — P(net hits = N) for N = -8 to +12
-- Highlight: cumulative probability P(net hits ≥ X) for configurable X
-- Computed via enumeration or Monte Carlo simulation (10k+ runs)
-
-#### Phase B — Expertise modelling (future)
-- Add optional Expertise spending toggle per die
-- More complex; defer until Phase A ships and players request it
-
-### Options
-
-| Option | Cost | Effort | Notes |
-|---|---|---|---|
-| **Enumeration (exact)** | Free | 4–6 hrs | Iterate all die combinations; exact probabilities. Feasible up to ~6 dice. |
-| **Monte Carlo simulation** | Free | 2–3 hrs | Run 50k simulations; near-exact for large pools. No combinatorial blowup. |
-| **Pre-computed lookup table** | Free | 1 day | Generate all A×D combos offline, embed as JSON. Instant at runtime. |
-
-### Recommended Approach
-Monte Carlo (50k iterations) for Phase A — simplest to implement correctly and handles any pool size. Results are stable to < 1% variance at 50k. Run in a Web Worker to keep UI responsive.
-
-### Implementation Notes
-- New route `/roll/calc` or a tab alongside the existing roller in `RollView.vue`
-- New util `src/utils/diceProb.ts` — `simulate(atkDice, defDice, runs): ResultDistribution`
-- `src/components/dice/ProbabilityCalculator.vue` — inputs + results table
-- Face distributions must be confirmed from physical dice (same data already used in `src/utils/dice.ts`)
-- Display: bar chart (CSS bars) or numeric table; colour-code green ≥ 50% hit, red < 25%
-
----
-
-## #20 — Keywords & Icon Glossary
-
-**Context:** Shatterpoint uses a rich set of keyword and ability icons that appear on cards (e.g. "Hunker", "Pinned", "Expertise", "Shatterpoint" ability text icons). New players and veterans mid-game need a quick reference without leaving the app or opening a PDF. Competitor PointBreakSW ships this as a core feature.
-
-**Status:** `[ ]`
-
-### Feature Breakdown
-
-- New **"Reference"** tab or sub-page (or expand existing if a reference section exists)
-- Alphabetised list of all Shatterpoint keywords and ability icons
-- Each entry: icon image (where applicable) + keyword name + plain-English rule text
-- Search bar to filter by keyword name
-- Collapsible by category: Combat Keywords / Conditions / Ability Icons / Game Terms
-
-### Data Design
-
-Manual curation required (no scraper source). Schema:
-
-```json
-[
-  {
-    "id": "hunker",
-    "name": "Hunker",
-    "category": "condition",
-    "icon": "hunker.svg",
-    "text": "This unit gains +1 Defense die on all defense rolls. Remove at end of activation."
-  }
-]
-```
-
-Stored in `public/data/glossary.json`. Icon images from the existing `public/images/icons/` directory (or equivalent).
-
-### Options
-
-| Option | Cost | Effort | Notes |
-|---|---|---|---|
-| **Static JSON + simple list** | Free | 1 day (data) + 2 hrs (UI) | Easiest; fully offline, fast load |
-| **Inline in abilities.json** | Free | — | Overlap with ability data; keep separate for clarity |
-
-### Recommended Approach
-New `glossary.json` file + a simple alphabetised list view. Reuse the existing `SearchBar` component for filtering. Data curation is the main effort (est. 2–3 hours to write all entries from AMG rulebook).
-
-### Implementation Notes
-- `public/data/glossary.json` — manually curated
-- `src/stores/glossary.ts` — lazy-load store (same pattern as `galacticLegends.ts`)
-- `src/components/reference/GlossaryView.vue` — list + search
-- Add a "Reference" nav link (or fold into existing nav section)
-- Tie into ability descriptions: keyword text in `abilities.json` descriptions could link to the glossary entry (future enhancement)
-
----
-
-## #21 — Random Strike Force Generator
-
-**Context:** Players sometimes want a random valid Strike Force — for practice games, quick pick-up games, or just exploring the unit roster. Inspired by similar features in Jarvis Protocol (Marvel Crisis Protocol). Also useful as a teaching tool for new players who don't know the meta.
-
-**Status:** `[x]` Done — Random generator with tag synergy in Build view.
-
-### Feature Breakdown
-
-- **"Random" button** in BuildView or the existing UnitPickerDrawer
-- Generates a legally valid Strike Force: 1 Primary + 1–2 Secondaries + 0–2 Supports within the Primary's SP budget
-- Optionally: filter by era, faction, or owned collection only
-- Result loads into the current draft (same as manually building)
-- "Re-roll" button generates a new random list
-
-### Algorithm
-
-```
-1. Pick a random Primary unit
-2. Pick random Secondaries until budget is met or no valid Secondary fits
-3. Pick random Supports until budget is met or no valid Support fits
-4. Return the set; validate with isSquadValid()
-```
-
-Constraints: `secondary.pc + support.pc <= primary.sp`. Already enforced by `isSquadValid()` in `src/types/index.ts`.
-
-### Options
-
-| Option | Cost | Effort | Notes |
-|---|---|---|---|
-| **Pure random** | Free | 2–3 hrs | No weighting; any legal combination equally likely |
-| **Faction-coherent random** | Free | 3–4 hrs | Prefer units sharing a faction tag; more thematic results |
-| **Weighted by collection** | Free | 2–3 hrs | Only rolls from owned units (collection store already exists) |
-
-### Recommended Approach
-Pure random with an optional "owned only" toggle (reuses collection store). Faction-coherent mode as a later toggle.
-
-### Implementation Notes
-- New util `src/utils/randomBuild.ts` — `generateRandomBuild(characters, options): { primary, secondaries, supports }`
-- Options: `{ ownedOnly?: boolean; era?: string; faction?: string }`
-- Button in `src/components/build/StrikeForcePanel.vue` or `UnitPickerDrawer.vue`
-- After generation, call existing `strikeForce` store actions to load the result into the draft
-- Edge case: if no valid combination exists (e.g. all owned Primaries have SP 0), show a toast and abort
-
----
-
-## #22 — Order Deck Builder
-
-**Context:** Every Shatterpoint Strike Force has a corresponding Order Deck — a set of order cards, one per unit, plus the Shatterpoint wild card. Players physically build this deck before each game. No existing tool tracks or builds order decks. This is a gap across all Shatterpoint companion apps.
-
-**Status:** `[x]` Done — `OrderDeckSection.vue` + `src/stores/orderDeck.ts` in Play view Units tab.
-
-### Data Availability
-
-**No external data work needed.** The existing scraper already fetches `ORDER_CARD` and `MODEL` image fields from `api.pointbreaksw.com` and stores them in `public/data/characters.json`. Images are downloaded to `public/images/` (e.g. `SWP01_Ahsoka_Order.png`). The `Character` type already includes `orderCard?: string` and `model?: string` fields.
-
-Running `npm run scrape` keeps these up to date automatically.
-
-### Feature Breakdown
-
-- **"Order Deck" section** in BuildView — shown below or alongside the Strike Force panel
-- For each unit in the current Strike Force, display:
-  - Order card image (`character.orderCard`)
-  - Unit name
-  - Model image (`character.model`) as optional flavour / reference
-- **Deck summary:** total card count (one per unit + 1 Shatterpoint wild card)
-- **"Build your deck" checklist** — a printable/saveable list of which physical cards to pull
-
-### Options
-
-| Option | Cost | Effort | Notes |
-|---|---|---|---|
-| **Inline panel in BuildView** | Free | 3–4 hrs | Accordion/tab below the Strike Force; no new route |
-| **Dedicated `/build/deck` tab** | Free | 4–6 hrs | Cleaner separation; requires tab navigation in BuildView |
-| **Modal overlay** | Free | 2–3 hrs | Triggered by a "View Order Deck" button; simpler layout |
-
-### Recommended Approach
-Inline accordion panel or modal below the Strike Force panel — lowest friction, reuses the existing build state directly.
-
-### Support Tool — Order Card Audit
-
-`public/order-card-audit.html` (also at `tools/order-card-audit.html`) — a standalone HTML tool served by the Vite dev server at `http://localhost:5173/order-card-audit.html`.
-
-**Purpose:** Visually verify that every unit's `orderCard` and `model` image paths are correct and the files actually exist before building the UI. Mirrors the workflow of `ability-audit.html`.
-
-**Features:**
-- Three-column image grid per unit: **Card Back** / **Order Card** / **Model**
-- Click any image to zoom fullscreen
-- Filter pills: All / Missing Order Card / Missing Model / Missing Either
-- Stats bar: running count of missing images across the full roster
-- Search by name or SWP code
-- Broken image detection: if the path exists in `characters.json` but the file is absent on disk, the slot shows the path so you know exactly which image to re-scrape
-- Orange border = at least one image missing; red border = both missing
-
-**When to use:** Run after `npm run scrape` to confirm all order card and model images downloaded correctly before shipping the Order Deck Builder UI.
-
-### Implementation Notes
-- No new store or data file needed — `orderCard` and `model` already on `Character`
-- `src/components/build/OrderDeckPanel.vue` (NEW) — receives array of `Character` objects from current build, renders card images
-- Order card images served via existing `imageUrl()` util (CDN-aware)
-- Include a reminder: "+ 1 Shatterpoint wild card" (present in every deck)
-- This feature naturally pairs with #16 (SPT export) for a complete tournament prep workflow
+- Rasterise with **html2canvas** for download (fast, no canvas API boilerplate). Fall back to manual canvas if CORS issues arise with remote images.
+- Share via **base64url-encoded URL param** (extend existing `sf=` pattern or add a new `viz=` param) — zero infra, consistent with current profile/build sharing approach. On load, if `viz=` param present: decode list → import silently → open Visualise modal automatically.
+- Two-column layout: Squad 1 row, Squad 2 row, each with 3 cards (primary | secondary | support). Row header labels in SW gold styling above each row.
+
+### Key files touched (estimated)
+- `src/components/build/StrikeForceVisualModal.vue` — new modal component
+- `src/components/build/StrikeForcePanel.vue` — add Visualise button per list
+- `src/utils/profileShare.ts` — add `encodeVisualize` / `decodeVisualize` helpers
+- `src/views/BuildView.vue` — handle `viz=` query param on mount

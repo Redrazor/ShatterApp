@@ -12,7 +12,7 @@ Follow this workflow **every time** a new feature is started. Do not skip or reo
 
 ### Step 1 — Present the feature for approval
 Before writing any code, present the feature to the user:
-- Feature name and number (from `future/future_features.md`)
+- Feature name and number (from `docs/future_features.md` — see "Documentation Layout" below)
 - Key design points and implementation plan
 - Any decisions or unknowns that need user input
 
@@ -67,6 +67,19 @@ Then update:
 3. Commit and push directly to main: `git push origin main`
 
 ---
+
+## Documentation Layout
+
+- **`docs/future_features.md`** — **THE official, canonical, forward-looking feature backlog.** This is the only file to consult when the user asks "what's next" or to start a new feature. Every entry includes Status / Priority / Effort / Target version / Acceptance Criteria.
+- **`docs/archive/`** — Historical / superseded planning docs. Anything in here is past, done, or has been replaced. **Never** add new feature entries to files in `archive/`. Treat it as read-only history. Examples currently archived:
+  - `future_features.md` — earlier version of the canonical doc
+  - `future_features-v1-thru-v2.15.md` — comprehensive original backlog (#1–#23) covering app history through v2.15.x; almost all entries are `[x]` Done
+  - `new_features_02.md` — a mid-2026 plan covering features #16–#22 (all shipped)
+  - `custom_stance.md` — early Custom Builder stance design notes
+  - Plus assorted dated planning docs (errata bulk update, custom screen mobile improvements, etc.)
+- The legacy `future/` directory has been removed — do not recreate it.
+
+When adding a new feature suggestion: append it to `docs/future_features.md` with Status `[ ]`, Priority, Effort, Target version, Context, Recommended Approach, Implementation Notes, and Acceptance Criteria — matching the existing entry format.
 
 ## Key Workflows
 See memory file for full project context and mandatory workflows (MEMORY.md).

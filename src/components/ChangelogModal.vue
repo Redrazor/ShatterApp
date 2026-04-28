@@ -4,6 +4,15 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.15.3',
+    date: '2026-04-29',
+    changes: [
+      'Settings — new "Allow landscape mode" toggle in Display lets users opt out of the portrait-only lockout on phones',
+      'Settings — tablets (≥768px) no longer hit the landscape lockout at all',
+      'Accessibility — orientation overlay now uses role="dialog" + aria-modal, and "Open Settings" works from the overlay',
+    ],
+  },
+  {
     version: '2.15.2',
     date: '2026-04-16',
     changes: [
