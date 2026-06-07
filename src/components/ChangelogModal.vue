@@ -4,6 +4,16 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.16.0',
+    date: '2026-06-07',
+    changes: [
+      'Data — applied the May 2026 errata (AMG v1.4, 05/19/2026): 62 units with updated ability text, stats, and stance numbers',
+      'Data — stat changes: B1 Battle Droids, Queen Padmé, General Veers, Ewok Trappers, Padawan Learners',
+      'Data — stance updates: 212th, Snowtroopers, Snowtrooper Lieutenant, Ewok Hunters, Ewok Trappers, RC-1138 "Boss", and more',
+      'Art — refreshed card images across all 62 errata\'d units',
+    ],
+  },
+  {
     version: '2.15.3',
     date: '2026-04-29',
     changes: [
