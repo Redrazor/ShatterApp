@@ -109,6 +109,7 @@
         "Stamina nerfed: 9 → 8",
         "Durability buffed: 2 → 3",
         "New ability: Countless (reactive)",
+        "stance renamed Countless -> B1 Combat Protocols",
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
@@ -151,6 +152,7 @@
       "changes": [
         "Coordinated Fire: target Unit gains [shove] (was [pinned])",
         "New ability: Clone Marksmen (innate) — Characters in this Unit have Sharpshooter [1]",
+        "Stance \"Bullseye Training\": melee attack 4 → 6",
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     },
@@ -587,6 +589,8 @@
         "Stamina 7 → 8",
         "Ability 'Camouflage' replaced by 'Forest Dwellers' (adds: 'Additionally, at the end of this Unit's activation, it may gain [hunker].')",
         "Strength in Numbers reworded: 'for each other allied Ewok character Engaged with the target that is not Wounded, add 1 attack die' → 'if the target is Engaged with one or more allied Ewok characters that are not Wounded, add 2 dice'",
+        "Stance \"Running Traps\": ranged defense 5 → 4",
+        "Stance \"Running Traps\": melee defense 4 → 5",
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
@@ -612,6 +616,9 @@
         "Coordinated Fire: target Unit gains [pinned] → gains [dash]",
         "Ability 'Camouflage' replaced by 'Forest Dwellers' (adds: 'Additionally, at the end of this Unit's activation, it may gain [hunker].')",
         "Strength in Numbers reworded: 'for each other allied Ewok character Engaged with the target that is not Wounded, add 1 die' → 'if the target is Engaged with one or more allied Ewok characters that are not Wounded, add 2 dice'",
+        "Stance \"Walkabout\": ranged range 4 → 5",
+        "Stance \"Walkabout\": ranged defense 5 → 4",
+        "Stance \"Walkabout\": melee defense 4 → 5",
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
@@ -867,6 +874,7 @@
       "changes": [
         "Dogged Assault range increased: ⊕4 → ⊕5",
         "Commanding Presence renamed to Imperial Discipline — added [hunker] retention while Engaged",
+        "Stance \"Disciplined Assault\": ranged attack 6 -> 7",
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
@@ -912,6 +920,7 @@
       "cardArtCurrent": true,
       "changes": [
         "New ability: Extreme Conditions Training (innate)",
+        "Stance \"Blizzard Tactics\": ranged attack 5 -> 6",
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
@@ -956,6 +965,17 @@
       ]
     }
   ],
+  "120": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Stance \"Form V Djem So\": ranged defense null -> 5 (card shows blue ranged defense box of 5; blaster attack is a dash, no ranged range/attack)",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "121": [
     {
       "version": "1.4",
@@ -986,6 +1006,10 @@
       "cardArtCurrent": true,
       "changes": [
         "Delta, Give Me An Explosive Solution text changed: now 'Choose an allied Delta Squad Unit and an Active objective within ⊕3 of that Unit. Each character in the chosen Unit may [dash]. Then roll 3 Attack Dice. For each [critical] or [success] result in the roll, each Unit within ⊕2 of the chosen objective suffers [damage] and then removes any [hunker] it has.' (previously chose an objective within ⊕3 of an allied Clone Trooper, dash + hunker for allies, no dice roll, damage[damage] to enemies)",
+        "Stance \"Rapid Fire\": ranged defense 6 → 5",
+        "Stance \"Rapid Fire\": melee attack 5 → 6",
+        "Stance \"Wet Work\": ranged defense 7 → 5",
+        "Stance \"Wet Work\": melee attack 5 → 7",
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
