@@ -2094,5 +2094,57 @@
         "melee": { "attack": 6, "defense": 4 }
       }
     ]
+  },
+  "138": {
+    "characterId": 138,
+    "name": "Enoch, Captain of the Guard",
+    "swpCode": "SWP83",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Captain of the Guard",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
+  },
+  "139": {
+    "characterId": 139,
+    "name": "Night Troopers",
+    "swpCode": "SWP83",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Survival Tactics",
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 5, "defense": 5 }
+      }
+    ]
+  },
+  "140": {
+    "characterId": 140,
+    "name": "Shin Hati, Eager Apprentice",
+    "swpCode": "SWP82",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Form I Shii-Cho",
+        "ranged": { "range": null, "attack": null, "defense": 4 },
+        "melee": { "attack": 7, "defense": 5 }
+      }
+    ]
+  },
+  "141": {
+    "characterId": 141,
+    "name": "HK-87 Assassin Droids",
+    "swpCode": "SWP82",
+    "stances": [
+      {
+        "stanceNumber": 1,
+        "stanceName": "Elimination Protocols",
+        "ranged": { "range": 5, "attack": 6, "defense": 4 },
+        "melee": { "attack": 6, "defense": 5 }
+      }
+    ]
   }
 }

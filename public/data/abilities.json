@@ -4249,5 +4249,123 @@
         "description": "Allied Units do not lose their [hunker] when characters in them become Engaged and can gain and have [hunker] while they have Engaged characters. When a character in an allied Unit makes an attack, during the Modify Dice Step, it may remove one or more of its [hunker]. If it does, add [expertise] to the attack roll for each [hunker] it removed."
       }
     ]
+  },
+  "138": {
+    "characterId": 138,
+    "name": "Enoch, Captain of the Guard",
+    "swpCode": "SWP83",
+    "abilities": [
+      {
+        "name": "By Your Command, Grand Admiral",
+        "type": "active",
+        "cost": 1,
+        "description": "Choose another allied Stormtrooper character. The chosen character may [dash]. Then, if the chosen character is a Night Trooper, one character in this Unit may [dash]."
+      },
+      {
+        "name": "Coordinated Fire",
+        "type": "reactive",
+        "cost": null,
+        "description": "When a character in another allied Galactic Empire Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [strained]."
+      },
+      {
+        "name": "Die Well",
+        "type": "reactive",
+        "cost": null,
+        "description": "When a character in this Unit or an allied Stormtrooper Supporting character within ⊕5 makes a [melee] attack as part of a combat action, before dice are rolled, this Unit may use this ability. The attacker and defender each gain [exposed]."
+      }
+    ]
+  },
+  "139": {
+    "characterId": 139,
+    "name": "Night Troopers",
+    "swpCode": "SWP83",
+    "abilities": [
+      {
+        "name": "Dark Innervation",
+        "type": "active",
+        "cost": 1,
+        "description": "Each character in this Unit may [dash]. If this Unit has one or more Injured tokens, each character in this Unit may instead [advance]."
+      },
+      {
+        "name": "Unnatural Vigor",
+        "type": "reactive",
+        "cost": null,
+        "description": "When a character in this Unit defends, during the Modify Dice Rolls step, this Unit may use this ability. Change one [expertise] result in the attack roll to a [fail] result. Then, for each Injured token this Unit has, change one additional [expertise] result in the attack roll to a [fail] result."
+      },
+      {
+        "name": "Animated Beyond Death",
+        "type": "innate",
+        "cost": null,
+        "description": "When another allied Stormtrooper Unit becomes Wounded, if one or more non-Wounded allied Nightsister Primary characters are within ⊕5 of this Unit, this Unit removes all its Injured tokens."
+      },
+      {
+        "name": "Undying Loyalty",
+        "type": "innate",
+        "cost": null,
+        "description": "While this Unit has one or more Injured tokens, this Unit's Order Card cannot be placed in reserve and opposing players do not gain Momentum when this Unit becomes Wounded. Additionally, when this Unit becomes Wounded by an enemy effect, after the effect is resolved, this Unit gains an Injured token. Then it removes one Wounded token, all [damage], and one condition from itself. After resolving this effect, if this Unit's Order Card is in reserve, shuffle it into your Order Deck."
+      }
+    ]
+  },
+  "140": {
+    "characterId": 140,
+    "name": "Shin Hati, Eager Apprentice",
+    "swpCode": "SWP82",
+    "abilities": [
+      {
+        "name": "Furious Rush",
+        "type": "active",
+        "cost": 1,
+        "description": "One character in this Unit may [dash]. Then choose an enemy character Engaged with one or more characters in this Unit. The chosen character gains [exposed]."
+      },
+      {
+        "name": "Trained to be Something More",
+        "type": "reactive",
+        "cost": 1,
+        "description": "After another allied Force User Unit makes a combat action, this Unit may use this ability. One character in this Unit may [reposition] or may gain [hunker]. Then that character may make a 5 dice attack targeting one of the same enemy characters within [ranged] and LOS."
+      },
+      {
+        "name": "Riposte",
+        "type": "reactive",
+        "cost": null,
+        "description": "After a [melee] attack targeting a character in this Unit is resolved, this Unit may use this ability. If the attack roll contained one or more [fail] results, the attacking Unit suffers [damage][damage]."
+      },
+      {
+        "name": "Impatience",
+        "type": "innate",
+        "cost": null,
+        "description": "This Unit's Order Card cannot be placed in reserve. Characters in this Unit have Immunity [pinned] and Immunity [disarmed]. Additionally, when this Unit would spend one or more [force] to use an ability, it may remove one or more [hunker] from itself. If it does, reduce the cost of that ability by [force] for each [hunker] removed."
+      }
+    ]
+  },
+  "141": {
+    "characterId": 141,
+    "name": "HK-87 Assassin Droids",
+    "swpCode": "SWP82",
+    "abilities": [
+      {
+        "name": "On the Trail",
+        "type": "tactic",
+        "cost": null,
+        "description": "At the start of this Unit's activation, each character in this Unit may [dash] Toward an enemy character."
+      },
+      {
+        "name": "Avoidance Protocols",
+        "type": "reactive",
+        "cost": null,
+        "description": "After an attack targeting a character in this Unit is resolved, this Unit may use this ability. This Unit removes all its [hunker]. Then, if one or more [hunker] were removed, each character in this Unit may [dash]."
+      },
+      {
+        "name": "Target Priority Protocols",
+        "type": "innate",
+        "cost": null,
+        "description": "When a character in this Unit makes an attack targeting a Primary character, add 2 dice to the attack roll."
+      },
+      {
+        "name": "Unstoppable Machine",
+        "type": "innate",
+        "cost": null,
+        "description": "While a character in this Unit is Engaged with one or more enemy Primary characters, it has Protection and Steadfast."
+      }
+    ]
   }
 }
