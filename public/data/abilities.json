@@ -333,22 +333,28 @@
     "swpCode": "SWP01",
     "abilities": [
       {
+        "name": "Countless",
+        "type": "reactive",
+        "cost": null,
+        "description": "When this Unit becomes Wounded, after the effect is resolved, this Unit may use this ability. This Unit gains an Injured token. Then it removes a Wounded token, all [damage], and one condition from itself."
+      },
+      {
         "name": "Combat A.I. Protocols",
         "type": "innate",
         "cost": null,
-        "description": "After an allied Battle Droid Unit makes a combat action, choose one of the targeted characters that is within ⊕4 of all character in this Unit, if able. The chosen character gains [strained] or [exposed]."
-      },
-      {
-        "name": "Well, I Guess I'm in Charge, Now",
-        "type": "innate",
-        "cost": null,
-        "description": "When this Unit's Order Card would be placed in reserve, its controlling player may place it on the bottom of their Order Deck instead."
+        "description": "After an allied Battle Droid Unit makes a combat action, choose one of the targeted characters that is within ⊕4 of all characters in this Unit, if able. The chosen character gains [strained] or [exposed]."
       },
       {
         "name": "I Hate This Job",
         "type": "innate",
         "cost": null,
         "description": "While a character in this Unit is contesting one or more Active objectives, it has Protection."
+      },
+      {
+        "name": "Well, I Guess I'm in Charge, Now",
+        "type": "innate",
+        "cost": null,
+        "description": "When this Unit's Order Card would be placed in reserve, its controlling player may place it on the bottom of their Order Deck instead."
       }
     ]
   },
@@ -783,6 +789,12 @@
         "type": "innate",
         "cost": null,
         "description": "Characters in this Unit have Protection."
+      },
+      {
+        "name": "Close Range Annihilation",
+        "type": "innate",
+        "cost": null,
+        "description": "When a character in this Unit makes an attack targeting an enemy character within ⊕3, during the Modify Dice Rolls step, the attacking character may reroll up to 2 dice in its roll."
       }
     ]
   },
@@ -2344,7 +2356,7 @@
         "name": "Infiltration",
         "type": "innate",
         "cost": null,
-        "description": "When deploying characters in this Unit, characters may be placed within ⊕3 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
+        "description": "When deploying characters in this Unit, characters may be placed within ⊕2 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
       }
     ]
   },
@@ -2623,13 +2635,13 @@
         "name": "Camouflage",
         "type": "innate",
         "cost": null,
-        "description": "At the Setup of this Unit, this Unit may gain [hunker]."
+        "description": "At the end of Setup, this Unit may gain [hunker]."
       },
       {
         "name": "Infiltration",
         "type": "innate",
         "cost": null,
-        "description": "When deploying characters in this Unit, characters may be placed within ⊕3 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
+        "description": "When deploying characters in this Unit, characters may be placed within ⊕2 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
       }
     ]
   },
@@ -2890,7 +2902,7 @@
         "name": "Move to Position",
         "type": "active",
         "cost": 1,
-        "description": "One character in this Unit may [dash] or [climb]. Then choose an allied character within ⊕4. The chosen character may [dash]."
+        "description": "One character in this Unit may [dash] or [climb]. Then choose an allied character within ⊕3. The chosen character may [dash]."
       },
       {
         "name": "Reflector Discs",
@@ -2902,13 +2914,13 @@
         "name": "Expendable Distraction",
         "type": "innate",
         "cost": null,
-        "description": "When a character in this Unit makes a [ranged] attack as part of a combat action, if the defender is Engaged with one or more allied characters in Units that are not Wounded, it may add 3 dice to its attack roll. If it does, choose one of those Engaged allied Units. The chosen Unit suffers [damage][damage]."
+        "description": "When a character in this Unit makes a [ranged] attack as part of a combat action, if the defender is Engaged with one or more allied characters in Units that are not Wounded, it may add 3 dice to its attack roll. If it does, choose one of those Engaged allied characters. The chosen character suffers [damage][damage]."
       },
       {
         "name": "Genetically Bred Deadeye",
         "type": "identity",
         "cost": null,
-        "description": "When a character in this Unit Wounds an enemy Primary Unit or an enemy Secondary Unit with a [ranged] attack as part of a combat action, after the effect is resolved, refresh [force][force]. Additionally, when a character in this Unit makes a [ranged] attack, before rolling dice, it may remove one or more conditions from the defending Unit. Add [success] to the attack roll for each removed condition."
+        "description": "When a character in this Unit Wounds an enemy Primary Unit or an enemy Secondary Unit with a [ranged] attack as part of a combat action, after the effect is resolved, refresh [force][force]. Additionally, when a character in this Unit makes a [ranged] attack, before dice are rolled, it may remove one or more conditions from the defending Unit. Add [success] to the attack roll for each removed condition."
       }
     ]
   },
@@ -3100,13 +3112,13 @@
         "name": "Prepare For a Surface Attack",
         "type": "innate",
         "cost": null,
-        "description": "At the end of Setup, before shuffling your Order Deck, choose an allied Stormtrooper Unit. Place the chosen Unit's Order Card in reserve. Then each character in the chosen Unit may [dash]. Additionally, when an allied Stormtrooper Unit's Order Card is in reserve, characters in that Unit add 1 die to their defense rolls."
+        "description": "At the end of Setup, choose an allied Stormtrooper Unit. Search your Order Deck for the chosen Unit's Order Card and put it in reserve. Then shuffle your Order Deck and each character in the chosen Unit may [dash]. Additionally, allied Stormtrooper characters add 1 die to their defense rolls."
       },
       {
         "name": "We Are The Storm",
         "type": "identity",
         "cost": null,
-        "description": "At the end of this Unit's activation, choose an objective. Each enemy character within ⊕2 of the chosen objective may [dash]. Then each enemy Unit within ⊕2 of the chosen objective suffers [damage][damage][damage] and each allied Unit within ⊕2 of the chosen objective suffers [damage]."
+        "description": "At the start of this Unit's activation, choose an objective. Each enemy character within ⊕2 of the chosen objective may [dash]. Then each enemy Unit within ⊕2 of the chosen objective suffers [damage][damage][damage] and each allied Unit within ⊕2 of the chosen objective suffers [damage]. Finally, if there is a Control token on the chosen objective, remove that Control token."
       }
     ]
   },
@@ -3125,13 +3137,13 @@
         "name": "Dogged Assault",
         "type": "reactive",
         "cost": null,
-        "description": "When another allied Stormtrooper Unit within ⊕4 makes a combat action, this Unit may use this ability. After all attacks have been resolved, the attacking Unit may immediately make a Take Cover action."
+        "description": "When another allied Stormtrooper Unit within ⊕5 makes a combat action, this Unit may use this ability. After all attacks have been resolved, the attacking Unit may immediately make a Take Cover action."
       },
       {
-        "name": "Commanding Presence",
+        "name": "Imperial Discipline",
         "type": "innate",
         "cost": null,
-        "description": "When an allied Galactic Empire Trooper character within ⊕3 would gain a condition, it may instead suffer [damage]."
+        "description": "When an allied Galactic Empire Trooper character within ⊕3 would gain a condition, it may instead suffer [damage]. Additionally, allied Stormtrooper Units do not lose their [hunker] when characters in them become Engaged and can gain and have [hunker] while they have Engaged characters."
       },
       {
         "name": "Only Imperial Stormtroopers Are So Precise",
@@ -3212,13 +3224,19 @@
         "name": "Tactical Advance",
         "type": "active",
         "cost": 1,
-        "description": "Each character in this Unit may [dash]. If any characters [dash], this Unit immediately performs a focus action."
+        "description": "Each character in this Unit may [dash]. If any characters [dash], this Unit immediately makes a focus action."
       },
       {
-        "name": "Coordinated Fire: !",
+        "name": "Supporting Fire: [hunker]",
         "type": "reactive",
         "cost": null,
-        "description": "When a character in another allied Galactic Empire Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [exposed]."
+        "description": "When a character in another allied Galactic Empire Unit makes an attack as part of a combat action, after the effect is resolved, this Unit may use this ability. If the attacking character is within ⊕5, the attacking Unit may gain [hunker]."
+      },
+      {
+        "name": "Supporting Fire: [heal]",
+        "type": "reactive",
+        "cost": null,
+        "description": "When a character in another allied Galactic Empire Unit makes an attack as part of a combat action, after the effect is resolved, this Unit may use this ability. If the attacking character is within ⊕5, it may [heal]."
       },
       {
         "name": "The Future of Imperial Might",
@@ -3274,7 +3292,13 @@
         "name": "Assault Tactics",
         "type": "active",
         "cost": 1,
-        "description": "Each character in this Unit may [dash]. Then, this Unit may suffer [damage] to immediately perform a focus action."
+        "description": "Each character in this Unit may [dash]. Then this Unit may suffer [damage] to immediately perform a focus action."
+      },
+      {
+        "name": "Extreme Conditions Training",
+        "type": "innate",
+        "cost": null,
+        "description": "While this Unit has one or more [hunker], it has Immunity [exposed]."
       },
       {
         "name": "Only Imperial Stormtroopers Are So Precise",
@@ -3727,7 +3751,7 @@
         "name": "This Town is Ready to Blow",
         "type": "reactive",
         "cost": null,
-        "description": "When a player claims a Struggle card, this Unit may use this ability. Roll 3 Attack Dice. Each enemy Unit that is contesting one or more Active objectives suffers [damage] for each [success] and [expertise] result in the roll."
+        "description": "When another player claims a Struggle Card, this Unit may use this ability. Roll 3 Attack Dice. Each enemy Unit that is contesting one or more Active objectives suffers [damage] for each [success] and [expertise] result in the roll."
       },
       {
         "name": "We've All Done Terrible Things",
@@ -3739,7 +3763,7 @@
         "name": "Make Ten Men Feel Like a Hundred",
         "type": "identity",
         "cost": null,
-        "description": "Once per Turn, when an allied Unit becomes Wounded, after the effect is resolved, choose another allied Unit. One character in that Unit may [advance]. If the chosen Unit is a Spy, that character may instead [reposition]. Additionally, if this Unit is chosen to activate with a Shatterpoint Card, characters in that Unit have Impact [2] and Sharpshooter [2] until the end of the Turn."
+        "description": "Once per Turn, when an allied Unit becomes Wounded by an enemy attack, after the effect is resolved, choose another allied Unit. One character in the chosen Unit may [dash]. If the chosen Unit is a Spy, that character may instead [advance]. Additionally, when an allied Rebel Alliance Unit is chosen to activate with a Shatterpoint Card, characters in that Unit have Impact [1] and Sharpshooter [1] until the end of the Turn."
       }
     ]
   },

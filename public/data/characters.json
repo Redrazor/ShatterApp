@@ -457,8 +457,8 @@
     "unitTypeName": "Support",
     "pc": 3,
     "sp": null,
-    "durability": 2,
-    "stamina": 9,
+    "durability": 3,
+    "stamina": 8,
     "fp": 0,
     "era": "Clone Wars",
     "tags": [
@@ -483,7 +483,7 @@
     "stances": [],
     "releaseDate": "",
     "slug": "b1-battle-droids",
-    "lastUpdated": "17/03/2026"
+    "lastUpdated": "2026-05-19"
   },
   {
     "id": 26,
@@ -558,8 +558,8 @@
   },
   {
     "id": 128,
-    "name": "Baze Malbus and Chirrut \u00cemwe",
-    "characterType": "Baze Malbus;Chirrut \u00cemwe",
+    "name": "Baze Malbus and Chirrut Îmwe",
+    "characterType": "Baze Malbus;Chirrut Îmwe",
     "unitType": "Support",
     "unitTypeName": "Support",
     "pc": 5,
@@ -2218,7 +2218,7 @@
     "unitType": "Primary",
     "unitTypeName": "Primary",
     "pc": null,
-    "sp": 7,
+    "sp": 8,
     "durability": 3,
     "stamina": 9,
     "fp": 3,
@@ -2243,7 +2243,7 @@
     "stances": [],
     "releaseDate": "",
     "slug": "general-veers-tactical-genius",
-    "lastUpdated": "17/03/2026"
+    "lastUpdated": "2026-05-19"
   },
   {
     "id": 83,

@@ -128,6 +128,11 @@ let searchTerm = '';
 let typeFilter = '';
 let changesOnly = false;
 let zoomedImg = null;
+let errata = {};
+let errataFilter = false;          // show only units changed in the target errata version
+let ERRATA_VERSION = '1.4';        // latest errata version to filter on
+let batchIds = null;               // Set of ids from ?ids= URL param (per-batch view)
+let batchOnly = false;
 
 function tokenIcon(name, size) {
   size = size || 16;
@@ -149,11 +154,18 @@ async function init() {
     ]);
     characters = await charsRes.json();
     abilities = await abilRes.json();
+    try { errata = await (await fetch('/data/errata.json')).json(); } catch (e) { errata = {}; }
   } catch (e) {
     document.getElementById('grid').innerHTML =
       '<p style="color:#ef4444;text-align:center;">Failed to load data. Make sure you open this file via the Vite dev server (http://localhost:5173/ability-audit.html).</p>';
     return;
   }
+
+  // ?ids=12,26,100  → per-batch view (auto-enabled); ?errata=1.4 sets the version
+  const params = new URLSearchParams(location.search);
+  const idsParam = params.get('ids');
+  if (idsParam) { batchIds = new Set(idsParam.split(',').map(s => s.trim()).filter(Boolean)); batchOnly = true; }
+  if (params.get('errata')) ERRATA_VERSION = params.get('errata');
 
   buildFilterPills();
   applyFilters();
@@ -165,8 +177,29 @@ function buildFilterPills() {
   for (const t of TYPES) {
     html += `<span class="filter-pill" data-type="${t}" onclick="setTypeFilter(this, '${t}')">${t}</span>`;
   }
-  html += '<span class="filter-pill changes-only" onclick="toggleChangesOnly(this)">Changed Only</span>';
+  html += `<span class="filter-pill changes-only${errataFilter ? ' active' : ''}" onclick="toggleErrataFilter(this)">v${ERRATA_VERSION} Changed</span>`;
+  if (batchIds) html += `<span class="filter-pill changes-only${batchOnly ? ' active' : ''}" onclick="toggleBatch(this)">This Batch (${batchIds.size})</span>`;
+  html += '<span class="filter-pill changes-only" onclick="toggleChangesOnly(this)">Edited In Tool</span>';
   container.innerHTML = html;
+}
+
+function isErrataVersion(id) {
+  const e = errata[String(id)];
+  return !!(e && e[0] && e[0].version === ERRATA_VERSION);
+}
+
+function toggleErrataFilter(el) {
+  errataFilter = !errataFilter;
+  el.classList.toggle('active', errataFilter);
+  currentPage = 0;
+  applyFilters();
+}
+
+function toggleBatch(el) {
+  batchOnly = !batchOnly;
+  el.classList.toggle('active', batchOnly);
+  currentPage = 0;
+  applyFilters();
 }
 
 function setTypeFilter(el, type) {
@@ -216,6 +249,8 @@ function applyFilters() {
       if (changesOnly) {
         if (!hasChanges(String(c.id))) return false;
       }
+      if (batchOnly && batchIds && !batchIds.has(String(c.id))) return false;
+      if (errataFilter && !isErrataVersion(c.id)) return false;
       return true;
     });
 
