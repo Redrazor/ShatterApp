@@ -1,6 +1,18 @@
 {
   "1": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "I'm Going to End This: added 'This Unit may change its Active Stance.'",
+        "I'm Going to End This: attack changed from 'an attack targeting one of the same enemy characters within range and LOS' to 'a [melee] attack'",
+        "This Is Where the Fun Begins: reworded trigger to 'Each time a character in this Unit Wounds an enemy Unit, after the effect is resolved, refresh [force].' (was conditional Wound of enemy Primary/Secondary Unit moving the Struggle token + Galactic Republic heal)",
+        "This Is Where the Fun Begins: added end-of-activation effect granting allied Galactic Republic Secondary and Supporting characters [dash] when a Secondary or Primary Unit was Wounded, then move Struggle token toward Momentum if a Primary Unit was Wounded",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -10,6 +22,17 @@
     }
   ],
   "2": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Removed ability: Slip Away (reactive)",
+        "New ability: Swift Retreat (innate) — \"When a character in this Unit would [advance], it may instead [reposition].\"",
+        "Sith Assassin reworked — [heal][heal][heal] → refresh [force]; [advance]→[reposition]; final refresh [force][force]→[force]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -21,6 +44,14 @@
   ],
   "4": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -29,7 +60,36 @@
       ]
     }
   ],
+  "8": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "10": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "11": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Coordinated Fire: target Unit gains [exposed] → [strained]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -53,7 +113,27 @@
       ]
     }
   ],
+  "14": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "15": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "We've Got a Big Problem... rewritten — now: choose an Active objective; one character may [dash] toward it; then choose an enemy character within ⊕3 contesting that objective (was ⊕5 contesting any Active objective), chosen character gains [exposed]",
+        "Ability order: Bring it Down! now listed before Say Goodnight, Clanker!",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -65,6 +145,16 @@
   ],
   "16": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Coordinated Fire: target Unit gains [shove] (was [pinned])",
+        "New ability: Clone Marksmen (innate) — Characters in this Unit have Sharpshooter [1]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -74,7 +164,30 @@
       ]
     }
   ],
+  "17": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Surely You Can Do Better: force spend 1 → 1-3; effect changed from 'Change a result to a [block] or to a [surge]' → 'Change one [fail] result to a [block] for each [force] spent'",
+        "Leader of the Separatist Army, Twice the Pride Double the Fall, and Brave but Foolish: [advance] → [dash]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "18": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Capture Wire effect changed: chosen enemy character now gains [dash] (was gains [pinned])",
+        "Not So Fast type innate->active (now has Force cost ⊕, cost 1)",
+        "Not So Fast text rewritten: trigger is now 'When an opposing player chooses to activate a Unit from reserve' (was 'At the start of an enemy Unit's activation, if one or more characters in that Unit are within ⊕3'); effect is now 'One character in this Unit may immediately [dash] then may make a 5 dice attack targeting a character in the Unit that was chosen to activate' (was roll 5 Attack Dice, activating Unit suffers [damage] for each [critical]/[success])",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -86,6 +199,14 @@
   ],
   "19": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -96,6 +217,14 @@
     }
   ],
   "24": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -119,6 +248,20 @@
   ],
   "27": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Secrets Uncovered: removed ⊕5 range — was 'Choose an Active objective within ⊕5 that is controlled by an opposing player', now 'Choose an Active objective that is controlled by an opposing player'",
+        "The Temple Records Are Quite Complete trigger broadened: was 'targeted with a [melee] attack by an enemy Force User character', now 'targeted with a [melee] attack' (any attacker)",
+        "The Temple Records Are Quite Complete: 'This Unit may flip its Stance Card' → 'This Unit may change its Active Stance'",
+        "The Temple Records Are Quite Complete: +2 defense dice now conditional — 'Additionally, If the attacker is a Force User, add 2 dice to the defense roll' (was unconditional 'the defender adds 2 dice to the defense roll')",
+        "Clearly, You Were a Poor Student trigger broadened: was 'When an allied Inquisitorius character Wounds an enemy Unit', now 'When an allied Galactic Empire character Wounds an enemy Unit'",
+        "Clearly, You Were a Poor Student: heal restructured — was unconditional [heal][heal] then 'if the Wounded Unit was a Force User, refresh ⊕⊕'; now refresh ⊕ + one [heal] unconditionally, then if Force User refresh ⊕ + one more [heal]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -128,6 +271,19 @@
     }
   ],
   "28": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Ability order changed: Force Jump now listed first, Call the Hunt second",
+        "Call the Hunt: chosen character may '[dash] or make a 5 dice [melee] attack' -> '[dash] and then may make a 5 dice [melee] attack'",
+        "Call the Hunt: removed 'within ⊕4' range restriction on choosing the Inquisitorius Supporting character",
+        "Your Fear Betrays You: type reactive cost 1 -> reactive cost null (Force cost removed)",
+        "Your Fear Betrays You: description fully reworded — was 'When a character in this Unit makes a [melee] attack as part of a combat action, before dice are rolled, it may use this ability. Remove one or more conditions from the defender. Add 2 dice to the attack roll for each condition that was removed.' -> now triggers on any attack during the Modify Dice Rolls step, allowing reroll of dice up to the number of Active objectives controlled by opposing players",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -140,6 +296,17 @@
   ],
   "29": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Mind Trick cost ⊕2 → ⊕1",
+        "Mind Trick reworded: trigger now 'When an enemy character within ⊕5 targets an allied character with an attack' (was 'When an allied character within ⊕3 is targeted by an attack')",
+        "Mind Trick effect now 'If the attacking character's Unit does not have [shove], it gains [shove]' (replaces old 'The attack ends. If it is the attacker's activation, it may make another attack targeting a different character. If it does, remove 2 dice from the attack roll.')",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -148,7 +315,27 @@
       ]
     }
   ],
+  "30": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Your Hatred Makes You Powerful: trigger restricted from \"an allied character\" to \"an allied Galactic Republic or Galactic Empire character\"",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "32": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Swift Retreat reworked — was a Wounded trigger granting [reposition]; now: when a character in this Unit would [advance], it may instead [reposition]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -160,6 +347,18 @@
   ],
   "35": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Shatterpoint type innate -> reactive",
+        "Shatterpoint reworded: now triggers when an allied Unit (not necessarily this Unit) is chosen to activate with a Shatterpoint Card, before that Unit activates. Form VII Vaapad effect changed from 'immediately makes a focus action and characters have Impact [2] until end of Turn' to 'one character may [dash] and then may make a 5 dice attack'. Jedi Master effect changed from 'refresh [force][force] and one character may [heal][heal][heal]' (wording now 'refresh [force][force] and one character in this Unit may [heal][heal][heal]' - heal effect retained but [dash]/attack added to Vaapad branch).",
+        "Tempered Aggression reworded: was a reroll-fails-after-roll effect ('spend any number of [force]... reroll one [fail] for each [force] spent'); now is a pre-roll add-dice effect ('attacks or defends, before dice are rolled, spend 1-3 [force]; that character adds 1 die to its roll for each [force] spent')",
+        "Ability order changed: Shatterpoint now precedes Tempered Aggression (was Tempered Aggression before Shatterpoint)",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -170,6 +369,16 @@
   ],
   "37": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Charge target expanded: \"choose another allied Galactic Republic character\" -> \"choose a character in this Unit or an allied Galactic Republic character\"",
+        "Forward Scout reworded: now places each character in this unit within ⊕2 of the first placed Primary character, and allows Clone Trooper Supporting characters to deploy within ⊕1 of a character in this Unit (previously only allowed Secondary and Supporting Clone Trooper characters within ⊕2 of the squad's Primary)",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -179,6 +388,17 @@
     }
   ],
   "38": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Ability renamed: \"Coordinated Fire: !\" -> \"Supporting Fire: [dash]\"",
+        "Supporting Fire timing changed: \"before dice are rolled\" -> \"after the effect is resolved\"",
+        "Supporting Fire effect changed: target Unit gains [exposed] -> attacking character within ⊕5 may [dash]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -191,6 +411,15 @@
   ],
   "39": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "How About You Step Aside?: chosen enemy character now may [dash] Away (was [reposition])",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -199,7 +428,31 @@
       ]
     }
   ],
+  "40": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Stamina 9 → 10",
+        "Replaced ability 'Coordinated Fire: [melee][melee]' (reactive) with 'Queen's Gambit' (reactive): When an opposing player gains one or more Momentum, after the effect is resolved, this Unit may use this ability. One character in this Unit may [advance].",
+        "Servant of the People reworked: first clause now ties-on-Active-objective control with Faith In Diplomacy stance (was: allied Galactic Republic Supporting characters can contest the same Active objective even while Wounded). Aggressive Negotiations clause now adds 1 die to attack rolls with no within-range restriction (was: allied Galactic Republic Supporting characters within ⑆5 add 1 die).",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "41": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Removed ability: Payday (reactive)",
+        "New ability: On Contract (innate)",
+        "Ability order: Expendable Distraction now precedes the new On Contract",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -211,6 +464,14 @@
   ],
   "42": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -219,7 +480,43 @@
       ]
     }
   ],
+  "43": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Loyal Protectors reworked: now 'choose another allied Galactic Republic Unit; each character in chosen Unit may [dash]; then if chosen Unit was Naboo each character in this Unit may [dash]' (was: each allied Handmaiden character may [dash] Toward an allied Primary character).",
+        "Replaced ability 'Coordinated Assault: [reposition]' (reactive) with 'Staunch Bodyguard' (reactive): when an allied Primary is targeted, one character may [reposition] Toward it; if within ⑦2 it adds 2 dice to its defense roll.",
+        "Replaced ability 'Bodyguard' (innate, Cover [1]) with 'Decoy' (identity): pre-activation reposition of Unit and a Naboo Primary relative to an Active objective within ⑦2.",
+        "Expose Flank unchanged.",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "44": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Coordinated Fire title trigger icon changed from [hunker][hunker] to [disarmed]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "46": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Secret Ingredients: 'allied Ewok character Wounds' -> 'allied Ewok Unit Wounds'",
+        "Secret Ingredients: added 'after the effect is resolved' before 'roll an attack die'",
+        "Secret Ingredients: 'each character in the attacking Unit' -> 'each character in that allied Unit'",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -231,6 +528,18 @@
   ],
   "51": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Brilliant Oration force cost ⊕1 → none (no force cost shown on new card)",
+        "Brilliant Oration: chosen character options now '[advance], [heal][heal], gain [hunker], or make a 5 dice attack' and added second clause 'Then one character in this Unit may [advance], [heal][heal], gain [hunker], or make a 5 dice attack.'",
+        "R2, I'm Not Sure...: range ⊕5 → ⊕4; now triggers off allied Rebel Alliance Unit or allied Ewok Unit starting its activation; effect simplified to 'The activating Unit may remove one condition from itself.' (removed the 'any number of conditions' + [damage] per condition after the first clause)",
+        "\"Divine Influence\": Against My Programming clause now adds 'and allied Ewok characters within ⊕5 can [climb] even while they are Engaged'; Angry Trilling clause now refers to 'allied Ewok characters within ⊕5' (was 'allied Ewok Warrior Units within ⊕4')",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -241,6 +550,15 @@
   ],
   "52": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "I Am a Jedi, Like My Father Before Me reworked: was \"If this Unit's Order Card is in the Order Deck or in reserve, it has Immunity [1]. If this Unit's Order Card is not in the Order Deck, it has Immunity [pinned].\" → now \"While this Unit's Order Card is in the Order Deck or in reserve, this Unit and allied Rebel Alliance Units within ⊕5 have Immunity [exposed]. While this Unit's Order Card is not in the Order Deck, this Unit and allied Rebel Alliance Units within ⊕5 have Immunity [advance].\"",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -249,7 +567,65 @@
       ]
     }
   ],
+  "55": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "What Does This Do? wording changed: \"may use the target character's [melee] Expertise Chart during that attack, instead of its own\" -> \"the attacking character may choose to use the defender's [melee] Expertise Chart, instead of its own, during the Apply Expertise Charts step of that attack\"",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "56": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Stamina 7 → 8",
+        "Ability 'Camouflage' replaced by 'Forest Dwellers' (adds: 'Additionally, at the end of this Unit's activation, it may gain [hunker].')",
+        "Strength in Numbers reworded: 'for each other allied Ewok character Engaged with the target that is not Wounded, add 1 attack die' → 'if the target is Engaged with one or more allied Ewok characters that are not Wounded, add 2 dice'",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "57": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Hunting Horn description corrected/clarified: current garbled \"Choose an enemy Unit within ⊕3 that is not Engaged gains [pinned]. Each enemy unit within ⊕3 that is Engaged gains [exposed].\" -> \"Action: Each enemy Unit within ⊕3 that has no Engaged characters within ⊕3 of a character in this Unit gains [pinned]. Each enemy Unit that has one or more Engaged characters within ⊕3 of a character in this Unit gains [exposed].\"",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "58": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Coordinated Fire name suffix [ranged][ranged] → [dash]",
+        "Coordinated Fire: target Unit gains [pinned] → gains [dash]",
+        "Ability 'Camouflage' replaced by 'Forest Dwellers' (adds: 'Additionally, at the end of this Unit's activation, it may gain [hunker].')",
+        "Strength in Numbers reworded: 'for each other allied Ewok character Engaged with the target that is not Wounded, add 1 die' → 'if the target is Engaged with one or more allied Ewok characters that are not Wounded, add 2 dice'",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "59": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Bright Tree Defender: 'becomes Wounded' -> 'becomes Wounded by an attack'",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -271,6 +647,14 @@
   ],
   "63": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -279,7 +663,30 @@
       ]
     }
   ],
+  "64": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Close the Deal: \"Choose a Bounty Hunter character\" → \"Choose an allied Bounty Hunter character\"",
+        "There Is One Job...: \"move the Struggle token ⊕3 toward your Momentum tokens\" → \"move the Struggle token one space toward your Momentum tokens\"",
+        "There Is One Job...: \"Before revealing the top card of the Mission Deck\" → \"Before revealing the first card of the Mission Deck\"",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "67": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Coordinated Fire: name suffix '[ranged]' -> '[strained]' (teardrop icon)",
+        "Coordinated Fire: type innate -> reactive (circular-arrows icon on card)",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
     {
       "version": "1.3",
       "date": "2025-09-05",
@@ -292,6 +699,16 @@
   ],
   "70": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "New ability: Exit Strategy (innate) — \"Characters in this Unit can [climb] even while they are Engaged.\"",
+        "Ability order changed: 'I've Got You in My Sights' now precedes 'Pack Hunter'",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -302,12 +719,33 @@
   ],
   "71": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "New ability: Exit Strategy (innate) — \"Characters in this Unit can [climb] even while they are Engaged.\"",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
       "changes": [
         "HP buffed: 8 → 9",
         "Card art updated — print sheet v1.3 (09/05/2025)"
+      ]
+    }
+  ],
+  "72": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Relax, I'll Handle This: trigger 'When this Unit makes a [ranged] attack' → 'When a character in this Unit makes a [ranged] attack'",
+        "Relax, I'll Handle This: 'remove one condition from an allied Unit that is Engaged' → 'remove one condition from an allied character that is Engaged'",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
   ],
@@ -332,6 +770,17 @@
   ],
   "83": [
     {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Defiance Will be the Death of You: type innate → reactive",
+        "Defiance Will be the Death of You: text changed from \"if the target is within ⊕5 of one or more other allied Galactic Empire Scout characters, it adds [success] to the attack roll\" to \"an allied Galactic Empire Supporting character ... if the target is within ⊕5 of a character in this Unit, the attacking character may change one [block] result in the attack roll to a [critical] result\"",
+        "May We Live Up to Our Name: type innate → reactive",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    },
+    {
       "version": "1.3",
       "date": "2025-09-05",
       "cardArtCurrent": true,
@@ -348,6 +797,29 @@
       "changes": [
         "Camouflage now resolves at the end of Setup",
         "Infiltration range nerfed: ⊕3 → ⊕2",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "89": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Oh, the Uniform reworded: \"does not lose its [hunker] when it becomes Engaged ... while it is Engaged\" -> \"does not lose its [hunker] when a character in it becomes Engaged ... while it has Engaged characters\"",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "91": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "I Want You to Know Failure, Utter Defeat: movement [advance] → [reposition]",
+        "We Must Wait and Watch: reserved Unit removes [damage] (was [advance]); chosen character [advance] → [reposition]",
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
@@ -399,6 +871,21 @@
       ]
     }
   ],
+  "103": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Detain: added 'At the start of this Unit's activation,' before 'choose an allied Scoundrel character'",
+        "Security Network: rewording — 'within ⊕4 or another allied Scoundrel Supporting character within ⊕4' → 'within ⊕4, or an allied Scoundrel Supporting character within ⊕4'; chosen character now may [advance] (was [dash])",
+        "Detain: chosen character may [advance] (was [dash])",
+        "Battlefield Calculations: reworded trigger from 'When another allied character ends an [advance], [dash], [jump] or [climb] within ⊕2 of this character during its activation' → 'During another allied Unit's activation, when one or more characters in that Unit end an [advance], [dash], [jump], or [climb] within ⊕2'",
+        "Lockdown: 'cannot remove your Control token' → 'cannot remove or replace your Control token'",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "104": [
     {
       "version": "1.4",
@@ -429,6 +916,46 @@
       ]
     }
   ],
+  "112": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Stamina 7 → 8",
+        "New innate ability: Lightsaber Training — Characters in this Unit have Impact [1]",
+        "Stretch Out With Your Feelings: 'before dice are rolled, this Unit may use this ability. During this attack,' phrasing replaced by 'when resolving a [heal] from one of its chosen Combat Tree Options' (minor wording streamline; same effect: ⊕3 instead of normal ⊕2)",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "113": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Removed reactive ability: Riposte",
+        "Removed reactive ability: Supporting Fire: (replaced by Supporting Assault:)",
+        "New reactive ability: Create Opening (cost 1) — Change one result in the defense roll to a [block] result during the Modify Dice Rolls step",
+        "New reactive ability: Supporting Assault: — when an allied Galactic Republic Unit attacks within ⊕5, one character in this Unit may [advance]",
+        "Identity 'I'm Afraid I Must Request Your Surrender' completely rewritten: now two Once-per-Turn reactive triggers ([jump] on enemy attack with [block] results; [shove] the defender on enemy defense with [block] results), replacing the prior Form I / Form IV stance text",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "119": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "She Is Fearless force cost 2 -> 1 (card shows a single [force] icon)",
+        "Then I Will Avenge His Death reworded: \"may now attack targeting\" -> \"may make an attack targeting\"",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
   "121": [
     {
       "version": "1.4",
@@ -437,6 +964,38 @@
       "changes": [
         "This Town is Ready to Blow now triggers only when another player claims a Struggle Card",
         "Make Ten Men Feel Like a Hundred reworked — triggers on Wounds from enemy attacks; movement [advance]→[dash] (Spy alt [reposition]→[advance]); buff applies to any allied Rebel Alliance Unit; Impact/Sharpshooter [2]→[1]",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "128": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "I Fear Nothing, For All Is as the Force Wills It reworded: refresh ⊕ now conditional on having one or more Injured tokens (was unconditional 'refresh ⊕'); the per-token clause changed from 'for each Wounded and Injured token this Unit has, you may refresh ⊕ or this Unit may remove [damage] or one condition from itself' to 'for each Injured token this Unit has, it may remove [damage] or one condition from itself' (Wounded tokens and the optional refresh ⊕ removed)",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "129": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
+        "Delta, Give Me An Explosive Solution text changed: now 'Choose an allied Delta Squad Unit and an Active objective within ⊕3 of that Unit. Each character in the chosen Unit may [dash]. Then roll 3 Attack Dice. For each [critical] or [success] result in the roll, each Unit within ⊕2 of the chosen objective suffers [damage] and then removes any [hunker] it has.' (previously chose an objective within ⊕3 of an allied Clone Trooper, dash + hunker for allies, no dice roll, damage[damage] to enemies)",
+        "Card art updated — print sheet v1.4 (05/19/2026)"
+      ]
+    }
+  ],
+  "131": [
+    {
+      "version": "1.4",
+      "date": "2026-05-19",
+      "cardArtCurrent": true,
+      "changes": [
         "Card art updated — print sheet v1.4 (05/19/2026)"
       ]
     }
