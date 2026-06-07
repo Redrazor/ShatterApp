@@ -4,6 +4,14 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.17.0',
+    date: '2026-06-07',
+    changes: [
+      'Data — completed the May 2026 squad packs: added Shin Hati & HK-87 Assassin Droids (SWP82 Secure the Future), Enoch & Night Troopers (SWP83 My Loyalty, My Life) with full profiles, abilities, stances, and card art',
+      'Data — era correction (AMG erratum): CT-9904, Elite Squad Leader now spans Reign of the Empire through Age of Rebellion',
+    ],
+  },
+  {
     version: '2.16.0',
     date: '2026-06-07',
     changes: [
