@@ -14,7 +14,7 @@
         "name": "I'm Going to End This",
         "type": "reactive",
         "cost": 2,
-        "description": "After this Unit makes a combat action, it may use this ability. One character in this Unit may make an attack targeting one of the same enemy characters within range and LOS."
+        "description": "After this Unit makes a combat action, it may use this ability. This Unit may change its Active Stance. Then one character in this Unit may make a [melee] attack."
       },
       {
         "name": "Deflect",
@@ -26,7 +26,7 @@
         "name": "This Is Where the Fun Begins",
         "type": "identity",
         "cost": null,
-        "description": "When a character in this Unit Wounds an enemy Primary Unit or enemy Secondary Unit, after the effect is resolved, move the Struggle token one space toward your Momentum tokens. Then, if the Wounded Unit is a Primary Unit, each allied Galactic Republic character may [heal]."
+        "description": "Each time a character in this Unit Wounds an enemy Unit, after the effect is resolved, refresh [force]. Additionally, at the end of this Unit's activation, if it Wounded one or more Secondary or Primary Units during that activation, each allied Galactic Republic Secondary and each allied Galactic Republic Supporting character may [dash]. Then, if this Unit Wounded one or more Primary Units during its activation, move the Struggle token one space toward your Momentum tokens."
       }
     ]
   },
@@ -45,7 +45,7 @@
         "name": "Force Push",
         "type": "active",
         "cost": 2,
-        "description": "Choose a character in this Unit and an enemy character within 3 of that character. Push the chosen enemy character 3 Away from the chosen allied character."
+        "description": "Choose a character in this Unit and an enemy character within ⊕3 of that character. Push the chosen enemy character ⊕3 Away from the chosen allied character."
       },
       {
         "name": "Riposte",
@@ -54,16 +54,16 @@
         "description": "After a [melee] attack targeting a character in this Unit is resolved, this Unit may use this ability. If the attack roll contained one or more [fail] results, the attacking Unit suffers [damage][damage]."
       },
       {
-        "name": "Slip Away",
-        "type": "reactive",
+        "name": "Swift Retreat",
+        "type": "innate",
         "cost": null,
-        "description": "When another allied Dathomirian or Separatist Alliance character targets an enemy character that is Engaged with one or more characters in this Unit with an attack, this Unit may use this ability. One character in this Unit that is Engaged with the target character may immediately [reposition]. If it does, this Unit gains [hunker]."
+        "description": "When a character in this Unit would [advance], it may instead [reposition]."
       },
       {
         "name": "Sith Assassin",
         "type": "identity",
         "cost": null,
-        "description": "When a character in this Unit Wounds an enemy Unit, after the effect is resolved, that character may [heal][heal][heal]. If it Wounded a Primary Unit or Secondary Unit, it may [advance] or [jump]. If it Wounded a Primary Unit, refresh ⊕⊕."
+        "description": "When a character in this Unit Wounds an enemy Unit, after the effect is resolved, refresh [force]. Then, if it Wounded a Primary Unit or Secondary Unit, it may [reposition] or [jump]. Finally, if it Wounded a Primary Unit, refresh [force]."
       }
     ]
   },
@@ -125,7 +125,7 @@
         "name": "You'll Find I Have Many Qualities For You to Dislike",
         "type": "innate",
         "cost": null,
-        "description": "While this Unit is not Wounded, characters in this Unit and allied characters within range 2 add expertise to their defense rolls."
+        "description": "While this Unit is not Wounded, characters in this Unit and allied characters within ⊕2 add [expertise] to their defense rolls."
       },
       {
         "name": "Fierce Protector",
@@ -317,7 +317,7 @@
         "name": "Coordinated Fire",
         "type": "reactive",
         "cost": null,
-        "description": "When a character in another allied Galactic Republic Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [exposed]."
+        "description": "When a character in another allied Galactic Republic Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [strained]."
       },
       {
         "name": "Brothers in Arms",
@@ -333,22 +333,28 @@
     "swpCode": "SWP01",
     "abilities": [
       {
+        "name": "Countless",
+        "type": "reactive",
+        "cost": null,
+        "description": "When this Unit becomes Wounded, after the effect is resolved, this Unit may use this ability. This Unit gains an Injured token. Then it removes a Wounded token, all [damage], and one condition from itself."
+      },
+      {
         "name": "Combat A.I. Protocols",
         "type": "innate",
         "cost": null,
-        "description": "After an allied Battle Droid Unit makes a combat action, choose one of the targeted characters that is within ⊕4 of all character in this Unit, if able. The chosen character gains [strained] or [exposed]."
-      },
-      {
-        "name": "Well, I Guess I'm in Charge, Now",
-        "type": "innate",
-        "cost": null,
-        "description": "When this Unit's Order Card would be placed in reserve, its controlling player may place it on the bottom of their Order Deck instead."
+        "description": "After an allied Battle Droid Unit makes a combat action, choose one of the targeted characters that is within ⊕4 of all characters in this Unit, if able. The chosen character gains [strained] or [exposed]."
       },
       {
         "name": "I Hate This Job",
         "type": "innate",
         "cost": null,
         "description": "While a character in this Unit is contesting one or more Active objectives, it has Protection."
+      },
+      {
+        "name": "Well, I Guess I'm in Charge, Now",
+        "type": "innate",
+        "cost": null,
+        "description": "When this Unit's Order Card would be placed in reserve, its controlling player may place it on the bottom of their Order Deck instead."
       }
     ]
   },
@@ -420,10 +426,10 @@
     "swpCode": "SWP06",
     "abilities": [
       {
-        "name": "We've Got a Big Problem....",
+        "name": "We've Got a Big Problem...",
         "type": "tactic",
         "cost": null,
-        "description": "At the start of this Unit's activation, choose an enemy character within ⊕5 that is contesting an Active objective. The chosen character gains [exposed]."
+        "description": "At the start of this Unit's activation, choose an Active objective. One character in this Unit may [jump] Toward the chosen objective. Then choose an enemy character within ⊕3 that is contesting the chosen objective, if able. The chosen character gains [exposed]."
       },
       {
         "name": "Defensive Maneuver",
@@ -432,16 +438,16 @@
         "description": "Each character in this Unit may [dash]. If any characters [dash], this Unit gains [hunker]."
       },
       {
-        "name": "Say Goodnight, Clanker!",
-        "type": "innate",
-        "cost": null,
-        "description": "Characters in this Unit have Sharpshooter [2]. When a character in this Unit makes a [ranged] attack, the target does not benefit from Cover."
-      },
-      {
         "name": "Bring it Down!",
         "type": "innate",
         "cost": null,
         "description": "When an allied Clone Trooper Supporting character within ⊕4 that has one or more [hunker] makes a [ranged] attack as part of a combat action, it may reroll up to two of its [fail] results."
+      },
+      {
+        "name": "Say Goodnight, Clanker!",
+        "type": "innate",
+        "cost": null,
+        "description": "Characters in this Unit have Sharpshooter [2]. When a character in this Unit makes a [ranged] attack, the target does not benefit from Cover."
       }
     ]
   },
@@ -467,6 +473,12 @@
         "type": "innate",
         "cost": null,
         "description": "While this Unit has one or more [hunker], characters in this Unit have Steadfast."
+      },
+      {
+        "name": "Clone Marksmen",
+        "type": "innate",
+        "cost": null,
+        "description": "Characters in this Unit have Sharpshooter [1]."
       }
     ]
   },
@@ -479,25 +491,25 @@
         "name": "Leader of the Separatist Army",
         "type": "tactic",
         "cost": null,
-        "description": "At the start of this Unit's activation, choose another allied Separatist Alliance character within ⊕2. Each character in this Unit and the chosen character may [advance]."
+        "description": "At the start of this Unit's activation, choose another allied Separatist Alliance character within ⊕2. Each character in this Unit and the chosen character may [dash]."
       },
       {
         "name": "Surely You Can Do Better",
         "type": "reactive",
-        "cost": 1,
-        "description": "When a character in this Unit defends, during the Modify Dice Rolls step, this Unit may spend 1 [force] to use this ability. Change a result to a [block] or to a [surge]."
+        "cost": 0,
+        "description": "When a character in this Unit defends, during the Modify Dice Rolls step, this Unit may spend 1-3 [force] to use this ability. Change one [success] result to a [fail] for each [force] spent."
       },
       {
         "name": "Twice the Pride, Double the Fall",
         "type": "reactive",
         "cost": 1,
-        "description": "After a [melee] attack targeting an allied character within ⊕2 is resolved, this Unit may use this ability. If the attack roll contained no [success] results, one character in this Unit may [advance] and then may make a 5 dice [melee] attack targeting the attacking character."
+        "description": "After a [melee] attack targeting an allied character within ⊕2 is resolved, this Unit may use this ability. If the attack roll contained no [success] results, one character in this Unit may [dash] and then may make a 5 dice [melee] attack targeting the attacking character."
       },
       {
         "name": "Brave, but Foolish",
         "type": "innate",
         "cost": null,
-        "description": "Once per turn, when an allied Primary Unit or allied Secondary Unit is Wounded by an enemy effect, after the effect is resolved, refresh [force][force]. Then, choose an allied Separatist Alliance Supporting Unit. One character in the chosen Unit may [advance] or make a 5 dice attack."
+        "description": "Once per Turn, when an allied Primary Unit or allied Secondary Unit is Wounded by an enemy effect, after the effect is resolved, refresh [force][force]. Then, choose an allied Separatist Alliance Supporting Unit. One character in the chosen Unit may [dash] or make a 5 dice attack."
       }
     ]
   },
@@ -507,34 +519,34 @@
     "swpCode": "SWP03",
     "abilities": [
       {
-        "name": "Jet Pack",
-        "type": "active",
-        "cost": 1,
-        "description": "Each character in this Unit may [jump]."
-      },
-      {
         "name": "Capture Wire",
         "type": "active",
         "cost": 1,
         "description": "Choose a character in this Unit and an enemy character within ⊕3 of that character. Pull the chosen enemy character ⊕2 Toward the chosen allied character. Then the chosen enemy character gains [pinned]."
       },
       {
+        "name": "Jet Pack",
+        "type": "active",
+        "cost": 1,
+        "description": "Each character in this Unit may [jump]."
+      },
+      {
         "name": "Not So Fast",
         "type": "reactive",
         "cost": 1,
-        "description": "At the start of an enemy Unit's activation, if one or more characters in that Unit are within ⊕3 of a character in this Unit, this Unit may use this ability. Roll 5 Attack Dice. The activating Unit suffers [damage] for each [critical] and [success] result in the roll."
+        "description": "When an opposing player chooses to activate a Unit from reserve, this Unit may use this ability. One character in this Unit may immediately [dash] then may make a 5 dice attack targeting a character in the Unit that was chosen to activate."
+      },
+      {
+        "name": "I'm Just Looking to Get Paid",
+        "type": "innate",
+        "cost": null,
+        "description": "When a character in this Unit Wounds an enemy Primary Unit or an enemy Secondary Unit, after the effect is resolved, refresh ⊕⊕ and one character in this Unit may [heal][heal]."
       },
       {
         "name": "My Client is Getting Impatient",
         "type": "innate",
         "cost": null,
         "description": "After this Unit makes a focus action, one character in this Unit may [jump]."
-      },
-      {
-        "name": "I'm Just Looking to Get Paid",
-        "type": "innate",
-        "cost": null,
-        "description": "When a character in this Unit Wounds an enemy Primary Unit or enemy Secondary Unit, after the effect is resolved, refresh ⊕⊕ and one character in this Unit may [heal][heal]."
       }
     ]
   },
@@ -783,6 +795,12 @@
         "type": "innate",
         "cost": null,
         "description": "Characters in this Unit have Protection."
+      },
+      {
+        "name": "Close Range Annihilation",
+        "type": "innate",
+        "cost": null,
+        "description": "When a character in this Unit makes an attack targeting an enemy character within ⊕3, during the Modify Dice Rolls step, the attacking character may reroll up to 2 dice in its roll."
       }
     ]
   },
@@ -801,19 +819,19 @@
         "name": "Secrets Uncovered",
         "type": "active",
         "cost": 2,
-        "description": "Choose an Active objective within ⊕5 that is controlled by an opposing player. Remove the opposing player's Control token from the chosen objective."
+        "description": "Choose an Active objective that is controlled by an opposing player. Remove the opposing player's Control token from the chosen objective."
       },
       {
         "name": "The Temple Records Are Quite Complete",
         "type": "reactive",
         "cost": 1,
-        "description": "When a character in this Unit is targeted with a [melee] attack by an enemy Force User character, this Unit may use this ability. This Unit may flip its Stance Card and the defender adds 2 dice to the defense roll."
+        "description": "When a character in this Unit is targeted with a [melee] attack, this Unit may use this ability. This Unit may change its Active Stance. Additionally, If the attacker is a Force User, add 2 dice to the defense roll."
       },
       {
         "name": "Clearly, You Were a Poor Student",
         "type": "identity",
         "cost": null,
-        "description": "When an allied Inquisitorius character Wounds an enemy Unit, after the effect is resolved, one allied Inquisitorius character may [heal][heal]. Then, if the Wounded Unit was a Force User, refresh ⊕⊕."
+        "description": "When an allied Galactic Empire character Wounds an enemy Unit, after the effect is resolved, refresh ⊕ and one allied Inquisitorius character may [heal]. Then, if the Wounded Unit was a Force User, refresh ⊕ and one allied Inquisitorius character may [heal]."
       }
     ]
   },
@@ -823,16 +841,16 @@
     "swpCode": "SWP12",
     "abilities": [
       {
-        "name": "Call the Hunt",
-        "type": "active",
-        "cost": 1,
-        "description": "Choose an allied Inquisitorius Supporting character within ⊕4. The chosen character may [dash] or make a 5 dice [melee] attack."
-      },
-      {
         "name": "Force Jump",
         "type": "active",
         "cost": 1,
         "description": "Each character in this Unit may [jump]."
+      },
+      {
+        "name": "Call the Hunt",
+        "type": "active",
+        "cost": 1,
+        "description": "Choose an allied Inquisitorius Supporting character. The chosen character may [dash] and then may make a 5 dice [melee] attack."
       },
       {
         "name": "Deflect",
@@ -843,8 +861,8 @@
       {
         "name": "Your Fear Betrays You",
         "type": "reactive",
-        "cost": 1,
-        "description": "When a character in this Unit makes a [melee] attack as part of a combat action, before dice are rolled, it may use this ability. Remove one or more conditions from the defender. Add 2 dice to the attack roll for each condition that was removed."
+        "cost": null,
+        "description": "When a character in this Unit makes an attack, during the Modify Dice Rolls step, this Unit may use this ability. The attacking character may reroll a number of dice in the attack roll up to the number of Active objectives controlled by opposing players."
       }
     ]
   },
@@ -862,8 +880,8 @@
       {
         "name": "Mind Trick",
         "type": "reactive",
-        "cost": 2,
-        "description": "When an allied character within ⊕3 is targeted by an attack, this Unit may use this ability. The attack ends. If it is the attacker's activation, it may make another attack targeting a different character. If it does, remove 2 dice from the attack roll."
+        "cost": 1,
+        "description": "When an enemy character within ⊕5 targets an allied character with an attack, this Unit may use this ability. If the attacking character's Unit does not have [disarmed], it gains [disarmed]."
       },
       {
         "name": "Greater Purpose",
@@ -906,7 +924,7 @@
         "name": "Your Hatred Makes You Powerful",
         "type": "identity",
         "cost": null,
-        "description": "When an allied character makes a [melee] attack as part of a combat action, after choosing a target, the attacking Unit may suffer [damage][damage]. If it does, the attacker adds 3 dice to the attack roll."
+        "description": "When an allied Galactic Republic or Galactic Empire character makes a [melee] attack as part of a combat action, after choosing a target, the attacking Unit may suffer [damage][damage]. If it does, the attacker adds 3 dice to the attack roll."
       }
     ]
   },
@@ -980,7 +998,7 @@
         "name": "Swift Retreat",
         "type": "innate",
         "cost": null,
-        "description": "When this Unit is Wounded by an enemy effect, after the effect is resolved, one character in this Unit may [reposition]."
+        "description": "When a character in this Unit would [advance], it may instead [reposition]."
       }
     ]
   },
@@ -1058,16 +1076,16 @@
         "description": "At the start of this Unit's Activation, choose another allied Galactic Republic Unit. Each character in this Unit and each character in the chosen Unit may [dash]."
       },
       {
+        "name": "Shatterpoint",
+        "type": "reactive",
+        "cost": null,
+        "description": "When an allied Unit is chosen to activate with a Shatterpoint Card, before that Unit activates, resolve an effect based on this Unit's Active Stance. If this Unit's Active Stance is Form VII Vaapad, one character in this Unit may [dash] and then may make a 5 dice attack. If its Active Stance is Jedi Master, refresh [force][force] and one character in this Unit may [heal][heal][heal]."
+      },
+      {
         "name": "Tempered Aggression",
         "type": "reactive",
         "cost": null,
-        "description": "When a character in this Unit makes an attack, after all Attack Dice and Defense Dice have been rolled, this Unit may spend any number of [force] to use this ability. Reroll one [fail] result in the attack roll for each [force] spent."
-      },
-      {
-        "name": "Shatterpoint",
-        "type": "innate",
-        "cost": null,
-        "description": "When this Unit is chosen to activate with a Shatterpoint Card, if its Active Stance is Form VII Vaapad, it immediately makes a focus action and characters in this Unit have Impact [2] until the end of the Turn. If its Active Stance is Jedi Master, refresh ⊕⊕ and one character in this Unit may [heal][heal][heal]."
+        "description": "When a character in this Unit attacks or defends, before dice are rolled, this Unit may spend 1-3 [force]. If it does, that character adds 1 die to its roll for each [force] spent."
       },
       {
         "name": "This Party's Over",
@@ -1123,19 +1141,19 @@
         "name": "Charge",
         "type": "tactic",
         "cost": null,
-        "description": "At the start of this Unit's activation, choose another allied Galactic Republic character. The chosen character may [dash]."
+        "description": "At the start of this Unit's activation, choose a character in this Unit or an allied Galactic Republic character. The chosen character may [dash]."
       },
       {
         "name": "Incoming",
         "type": "innate",
         "cost": null,
-        "description": "Allied Clone Trooper Units within ⊕3 that have one or more [hunker], have Immunity [exposed]."
+        "description": "Allied Clone Trooper Units within ⊕3 that have one or more [hunker] have Immunity [exposed]."
       },
       {
         "name": "Forward Scout",
         "type": "innate",
         "cost": null,
-        "description": "When deploying a squad that includes this Unit, allied Clone Trooper Secondary characters and allied Clone Trooper Supporting characters may be placed within ⊕2 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
+        "description": "When deploying a squad that includes this Unit, after putting the first Primary character from that squad on the battlefield, put each character in this unit within ⊕2 of that character. Allied Clone Trooper Supporting characters in this Unit's squad may be deployed within ⊕1 of a character in this Unit, instead of within ⊕1 of the first Primary character deployed."
       }
     ]
   },
@@ -1151,10 +1169,10 @@
         "description": "Each character in this Unit may [dash]. If any characters [dash], this Unit gains [hunker]."
       },
       {
-        "name": "Coordinated Fire: !",
+        "name": "Supporting Fire: [dash]",
         "type": "reactive",
         "cost": 0,
-        "description": "When a character in another allied Galactic Republic Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [exposed]."
+        "description": "When a character in another allied Galactic Republic Unit makes an attack as part of a combat action, after the effect is resolved, this Unit may use this ability. If the attacking character is within ⊕5, that character may [dash]."
       },
       {
         "name": "Brothers in Arms",
@@ -1179,7 +1197,7 @@
         "name": "How About You Step Aside?",
         "type": "active",
         "cost": 1,
-        "description": "Choose an enemy character within ⊕3 and an Active objective it is contesting. The chosen character may [reposition] Away from that objective. Then, after any moves are resolved, if the chosen character is no longer contesting the chosen objective, it gains [disarmed]. If the chosen character is still contesting the chosen objective, it gains [exposed] and [strained]."
+        "description": "Choose an enemy character within ⊕3 and an Active objective it is contesting. The chosen character may [dash] Away from that objective. Then, after any moves are resolved, if the chosen character is no longer contesting the chosen objective, it gains [disarmed]. If the chosen character is still contesting the chosen objective, it gains [exposed] and [strained]."
       },
       {
         "name": "Rocket Boots",
@@ -1213,10 +1231,10 @@
         "description": "Choose an allied Galactic Republic Unit. Each character in the chosen Unit may [advance]."
       },
       {
-        "name": "Coordinated Fire: [melee][melee]",
+        "name": "Queen's Gambit",
         "type": "reactive",
         "cost": null,
-        "description": "When a character in an allied Handmaiden Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit suffers [damage][damage]."
+        "description": "When an opposing player gains one or more Momentum, after the effect is resolved, this Unit may use this ability. One character in this Unit may [advance]."
       },
       {
         "name": "Crack Shot",
@@ -1228,7 +1246,7 @@
         "name": "Servant of the People",
         "type": "identity",
         "cost": null,
-        "description": "While this Unit is not Wounded and while one or more characters in this Unit are contesting an Active objective, if this Unit's Active Stance is Faith in Diplomacy, allied Galactic Republic Supporting characters can contest the same Active objective, even while they are Wounded. While this Unit is not Wounded, if this Unit's Active Stance is Aggressive Negotiations, allied Galactic Republic Supporting characters within ⊕4 add 1 die to their attack rolls."
+        "description": "When determining control of an Active objective that one or more characters in this Unit are contesting, if there is a tie and if this Unit's Active Stance is Faith In Diplomacy, this Unit's controlling player takes control of that objective. While this Unit is not Wounded, if this Unit's Active Stance is Aggressive Negotiations, allied Galactic Republic Supporting characters add 1 die to their attack rolls."
       }
     ]
   },
@@ -1250,16 +1268,16 @@
         "description": "After a character in this Unit makes an attack as part of a combat action, this Unit may use this ability. One character in this Unit may [reposition]."
       },
       {
-        "name": "Payday",
-        "type": "reactive",
-        "cost": 1,
-        "description": "After you reveal an Order Card, this Unit may use this ability. If it does, this Unit gains one Tag of your choice until the end of the Turn."
-      },
-      {
         "name": "Expendable Distraction",
         "type": "innate",
         "cost": null,
         "description": "When a character in this Unit makes a [ranged] attack as part of a combat action, if the defender is Engaged with one or more allied characters in Units that are not Wounded, it may add 3 dice to its attack roll. If it does, choose one of those Engaged allied Units. The chosen Unit suffers [damage][damage]."
+      },
+      {
+        "name": "On Contract",
+        "type": "innate",
+        "cost": null,
+        "description": "At the end of Setup, choose an allied Primary Unit and a Tag that Unit has. This Unit has the chosen Tag."
       }
     ]
   },
@@ -1297,7 +1315,7 @@
         "name": "Loyal Protectors",
         "type": "tactic",
         "cost": null,
-        "description": "At the start of this Unit's activation, each allied Handmaiden character may [dash] Toward an allied Primary character."
+        "description": "At the start of this Unit's activation, choose another allied Galactic Republic Unit. Each character in the chosen Unit may [dash]. Then, if the chosen Unit was a Naboo Unit, each character in this Unit may [dash]."
       },
       {
         "name": "Expose Flank",
@@ -1306,16 +1324,16 @@
         "description": "Each character in this Unit may [climb]. If any character ends this movement at a higher elevation than it began, characters in this Unit have Sharpshooter [1] until the end of the Turn and this Unit immediately makes a focus action."
       },
       {
-        "name": "Coordinated Assault: [reposition]",
+        "name": "Staunch Bodyguard",
         "type": "reactive",
         "cost": null,
-        "description": "When a character in another allied Galactic Republic Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, one character in this Unit may [dash]."
+        "description": "When an allied Primary character is targeted by an enemy attack, before dice are rolled, this Unit may use this ability. One character in this Unit may [reposition] Toward that Primary character. After this move is resolved, if one or more characters in this Unit are within ⑦2 of the targeted Primary character, it adds 2 dice to its defense roll."
       },
       {
-        "name": "Bodyguard",
-        "type": "innate",
+        "name": "Decoy",
+        "type": "identity",
         "cost": null,
-        "description": "Allied Primary characters within ⊕2 and allied Secondary characters within ⊕2 of a character in this Unit have Cover [1]."
+        "description": "Before choosing a Unit to activate with your Shatterpoint Card, you may choose an Active objective that is within ⑦2. If you do, choose an allied Naboo Primary character. Put each character in this Unit within ⑦1 of the chosen Primary character. Then put the chosen Primary character within ⑦1 of the chosen Active objective."
       }
     ]
   },
@@ -1331,7 +1349,7 @@
         "description": "Each character in this Unit may [climb]. If any character ends this movement at a higher elevation than it began, characters in this Unit have Sharpshooter [1] until the end of the Turn and this Unit immediately makes a focus action."
       },
       {
-        "name": "Coordinated Fire: [hunker][hunker]",
+        "name": "Coordinated Fire: [disarmed]",
         "type": "reactive",
         "cost": null,
         "description": "When a character in another allied Galactic Republic Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [disarmed]."
@@ -1408,7 +1426,7 @@
         "name": "Secret Ingredients",
         "type": "identity",
         "cost": null,
-        "description": "Each time an allied Ewok character Wounds an enemy Unit, roll an attack die. On a [critical] or [success] result, refresh [force]. On a [fail] or [expertise] result, each character in the attacking Unit may [dash]."
+        "description": "Each time an allied Ewok Unit Wounds an enemy Unit, after the effect is resolved, roll an attack die. On a [critical] or [success] result, refresh [force]. On a [fail] or [expertise] result, each character in that allied Unit may [dash]."
       }
     ]
   },
@@ -1550,20 +1568,20 @@
       {
         "name": "Brilliant Oration",
         "type": "active",
-        "cost": 1,
-        "description": "Choose an allied Ewok Supporting character within ⊕4. The chosen character may gain [hunker], [heal][heal], or make a 5 dice attack."
+        "cost": null,
+        "description": "Choose an allied Ewok Supporting character within ⊕4. The chosen character may [dash], [heal][heal], gain [hunker], or make a 5 dice attack. Then one character in this Unit may [dash], [heal][heal], gain [hunker], or make a 5 dice attack."
       },
       {
         "name": "R2, I'm Not Sure That's Such a Good Idea",
         "type": "reactive",
         "cost": null,
-        "description": "When an allied Ewok Unit or an allied Rebel Alliance Unit begins its activation within ⊕5, this Unit may use this ability. The activating Unit may remove any number of conditions from itself. Then that Unit suffers [damage] for each condition it removed, after the first."
+        "description": "When an allied Rebel Alliance Unit within ⊕4 or an allied Ewok Unit within ⊕4 starts its activation, this Unit may use this ability. The activating Unit may remove one condition from itself."
       },
       {
         "name": "\"Divine Influence\"",
         "type": "innate",
         "cost": null,
-        "description": "While this Unit's Active Stance is Against My Programming, allied Ewok Scout Units within ⊕4 have Scale. While this Unit's Active Stance is Angry Trilling, allied Ewok Warrior Units within ⊕4 have Steadfast."
+        "description": "While this Unit's Active Stance is Against My Programming, allied Ewok Units within ⊕5 have Scale and allied Ewok characters within ⊕5 can [climb] even while they are Engaged. While this Unit's Active Stance is Angry Trilling, allied Ewok characters within ⊕5 have Steadfast."
       },
       {
         "name": "Goodness Gracious Me",
@@ -1606,7 +1624,7 @@
         "name": "I Am a Jedi, Like My Father Before Me",
         "type": "identity",
         "cost": null,
-        "description": "If this Unit's Order Card is in the Order Deck or in reserve, it has Immunity [1]. If this Unit's Order Card is not in the Order Deck, it has Immunity [pinned]."
+        "description": "While this Unit's Order Card is in the Order Deck or in reserve, this Unit and allied Rebel Alliance Units within ⊕5 have Immunity [exposed]. While this Unit's Order Card is not in the Order Deck, this Unit and allied Rebel Alliance Units within ⊕5 have Immunity [pinned]."
       }
     ]
   },
@@ -1699,7 +1717,7 @@
         "name": "What Does This Do?",
         "type": "innate",
         "cost": null,
-        "description": "When a character in this Unit makes a [melee] attack targeting an enemy character that has [exposed] or [pinned], the attacking character may use the target character's [melee] Expertise Chart during that attack, instead of its own."
+        "description": "When a character in this Unit makes a [melee] attack targeting an enemy character that has [exposed] or [pinned], the attacking character may choose to use the defender's [melee] Expertise Chart, instead of its own, during the Apply Expertise Charts step of that attack."
       }
     ]
   },
@@ -1721,16 +1739,16 @@
         "description": "When you create your starting Order Deck, you may include up to one Primitive Artifice Battle Tactics Card. When you draw a Battle Tactics Card, resolve the effects of that card then draw another Order Card and continue your Turn as normal."
       },
       {
-        "name": "Camouflage",
+        "name": "Forest Dwellers",
         "type": "innate",
         "cost": null,
-        "description": "At the end of Setup, this Unit may gain [hunker]."
+        "description": "At the end of Setup, this Unit may gain [hunker]. Additionally, at the end of this Unit's activation, it may gain [hunker]."
       },
       {
         "name": "Strength in Numbers",
         "type": "innate",
         "cost": null,
-        "description": "When a character in this Unit makes an attack as part of a combat action, for each other allied Ewok character Engaged with the target that is not Wounded, add 1 attack die to the attack roll."
+        "description": "When a character in this Unit makes an attack, if the target is Engaged with one or more allied Ewok characters that are not Wounded, add 2 dice to the attack roll."
       }
     ]
   },
@@ -1749,7 +1767,7 @@
         "name": "Hunting Horn",
         "type": "active",
         "cost": 1,
-        "description": "Action: Choose an enemy Unit within ⊕3 that is not Engaged gains [pinned]. Each enemy unit within ⊕3 that is Engaged gains [exposed]."
+        "description": "Action: Each enemy Unit within ⊕3 that has no Engaged characters within ⊕3 of a character in this Unit gains [pinned]. Each enemy Unit that has one or more Engaged characters within ⊕3 of a character in this Unit gains [exposed]."
       },
       {
         "name": "Stealthy Approach",
@@ -1771,22 +1789,22 @@
         "description": "Each character in this Unit may [dash]. Then this Unit may gain [hunker] or immediately make a focus action."
       },
       {
-        "name": "Coordinated Fire: [ranged][ranged]",
+        "name": "Coordinated Fire: [dash]",
         "type": "reactive",
         "cost": null,
         "description": "When a character in another allied Ewok Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [pinned]."
       },
       {
-        "name": "Camouflage",
+        "name": "Forest Dwellers",
         "type": "innate",
         "cost": null,
-        "description": "At the end of Setup, this Unit may gain [hunker]."
+        "description": "At the end of Setup, this Unit may gain [hunker]. Additionally, at the end of this Unit's activation, it may gain [hunker]."
       },
       {
         "name": "Strength in Numbers",
         "type": "innate",
         "cost": null,
-        "description": "When a character in this Unit makes an attack as part of a combat action, for each other allied Ewok character Engaged with the target that is not Wounded, add 1 die to the attack roll."
+        "description": "When a character in this Unit makes an attack, if the target is Engaged with one or more allied Ewok characters that are not Wounded, add 2 dice to the attack roll."
       }
     ]
   },
@@ -1823,7 +1841,7 @@
         "name": "Bright Tree Defender",
         "type": "identity",
         "cost": null,
-        "description": "While this Unit is not Wounded, when another allied Ewok Unit becomes Wounded, after the effect is resolved, roll an attack die. On a [critical] or [success] result, each character in this Unit may [reposition] and make a 5 dice attack. On a [fail] or [expertise] result, each character in this Unit may [dash] and [heal][heal]."
+        "description": "When another allied Ewok Unit becomes Wounded by an attack, after the effect is resolved, roll an attack die. On a [critical] or [success] result, each character in this Unit may [reposition] and make a 5 dice attack. On a [fail] or [expertise] result, each character in this Unit may [dash] and [heal][heal]."
       }
     ]
   },
@@ -1966,13 +1984,13 @@
         "name": "Close the Deal",
         "type": "reactive",
         "cost": 1,
-        "description": "When an opposing player chooses to activate a Unit from reserve, this Unit may use this ability. Choose a Bounty Hunter character to activate. The chosen character may immediately [dash] then may make a 5 dice attack targeting a character in the Unit that was chosen to activate."
+        "description": "When an opposing player chooses to activate a Unit from reserve, this Unit may use this ability. Choose an allied Bounty Hunter character. The chosen character may immediately [dash] then may make a 5 dice attack targeting a character in the Unit that was chosen to activate."
       },
       {
         "name": "There Is One Job...",
         "type": "innate",
         "cost": null,
-        "description": "Before revealing the top card of the Mission Deck, choose an opposing player to reveal cards from the top of their Order Deck until a Unit Order Card is revealed. Then the chosen player marks the corresponding Unit with a Priority Objective token and shuffles their Order Deck. The first time an allied Bounty Hunter character Wounds the marked Unit, move the Struggle token ⊕3 toward your Momentum tokens. Then remove the Wounded Unit's Priority Objective token."
+        "description": "Before revealing the first card of the Mission Deck, choose an opposing player to reveal cards from the top of their Order Deck until a Unit Order Card is revealed. Then the chosen player marks the corresponding Unit with a Priority Objective token and shuffles their Order Deck. The first time an allied Bounty Hunter character Wounds the marked Unit, move the Struggle token one space toward your Momentum tokens. Then remove the Wounded Unit's Priority Objective token."
       },
       {
         "name": "Wolves at My Back",
@@ -2056,8 +2074,8 @@
         "description": "Each character in this Unit may [jump]."
       },
       {
-        "name": "Coordinated Fire: [ranged]",
-        "type": "innate",
+        "name": "Coordinated Fire: [strained]",
+        "type": "reactive",
         "cost": null,
         "description": "When a character in another allied Galactic Empire Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [strained]."
       },
@@ -2161,16 +2179,22 @@
         "description": "Choose an allied Scoundrel Unit within ⊕3. One character in the chosen Unit may [heal][heal]."
       },
       {
-        "name": "Pack Hunter",
+        "name": "Exit Strategy",
         "type": "innate",
         "cost": null,
-        "description": "When a character in this Unit makes a [melee] attack targeting an enemy character that is Engaged with another allied Weequay character, it adds 2 dice to the attack roll."
+        "description": "Characters in this Unit can [climb] even while they are Engaged."
       },
       {
         "name": "I've Got You in My Sights",
         "type": "innate",
         "cost": null,
         "description": "Characters in this Unit have Sharpshooter [2]. When a character in this Unit makes a [ranged] attack, the target does not benefit from Cover. After this Unit makes a focus action, it gains [hunker]."
+      },
+      {
+        "name": "Pack Hunter",
+        "type": "innate",
+        "cost": null,
+        "description": "When a character in this Unit makes a [melee] attack targeting an enemy character that is Engaged with another allied Weequay character, it adds 2 dice to the attack roll."
       }
     ]
   },
@@ -2184,6 +2208,12 @@
         "type": "active",
         "cost": 1,
         "description": "Each character in this Unit may [climb]."
+      },
+      {
+        "name": "Exit Strategy",
+        "type": "innate",
+        "cost": null,
+        "description": "Characters in this Unit can [climb] even while they are Engaged."
       },
       {
         "name": "Greedy",
@@ -2220,7 +2250,7 @@
         "name": "Relax, I'll Handle This",
         "type": "reactive",
         "cost": null,
-        "description": "When this Unit makes a [ranged] attack as part of a combat action, before dice are rolled, this Unit may use this ability. During this attack, each time the attacker would resolve a [heal], it may instead choose to remove one condition from an allied Unit that is Engaged with the defending character."
+        "description": "When a character in this Unit makes a [ranged] attack as part of a combat action, before dice are rolled, this Unit may use this ability. During this attack, each time the attacker would resolve a [heal], it may instead choose to remove one condition from an allied character that is Engaged with the defending character."
       },
       {
         "name": "The Deadeye of the Batch",
@@ -2344,7 +2374,7 @@
         "name": "Infiltration",
         "type": "innate",
         "cost": null,
-        "description": "When deploying characters in this Unit, characters may be placed within ⊕3 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
+        "description": "When deploying characters in this Unit, characters may be placed within ⊕2 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
       }
     ]
   },
@@ -2546,28 +2576,28 @@
     "swpCode": "SWP34",
     "abilities": [
       {
-        "name": "Long Live the Empire",
-        "type": "active",
-        "cost": 1,
-        "description": "Choose an Active objective and an allied Galactic Empire Supporting Unit. One character in the chosen Unit may [reposition] Toward that objective. Then the chosen Unit suffers [damage][damage]. If this effect Wounds the chosen Unit, that Unit may remove one Wounded token, all [damage], and one condition from itself. If it does, that Unit gains an Injured token."
-      },
-      {
         "name": "Covert Operations",
         "type": "active",
         "cost": 1,
         "description": "Each character in this Unit may [dash]. If one or more characters end this movement within ⊕4 of an enemy character, this Unit immediately makes a focus action and characters in this Unit have Sharpshooter [1] until the end of the Turn."
       },
       {
-        "name": "May We Live Up to Our Name",
-        "type": "innate",
-        "cost": null,
-        "description": "When this Unit is Wounded by an attack, after the effect is resolved, one character in this Unit may immediately [dash] and make a 5 dice attack targeting the character that Wounded it."
+        "name": "Long Live the Empire",
+        "type": "active",
+        "cost": 1,
+        "description": "Choose an Active objective and an allied Galactic Empire Supporting Unit. One character in the chosen Unit may [reposition] Toward that objective. Then the chosen Unit suffers [damage][damage]. If this effect Wounds the chosen Unit, that Unit may remove one Wounded token, all [damage], and one condition from itself. If it does, that Unit gains an Injured token."
       },
       {
         "name": "Defiance Will be the Death of You",
-        "type": "innate",
+        "type": "reactive",
         "cost": null,
-        "description": "When an allied Galactic Empire character makes an attack as part of a combat action, if the target is within ⊕5 of one or more other allied Galactic Empire Scout characters, it adds [success] to the attack roll."
+        "description": "When an allied Galactic Empire Supporting character makes an attack as part of a combat action, if the target is within ⊕5 of a character in this Unit, the attacking character may change one [fail] result in the attack roll to a [success] result."
+      },
+      {
+        "name": "May We Live Up to Our Name",
+        "type": "reactive",
+        "cost": null,
+        "description": "When this Unit is Wounded by an attack, after the effect is resolved, one character in this Unit may immediately [dash] and make a 5 dice attack targeting the character that Wounded it."
       }
     ]
   },
@@ -2623,13 +2653,13 @@
         "name": "Camouflage",
         "type": "innate",
         "cost": null,
-        "description": "At the Setup of this Unit, this Unit may gain [hunker]."
+        "description": "At the end of Setup, this Unit may gain [hunker]."
       },
       {
         "name": "Infiltration",
         "type": "innate",
         "cost": null,
-        "description": "When deploying characters in this Unit, characters may be placed within ⊕3 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
+        "description": "When deploying characters in this Unit, characters may be placed within ⊕2 of the first placed character from that squad's Primary Unit, instead of the normal ⊕1."
       }
     ]
   },
@@ -2750,7 +2780,7 @@
         "description": "Each character in this Unit may [climb]. If any characters [climb], this Unit gains [hunker]."
       },
       {
-        "name": "He's The Brains, Sweetheart",
+        "name": "He's the Brains, Sweetheart",
         "type": "innate",
         "cost": null,
         "description": "When an allied Rebel Alliance character within ⊕3 or an allied Spy character within ⊕3 makes a [ranged] attack as part of a combat action, if it has one or more [hunker], it may reroll up to two of its [fail] results."
@@ -2759,7 +2789,7 @@
         "name": "Oh, the Uniform",
         "type": "innate",
         "cost": null,
-        "description": "This Unit does not lose its [hunker] when it becomes Engaged and can gain and have [hunker] while it is Engaged."
+        "description": "This Unit does not lose its [hunker] when a character in it becomes Engaged and can gain and have [hunker] while it has Engaged characters."
       }
     ]
   },
@@ -2803,7 +2833,7 @@
         "name": "I Want You to Know Failure, Utter Defeat",
         "type": "active",
         "cost": 1,
-        "description": "One character in this Unit may [advance]. If it ends that movement contesting an Active objective, that character adds 3 dice to its next attack roll during this activation."
+        "description": "One character in this Unit may [reposition]. If it ends that movement contesting an Active objective, that character adds 3 dice to its next attack roll during this activation."
       },
       {
         "name": "Battle Tactics: Architects of Their Own Destruction",
@@ -2815,7 +2845,7 @@
         "name": "We Must Wait and Watch",
         "type": "innate",
         "cost": null,
-        "description": "When you spend [force] to place an allied Galactic Empire Unit's Order Card in reserve, spend 1 less [force]. Then, if there are one or more cards in your Order Deck, you may spend [force]. If you do, the reserved Unit may remove [advance] or one condition from itself and one character in that Unit may [advance]."
+        "description": "When you spend [force] to place an allied Galactic Empire Unit's Order Card in reserve, spend 1 less [force]. Then, if there are one or more cards in your Order Deck, you may spend [force]. If you do, the reserved Unit may remove [damage] or one condition from itself and one character in that Unit may [reposition]."
       },
       {
         "name": "To Defeat An Enemy You Must Know Them",
@@ -2890,7 +2920,7 @@
         "name": "Move to Position",
         "type": "active",
         "cost": 1,
-        "description": "One character in this Unit may [dash] or [climb]. Then choose an allied character within ⊕4. The chosen character may [dash]."
+        "description": "One character in this Unit may [dash] or [climb]. Then choose an allied character within ⊕3. The chosen character may [dash]."
       },
       {
         "name": "Reflector Discs",
@@ -2902,13 +2932,13 @@
         "name": "Expendable Distraction",
         "type": "innate",
         "cost": null,
-        "description": "When a character in this Unit makes a [ranged] attack as part of a combat action, if the defender is Engaged with one or more allied characters in Units that are not Wounded, it may add 3 dice to its attack roll. If it does, choose one of those Engaged allied Units. The chosen Unit suffers [damage][damage]."
+        "description": "When a character in this Unit makes a [ranged] attack as part of a combat action, if the defender is Engaged with one or more allied characters in Units that are not Wounded, it may add 3 dice to its attack roll. If it does, choose one of those Engaged allied characters. The chosen character suffers [damage][damage]."
       },
       {
         "name": "Genetically Bred Deadeye",
         "type": "identity",
         "cost": null,
-        "description": "When a character in this Unit Wounds an enemy Primary Unit or an enemy Secondary Unit with a [ranged] attack as part of a combat action, after the effect is resolved, refresh [force][force]. Additionally, when a character in this Unit makes a [ranged] attack, before rolling dice, it may remove one or more conditions from the defending Unit. Add [success] to the attack roll for each removed condition."
+        "description": "When a character in this Unit Wounds an enemy Primary Unit or an enemy Secondary Unit with a [ranged] attack as part of a combat action, after the effect is resolved, refresh [force][force]. Additionally, when a character in this Unit makes a [ranged] attack, before dice are rolled, it may remove one or more conditions from the defending Unit. Add [success] to the attack roll for each removed condition."
       }
     ]
   },
@@ -3100,13 +3130,13 @@
         "name": "Prepare For a Surface Attack",
         "type": "innate",
         "cost": null,
-        "description": "At the end of Setup, before shuffling your Order Deck, choose an allied Stormtrooper Unit. Place the chosen Unit's Order Card in reserve. Then each character in the chosen Unit may [dash]. Additionally, when an allied Stormtrooper Unit's Order Card is in reserve, characters in that Unit add 1 die to their defense rolls."
+        "description": "At the end of Setup, choose an allied Stormtrooper Unit. Search your Order Deck for the chosen Unit's Order Card and put it in reserve. Then shuffle your Order Deck and each character in the chosen Unit may [dash]. Additionally, allied Stormtrooper characters add 1 die to their defense rolls."
       },
       {
         "name": "We Are The Storm",
         "type": "identity",
         "cost": null,
-        "description": "At the end of this Unit's activation, choose an objective. Each enemy character within ⊕2 of the chosen objective may [dash]. Then each enemy Unit within ⊕2 of the chosen objective suffers [damage][damage][damage] and each allied Unit within ⊕2 of the chosen objective suffers [damage]."
+        "description": "At the start of this Unit's activation, choose an objective. Each enemy character within ⊕2 of the chosen objective may [dash]. Then each enemy Unit within ⊕2 of the chosen objective suffers [damage][damage][damage] and each allied Unit within ⊕2 of the chosen objective suffers [damage]. Finally, if there is a Control token on the chosen objective, remove that Control token."
       }
     ]
   },
@@ -3125,13 +3155,13 @@
         "name": "Dogged Assault",
         "type": "reactive",
         "cost": null,
-        "description": "When another allied Stormtrooper Unit within ⊕4 makes a combat action, this Unit may use this ability. After all attacks have been resolved, the attacking Unit may immediately make a Take Cover action."
+        "description": "When another allied Stormtrooper Unit within ⊕5 makes a combat action, this Unit may use this ability. After all attacks have been resolved, the attacking Unit may immediately make a Take Cover action."
       },
       {
-        "name": "Commanding Presence",
+        "name": "Imperial Discipline",
         "type": "innate",
         "cost": null,
-        "description": "When an allied Galactic Empire Trooper character within ⊕3 would gain a condition, it may instead suffer [damage]."
+        "description": "When an allied Galactic Empire Trooper character within ⊕3 would gain a condition, it may instead suffer [damage]. Additionally, allied Stormtrooper Units do not lose their [hunker] when characters in them become Engaged and can gain and have [hunker] while they have Engaged characters."
       },
       {
         "name": "Only Imperial Stormtroopers Are So Precise",
@@ -3181,25 +3211,25 @@
         "name": "Detain",
         "type": "tactic",
         "cost": null,
-        "description": "Choose an allied Scoundrel character. The chosen character may [dash]. Then choose an enemy character within ⊕3 of that allied character. The chosen character gains [pinned] or [disarmed]."
+        "description": "At the start of this Unit's activation, choose an allied Scoundrel character. The chosen character may [dash]. Then choose an enemy character within ⊕3 of that allied character. The chosen character gains [pinned] or [disarmed]."
       },
       {
         "name": "Security Network",
         "type": "active",
         "cost": 1,
-        "description": "Choose another allied Scoundrel Secondary character within ⊕4 or another allied Scoundrel Supporting character within ⊕4. The chosen character may [dash], then may make a 5 dice attack targeting an enemy character that is contesting an Active objective."
+        "description": "Choose another allied Scoundrel Secondary character within ⊕4, or an allied Scoundrel Supporting character within ⊕4. The chosen character may [dash], then may make a 5 dice attack targeting an enemy character that is contesting an Active objective."
       },
       {
         "name": "Battlefield Calculations",
         "type": "reactive",
         "cost": null,
-        "description": "When another allied character ends an [advance], [dash], [jump] or [climb] within ⊕2 of this character during its activation, this Unit may use this ability. The activating Unit immediately makes a focus action."
+        "description": "During another allied Unit's activation, when one or more characters in that Unit end an [advance], [dash], [jump], or [climb] within ⊕2, this Unit may use this ability. The activating Unit immediately makes a focus action."
       },
       {
         "name": "Lockdown",
         "type": "innate",
         "cost": null,
-        "description": "While this Unit is not Wounded, your opponent cannot remove your Control token from an objective that one or more characters in this Unit are contesting."
+        "description": "While this Unit is not Wounded, your opponent cannot remove or replace your Control token from an objective that one or more characters in this Unit are contesting."
       }
     ]
   },
@@ -3212,13 +3242,19 @@
         "name": "Tactical Advance",
         "type": "active",
         "cost": 1,
-        "description": "Each character in this Unit may [dash]. If any characters [dash], this Unit immediately performs a focus action."
+        "description": "Each character in this Unit may [dash]. If any characters [dash], this Unit immediately makes a focus action."
       },
       {
-        "name": "Coordinated Fire: !",
+        "name": "Supporting Fire: [hunker]",
         "type": "reactive",
         "cost": null,
-        "description": "When a character in another allied Galactic Empire Unit makes an attack as part of a combat action, before dice are rolled, this Unit may use this ability. If the targeted character is within ⊕5 of a character in this Unit, the target Unit gains [exposed]."
+        "description": "When a character in another allied Galactic Empire Unit makes an attack as part of a combat action, after the effect is resolved, this Unit may use this ability. If the attacking character is within ⊕5, the attacking Unit may gain [hunker]."
+      },
+      {
+        "name": "Supporting Fire: [heal]",
+        "type": "reactive",
+        "cost": null,
+        "description": "When a character in another allied Galactic Empire Unit makes an attack as part of a combat action, after the effect is resolved, this Unit may use this ability. If the attacking character is within ⊕5, it may [heal]."
       },
       {
         "name": "The Future of Imperial Might",
@@ -3274,7 +3310,13 @@
         "name": "Assault Tactics",
         "type": "active",
         "cost": 1,
-        "description": "Each character in this Unit may [dash]. Then, this Unit may suffer [damage] to immediately perform a focus action."
+        "description": "Each character in this Unit may [dash]. Then this Unit may suffer [damage] to immediately perform a focus action."
+      },
+      {
+        "name": "Extreme Conditions Training",
+        "type": "innate",
+        "cost": null,
+        "description": "While this Unit has one or more [hunker], it has Immunity [exposed]."
       },
       {
         "name": "Only Imperial Stormtroopers Are So Precise",
@@ -3457,10 +3499,16 @@
         "description": "After a [ranged] attack targeting a character in this Unit is resolved, this Unit may use this ability. If the attack roll contained one or more [fail] results, the attacking Unit suffers [damage][damage]."
       },
       {
-        "name": "Stretch Out With Your Feelings",
-        "type": "reactive",
+        "name": "Lightsaber Training",
+        "type": "innate",
         "cost": null,
-        "description": "When a character in this Unit makes a [melee] attack as part of a combat action, before dice are rolled, this Unit may use this ability. During this attack, when resolving a [heal] from one of its chosen Combat Tree Options, the attacker may choose another allied character within ⊕3, instead of the normal ⊕2, to remove a condition or [damage] from."
+        "description": "Characters in this Unit have Impact [1]."
+      },
+      {
+        "name": "Stretch Out With Your Feelings",
+        "type": "innate",
+        "cost": null,
+        "description": "When a character in this Unit makes a [melee] attack as part of a combat action, when resolving a [heal] from one of its chosen Combat Tree Options, the attacker may choose another allied character within ⊕3 instead of the normal ⊕2 to remove a condition or [damage] from."
       }
     ]
   },
@@ -3476,22 +3524,22 @@
         "description": "Each character in this Unit may [advance]."
       },
       {
-        "name": "Riposte",
+        "name": "Create Opening",
         "type": "reactive",
-        "cost": null,
-        "description": "After a [melee] attack targeting a character in this Unit is resolved, this Unit may use this ability. If the attack roll contained one or more [fail] results, the attacking Unit suffers [damage][damage]."
+        "cost": 1,
+        "description": "When a character in this Unit makes an attack, during the Modify Dice Rolls step, this Unit may use this ability. Change one result in the defense roll to a [fail] result."
       },
       {
-        "name": "Supporting Fire:",
+        "name": "Supporting Assault:",
         "type": "reactive",
         "cost": null,
-        "description": "When a character in another allied Galactic Republic Unit makes an attack as part of a combat action, after the effect is resolved, this Unit may use this ability. If the attacking character is within ⊕5, that character may [dash]."
+        "description": "When a character in another allied Galactic Republic Unit makes an attack as part of a combat action, after the effect is resolved, this Unit may use this ability. If the attacking character is within ⊕5, one character in this Unit may [dash]."
       },
       {
         "name": "I'm Afraid I Must Request Your Surrender",
         "type": "identity",
         "cost": null,
-        "description": "While this Unit's Active Stance is Form I Shii-Cho, characters in this Unit have Steadfast and add [expertise] to their defense rolls. While this Unit's Active Stance is Form IV Ataru, characters in this Unit have Protection and Immunity: [pinned]. Additionally, when a character in this Unit would [advance], it may instead [reposition]."
+        "description": "Once per Turn, when an enemy character within ⊕3 makes an attack, after the effect is resolved, one character in this Unit may [jump] if the attack roll contained one or more [fail] results. Once per Turn, when an enemy character within ⊕3 defends against an attack, after the effect is resolved, one character in this Unit may [shove] the defender if the defense roll contained one or more [fail] results."
       }
     ]
   },
@@ -3658,14 +3706,14 @@
       {
         "name": "She Is Fearless",
         "type": "active",
-        "cost": 2,
+        "cost": 1,
         "description": "Each character in this Unit may [jump]. This Unit may use this ability two times during its activation instead of the normal one."
       },
       {
         "name": "Then I Will Avenge His Death",
         "type": "reactive",
         "cost": 2,
-        "description": "After this Unit makes a combat action, it may use this ability. One character in this Unit may now attack targeting one of the same enemy characters within range and LOS."
+        "description": "After this Unit makes a combat action, it may use this ability. One character in this Unit may make an attack targeting one of the same enemy characters within range and LOS."
       },
       {
         "name": "Riposte",
@@ -3727,7 +3775,7 @@
         "name": "This Town is Ready to Blow",
         "type": "reactive",
         "cost": null,
-        "description": "When a player claims a Struggle card, this Unit may use this ability. Roll 3 Attack Dice. Each enemy Unit that is contesting one or more Active objectives suffers [damage] for each [success] and [expertise] result in the roll."
+        "description": "When another player claims a Struggle Card, this Unit may use this ability. Roll 3 Attack Dice. Each enemy Unit that is contesting one or more Active objectives suffers [damage] for each [success] and [expertise] result in the roll."
       },
       {
         "name": "We've All Done Terrible Things",
@@ -3739,7 +3787,7 @@
         "name": "Make Ten Men Feel Like a Hundred",
         "type": "identity",
         "cost": null,
-        "description": "Once per Turn, when an allied Unit becomes Wounded, after the effect is resolved, choose another allied Unit. One character in that Unit may [advance]. If the chosen Unit is a Spy, that character may instead [reposition]. Additionally, if this Unit is chosen to activate with a Shatterpoint Card, characters in that Unit have Impact [2] and Sharpshooter [2] until the end of the Turn."
+        "description": "Once per Turn, when an allied Unit becomes Wounded by an enemy attack, after the effect is resolved, choose another allied Unit. One character in the chosen Unit may [dash]. If the chosen Unit is a Spy, that character may instead [advance]. Additionally, when an allied Rebel Alliance Unit is chosen to activate with a Shatterpoint Card, characters in that Unit have Impact [1] and Sharpshooter [1] until the end of the Turn."
       }
     ]
   },
@@ -3932,7 +3980,7 @@
         "name": "I Fear Nothing, For All Is as the Force Wills It",
         "type": "tactic",
         "cost": null,
-        "description": "At the start of this Unit's activation, refresh ⊕. Then, for each Wounded and Injured token this Unit has, you may refresh ⊕ or this Unit may remove [damage] or one condition from itself."
+        "description": "At the start of this Unit's activation, if it has one or more Injured tokens, refresh ⊕. Then, for each Injured token this Unit has, it may remove [damage] or one condition from itself."
       },
       {
         "name": "We've Been in Worse Cages Than This One",
@@ -3966,10 +4014,10 @@
         "description": "At the start of this Unit's activation, each allied Unit Delta Squad character within ⊕4 may [dash]."
       },
       {
-        "name": "Delta, Give Me an Explosive Solution",
+        "name": "Delta, Give Me An Explosive Solution",
         "type": "active",
         "cost": 2,
-        "description": "Choose an objective within ⊕3 of an allied Clone Trooper character. Each allied character within ⊕2 of that objective may [dash] and gain [hunker]. Each enemy Unit within ⊕2 of that objective suffers [damage][damage] and removes any [hunker] it has."
+        "description": "Choose an allied Delta Squad Unit and an Active objective within ⊕3 of that Unit. Each character in the chosen Unit may [dash]. Then roll 3 Attack Dice. For each [critical] or [success] result in the roll, each Unit within ⊕2 of the chosen objective suffers [damage] and then removes any [hunker] it has."
       },
       {
         "name": "Let's Get in There and Start Breaking Things",

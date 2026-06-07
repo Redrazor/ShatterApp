@@ -411,7 +411,7 @@
     "stances": [
       {
         "stanceNumber": 1,
-        "stanceName": "Countless",
+        "stanceName": "B1 Combat Protocols",
         "ranged": { "range": 5, "attack": 7, "defense": 4 },
         "melee": { "attack": 5, "defense": 3 }
       }
@@ -529,7 +529,7 @@
         "stanceNumber": 1,
         "stanceName": "Bullseye Training",
         "ranged": { "range": 5, "attack": 6, "defense": 5 },
-        "melee": { "attack": 4, "defense": 4 }
+        "melee": { "attack": 6, "defense": 4 }
       }
     ]
   },
@@ -920,8 +920,8 @@
       {
         "stanceNumber": 1,
         "stanceName": "Running Traps",
-        "ranged": { "range": 4, "attack": 5, "defense": 5 },
-        "melee": { "attack": 6, "defense": 4 }
+        "ranged": { "range": 4, "attack": 5, "defense": 4 },
+        "melee": { "attack": 6, "defense": 5 }
       }
     ]
   },
@@ -946,8 +946,8 @@
       {
         "stanceNumber": 1,
         "stanceName": "Walkabout",
-        "ranged": { "range": 4, "attack": 6, "defense": 5 },
-        "melee": { "attack": 5, "defense": 4 }
+        "ranged": { "range": 5, "attack": 6, "defense": 4 },
+        "melee": { "attack": 5, "defense": 5 }
       }
     ]
   },
@@ -1402,7 +1402,7 @@
       {
         "stanceNumber": 1,
         "stanceName": "Blizzard Tactics",
-        "ranged": { "range": 5, "attack": 5, "defense": 5 },
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
         "melee": { "attack": 5, "defense": 4 }
       }
     ]
@@ -1479,7 +1479,7 @@
       {
         "stanceNumber": 1,
         "stanceName": "Disciplined Assault",
-        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
         "melee": { "attack": 5, "defense": 5 }
       }
     ]
@@ -1846,14 +1846,14 @@
       {
         "stanceNumber": 1,
         "stanceName": "Rapid Fire",
-        "ranged": { "range": 5, "attack": 7, "defense": 6 },
-        "melee": { "attack": 5, "defense": 5 }
+        "ranged": { "range": 5, "attack": 7, "defense": 5 },
+        "melee": { "attack": 6, "defense": 5 }
       },
       {
         "stanceNumber": 2,
         "stanceName": "Wet Work",
-        "ranged": { "range": 5, "attack": 6, "defense": 7 },
-        "melee": { "attack": 5, "defense": 5 }
+        "ranged": { "range": 5, "attack": 6, "defense": 5 },
+        "melee": { "attack": 7, "defense": 5 }
       }
     ]
   },
@@ -1987,7 +1987,7 @@
       {
         "stanceNumber": 1,
         "stanceName": "Form V Djem So",
-        "ranged": null,
+        "ranged": { "range": null, "attack": null, "defense": 5 },
         "melee": { "attack": 7, "defense": 5 }
       }
     ]
