@@ -15,12 +15,42 @@
 
 ---
 
+## Roadmap Snapshot (audited 2026-06-08)
+
+| # | Feature | Status | Priority | Effort | Target | Work remaining (with Claude support) |
+|---|---------|--------|----------|--------|--------|--------------------------------------|
+| #1 | Cohesion-Aware Randomizer + Skirmish Build Mode | `[ ]` Not started | High | L | **v2.18.0** | **~4–6 focused hours** — plan validated, plumbing intact |
+| #2 | Landscape Lockout Override + Tablet Support | `[x]` **Done** | Medium | S | shipped **v2.15.3** | **0** — shipped PR #39 (2026-04-29) |
+| #3 | 2v2 Multiplayer Mode | `[ ]` Not started | Medium | XL | **v2.19.0** | **~2–3 days** — full server+client refactor, no scaffolding exists |
+
+> **Version re-point note:** the original targets (v2.16.0 / v2.17.0) were consumed by errata + new-unit releases instead. #1 and #3 are re-pointed to v2.18.0 / v2.19.0. #2 already shipped early in v2.15.3.
+
+---
+
 ## #1 — Cohesion-Aware Randomizer + Skirmish Build Mode
 
 **Status:** `[ ]` Not started
 **Priority:** High
 **Effort:** L
-**Target version:** v2.16.0
+**Target version:** v2.18.0 *(was v2.16.0 — re-pointed)*
+
+> **Short description:** Replace the fixed 2-squad randomizer with a controllable generator — a 5-level "cohesion" slider (Locked → Chaos), support for 1/2/3/4-squad modes, an owned-only filter, and an optional mission randomizer. Also introduces a new single-squad **Skirmish** build mode (prerequisite for #3).
+
+### Audit Findings (2026-06-08) — ✅ Plan still valid
+
+| Reference | Verdict | Note |
+|---|---|---|
+| `randomBuild.ts` `generateRandomStrikeForce()` (26–134) + helpers `eraSet`/`eraCompatible`/`sharesTag` (7–24) | ✅ Accurate | Signature: `(characters, currentSquads: [Squad,Squad], options) → [Squad,Squad] \| null`. Will widen the tuple to `Squad[]`. |
+| `BuildMode` union in `types/index.ts:134` | ⚠️ Drift | Now `'standard' \| 'threemiere' \| 'premiere'` — a **3-squad `threemiere`** mode was added since the plan. Generator must distribute across 1–4 squads, not just 2/4. |
+| `activeSquadCount` computed | ✅ | Now at `strikeForce.ts:123–127` (was 134). |
+| `hasStrikeForceConflict()` | ⚠️ Location | Lives in `types/index.ts:299–312`, imported into the store — not defined in the store. |
+| StrikeForcePanel selector (135–152) + inline 🎲/Owned buttons (77–93) | ✅ Accurate | |
+| BuildView `handleRandom()` (34–51) | ✅ Accurate | |
+| Slider pattern `StancesForm.vue` + toggle pattern `SettingsPanel.vue` | ✅ Accurate | `accent-sw-gold` native range sliders confirmed. |
+| Test files `randomBuild.spec.ts` / `strikeForce.spec.ts` | ⚠️ Already exist | **Extend** the existing specs rather than create them. |
+| `Character.tags` is `string[]` | ✅ | |
+
+**Work estimate (with Claude support): ~4–6 focused hours.** No architectural surprises. Main additions vs. the original plan: (a) account for the existing `threemiere` 3-squad mode in the generator, (b) extend existing test files instead of creating them.
 
 **Context:** The current randomizer (`src/utils/randomBuild.ts`) only generates a fixed 2-squad strike force with a soft tag-synergy preference. Players want (a) control over how *cohesive* the generated squads feel, (b) support for any of the 1/2/3/4-squad build modes the app supports, and (c) an option to randomize the mission alongside the squads. There is also no existing way to build a single-squad list, which Feature #3 (2v2 multiplayer) also needs.
 
@@ -66,10 +96,24 @@ Hard constraints (era compatibility, PC ≤ SP budget, character-type uniqueness
 
 ## #2 — Landscape Lockout Override + Tablet Support
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` **Done** — shipped **v2.15.3** (PR #39 `9d1281c`, 2026-04-29)
 **Priority:** Medium
 **Effort:** S
-**Target version:** v2.16.0
+**Target version:** ~~v2.16.0~~ → shipped early in v2.15.3
+
+> **Short description:** Added a user escape hatch from the phone portrait-lockout and stopped mis-targeting tablets.
+
+### Audit Findings (2026-06-08) — ✅ Fully implemented
+
+All acceptance criteria are met in the shipped code:
+- **Setting:** `allowLandscapeMode` is implemented via a dedicated composable `src/composables/useLandscapeAllowed.ts` (localStorage-backed) rather than the Pinia settings store — a cleaner fit for a cross-cutting DOM concern.
+- **Overlay:** `src/App.vue` gates `.landscape-block` on `!allowLandscapeMode`, and the `screen.orientation.lock('portrait-primary')` call is conditional. Overlay uses `role="dialog"` + `aria-modal` with a working "Open Settings" button.
+- **Media query:** tightened to `@media screen and (orientation: landscape) and (pointer: coarse) and (max-width: 767px)` — tablets (≥768px) no longer hit the lockout.
+- **Settings UI:** "Display" section in `SettingsPanel.vue` exposes the "Allow landscape mode" toggle.
+
+*No remaining work. Retained here as shipped-history; do not re-implement.*
+
+<details><summary>Original plan (for reference)</summary>
 
 **Context:** The app force-locks all touch devices to portrait via a fullscreen overlay (`src/App.vue:136–146`) plus `screen.orientation.lock('portrait-primary')` (`src/App.vue:36`), triggered by CSS `@media (orientation: landscape) and (pointer: coarse)` (lines 150–159). Two problems:
 1. No user escape hatch. Players who want landscape (tablet, folding phone) are locked out with no instructions.
@@ -111,6 +155,8 @@ Hard constraints (era compatibility, PC ≤ SP budget, character-type uniqueness
 7. `screen.orientation.lock('portrait-primary')` is not called when landscape is allowed; orientation is unlocked at runtime when toggled on.
 8. Tablet audit table passes across all listed views.
 
+</details>
+
 ---
 
 ## #3 — 2v2 Multiplayer Mode
@@ -118,8 +164,34 @@ Hard constraints (era compatibility, PC ≤ SP budget, character-type uniqueness
 **Status:** `[ ]` Not started
 **Priority:** Medium
 **Effort:** XL
-**Target version:** v2.17.0
+**Target version:** v2.19.0 *(was v2.17.0 — re-pointed)*
 **Depends on:** #1 (Skirmish build mode)
+
+> **Short description:** A 4-player, 2-team (Red/Blue) variant alongside the existing 1v1 Play mode. Each player brings one Skirmish squad; the match unlocks only when both teams are full. The 1v1 path stays the default and untouched.
+
+### Audit Findings (2026-06-08) — ⚠️ Plan valid, but it's a full ground-up build
+
+The current multiplayer stack is **entirely 1v1 host/guest** — none of the team scaffolding exists yet. The plan correctly describes today's state; nothing has been pre-built.
+
+| Reference | Verdict | Note |
+|---|---|---|
+| `server/rooms.ts` `Room` shape | Confirmed 1v1 | Uses `host: RoomPlayer` + `guest?: RoomPlayer`, **not** a `players[]` array. `selectTeam` / `isMatchReady` / `getOtherPlayerSocketIds` all **missing**. |
+| `server/index.ts` socket events | Confirmed 1v1 | `create-room`, `join-room`, `rejoin-room`, `sync-units`, `claim-role`, `pool-update`, etc. exist. `select-team` / `room-update` **missing**. Some broadcasts already use `socket.to(code).emit()` (good — eases fan-out). |
+| `rollSession.ts` store | Confirmed 1v1 | `opponentUnits` / `myRole` / `opponentForcePool`. No `mode` / `players[]` / `myTeam` / `matchReady` / `playerUnits`. |
+| `useDiceRoom.ts` | Confirmed 1v1 | `createRoom(name?)` / `joinRoom(code, name?)`. `selectTeam` **missing**. |
+| `MultiplayerPanel.vue` | Confirmed 1v1 | No mode picker. |
+| `TeamSelectPanel.vue` | **Missing** | Net-new component. |
+| `SessionBanner.vue` / `UnitsTab.vue` | 1v1, extensible | 2-pill banner + 2-roster layout; both need a 4-player variant. |
+| 30s disconnect grace period | ✅ Exists | `rooms.ts` `setTimeout(..., 30_000)`; reusable per-player. |
+
+**Risks / sequencing:**
+- **Hard-depends on #1** — Skirmish (single-squad) mode must ship first; 2v2 requires it.
+- Touches **both server and client state models** simultaneously; the back-compat shim (`host`/`guest` getters → `players[0..1]`) is essential to avoid regressing 1v1.
+- 10 acceptance criteria spanning room lifecycle, team selection, match-ready gating, 4-roster rendering, and disconnect/rejoin.
+
+**Work estimate (with Claude support): ~2–3 days.** Genuinely XL — `Room` refactor to `players[]`, new socket events + broadcasts, `rollSession` re-model, a new `TeamSelectPanel`, and 4-player variants of the banner/units views, plus tests for the new server logic.
+
+<details><summary>Original plan (for reference)</summary>
 
 **Context:** Current Play multiplayer is fixed 1v1 — one host creates a 4-letter code, one guest joins, both sync full strike force / tracker / dice over Socket.io. The room schema, server handlers, and client UI all hardcode "host + guest = 2 players" (`server/rooms.ts:6–13`, `server/index.ts:55–183`, `src/stores/rollSession.ts`, `src/components/play/multiplayer/MultiplayerPanel.vue`).
 
@@ -180,3 +252,5 @@ New socket events:
 8. Disconnect flips `matchReady` to false; rejoin within 30s restores prior team slot.
 9. Leaving a 2v2 room frees the team slot for a new joiner.
 10. 1v1 mode flow is unchanged — no regression.
+
+</details>
