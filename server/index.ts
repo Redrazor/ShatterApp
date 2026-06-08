@@ -10,7 +10,8 @@ import { runSeed } from './db/seed.ts'
 import { createCharactersRouter } from './routes/characters.ts'
 import { createMissionsRouter } from './routes/missions.ts'
 import { createProductsRouter } from './routes/products.ts'
-import { createRoom, joinRoom, rejoinRoom, removePlayer, deleteRoom, getRoomBySocket, getOpponentSocketId, setPlayerName, getOpponentName, claimDuelRole, clearDuelRole } from './rooms.ts'
+import { createRoom, joinRoom, rejoinRoom, removePlayer, leaveRoom, deleteRoom, getRoomBySocket, getOpponentSocketId, setPlayerName, getOpponentName, claimDuelRole, clearDuelRole, selectTeam, isMatchReady } from './rooms.ts'
+import type { Room, RoomMode, Team } from './rooms.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT ?? 3001
@@ -53,11 +54,43 @@ app.put('/api/abilities', (req, res) => {
 })
 
 // ── Socket.io handlers ──────────────────────────────────────────
+function serializePlayers(room: Room) {
+  return room.players.map((p) => ({
+    socketId: p.socketId,
+    name: p.name,
+    team: p.team,
+    connected: !p.disconnectedAt,
+  }))
+}
+
+/** Broadcast room membership/team state to everyone in the room (2v2 lobby sync). */
+function broadcastRoomUpdate(room: Room) {
+  io.to(room.code).emit('room-update', {
+    players: serializePlayers(room),
+    mode: room.mode,
+    ready: isMatchReady(room),
+  })
+}
+
 io.on('connection', (socket) => {
-  socket.on('create-room', (payload: { name?: string } | null, ack) => {
-    const code = createRoom(socket.id, payload?.name)
+  socket.on('create-room', (payload: { name?: string; mode?: RoomMode } | null, ack) => {
+    const mode: RoomMode = payload?.mode === '2v2' ? '2v2' : '1v1'
+    const code = createRoom(socket.id, payload?.name, mode)
     socket.join(code)
-    if (typeof ack === 'function') ack({ code })
+    if (typeof ack === 'function') ack({ code, mode })
+  })
+
+  socket.on('select-team', ({ team }: { team: Team }, ack) => {
+    const room = getRoomBySocket(socket.id)
+    if (!room) {
+      if (typeof ack === 'function') ack({ ok: false, reason: 'not-in-room' })
+      return
+    }
+    const result = selectTeam(room.code, socket.id, team)
+    if (typeof ack === 'function') {
+      ack(result.ok ? { ok: true, players: serializePlayers(room) } : result)
+    }
+    if (result.ok) broadcastRoomUpdate(room)
   })
 
   socket.on('join-room', ({ code, name }: { code: string; name?: string }, ack) => {
@@ -73,11 +106,18 @@ io.on('connection', (socket) => {
           : !room.host.disconnectedAt
         : false
       const opponentName = room ? getOpponentName(room, socket.id) : undefined
-      if (typeof ack === 'function') ack({ role: rejoinRole, opponentOnline, opponentName })
+      if (typeof ack === 'function') ack({
+        role: rejoinRole,
+        opponentOnline,
+        opponentName,
+        mode: room?.mode,
+        players: room ? serializePlayers(room) : [],
+      })
       if (opponentOnline) {
         const myName = name ?? (room ? (rejoinRole === 'host' ? room.host.name : room.guest?.name) : undefined)
         socket.to(code.toUpperCase()).emit('player-joined', { name: myName })
       }
+      if (room) broadcastRoomUpdate(room)
       return
     }
 
@@ -93,8 +133,15 @@ io.on('connection', (socket) => {
     socket.join(code.toUpperCase())
     const room = getRoomBySocket(socket.id)
     const opponentName = room ? getOpponentName(room, socket.id) : undefined
-    if (typeof ack === 'function') ack({ role: result, opponentOnline: true, opponentName })
+    if (typeof ack === 'function') ack({
+      role: result,
+      opponentOnline: true,
+      opponentName,
+      mode: room?.mode,
+      players: room ? serializePlayers(room) : [],
+    })
     socket.to(code.toUpperCase()).emit('player-joined', { name })
+    if (room) broadcastRoomUpdate(room)
   })
 
   socket.on('rejoin-room', ({ code }: { code: string }, ack) => {
@@ -112,10 +159,25 @@ io.on('connection', (socket) => {
   })
 
   socket.on('leave-room', () => {
+    const room = getRoomBySocket(socket.id)
+    if (!room) return
+    if (room.mode === '2v2') {
+      // Free the team slot immediately for a new joiner; keep the room alive
+      // for the remaining players.
+      const result = leaveRoom(socket.id)
+      if (result) {
+        socket.to(room.code).emit('player-left', { from: socket.id })
+        if (result.empty) deleteRoom(room.code)
+        else broadcastRoomUpdate(room)
+      }
+      socket.disconnect()
+      return
+    }
+    // 1v1: a leave ends the session for both players.
     const result = removePlayer(socket.id)
     if (!result) return
-    const { code, room } = result
-    const opponentId = getOpponentSocketId(room, socket.id)
+    const { code, room: r } = result
+    const opponentId = getOpponentSocketId(r, socket.id)
     deleteRoom(code)
     if (opponentId) io.to(opponentId).emit('session-ended')
     socket.disconnect()
@@ -124,25 +186,20 @@ io.on('connection', (socket) => {
   socket.on('sync-units', (payload) => {
     const room = getRoomBySocket(socket.id)
     if (!room) return
-    const opponentId = getOpponentSocketId(room, socket.id)
-    if (opponentId) io.to(opponentId).emit('opponent-units', payload)
+    socket.to(room.code).emit('opponent-units', { ...payload, from: socket.id })
   })
 
   socket.on('sync-tracker', (payload) => {
     const room = getRoomBySocket(socket.id)
-    console.log(`[sync-tracker] from=${socket.id} room=${room?.code} payload=${JSON.stringify(payload)}`)
     if (!room) return
-    const opponentId = getOpponentSocketId(room, socket.id)
-    console.log(`[sync-tracker] opponentId=${opponentId}`)
-    if (opponentId) io.to(opponentId).emit('tracker-update', payload)
+    socket.to(room.code).emit('tracker-update', { ...payload, from: socket.id })
   })
 
   socket.on('set-player-name', ({ name }: { name: string }) => {
     setPlayerName(socket.id, name)
     const room = getRoomBySocket(socket.id)
     if (!room) return
-    const opponentId = getOpponentSocketId(room, socket.id)
-    if (opponentId) io.to(opponentId).emit('opponent-name', { name })
+    socket.to(room.code).emit('opponent-name', { name, from: socket.id })
   })
 
   socket.on('claim-role', ({ role, unitId }: { role: 'attacker' | 'defender'; unitId?: number | null }) => {
@@ -162,8 +219,7 @@ io.on('connection', (socket) => {
   socket.on('pool-update', (payload) => {
     const room = getRoomBySocket(socket.id)
     if (!room) return
-    const opponentId = getOpponentSocketId(room, socket.id)
-    if (opponentId) io.to(opponentId).emit('opponent-pool-update', payload)
+    socket.to(room.code).emit('opponent-pool-update', { ...payload, from: socket.id })
   })
 
   socket.on('reset-duel', () => {
@@ -176,9 +232,14 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     const result = removePlayer(socket.id)
     if (!result) return
-    const { code, room } = result
-    const opponentId = getOpponentSocketId(room, socket.id)
-    if (opponentId) io.to(opponentId).emit('opponent-left')
+    const { room } = result
+    if (room.mode === '2v2') {
+      socket.to(room.code).emit('opponent-left', { from: socket.id })
+      broadcastRoomUpdate(room)
+    } else {
+      const opponentId = getOpponentSocketId(room, socket.id)
+      if (opponentId) io.to(opponentId).emit('opponent-left')
+    }
   })
 })
 
