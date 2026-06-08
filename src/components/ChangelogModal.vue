@@ -4,6 +4,16 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.19.0',
+    date: '2026-06-08',
+    changes: [
+      'Play — new 2v2 multiplayer mode: 4 players, two teams (Red/Blue), with a team-select lobby that unlocks the match once both teams are full. Each player brings one Skirmish squad',
+      'Play — in 2v2, all four rosters are visible via per-player sub-tabs (tinted by team); only your own roster is editable',
+      'Play — multiplayer order deck: you now see your opponent\'s flipped Order Card and how many cards they have left in their deck (works in both 1v1 and 2v2)',
+      'Play — importing a roster in 2v2 brings a single Skirmish squad with no second-squad picker',
+    ],
+  },
+  {
     version: '2.18.0',
     date: '2026-06-08',
     changes: [
