@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generateRandomStrikeForce } from '../../../src/utils/randomBuild.ts'
+import { generateRandomStrikeForce, generateRandomForce } from '../../../src/utils/randomBuild.ts'
 import { isSquadValid, hasStrikeForceConflict } from '../../../src/types/index.ts'
 import type { Character, Squad } from '../../../src/types/index.ts'
 
@@ -180,6 +180,107 @@ describe('generateRandomStrikeForce', () => {
     const synergyTotal = synergyCounts['3'] + synergyCounts['4']
     const fallbackTotal = synergyCounts['5'] + synergyCounts['6']
     expect(synergyTotal).toBeGreaterThan(fallbackTotal)
+  })
+})
+
+describe('generateRandomForce (cohesion-aware, variable squad count)', () => {
+  // Pool big enough to fill up to 4 squads (4× P/S/Su = 12 minimum)
+  function bigPool(): Character[] {
+    const chars: Character[] = []
+    let id = 1
+    for (let i = 0; i < 5; i++) chars.push(makeChar(id++, 'Primary'))
+    for (let i = 0; i < 5; i++) chars.push(makeChar(id++, 'Secondary'))
+    for (let i = 0; i < 5; i++) chars.push(makeChar(id++, 'Support'))
+    return chars
+  }
+
+  it('generates a single squad in skirmish (squadCount: 1)', () => {
+    const result = generateRandomForce(bigPool(), { squadCount: 1 })
+    expect(result).not.toBeNull()
+    expect(result!).toHaveLength(1)
+    expect(isSquadValid(result![0]).valid).toBe(true)
+  })
+
+  it('defaults to two squads with no options', () => {
+    const result = generateRandomForce(bigPool())
+    expect(result).not.toBeNull()
+    expect(result!).toHaveLength(2)
+  })
+
+  it('fills four squads with no duplicate units or character types', () => {
+    const result = generateRandomForce(bigPool(), { squadCount: 4 })
+    expect(result).not.toBeNull()
+    expect(result!).toHaveLength(4)
+    expect(hasStrikeForceConflict(result!)).toBe(false)
+    for (const sq of result!) expect(isSquadValid(sq).valid).toBe(true)
+  })
+
+  it('cohesion 0 (Locked) draws every unit from a single pack', () => {
+    // Two complete packs; a Locked force must stay within one of them.
+    const chars: Character[] = []
+    let id = 1
+    for (const pack of ['SWPAA', 'SWPBB']) {
+      chars.push(makeChar(id++, 'Primary', { swpCode: pack }))
+      chars.push(makeChar(id++, 'Secondary', { swpCode: pack }))
+      chars.push(makeChar(id++, 'Support', { swpCode: pack }))
+    }
+    const result = generateRandomForce(chars, { squadCount: 1, cohesion: 0 })
+    expect(result).not.toBeNull()
+    const codes = new Set(
+      result!.flatMap(sq => [sq.primary, sq.secondary, sq.support].map(u => u!.swpCode)),
+    )
+    expect(codes.size).toBe(1)
+  })
+
+  it('cohesion 0 falls back to a mixed force when no single pack can fill it', () => {
+    // No pack has a full P/S/Su set, so Locked must degrade gracefully and still build.
+    const chars: Character[] = [
+      makeChar(1, 'Primary', { swpCode: 'SWPAA' }),
+      makeChar(2, 'Secondary', { swpCode: 'SWPBB' }),
+      makeChar(3, 'Support', { swpCode: 'SWPCC' }),
+    ]
+    const result = generateRandomForce(chars, { squadCount: 1, cohesion: 0 })
+    expect(result).not.toBeNull()
+    expect(isSquadValid(result![0]).valid).toBe(true)
+  })
+
+  it('cohesion 100 (Chaos) still produces valid, conflict-free forces', () => {
+    const result = generateRandomForce(bigPool(), { squadCount: 2, cohesion: 100 })
+    expect(result).not.toBeNull()
+    expect(hasStrikeForceConflict(result!)).toBe(false)
+  })
+
+  it('respects the ownedSwpCodes filter at every cohesion level', () => {
+    const chars: Character[] = [
+      makeChar(1, 'Primary', { swpCode: 'SWP01' }),
+      makeChar(2, 'Secondary', { swpCode: 'SWP01' }),
+      makeChar(3, 'Support', { swpCode: 'SWP01' }),
+      makeChar(4, 'Primary', { swpCode: 'SWP99' }),
+      makeChar(5, 'Secondary', { swpCode: 'SWP99' }),
+      makeChar(6, 'Support', { swpCode: 'SWP99' }),
+    ]
+    for (const cohesion of [0, 25, 50, 75, 100] as const) {
+      const result = generateRandomForce(chars, {
+        squadCount: 1,
+        cohesion,
+        ownedSwpCodes: new Set(['SWP01']),
+      })
+      expect(result).not.toBeNull()
+      for (const u of [result![0].primary, result![0].secondary, result![0].support]) {
+        expect(u!.swpCode).toBe('SWP01')
+      }
+    }
+  })
+
+  it('returns null when the pool cannot fill the requested squad count', () => {
+    const chars: Character[] = [
+      makeChar(1, 'Primary'),
+      makeChar(2, 'Secondary'),
+      makeChar(3, 'Support'),
+    ]
+    // One squad's worth of units, but four squads requested
+    const result = generateRandomForce(chars, { squadCount: 4 })
+    expect(result).toBeNull()
   })
 })
 

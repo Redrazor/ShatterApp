@@ -909,3 +909,53 @@ describe('migrateStrikeForceState', () => {
     expect(state.premiere).toBeUndefined()
   })
 })
+
+describe('skirmish mode + randomizer prefs (Feature #1)', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  it('activeSquadCount returns 1 in skirmish mode', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('skirmish')
+    expect(store.activeSquadCount).toBe(1)
+  })
+
+  it('setBuildMode(skirmish) clears the second squad and both extra squads', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('premiere')
+    store.setUnit(1, 'primary', makeChar({ id: 10, unitType: 'Primary', sp: 5 }))
+    store.setUnit(2, 'primary', makeChar({ id: 11, unitType: 'Primary', sp: 5 }))
+    store.setUnit(3, 'primary', makeChar({ id: 12, unitType: 'Primary', sp: 5 }))
+
+    store.setBuildMode('skirmish')
+
+    expect(store.squads[1].primary).toBeNull()
+    expect(store.extraSquads[0].primary).toBeNull()
+    expect(store.extraSquads[1].primary).toBeNull()
+  })
+
+  it('isStrikeForceComplete in skirmish only requires the first squad', () => {
+    const store = useStrikeForceStore()
+    store.setBuildMode('skirmish')
+    store.setUnit(0, 'primary', makeChar({ id: 1, characterType: 'A', unitType: 'Primary', sp: 5, pc: null }))
+    store.setUnit(0, 'secondary', makeChar({ id: 2, characterType: 'B', unitType: 'Secondary', sp: null, pc: 2 }))
+    store.setUnit(0, 'support', makeChar({ id: 3, characterType: 'C', unitType: 'Support', sp: null, pc: 2 }))
+    // Second squad intentionally left empty
+    expect(store.isStrikeForceComplete).toBe(true)
+  })
+
+  it('defaults cohesion to 50 and randomizeMission to false', () => {
+    const store = useStrikeForceStore()
+    expect(store.cohesion).toBe(50)
+    expect(store.randomizeMission).toBe(false)
+  })
+
+  it('setCohesion and setRandomizeMission update the prefs', () => {
+    const store = useStrikeForceStore()
+    store.setCohesion(0)
+    store.setRandomizeMission(true)
+    expect(store.cohesion).toBe(0)
+    expect(store.randomizeMission).toBe(true)
+  })
+})
