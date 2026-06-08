@@ -3,7 +3,11 @@ import { ref, computed } from 'vue'
 import type { CompactBuild, Character, BuildMode } from '../../../types/index.ts'
 import { imageUrl } from '../../../utils/imageUrl.ts'
 
-const props = defineProps<{ savedLists: CompactBuild[]; characters: Character[] }>()
+const props = defineProps<{
+  savedLists: CompactBuild[]
+  characters: Character[]
+  singleSquad?: boolean   // 2v2: import exactly one squad, no second-squad picker
+}>()
 const emit = defineEmits<{
   (e: 'select', squad0: Character[], squad1: Character[], squad1Complete: boolean): void
   (e: 'close'): void
@@ -85,6 +89,13 @@ function confirmPremiere() {
 
 function select(build: ResolvedBuild) {
   if (!build.squad0Complete) return
+  // 2v2 / Skirmish: one squad per player — import the first squad and finish,
+  // no second-squad picker regardless of the build's mode.
+  if (props.singleSquad) {
+    const sq0 = build.squad0.filter((c): c is Character => c !== null)
+    emit('select', sq0, [], true)
+    return
+  }
   if (build.mode !== 'standard') {
     const idx = resolved.value.indexOf(build)
     openPremierePicker(idx)
@@ -110,7 +121,9 @@ function select(build: ResolvedBuild) {
         <!-- Header -->
         <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 flex-shrink-0">
           <template v-if="premierePickIdx === null">
-            <span class="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400">Choose a build to import</span>
+            <span class="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400">
+              {{ singleSquad ? 'Choose your Skirmish squad' : 'Choose a build to import' }}
+            </span>
             <button class="text-zinc-600 hover:text-zinc-300 transition-colors text-sm" @click="$emit('close')">✕</button>
           </template>
           <template v-else>
@@ -213,7 +226,10 @@ function select(build: ResolvedBuild) {
               <!-- Build name + badges -->
               <div class="flex items-center justify-between mb-2.5">
                 <span class="text-sm font-bold text-zinc-200 truncate">{{ build.name }}</span>
-                <div class="flex items-center gap-1 flex-shrink-0 ml-2">
+                <div v-if="singleSquad" class="flex items-center gap-1 flex-shrink-0 ml-2">
+                  <span class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Skirmish</span>
+                </div>
+                <div v-else class="flex items-center gap-1 flex-shrink-0 ml-2">
                   <span
                     v-if="build.mode === 'premiere'"
                     class="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide bg-amber-500/20 text-amber-400 border border-amber-500/30"
@@ -272,7 +288,7 @@ function select(build: ResolvedBuild) {
 
                 <!-- Squad 1 thumbnails (non-premiere) -->
                 <div
-                  v-if="build.mode === 'standard' && build.squad1.some(c => c !== null)"
+                  v-if="!singleSquad && build.mode === 'standard' && build.squad1.some(c => c !== null)"
                   class="flex items-center gap-1.5"
                 >
                   <span class="text-[9px] font-bold uppercase tracking-wide text-zinc-600 w-12 flex-shrink-0">Squad 2</span>
@@ -303,7 +319,7 @@ function select(build: ResolvedBuild) {
                 </div>
 
                 <!-- Squads 1-3 (premiere preview) -->
-                <template v-if="build.mode !== 'standard'">
+                <template v-if="!singleSquad && build.mode !== 'standard'">
                   <div
                     v-for="(squadChars, si) in [build.squad1, build.squad2, build.squad3]"
                     :key="si"

@@ -18,8 +18,23 @@ function leave() {
     <!-- Room code -->
     <span class="font-mono text-sm font-bold text-amber-400">{{ session.roomCode }}</span>
 
-    <!-- Player names -->
-    <div class="flex flex-1 items-center gap-1.5 min-w-0">
+    <!-- 2v2: one tinted pill per player -->
+    <div v-if="session.mode === '2v2'" class="flex flex-1 flex-wrap items-center gap-1 min-w-0">
+      <span
+        v-for="p in session.players"
+        :key="p.socketId"
+        class="rounded-full border px-2 py-0.5 text-[10px] font-semibold truncate"
+        :class="[
+          p.team === 'red' ? 'border-red-500/40 bg-red-950/40 text-red-300'
+            : p.team === 'blue' ? 'border-sky-500/40 bg-sky-950/40 text-sky-300'
+            : 'border-zinc-600/50 bg-zinc-800 text-zinc-400',
+          p.connected ? '' : 'opacity-40',
+        ]"
+      >{{ p.name ?? 'Player' }}{{ p.socketId === session.mySocketId ? ' (you)' : '' }} {{ p.connected ? '●' : '○' }}</span>
+    </div>
+
+    <!-- 1v1: classic two-name banner -->
+    <div v-else class="flex flex-1 items-center gap-1.5 min-w-0">
       <span class="text-[11px] font-semibold text-zinc-300 truncate">{{ session.playerName ?? '…' }}</span>
       <span class="text-[10px] text-zinc-600">vs</span>
       <span class="text-[11px] font-semibold truncate"
@@ -35,7 +50,7 @@ function leave() {
     <!-- Leave button -->
     <button
       class="rounded-lg border border-zinc-600/60 px-2.5 py-1 text-[10px] font-semibold text-zinc-500
-             transition-all hover:border-red-500/40 hover:text-red-400 active:scale-95"
+             transition-all hover:border-red-500/40 hover:text-red-400 active:scale-95 shrink-0"
       @click="leave"
     >Leave</button>
   </div>

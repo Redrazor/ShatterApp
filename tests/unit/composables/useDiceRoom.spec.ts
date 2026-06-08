@@ -126,6 +126,70 @@ describe('useDiceRoom', () => {
     expect(call).toBeDefined()
     const handler = call![1] as (data: unknown) => void
     handler({ units: [{ id: 99 }] })
-    expect(cb).toHaveBeenCalledWith([{ id: 99 }], undefined)
+    expect(cb).toHaveBeenCalledWith([{ id: 99 }], undefined, undefined)
+  })
+
+  it('routes opponent-units with a `from` sender id (2v2 fan-out)', async () => {
+    useDiceRoom().leaveRoom() // reset the socket singleton so .on re-registers
+    await initSocket()
+    const room = useDiceRoom()
+    const cb = vi.fn()
+    room.onOpponentUnits(cb)
+    const call = mockOn.mock.calls.find(([event]: [string]) => event === 'opponent-units')
+    const handler = call![1] as (data: unknown) => void
+    handler({ units: [{ id: 7 }], forcePool: { total: 3, spentTokens: [] }, from: 'sock-B' })
+    expect(cb).toHaveBeenCalledWith([{ id: 7 }], { total: 3, spentTokens: [] }, 'sock-B')
+  })
+
+  it('room-update sets mode and invokes the callback', async () => {
+    useDiceRoom().leaveRoom() // reset the socket singleton so .on re-registers
+    await initSocket()
+    const room = useDiceRoom()
+    const cb = vi.fn()
+    room.onRoomUpdate(cb)
+    const call = mockOn.mock.calls.find(([event]: [string]) => event === 'room-update')
+    expect(call).toBeDefined()
+    const handler = call![1] as (data: unknown) => void
+    const payload = { players: [{ socketId: 'a', connected: true }], mode: '2v2', ready: false }
+    handler(payload)
+    expect(room.mode.value).toBe('2v2')
+    expect(cb).toHaveBeenCalledWith(payload)
+  })
+
+  it('order-deck-update fires the callback with deck state and sender id', async () => {
+    useDiceRoom().leaveRoom()
+    await initSocket()
+    const room = useDiceRoom()
+    const cb = vi.fn()
+    room.onOrderDeckUpdate(cb)
+    const call = mockOn.mock.calls.find(([event]: [string]) => event === 'order-deck-update')
+    expect(call).toBeDefined()
+    const handler = call![1] as (data: unknown) => void
+    handler({ revealed: { id: 3, name: 'Ahsoka', orderCard: '/a.png', isShatterpoint: false }, deckCount: 5, activatedCount: 1, from: 'sock-C' })
+    expect(cb).toHaveBeenCalledWith(
+      { revealed: { id: 3, name: 'Ahsoka', orderCard: '/a.png', isShatterpoint: false }, deckCount: 5, activatedCount: 1 },
+      'sock-C',
+    )
+  })
+
+  it('sendOrderDeck emits sync-order-deck with the payload', async () => {
+    useDiceRoom().leaveRoom()
+    await initSocket()
+    const room = useDiceRoom()
+    const payload = { revealed: null, deckCount: 6, activatedCount: 0 }
+    room.sendOrderDeck(payload)
+    expect(mockEmit).toHaveBeenCalledWith('sync-order-deck', payload)
+  })
+
+  it('selectTeam emits select-team and resolves the ack', async () => {
+    useDiceRoom().leaveRoom()
+    await initSocket()
+    const room = useDiceRoom()
+    mockEmit.mockImplementation((ev: string, _d: unknown, ack?: (r: unknown) => void) => {
+      if (ev === 'select-team' && typeof ack === 'function') ack({ ok: true, players: [] })
+    })
+    const res = await room.selectTeam('red')
+    expect(mockEmit).toHaveBeenCalledWith('select-team', { team: 'red' }, expect.any(Function))
+    expect(res.ok).toBe(true)
   })
 })

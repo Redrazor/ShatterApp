@@ -26,6 +26,7 @@ import UnitsTab from '../components/play/units/UnitsTab.vue'
 import LegendaryMissionInteraction from '../components/play/legendary/LegendaryMissionInteraction.vue'
 import MultiplayerPanel from '../components/play/multiplayer/MultiplayerPanel.vue'
 import SessionBanner from '../components/play/multiplayer/SessionBanner.vue'
+import TeamSelectPanel from '../components/play/multiplayer/TeamSelectPanel.vue'
 import DicePanel from '../components/play/DicePanel.vue'
 
 useHead({
@@ -62,10 +63,34 @@ const multiplayerMode = ref(false)
 const rollSession = useRollSessionStore()
 const diceRoom = useDiceRoom()
 
+// 2v2 helpers
+const is2v2 = computed(() => rollSession.mode === '2v2')
+const skirmishOk = computed(() => strikeForceStore.buildMode === 'skirmish')
+// Full-gate lobby: in 2v2, hold the play UI until both teams are full.
+const inTeamLobby = computed(() => is2v2.value && rollSession.isConnected && !rollSession.matchReady)
+
 // Wire up multiplayer callbacks
-diceRoom.onOpponentUnits((units, forcePool) => {
+diceRoom.onOpponentUnits((units, forcePool, from) => {
+  if (is2v2.value && from) {
+    rollSession.setPlayerUnits(from, units)
+    if (forcePool) rollSession.setPlayerForcePool(from, forcePool)
+    return
+  }
   rollSession.setOpponentUnits(units)
   if (forcePool) rollSession.setOpponentForcePool(forcePool)
+})
+diceRoom.onRoomUpdate((payload) => {
+  rollSession.applyRoomUpdate(payload)
+  if (!rollSession.mySocketId && diceRoom.socketId.value) rollSession.setMySocketId(diceRoom.socketId.value)
+  // Re-broadcast our roster + order deck so newly-joined players receive them.
+  if (rollSession.isConnected) {
+    playUnitsStore.syncNow()
+    orderDeckStore.syncNow()
+  }
+})
+diceRoom.onOrderDeckUpdate((deck, from) => {
+  if (is2v2.value && from) rollSession.setPlayerDeck(from, deck)
+  else rollSession.setOpponentDeck(deck)
 })
 diceRoom.onTrackerUpdate((snapshot) => {
   console.log('[onTrackerUpdate] received snapshot:', JSON.stringify(snapshot), 'missions loaded:', missionsStore.missions.length)
@@ -75,6 +100,7 @@ diceRoom.onTrackerUpdate((snapshot) => {
 diceRoom.onPlayerJoined(() => {
   rollSession.setOpponentOnline(true)
   playUnitsStore.syncNow()
+  orderDeckStore.syncNow()
 })
 diceRoom.onPlayerLeft(() => rollSession.setOpponentOnline(false))
 diceRoom.onSessionEnded(() => {
@@ -552,8 +578,24 @@ const ROMAN = ['I', 'II', 'III']
       <MultiplayerPanel v-else @connected="() => { multiplayerMode = true; playUnitsStore.syncNow() }" />
     </template>
 
+    <!-- ── 2v2 team lobby (full gate until both teams are full) ── -->
+    <TeamSelectPanel v-if="inTeamLobby" :skirmish-ok="skirmishOk" @left="multiplayerMode = false" />
+
+    <!-- ── 2v2 Skirmish-required block (after match starts) ── -->
+    <div
+      v-if="is2v2 && rollSession.matchReady && !skirmishOk"
+      class="rounded-xl border border-red-500/40 bg-red-950/20 px-4 py-3 text-sm text-red-300"
+    >
+      <div class="font-bold text-red-400">⚠ Skirmish build required</div>
+      <p class="mt-1 text-xs leading-snug">
+        2v2 needs exactly one squad per player. Open
+        <RouterLink to="/build" class="font-bold underline">Build → Skirmish</RouterLink>
+        and import a single squad before you can lock your roster.
+      </p>
+    </div>
+
     <!-- ── Mode selector ── -->
-    <div class="flex gap-1 rounded-lg border border-zinc-700/60 bg-zinc-900/60 p-1">
+    <div v-if="!inTeamLobby" class="flex gap-1 rounded-lg border border-zinc-700/60 bg-zinc-900/60 p-1">
       <button
         v-for="m in MODES" :key="m.value"
         class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all leading-tight"
@@ -572,7 +614,7 @@ const ROMAN = ['I', 'II', 'III']
     </div>
 
     <!-- ── Play tab bar ── -->
-    <div class="flex gap-1 rounded-lg border border-zinc-700/40 bg-zinc-900/40 p-1">
+    <div v-if="!inTeamLobby" class="flex gap-1 rounded-lg border border-zinc-700/40 bg-zinc-900/40 p-1">
       <button
         v-if="settingsStore.playShowRoster"
         class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all flex items-center justify-center gap-1"
@@ -605,23 +647,24 @@ const ROMAN = ['I', 'II', 'III']
 
     <!-- ── Units tab ── -->
     <UnitsTab
-      v-if="settingsStore.playShowRoster && playTab === 'units'"
+      v-if="settingsStore.playShowRoster && playTab === 'units' && !inTeamLobby"
       :characters="allCharacters"
       :saved-lists="strikeForceStore.savedLists"
       :squad0-valid="strikeForceStore.isSquad0Valid"
       :locked="playUnitsStore.locked"
       :is-legendary="isLegendary"
-      :opponent-units="rollSession.isConnected ? rollSession.opponentUnits : undefined"
+      :opponent-units="rollSession.isConnected && !is2v2 ? rollSession.opponentUnits : undefined"
+      :is2v2="is2v2 && rollSession.matchReady"
       @roll-stat="onRollStat"
     />
 
     <!-- ── Dice tab ── -->
-    <DicePanel v-show="settingsStore.playShowDice && playTab === 'dice'" :pending-roll="pendingRoll" @consumed="pendingRoll = null" />
+    <DicePanel v-show="settingsStore.playShowDice && playTab === 'dice' && !inTeamLobby" :pending-roll="pendingRoll" @consumed="pendingRoll = null" />
 
     <!-- ══════════════════════════════════════════
          TRACKER TAB CONTENT
          ══════════════════════════════════════════ -->
-    <template v-if="settingsStore.playShowTracker && playTab === 'tracker'">
+    <template v-if="settingsStore.playShowTracker && playTab === 'tracker' && !inTeamLobby">
 
     <!-- ══════════════════════════════════════════
          STATE A: Mission Picker

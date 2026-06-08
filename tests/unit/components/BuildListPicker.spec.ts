@@ -158,4 +158,43 @@ describe('BuildListPicker', () => {
     await closeBtn.trigger('click')
     expect(wrapper.emitted('close')).toBeTruthy()
   })
+
+  describe('singleSquad (2v2)', () => {
+    const singleOpts = (savedLists: CompactBuild[]) => ({
+      props: { savedLists, characters: chars, singleSquad: true },
+      global: { stubs: { Teleport: true } },
+    })
+
+    it('shows the Skirmish header', () => {
+      const wrapper = mount(BuildListPicker, singleOpts([standardBuild]))
+      expect(wrapper.text()).toContain('Choose your Skirmish squad')
+    })
+
+    it('a premiere build imports one squad directly — no 2-squad picker', async () => {
+      const wrapper = mount(BuildListPicker, singleOpts([premiereBuild]))
+      await wrapper.find('button.w-full.rounded-xl').trigger('click')
+      // Must NOT open the "Pick 2 squads" panel
+      expect(wrapper.text()).not.toContain('Pick 2 squads to play')
+      const emitted = wrapper.emitted('select')
+      expect(emitted).toBeTruthy()
+      const [sq0, sq1, complete] = emitted![0] as [Character[], Character[], boolean]
+      expect(sq0.map(c => c.name)).toEqual(['Rex', 'Cody', 'Fives'])
+      expect(sq1).toEqual([])      // only one squad
+      expect(complete).toBe(true)  // single squad = complete roster
+    })
+
+    it('a standard build imports only squad 0 (not both squads)', async () => {
+      const wrapper = mount(BuildListPicker, singleOpts([standardBuild]))
+      await wrapper.find('button.w-full.rounded-xl').trigger('click')
+      const [sq0, sq1] = wrapper.emitted('select')![0] as [Character[], Character[]]
+      expect(sq0).toHaveLength(3)
+      expect(sq1).toEqual([])
+    })
+
+    it('shows a Skirmish badge instead of squad-count badges', () => {
+      const wrapper = mount(BuildListPicker, singleOpts([standardBuild]))
+      expect(wrapper.text()).toContain('Skirmish')
+      expect(wrapper.text()).not.toContain('Both squads')
+    })
+  })
 })

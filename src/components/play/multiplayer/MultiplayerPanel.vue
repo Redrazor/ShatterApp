@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useDiceRoom } from '../../../composables/useDiceRoom.ts'
 import { useRollSessionStore } from '../../../stores/rollSession.ts'
 import { randomSwName } from '../../../utils/starWarsNames.ts'
+import type { RoomMode } from '../../../types/index.ts'
 
 const emit = defineEmits<{ (e: 'connected'): void }>()
 
@@ -13,6 +14,7 @@ const playerName = ref(randomSwName())
 const joinCode = ref('')
 const loading = ref(false)
 const error = ref<string | null>(null)
+const selectedMode = ref<RoomMode>('1v1')
 
 async function handleCreate() {
   loading.value = true
@@ -20,8 +22,11 @@ async function handleCreate() {
   try {
     const name = playerName.value.trim() || randomSwName()
     session.setPlayerName(name)
-    const code = await diceRoom.createRoom(name)
+    const code = await diceRoom.createRoom(name, selectedMode.value)
     session.setRoom(code, true)
+    session.setMode(selectedMode.value)
+    session.setMySocketId(diceRoom.socketId.value)
+    session.setPlayers([{ socketId: diceRoom.socketId.value ?? '', name, connected: true }])
     emit('connected')
   } catch (e) {
     error.value = 'Failed to create room'
@@ -44,6 +49,9 @@ async function handleJoin() {
     const result = await diceRoom.joinRoom(code, name)
     if (result.success) {
       session.setRoom(code, false)
+      if (result.mode) session.setMode(result.mode)
+      session.setMySocketId(diceRoom.socketId.value)
+      if (result.players) session.setPlayers(result.players)
       if (result.opponentName) session.setOpponentName(result.opponentName)
       emit('connected')
     } else {
@@ -76,6 +84,28 @@ async function handleJoin() {
         class="w-full rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-100
                placeholder:text-zinc-600 focus:border-amber-500/60 focus:outline-none"
       />
+    </div>
+
+    <!-- Mode picker: 1v1 / 2v2 -->
+    <div>
+      <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-zinc-500">Match type</label>
+      <div class="flex gap-1 rounded-lg border border-zinc-700/60 bg-zinc-900/60 p-1">
+        <button
+          type="button"
+          class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
+          :class="selectedMode === '1v1' ? 'bg-amber-500 text-zinc-900 shadow-[0_2px_0_rgba(0,0,0,0.3)]' : 'text-zinc-500 hover:text-zinc-300'"
+          @click="selectedMode = '1v1'"
+        >1 v 1</button>
+        <button
+          type="button"
+          class="flex-1 rounded px-2 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all"
+          :class="selectedMode === '2v2' ? 'bg-amber-500 text-zinc-900 shadow-[0_2px_0_rgba(0,0,0,0.3)]' : 'text-zinc-500 hover:text-zinc-300'"
+          @click="selectedMode = '2v2'"
+        >2 v 2</button>
+      </div>
+      <p v-if="selectedMode === '2v2'" class="mt-1.5 text-[10px] leading-snug text-zinc-500">
+        4 players, 2 teams. Each player brings <span class="font-semibold text-amber-400">one squad</span> — switch Build to <span class="font-semibold text-amber-400">Skirmish</span> mode first.
+      </p>
     </div>
 
     <div v-if="error" class="rounded-lg border border-red-500/30 bg-red-900/20 px-3 py-2 text-xs text-red-400">

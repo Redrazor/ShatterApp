@@ -133,6 +133,33 @@ export interface StrikeForce {
 
 export type BuildMode = 'skirmish' | 'standard' | 'threemiere' | 'premiere'
 
+// ── 2v2 multiplayer ──────────────────────────────────────────────
+export type RoomMode = '1v1' | '2v2'
+export type Team = 'red' | 'blue'
+
+/** Client-side view of a room player (mirrors the server's serializePlayers). */
+export interface RoomPlayerView {
+  socketId: string
+  name?: string
+  team?: Team
+  connected: boolean
+}
+
+/** A single order card, as surfaced to opponents over the socket. */
+export interface OrderCardView {
+  id: number
+  name: string
+  orderCard: string
+  isShatterpoint: boolean
+}
+
+/** Opponent-visible order-deck state: the card they've flipped + how many remain. */
+export interface OrderDeckState {
+  revealed: OrderCardView | null
+  deckCount: number
+  activatedCount: number
+}
+
 export interface CompactBuild {
   name: string
   mid: number | null

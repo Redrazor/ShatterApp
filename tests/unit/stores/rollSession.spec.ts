@@ -162,3 +162,92 @@ describe('rollSession store', () => {
     expect(store.opponentForcePool).toEqual(pool)
   })
 })
+
+describe('rollSession store — 2v2', () => {
+  function seed4() {
+    const store = useRollSessionStore()
+    store.setMySocketId('me')
+    store.setMode('2v2')
+    store.setPlayers([
+      { socketId: 'me', name: 'Me', team: 'red', connected: true },
+      { socketId: 'ally', name: 'Ally', team: 'red', connected: true },
+      { socketId: 'opp1', name: 'Opp1', team: 'blue', connected: true },
+      { socketId: 'opp2', name: 'Opp2', team: 'blue', connected: true },
+    ])
+    return store
+  }
+
+  it('defaults to 1v1 mode', () => {
+    expect(useRollSessionStore().mode).toBe('1v1')
+  })
+
+  it('myTeam reflects my own player slot', () => {
+    expect(seed4().myTeam).toBe('red')
+  })
+
+  it('teammates excludes me and includes only same-team players', () => {
+    const store = seed4()
+    expect(store.teammates.map((p) => p.socketId)).toEqual(['ally'])
+  })
+
+  it('opponents are the other team', () => {
+    const store = seed4()
+    expect(store.opponents.map((p) => p.socketId).sort()).toEqual(['opp1', 'opp2'])
+  })
+
+  it('otherPlayers orders teammates before opponents', () => {
+    const store = seed4()
+    expect(store.otherPlayers.map((p) => p.socketId)).toEqual(['ally', 'opp1', 'opp2'])
+  })
+
+  it('setPlayerUnits / setPlayerForcePool key by socketId', () => {
+    const store = seed4()
+    store.setPlayerUnits('opp1', [{ id: 5 }] as never)
+    store.setPlayerForcePool('opp1', { total: 2, spentTokens: [true, false] })
+    expect(store.playerUnits['opp1']).toEqual([{ id: 5 }])
+    expect(store.playerForcePools['opp1'].total).toBe(2)
+  })
+
+  it('setOpponentDeck / setPlayerDeck store order-deck state', () => {
+    const store = seed4()
+    store.setOpponentDeck({ revealed: null, deckCount: 4, activatedCount: 0 })
+    expect(store.opponentDeck?.deckCount).toBe(4)
+    store.setPlayerDeck('opp1', { revealed: { id: 7, name: 'Maul', orderCard: '/x.png', isShatterpoint: false }, deckCount: 2, activatedCount: 3 })
+    expect(store.playerDecks['opp1'].revealed?.name).toBe('Maul')
+    expect(store.playerDecks['opp1'].deckCount).toBe(2)
+  })
+
+  it('reset clears opponent/player deck state', () => {
+    const store = seed4()
+    store.setOpponentDeck({ revealed: null, deckCount: 4, activatedCount: 0 })
+    store.setPlayerDeck('opp1', { revealed: null, deckCount: 1, activatedCount: 0 })
+    store.reset()
+    expect(store.opponentDeck).toBeNull()
+    expect(store.playerDecks).toEqual({})
+  })
+
+  it('applyRoomUpdate sets players, mode, and matchReady', () => {
+    const store = useRollSessionStore()
+    store.applyRoomUpdate({
+      players: [{ socketId: 'x', connected: true }],
+      mode: '2v2',
+      ready: true,
+    })
+    expect(store.mode).toBe('2v2')
+    expect(store.matchReady).toBe(true)
+    expect(store.players).toHaveLength(1)
+  })
+
+  it('reset clears all 2v2 state', () => {
+    const store = seed4()
+    store.setMatchReady(true)
+    store.setPlayerUnits('opp1', [{ id: 1 }] as never)
+    store.reset()
+    expect(store.mode).toBe('1v1')
+    expect(store.mySocketId).toBeNull()
+    expect(store.players).toEqual([])
+    expect(store.matchReady).toBe(false)
+    expect(store.playerUnits).toEqual({})
+    expect(store.playerForcePools).toEqual({})
+  })
+})
