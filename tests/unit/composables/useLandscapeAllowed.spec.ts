@@ -1,6 +1,21 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
 const STORAGE_KEY = 'shatterapp:allowLandscape'
+
+// happy-dom 17's Storage proxy does not expose working getItem/setItem/clear
+// methods, so the composable's localStorage access silently no-ops in tests.
+// Install a minimal in-memory localStorage to exercise the real read/write path.
+function createLocalStorageMock(): Storage {
+  let store: Record<string, string> = {}
+  return {
+    getItem: (key: string) => (key in store ? store[key] : null),
+    setItem: (key: string, value: string) => { store[key] = String(value) },
+    removeItem: (key: string) => { delete store[key] },
+    clear: () => { store = {} },
+    key: (i: number) => Object.keys(store)[i] ?? null,
+    get length() { return Object.keys(store).length },
+  } as Storage
+}
 
 async function freshComposable() {
   vi.resetModules()
@@ -10,7 +25,11 @@ async function freshComposable() {
 
 describe('useLandscapeAllowed', () => {
   beforeEach(() => {
-    localStorage.clear()
+    vi.stubGlobal('localStorage', createLocalStorageMock())
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
   it('defaults to false when no stored value exists', async () => {
