@@ -21,7 +21,7 @@
 |---|---------|--------|----------|--------|--------|--------------------------------------|
 | #1 | Cohesion-Aware Randomizer + Skirmish Build Mode | `[x]` **Done** | High | L | shipped **v2.18.0** | **0** — shipped PR #42 |
 | #2 | Landscape Lockout Override + Tablet Support | `[x]` **Done** | Medium | S | shipped **v2.15.3** | **0** — shipped PR #39 (2026-04-29) |
-| #3 | 2v2 Multiplayer Mode | `[ ]` Not started | Medium | XL | **v2.19.0** | **~2–3 days** — full server+client refactor, no scaffolding exists |
+| #3 | 2v2 Multiplayer Mode | `[x]` **Done** | Medium | XL | shipped **v2.19.0** | **0** — shipped PR #44 (server) + #45 (client) |
 
 > **Version re-point note:** the original targets (v2.16.0 / v2.17.0) were consumed by errata + new-unit releases instead. #1 and #3 are re-pointed to v2.18.0 / v2.19.0. #2 already shipped early in v2.15.3.
 
@@ -161,11 +161,13 @@ All acceptance criteria are met in the shipped code:
 
 ## #3 — 2v2 Multiplayer Mode
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` **Done** — shipped **v2.19.0** (PR #44 server + #45 client)
 **Priority:** Medium
 **Effort:** XL
 **Target version:** v2.19.0 *(was v2.17.0 — re-pointed)*
-**Depends on:** #1 (Skirmish build mode)
+**Depends on:** #1 (Skirmish build mode) ✅
+
+> **Shipped as two PRs:** #44 refactored the server `Room` to a `players[]` model with `host`/`guest` shims + team/mode/match-ready plumbing (1v1 wire-compatible). #45 built the client — `MultiplayerPanel` 1v1/2v2 picker, full-gate `TeamSelectPanel`, per-player roster sub-tabs (`MultiRoster`), 4-pill `SessionBanner`, Skirmish-only single-squad import, and a **networked order deck** (opponent's flipped Order Card + remaining count, 1v1 & 2v2). Lobby = full-gate; rosters = sub-tabs (chosen from rendered mockups). All 10 ACs validated.
 
 > **Short description:** A 4-player, 2-team (Red/Blue) variant alongside the existing 1v1 Play mode. Each player brings one Skirmish squad; the match unlocks only when both teams are full. The 1v1 path stays the default and untouched.
 
