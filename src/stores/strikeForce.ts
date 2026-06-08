@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Character, Mission, Squad, StrikeForce, CompactBuild, BuildMode } from '../types/index.ts'
+import type { CohesionLevel } from '../utils/randomBuild.ts'
 import { isSquadValid, hasStrikeForceConflict } from '../types/index.ts'
 
 const emptySquad = (): Squad => ({ primary: null, secondary: null, support: null })
@@ -120,9 +121,14 @@ export const useStrikeForceStore = defineStore(
     // Backward compat computed — some tests/components may still read `premiere`
     const premiere = computed(() => buildMode.value === 'premiere')
 
+    // Randomizer prefs (Feature #1 — persisted)
+    const cohesion = ref<CohesionLevel>(50)
+    const randomizeMission = ref<boolean>(false)
+
     const activeSquadCount = computed(() => {
       if (buildMode.value === 'premiere') return 4
       if (buildMode.value === 'threemiere') return 3
+      if (buildMode.value === 'skirmish') return 1
       return 2
     })
 
@@ -137,6 +143,12 @@ export const useStrikeForceStore = defineStore(
     const hasUniqueConflict = computed(() => hasStrikeForceConflict(squads.value))
 
     const isStrikeForceComplete = computed(() => {
+      // Skirmish — only the first squad must be filled and valid
+      if (buildMode.value === 'skirmish') {
+        const s0 = squads.value[0]
+        return Boolean(s0.primary && s0.secondary && s0.support) && isSquad0Valid.value
+      }
+
       const s0 = squads.value[0]
       const s1 = squads.value[1]
       const baseFilled =
@@ -186,11 +198,23 @@ export const useStrikeForceStore = defineStore(
 
     function setBuildMode(mode: BuildMode) {
       buildMode.value = mode
-      if (mode === 'standard') {
+      if (mode === 'skirmish') {
+        // Single-squad mode — only squads[0] is active
+        squads.value[1] = emptySquad()
+        extraSquads.value = [emptySquad(), emptySquad()]
+      } else if (mode === 'standard') {
         extraSquads.value = [emptySquad(), emptySquad()]
       } else if (mode === 'threemiere') {
         extraSquads.value[1] = emptySquad()
       }
+    }
+
+    function setCohesion(level: CohesionLevel) {
+      cohesion.value = level
+    }
+
+    function setRandomizeMission(val: boolean) {
+      randomizeMission.value = val
     }
 
     // Backward compat
@@ -311,6 +335,8 @@ export const useStrikeForceStore = defineStore(
       savedLists,
       activeIndex,
       activeSquadCount,
+      cohesion,
+      randomizeMission,
       strikeForce,
       squad0Result,
       squad1Result,
@@ -326,6 +352,8 @@ export const useStrikeForceStore = defineStore(
       setMission,
       setBuildMode,
       setPremiere,
+      setCohesion,
+      setRandomizeMission,
       setUnit,
       clearUnit,
       resetStrikeForce,

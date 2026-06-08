@@ -1,18 +1,24 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Mission, BuildMode } from '../../types/index.ts'
+import type { CohesionLevel } from '../../utils/randomBuild.ts'
 
-defineProps<{
+const props = defineProps<{
   name: string
   mission: Mission | null
   isComplete: boolean
   buildMode: BuildMode
   ownedOnly: boolean
+  cohesion: CohesionLevel
+  randomizeMission: boolean
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'update:name', val: string): void
   (e: 'update:buildMode', val: BuildMode): void
   (e: 'update:ownedOnly', val: boolean): void
+  (e: 'update:cohesion', val: CohesionLevel): void
+  (e: 'update:randomizeMission', val: boolean): void
   (e: 'pick-mission'): void
   (e: 'clear-mission'): void
   (e: 'reset'): void
@@ -25,10 +31,21 @@ defineEmits<{
 }>()
 
 const modes: { value: BuildMode; label: string; squads: number }[] = [
+  { value: 'skirmish', label: 'Skirmish', squads: 1 },
   { value: 'standard', label: 'Standard', squads: 2 },
   { value: 'threemiere', label: 'Threemiere', squads: 3 },
   { value: 'premiere', label: 'Premiere', squads: 4 },
 ]
+
+const cohesionLabels: Record<number, string> = {
+  0: 'Locked', 25: 'Pack-Loyal', 50: 'Tag-Aligned', 75: 'Loose', 100: 'Chaos',
+}
+const cohesionLabel = computed(() => cohesionLabels[props.cohesion] ?? '')
+const willGenerate = computed(() => modes.find(m => m.value === props.buildMode)?.squads ?? 2)
+
+function onCohesion(e: Event) {
+  emit('update:cohesion', Number((e.target as HTMLInputElement).value) as CohesionLevel)
+}
 </script>
 
 <template>
@@ -74,23 +91,6 @@ const modes: { value: BuildMode; label: string; squads: number }[] = [
         >
           Print
         </button>
-        <div class="no-print flex rounded border border-sw-gold/30 overflow-hidden">
-          <button
-            class="px-2 py-1 text-xs text-sw-gold/80 hover:text-sw-gold hover:bg-sw-gold/10 transition-colors"
-            title="Fill empty slots randomly"
-            @click="$emit('random')"
-          >
-            🎲 Random
-          </button>
-          <button
-            class="border-l border-sw-gold/30 px-2 py-1 text-xs transition-colors"
-            :class="ownedOnly ? 'bg-sw-gold/20 text-sw-gold' : 'text-sw-text/40 hover:text-sw-text/70 hover:bg-sw-gold/5'"
-            title="Only use units you own"
-            @click="$emit('update:ownedOnly', !ownedOnly)"
-          >
-            Owned
-          </button>
-        </div>
         <button
           class="no-print rounded px-2 py-1 text-xs text-sw-text/50 hover:text-red-400"
           @click="$emit('reset')"
@@ -149,6 +149,85 @@ const modes: { value: BuildMode; label: string; squads: number }[] = [
           <span class="text-[10px] opacity-60 ml-0.5">({{ m.squads }})</span>
         </button>
       </div>
+    </div>
+
+    <!-- Random Generator -->
+    <div class="no-print rounded-lg border border-sw-gold/15 bg-sw-dark/40 p-3 space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-medium text-sw-gold/80">Random Generator</span>
+        <span class="text-[10px] text-sw-text/40">
+          Will generate: {{ willGenerate }} squad{{ willGenerate === 1 ? '' : 's' }}
+        </span>
+      </div>
+
+      <!-- Cohesion slider -->
+      <div>
+        <div class="mb-1 flex items-center justify-between">
+          <span class="text-xs text-sw-text/50">Cohesion</span>
+          <span class="text-xs font-medium text-sw-gold">{{ cohesionLabel }}</span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          step="25"
+          :value="cohesion"
+          class="w-full accent-sw-gold"
+          aria-label="Cohesion level"
+          @input="onCohesion"
+        />
+        <div class="mt-0.5 flex justify-between text-[9px] text-sw-text/30">
+          <span>Locked</span>
+          <span>Pack</span>
+          <span>Tag</span>
+          <span>Loose</span>
+          <span>Chaos</span>
+        </div>
+      </div>
+
+      <!-- Toggles -->
+      <label class="flex cursor-pointer items-center justify-between">
+        <span class="text-xs text-sw-text/60">Owned units only</span>
+        <button
+          type="button"
+          role="switch"
+          :aria-checked="ownedOnly"
+          class="relative h-5 w-9 shrink-0 rounded-full transition-colors"
+          :class="ownedOnly ? 'bg-sw-gold' : 'bg-sw-text/20'"
+          @click="$emit('update:ownedOnly', !ownedOnly)"
+        >
+          <span
+            class="absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white transition-transform"
+            :class="ownedOnly ? 'translate-x-4' : ''"
+          />
+        </button>
+      </label>
+
+      <label class="flex cursor-pointer items-center justify-between">
+        <span class="text-xs text-sw-text/60">Randomize mission too</span>
+        <button
+          type="button"
+          role="switch"
+          :aria-checked="randomizeMission"
+          class="relative h-5 w-9 shrink-0 rounded-full transition-colors"
+          :class="randomizeMission ? 'bg-sw-gold' : 'bg-sw-text/20'"
+          @click="$emit('update:randomizeMission', !randomizeMission)"
+        >
+          <span
+            class="absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white transition-transform"
+            :class="randomizeMission ? 'translate-x-4' : ''"
+          />
+        </button>
+      </label>
+
+      <!-- Generate -->
+      <button
+        type="button"
+        class="w-full rounded-lg border border-sw-gold/40 bg-sw-gold/10 px-3 py-2 text-sm font-medium text-sw-gold transition-colors hover:bg-sw-gold/20"
+        @click="$emit('random')"
+      >
+        🎲 Generate Strike Force
+      </button>
     </div>
 
   </div>

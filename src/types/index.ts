@@ -131,7 +131,7 @@ export interface StrikeForce {
   squads: [Squad, Squad]
 }
 
-export type BuildMode = 'standard' | 'threemiere' | 'premiere'
+export type BuildMode = 'skirmish' | 'standard' | 'threemiere' | 'premiere'
 
 export interface CompactBuild {
   name: string
@@ -296,7 +296,7 @@ export interface HomebrewProfile {
   stances: StancesData | null    // Phase 4
 }
 
-export function hasStrikeForceConflict(squads: [Squad, Squad]): boolean {
+export function hasStrikeForceConflict(squads: Squad[]): boolean {
   const units: Character[] = []
   for (const squad of squads) {
     for (const role of ['primary', 'secondary', 'support'] as const) {

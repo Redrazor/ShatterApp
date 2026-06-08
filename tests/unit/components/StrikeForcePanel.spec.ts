@@ -8,7 +8,16 @@ function makeMission(): Mission {
 }
 
 function defaultProps(overrides = {}) {
-  return { name: '', mission: null, isComplete: false, buildMode: 'standard' as const, ownedOnly: false, ...overrides }
+  return {
+    name: '',
+    mission: null,
+    isComplete: false,
+    buildMode: 'standard' as const,
+    ownedOnly: false,
+    cohesion: 50 as const,
+    randomizeMission: false,
+    ...overrides,
+  }
 }
 
 describe('StrikeForcePanel', () => {
@@ -134,5 +143,68 @@ describe('StrikeForcePanel', () => {
   it('shows Format label', () => {
     const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
     expect(wrapper.text()).toContain('Format')
+  })
+
+  // --- Skirmish mode + Random Generator (Feature #1) ---
+
+  it('includes Skirmish (1) in the format selector', () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
+    expect(wrapper.text()).toContain('Skirmish')
+    expect(wrapper.text()).toContain('(1)')
+  })
+
+  it('emits update:buildMode with "skirmish" when Skirmish clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
+    const btn = wrapper.findAll('button').find(b => b.text().includes('Skirmish'))!
+    await btn.trigger('click')
+    expect(wrapper.emitted('update:buildMode')![0][0]).toBe('skirmish')
+  })
+
+  it('renders the Random Generator section with the current cohesion label', () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ cohesion: 50 }) })
+    expect(wrapper.text()).toContain('Random Generator')
+    expect(wrapper.text()).toContain('Tag-Aligned')
+  })
+
+  it('shows the cohesion label matching the current value', () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ cohesion: 0 }) })
+    expect(wrapper.text()).toContain('Locked')
+  })
+
+  it('updates the "Will generate" count with the build mode', () => {
+    const skirmish = mount(StrikeForcePanel, { props: defaultProps({ buildMode: 'skirmish' }) })
+    expect(skirmish.text()).toContain('Will generate: 1 squad')
+    const premiere = mount(StrikeForcePanel, { props: defaultProps({ buildMode: 'premiere' }) })
+    expect(premiere.text()).toContain('Will generate: 4 squads')
+  })
+
+  it('emits update:cohesion when the slider changes', async () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
+    const slider = wrapper.find('input[type="range"]')
+    await slider.setValue('100')
+    const emitted = wrapper.emitted('update:cohesion')
+    expect(emitted).toBeTruthy()
+    expect(emitted![0][0]).toBe(100)
+  })
+
+  it('emits update:ownedOnly when the Owned toggle is clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ ownedOnly: false }) })
+    const toggle = wrapper.findAll('button[role="switch"]')[0]
+    await toggle.trigger('click')
+    expect(wrapper.emitted('update:ownedOnly')![0][0]).toBe(true)
+  })
+
+  it('emits update:randomizeMission when the mission toggle is clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps({ randomizeMission: false }) })
+    const toggle = wrapper.findAll('button[role="switch"]')[1]
+    await toggle.trigger('click')
+    expect(wrapper.emitted('update:randomizeMission')![0][0]).toBe(true)
+  })
+
+  it('emits random when Generate Strike Force is clicked', async () => {
+    const wrapper = mount(StrikeForcePanel, { props: defaultProps() })
+    const btn = wrapper.findAll('button').find(b => b.text().includes('Generate Strike Force'))!
+    await btn.trigger('click')
+    expect(wrapper.emitted('random')).toBeTruthy()
   })
 })

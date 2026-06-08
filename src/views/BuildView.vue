@@ -18,7 +18,7 @@ import QrShareModal from '../components/build/QrShareModal.vue'
 import StrikeForceVisualModal from '../components/build/StrikeForceVisualModal.vue'
 import { decodeBuild, encodeBuild } from '../utils/profileShare.ts'
 import { encodeSPT } from '../utils/sptExport.ts'
-import { generateRandomStrikeForce } from '../utils/randomBuild.ts'
+import { generateRandomForce } from '../utils/randomBuild.ts'
 
 const sfStore = useStrikeForceStore()
 const charStore = useCharactersStore()
@@ -32,11 +32,12 @@ const router = useRouter()
 const ownedOnly = ref(false)
 
 function handleRandom() {
-  const result = generateRandomStrikeForce(
-    allCharacters.value,
-    [sfStore.squads[0], sfStore.squads[1]],
-    ownedOnly.value ? { ownedSwpCodes: collectionStore.ownedSwpSet } : {}
-  )
+  const squadCount = sfStore.activeSquadCount as 1 | 2 | 3 | 4
+  const result = generateRandomForce(allCharacters.value, {
+    squadCount,
+    cohesion: sfStore.cohesion,
+    ...(ownedOnly.value ? { ownedSwpCodes: collectionStore.ownedSwpSet } : {}),
+  })
   if (!result) {
     saveFeedback.value = ownedOnly.value
       ? 'No valid build found — try disabling Owned filter'
@@ -44,9 +45,17 @@ function handleRandom() {
     setTimeout(() => { saveFeedback.value = '' }, 2500)
     return
   }
-  for (const role of ['primary', 'secondary', 'support'] as const) {
-    if (result[0][role]) sfStore.setUnit(0, role, result[0][role])
-    if (result[1][role]) sfStore.setUnit(1, role, result[1][role])
+  // Distribute generated squads: 0/1 → base squads, 2/3 → extra squads
+  for (let i = 0; i < result.length; i++) {
+    const squadIdx = i as 0 | 1 | 2 | 3
+    for (const role of ['primary', 'secondary', 'support'] as const) {
+      sfStore.setUnit(squadIdx, role, result[i][role])
+    }
+  }
+  // Optionally randomize the mission alongside the squads
+  if (sfStore.randomizeMission && missionsStore.missions.length > 0) {
+    const idx = Math.floor(Math.random() * missionsStore.missions.length)
+    sfStore.setMission(missionsStore.missions[idx])
   }
 }
 
@@ -101,6 +110,18 @@ const savedListLegality = computed(() =>
       { primary: resolve(build.s[0][0]), secondary: resolve(build.s[0][1]), support: resolve(build.s[0][2]) },
       { primary: resolve(build.s[1][0]), secondary: resolve(build.s[1][1]), support: resolve(build.s[1][2]) },
     ]
+
+    const mode: BuildMode = build.mode ?? (build.pre ? 'premiere' : 'standard')
+
+    // Skirmish — only the first squad is active
+    if (mode === 'skirmish') {
+      const sq = squads[0]
+      if (!sq.primary || !sq.secondary || !sq.support) {
+        return { valid: false, reason: 'Incomplete' }
+      }
+      return isSquadValid(sq)
+    }
+
     if (!squads.every(sq => sq.primary && sq.secondary && sq.support)) {
       return { valid: false, reason: 'Incomplete' }
     }
@@ -109,7 +130,6 @@ const savedListLegality = computed(() =>
     const r1 = isSquadValid(squads[1])
     if (!r1.valid) return r1
 
-    const mode: BuildMode = build.mode ?? (build.pre ? 'premiere' : 'standard')
     if (mode !== 'standard') {
       if (!build.ex) return { valid: false, reason: 'Incomplete' }
       const extraSquads: [Squad, Squad] = [
@@ -463,9 +483,13 @@ function importSharedBuild() {
       :is-complete="sfStore.isStrikeForceComplete"
       :build-mode="sfStore.buildMode"
       :owned-only="ownedOnly"
+      :cohesion="sfStore.cohesion"
+      :randomize-mission="sfStore.randomizeMission"
       @update:name="sfStore.setName"
       @update:build-mode="sfStore.setBuildMode"
       @update:owned-only="ownedOnly = $event"
+      @update:cohesion="sfStore.setCohesion"
+      @update:randomize-mission="sfStore.setRandomizeMission"
       @pick-mission="missionPickerOpen = true"
       @clear-mission="sfStore.setMission(null)"
       @reset="sfStore.resetStrikeForce"
@@ -480,14 +504,14 @@ function importSharedBuild() {
     <!-- Squads -->
     <div class="grid gap-4 md:grid-cols-2">
       <SquadSlot
-        v-for="(squad, idx) in sfStore.squads"
+        v-for="(squad, idx) in (sfStore.buildMode === 'skirmish' ? [sfStore.squads[0]] : sfStore.squads)"
         :key="idx"
         :squad="squad"
         :squad-index="idx"
         @pick="(role) => openPicker(idx as 0 | 1 | 2 | 3, role)"
         @clear="(role) => clearUnit(idx as 0 | 1 | 2 | 3, role)"
       />
-      <template v-if="sfStore.buildMode !== 'standard'">
+      <template v-if="sfStore.buildMode === 'threemiere' || sfStore.buildMode === 'premiere'">
         <SquadSlot
           :squad="sfStore.extraSquads[0]"
           :squad-index="2"
