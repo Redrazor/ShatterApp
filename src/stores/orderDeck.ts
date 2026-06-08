@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { PlayUnit } from '../types/index.ts'
+import { useDiceRoom } from '../composables/useDiceRoom.ts'
+import { useRollSessionStore } from './rollSession.ts'
 
 export interface OrderCard {
   id: number           // character id; -1 = Shatterpoint wild
@@ -58,6 +60,23 @@ export const useOrderDeckStore = defineStore(
       return fisherYates(cards)
     }
 
+    // Push our revealed card + remaining count to opponents (multiplayer only).
+    function _syncDeck() {
+      const session = useRollSessionStore()
+      if (!session.isConnected) return
+      useDiceRoom().sendOrderDeck({
+        revealed: revealed.value
+          ? { id: revealed.value.id, name: revealed.value.name, orderCard: revealed.value.orderCard, isShatterpoint: revealed.value.isShatterpoint }
+          : null,
+        deckCount: deck.value.length,
+        activatedCount: activatedIds.value.length,
+      })
+    }
+
+    function syncNow() {
+      _syncDeck()
+    }
+
     function buildDeck(units: PlayUnit[]) {
       deck.value = _buildCards(units)
       revealed.value = null
@@ -66,12 +85,14 @@ export const useOrderDeckStore = defineStore(
       playedFromReserve.value = false
       deckBuilt.value = true
       shatterpointPendingId.value = null
+      _syncDeck()
     }
 
     function flip() {
       if (deckEmpty.value || revealed.value !== null) return
       revealed.value = deck.value.shift()!
       playedFromReserve.value = false
+      _syncDeck()
     }
 
     function endActivation() {
@@ -79,12 +100,14 @@ export const useOrderDeckStore = defineStore(
       activatedIds.value.push(revealed.value.id)
       revealed.value = null
       playedFromReserve.value = false
+      _syncDeck()
     }
 
     // Called when user confirms a Shatterpoint pick — marks the unit as active pending End Activation
     function selectShatterpointUnit(unitId: number) {
       shatterpointPendingId.value = unitId
       revealed.value = null
+      _syncDeck()
     }
 
     function endActivationAs(unitId: number) {
@@ -92,18 +115,21 @@ export const useOrderDeckStore = defineStore(
       revealed.value = null
       playedFromReserve.value = false
       shatterpointPendingId.value = null
+      _syncDeck()
     }
 
     function reserve() {
       if (!revealed.value) return
       reserved.value = revealed.value
       revealed.value = null
+      _syncDeck()
     }
 
     function sendToBottom() {
       if (!revealed.value) return
       deck.value.push(revealed.value)
       revealed.value = null
+      _syncDeck()
     }
 
     function swapReservedTo(pos: 'top' | 'bottom') {
@@ -115,6 +141,7 @@ export const useOrderDeckStore = defineStore(
       }
       reserved.value = revealed.value
       revealed.value = null
+      _syncDeck()
     }
 
 
@@ -123,6 +150,7 @@ export const useOrderDeckStore = defineStore(
       revealed.value = reserved.value
       reserved.value = null
       playedFromReserve.value = true
+      _syncDeck()
     }
 
     function peek(): OrderCard | null {
@@ -137,6 +165,7 @@ export const useOrderDeckStore = defineStore(
       playedFromReserve.value = false
       deckBuilt.value = true
       shatterpointPendingId.value = null
+      _syncDeck()
     }
 
     function reset() {
@@ -147,6 +176,7 @@ export const useOrderDeckStore = defineStore(
       playedFromReserve.value = false
       deckBuilt.value = false
       shatterpointPendingId.value = null
+      _syncDeck()
     }
 
     return {
@@ -176,6 +206,7 @@ export const useOrderDeckStore = defineStore(
       peek,
       reshuffle,
       reset,
+      syncNow,
     }
   },
   { persist: true },

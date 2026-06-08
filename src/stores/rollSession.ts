@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { PlayUnit, DiceRole, DuelRow, ForcePoolPayload } from '../types/index.ts'
+import type { PlayUnit, DiceRole, DuelRow, ForcePoolPayload, RoomMode, Team, RoomPlayerView, OrderDeckState } from '../types/index.ts'
 import type { DieState } from '../utils/dice.ts'
 
 export const useRollSessionStore = defineStore('rollSession', () => {
@@ -8,6 +8,52 @@ export const useRollSessionStore = defineStore('rollSession', () => {
   const isConnected = ref(false)
   const isHost = ref(false)
   const opponentOnline = ref(false)
+
+  // ── 2v2 multiplayer ────────────────────────────────────────────
+  const mode = ref<RoomMode>('1v1')
+  const mySocketId = ref<string | null>(null)
+  const players = ref<RoomPlayerView[]>([])
+  const matchReady = ref(false)
+  // Per-player rosters / force pools, keyed by socketId (2v2 fan-out).
+  const playerUnits = ref<Record<string, PlayUnit[]>>({})
+  const playerForcePools = ref<Record<string, ForcePoolPayload>>({})
+
+  // Opponent order-deck state (revealed card + remaining count).
+  const opponentDeck = ref<OrderDeckState | null>(null)            // 1v1
+  const playerDecks = ref<Record<string, OrderDeckState>>({})      // 2v2, keyed by socketId
+  function setOpponentDeck(d: OrderDeckState | null) { opponentDeck.value = d }
+  function setPlayerDeck(socketId: string, d: OrderDeckState) { playerDecks.value[socketId] = d }
+
+  const myTeam = computed<Team | null>(
+    () => players.value.find((p) => p.socketId === mySocketId.value)?.team ?? null,
+  )
+  // Other players ordered teammates-first, for the roster sub-tabs.
+  const otherPlayers = computed<RoomPlayerView[]>(() => {
+    const others = players.value.filter((p) => p.socketId !== mySocketId.value)
+    return [...others].sort((a, b) => {
+      const aMine = a.team && a.team === myTeam.value ? 0 : 1
+      const bMine = b.team && b.team === myTeam.value ? 0 : 1
+      return aMine - bMine
+    })
+  })
+  const teammates = computed<RoomPlayerView[]>(() =>
+    players.value.filter((p) => p.socketId !== mySocketId.value && p.team != null && p.team === myTeam.value),
+  )
+  const opponents = computed<RoomPlayerView[]>(() =>
+    players.value.filter((p) => p.team != null && p.team !== myTeam.value),
+  )
+
+  function setMode(m: RoomMode) { mode.value = m }
+  function setMySocketId(id: string | null) { mySocketId.value = id }
+  function setPlayers(list: RoomPlayerView[]) { players.value = list }
+  function setMatchReady(ready: boolean) { matchReady.value = ready }
+  function setPlayerUnits(socketId: string, units: PlayUnit[]) { playerUnits.value[socketId] = units }
+  function setPlayerForcePool(socketId: string, fp: ForcePoolPayload) { playerForcePools.value[socketId] = fp }
+  function applyRoomUpdate(payload: { players: RoomPlayerView[]; mode: RoomMode; ready: boolean }) {
+    players.value = payload.players
+    mode.value = payload.mode
+    matchReady.value = payload.ready
+  }
 
   // Player names
   const playerName = ref<string | null>(null)
@@ -91,6 +137,14 @@ export const useRollSessionStore = defineStore('rollSession', () => {
     duelHistory.value = []
     atkUnitId.value = null
     defUnitId.value = null
+    mode.value = '1v1'
+    mySocketId.value = null
+    players.value = []
+    matchReady.value = false
+    playerUnits.value = {}
+    playerForcePools.value = {}
+    opponentDeck.value = null
+    playerDecks.value = {}
   }
 
   return {
@@ -126,5 +180,27 @@ export const useRollSessionStore = defineStore('rollSession', () => {
     resetDuel,
     clearHistory,
     reset,
+    // 2v2
+    mode,
+    mySocketId,
+    players,
+    matchReady,
+    playerUnits,
+    playerForcePools,
+    opponentDeck,
+    playerDecks,
+    myTeam,
+    otherPlayers,
+    teammates,
+    opponents,
+    setMode,
+    setMySocketId,
+    setPlayers,
+    setMatchReady,
+    setPlayerUnits,
+    setPlayerForcePool,
+    setOpponentDeck,
+    setPlayerDeck,
+    applyRoomUpdate,
   }
 })

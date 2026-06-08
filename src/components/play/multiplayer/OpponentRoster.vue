@@ -1,13 +1,36 @@
 <script setup lang="ts">
-import type { PlayUnit, ConditionKey } from '../../../types/index.ts'
+import { computed } from 'vue'
+import type { PlayUnit, ConditionKey, ForcePoolPayload, Team, OrderDeckState } from '../../../types/index.ts'
 import { imageUrl } from '../../../utils/imageUrl.ts'
 import { useStances } from '../../../composables/useStances.ts'
 import { useRollSessionStore } from '../../../stores/rollSession.ts'
 
-defineProps<{ units: PlayUnit[] }>()
+const props = defineProps<{
+  units: PlayUnit[]
+  // Optional explicit context for 2v2 (one of N rosters). When omitted,
+  // falls back to the 1v1 session opponent.
+  displayName?: string
+  forcePool?: ForcePoolPayload | null
+  team?: Team | null
+  deckState?: OrderDeckState | null
+}>()
 
 const { getStances } = useStances()
 const session = useRollSessionStore()
+
+const heading = computed(() => {
+  const name = props.displayName ?? session.opponentName
+  return name ? `${name}'s Team` : "Opponent's Team"
+})
+const forcePool = computed<ForcePoolPayload | null>(() =>
+  props.forcePool !== undefined ? props.forcePool : session.opponentForcePool,
+)
+const deck = computed<OrderDeckState | null>(() =>
+  props.deckState !== undefined ? props.deckState : session.opponentDeck,
+)
+const headingClass = computed(() =>
+  props.team === 'red' ? 'text-red-300/90' : props.team === 'blue' ? 'text-sky-300/90' : 'text-zinc-500',
+)
 
 function stanceName(unit: PlayUnit): string | null {
   const data = getStances(unit.id)
@@ -27,30 +50,64 @@ const CONDITION_LABELS: Record<ConditionKey, string> = {
 
 <template>
   <div class="space-y-2">
-    <div class="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 pt-1">
-      {{ session.opponentName ? `${session.opponentName}'s Team` : "Opponent's Team" }}
+    <div class="text-[10px] font-bold uppercase tracking-[0.18em] pt-1" :class="headingClass">
+      {{ heading }}
     </div>
 
-    <!-- Opponent's force pool -->
+    <!-- Opponent's flipped order card + remaining deck count -->
     <div
-      v-if="session.opponentForcePool && session.opponentForcePool.total > 0"
+      v-if="deck"
+      class="flex items-center gap-3 rounded-lg border border-zinc-700/40 bg-zinc-900/50 px-3 py-2"
+    >
+      <!-- Revealed card -->
+      <div
+        class="relative w-12 aspect-[5/7] shrink-0 rounded-md border overflow-hidden flex items-center justify-center"
+        :class="deck.revealed
+          ? (deck.revealed.isShatterpoint ? 'border-amber-500/60 bg-amber-950/30' : 'border-zinc-600/60 bg-zinc-800')
+          : 'border-dashed border-zinc-700 bg-zinc-900/40'"
+      >
+        <img
+          v-if="deck.revealed"
+          :src="imageUrl(deck.revealed.orderCard)"
+          :alt="deck.revealed.name"
+          class="h-full w-full object-contain"
+        />
+        <span v-else class="text-zinc-700 text-lg">—</span>
+      </div>
+      <div class="min-w-0 flex-1">
+        <div class="text-[9px] font-bold uppercase tracking-[0.18em] text-zinc-500">Order Card</div>
+        <div class="truncate text-sm font-semibold" :class="deck.revealed ? 'text-zinc-200' : 'text-zinc-600'">
+          {{ deck.revealed ? deck.revealed.name : 'No card flipped' }}
+        </div>
+        <div class="mt-0.5 text-[10px] text-zinc-500">
+          <span :class="deck.deckCount === 0 ? 'text-amber-500 font-semibold' : ''">
+            {{ deck.deckCount }} card{{ deck.deckCount === 1 ? '' : 's' }} left
+          </span>
+          <span v-if="deck.deckCount === 0" class="text-amber-500"> · deck empty</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Force pool -->
+    <div
+      v-if="forcePool && forcePool.total > 0"
       class="flex items-center gap-1.5 rounded-lg border border-zinc-700/30 bg-zinc-900/40 px-3 py-2"
     >
       <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mr-1">Force</span>
       <div
-        v-for="(_, i) in Array.from({ length: session.opponentForcePool.total })"
+        v-for="(_, i) in Array.from({ length: forcePool.total })"
         :key="i"
         class="flex h-5 w-5 items-center justify-center rounded-full border transition-all"
-        :class="session.opponentForcePool.spentTokens[i]
+        :class="forcePool.spentTokens[i]
           ? 'border-zinc-700 bg-zinc-800 opacity-40'
           : 'border-amber-500/60 bg-amber-950/40'"
       >
-        <svg viewBox="0 0 20 20" class="h-3 w-3" :class="session.opponentForcePool.spentTokens[i] ? 'fill-zinc-600' : 'fill-amber-400'">
+        <svg viewBox="0 0 20 20" class="h-3 w-3" :class="forcePool.spentTokens[i] ? 'fill-zinc-600' : 'fill-amber-400'">
           <polygon points="10,1 12.9,7 19.5,7.6 14.5,12 16.2,18.5 10,15 3.8,18.5 5.5,12 0.5,7.6 7.1,7" />
         </svg>
       </div>
       <span class="ml-1 text-[10px] text-zinc-500">
-        {{ session.opponentForcePool.spentTokens.filter(Boolean).length }}/{{ session.opponentForcePool.total }} spent
+        {{ forcePool.spentTokens.filter(Boolean).length }}/{{ forcePool.total }} spent
       </span>
     </div>
 

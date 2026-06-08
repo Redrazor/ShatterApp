@@ -195,6 +195,12 @@ io.on('connection', (socket) => {
     socket.to(room.code).emit('tracker-update', { ...payload, from: socket.id })
   })
 
+  socket.on('sync-order-deck', (payload) => {
+    const room = getRoomBySocket(socket.id)
+    if (!room) return
+    socket.to(room.code).emit('order-deck-update', { ...payload, from: socket.id })
+  })
+
   socket.on('set-player-name', ({ name }: { name: string }) => {
     setPlayerName(socket.id, name)
     const room = getRoomBySocket(socket.id)

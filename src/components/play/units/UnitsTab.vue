@@ -10,6 +10,7 @@ import PlayUnitStanceModal from './PlayUnitStanceModal.vue'
 import BuildListPicker from './BuildListPicker.vue'
 import ForcePool from './ForcePool.vue'
 import OpponentRoster from '../multiplayer/OpponentRoster.vue'
+import MultiRoster from '../multiplayer/MultiRoster.vue'
 import OrderDeckSection from './OrderDeckSection.vue'
 
 const props = defineProps<{
@@ -19,6 +20,7 @@ const props = defineProps<{
   locked: boolean
   isLegendary?: boolean
   opponentUnits?: PlayUnit[]
+  is2v2?: boolean   // render the multi-player roster sub-tabs instead of a single opponent
 }>()
 
 const emit = defineEmits<{
@@ -79,7 +81,8 @@ const excludeIds = computed(() => store.units.map(u => u.id))
 const canAdd = computed(() => !props.locked && !store.rosterComplete)
 
 function onListSelected(sq0: Character[], sq1: Character[], sq1Complete: boolean) {
-  store.importFromBuild([...sq0, ...sq1], sq1Complete)
+  // In 2v2 each player brings a single squad — that one squad is the complete roster.
+  store.importFromBuild([...sq0, ...sq1], props.is2v2 ? true : sq1Complete)
   showListPicker.value = false
 }
 
@@ -217,6 +220,7 @@ function openProfile(unitId: number) {
       v-if="showListPicker"
       :saved-lists="savedLists"
       :characters="characters"
+      :single-squad="is2v2"
       @select="onListSelected"
       @close="showListPicker = false"
     />
@@ -228,8 +232,13 @@ function openProfile(unitId: number) {
       @close="showProfile = false"
     />
 
-    <!-- Opponent roster (multiplayer) -->
-    <div v-if="opponentUnits !== undefined" class="mt-2">
+    <!-- Other players' rosters (multiplayer) -->
+    <div v-if="is2v2" class="mt-2">
+      <div class="h-px bg-zinc-700/40 my-3" />
+      <div class="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 pb-2">Other Players</div>
+      <MultiRoster />
+    </div>
+    <div v-else-if="opponentUnits !== undefined" class="mt-2">
       <div class="h-px bg-zinc-700/40 my-3" />
       <OpponentRoster :units="opponentUnits" />
     </div>
