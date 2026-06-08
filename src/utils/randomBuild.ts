@@ -270,7 +270,8 @@ export function generateRandomForce(
       // Locked: confine the whole force to one random pack.
       const packs = [...new Set(basePool.map(c => c.swpCode).filter(Boolean))] as string[]
       if (packs.length > 0) {
-        const packPool = basePool.filter(c => c.swpCode === pickRandom(packs))
+        const pack = pickRandom(packs)
+        const packPool = basePool.filter(c => c.swpCode === pack)
         const locked = tryFillSquads(packPool, count, 25)
         if (locked) return locked
       }
