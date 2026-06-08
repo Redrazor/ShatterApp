@@ -4,6 +4,15 @@ defineEmits<{ (e: 'close'): void }>()
 
 const entries = [
   {
+    version: '2.18.0',
+    date: '2026-06-08',
+    changes: [
+      'Build — new Skirmish format builds a single squad (great for quick games and the upcoming 2v2 mode)',
+      'Build — revamped randomizer: a Random Generator panel with a 5-level Cohesion slider (Locked → Pack-Loyal → Tag-Aligned → Loose → Chaos) to control how thematically tight the generated force is',
+      'Build — the generator now fills any squad count (1–4), can stick to your owned collection, and optionally randomizes the mission too',
+    ],
+  },
+  {
     version: '2.17.0',
     date: '2026-06-07',
     changes: [

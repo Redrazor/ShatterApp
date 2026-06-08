@@ -19,7 +19,7 @@
 
 | # | Feature | Status | Priority | Effort | Target | Work remaining (with Claude support) |
 |---|---------|--------|----------|--------|--------|--------------------------------------|
-| #1 | Cohesion-Aware Randomizer + Skirmish Build Mode | `[ ]` Not started | High | L | **v2.18.0** | **~4–6 focused hours** — plan validated, plumbing intact |
+| #1 | Cohesion-Aware Randomizer + Skirmish Build Mode | `[x]` **Done** | High | L | shipped **v2.18.0** | **0** — shipped PR #42 |
 | #2 | Landscape Lockout Override + Tablet Support | `[x]` **Done** | Medium | S | shipped **v2.15.3** | **0** — shipped PR #39 (2026-04-29) |
 | #3 | 2v2 Multiplayer Mode | `[ ]` Not started | Medium | XL | **v2.19.0** | **~2–3 days** — full server+client refactor, no scaffolding exists |
 
@@ -29,7 +29,7 @@
 
 ## #1 — Cohesion-Aware Randomizer + Skirmish Build Mode
 
-**Status:** `[ ]` Not started
+**Status:** `[x]` **Done** — shipped **v2.18.0** (PR #42)
 **Priority:** High
 **Effort:** L
 **Target version:** v2.18.0 *(was v2.16.0 — re-pointed)*
